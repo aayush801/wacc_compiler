@@ -91,6 +91,5 @@ param: type IDENT;
 paramList: param (COMMA param)*;
 
 //argument list
-argList:
-  | expr (COMMA expr)* ;
+argList: expr (COMMA expr)* ;
 

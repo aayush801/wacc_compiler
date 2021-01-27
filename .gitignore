@@ -1,11 +1,13 @@
 #ignore generated binary files and auto-generated ANTLR code
-bin
+bin/
 src/antlr
 gen/
+rules
+*.tokens
 
 # ignore ide generated files
-.idea
-out
+.idea/
+out/
 *.iml
 
 #ignore Java class files
