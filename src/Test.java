@@ -9,6 +9,7 @@ public class Test {
 
     // Temporary file, for testing
     File testFile = new File("src/skip.wacc");
+
     // Check if actually valid, and maybe also check if it is a .wacc file.
     String fileContents = fileReader(testFile);
 
