@@ -1,0 +1,17 @@
+default:
+  image: java:latest
+
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  script:
+    - make
+
+test:
+  stage: test
+  script:
+    - make test
+

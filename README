@@ -20,7 +20,7 @@ You should not need to make any changes in this directory.
 > src < 
 
 The src directory is currently empty (apart from a simple README file) and is 
-where we expect you to write your compiler code.
+where we expect you to write your main code.
 
 > grun <
 
@@ -30,13 +30,13 @@ in debugging you lexer and parser (more details below).
 > compile <
 
 The compile script should be edited to provide a frontend interface to your WACC
-compiler. You are free to change the language used in this script, but do not 
+main. You are free to change the language used in this script, but do not
 change its name (more details below).
 
 > Makefile <
 
 Your Makefile should be edited so that running 'make' in the root directory 
-builds your WACC compiler. Currently running 'make' will call the antlrBuild 
+builds your WACC main. Currently running 'make' will call the antlrBuild
 script and the attempt to compile all .java files within the src directory. 
 Depending on the structure of your code, you might not need to modify this file.
 
@@ -48,7 +48,7 @@ Using the provided scripts
 
 This script takes a pair of ANTLR lexer and parser configuration files (set 
 within the script) and creates the corresponding Java classes that you can use
-in your compiler. The Java files are written to the src/antlr directory and 
+in your main. The Java files are written to the src/antlr directory and
 should not be modified by hand. By default this script is set up to generate a
 parse tree and a listerner pattern for traversing this tree, but you can modify
 the compilation options within the script if you want to produce different 
@@ -83,9 +83,9 @@ input stream as the EOF character in the file does this for you.
 > compile <
 
 This script currently writes a TODO: message to the console, but you should
-update it to call the the main class of your compiler with appropriate 
+update it to call the the main class of your main with appropriate
 arguments. Note that the lab's automated testing service will be using this 
-script as the access point to your compiler.
+script as the access point to your main.
 
 You will need to add the ANTLR jar file to the classpath of your calls to Java
 if you want to be able to use any of the built in ANTLR features. You can do 
