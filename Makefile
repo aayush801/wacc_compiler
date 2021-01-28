@@ -8,12 +8,12 @@ OUTPUT_DIR	:= bin
 # Tools
 ANTLR	:= antlrBuild
 FIND	:= find
-RM		:= rm -rf
+RM	:= rm -rf
 MKDIR	:= mkdir -p
 JAVA	:= java
 JAVAC	:= javac
 
-JFLAGS	:= -sourcepath $(SOURCE_DIR) -d $(OUTPUT_DIR) -cp java -cp lib/*:.
+JFLAGS	:= -sourcepath $(SOURCE_DIR) -d $(OUTPUT_DIR) -cp java -cp lib/*:
 
 # the make rules
 
@@ -25,9 +25,11 @@ rules:
 	$(FIND) $(SOURCE_DIR) -name '*.java' > $@
 	$(MKDIR) $(OUTPUT_DIR)
 	$(JAVAC) $(JFLAGS) @$@
-	$(RM) rules
+	$(RM) $@
 
-
+tests: rules
+	$(JAVA) -cp bin:lib/*: org.junit.runner.JUnitCore tests.BasicCompilerTest
+	$(RM) $@
 
 clean:
 	$(RM) rules $(OUTPUT_DIR) $(SOURCE_DIR)/antlr

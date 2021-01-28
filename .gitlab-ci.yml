@@ -13,5 +13,5 @@ build:
 test:
   stage: test
   script:
-    - make test
+    - make tests
 
