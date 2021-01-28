@@ -81,7 +81,7 @@ pairElem:
 ;
 
 // EOF indicates that the program must consume to the end of the input.
-prog: BEGIN (func)*  END ;
+prog: BEGIN (func)* stat END ;
 
 //function
 func: type IDENT OPEN_PARENTHESES paramList? CLOSE_PARENTHESES IS stat END ;

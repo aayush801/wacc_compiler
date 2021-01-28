@@ -115,3 +115,4 @@ IDENT: ([_a-z]) ([_a-zA-Z0-9])* ;
 //comment
 COMMENT: '#' (~[\n])* EOL ;
 
+WS: [ \t]+ -> skip ;
