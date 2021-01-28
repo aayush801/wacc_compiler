@@ -60,25 +60,20 @@ CALL: 'call';
 
 //typings
 TYPE:
-  BASE_TYPE,
-  ARRAY_TYPE,
-  PAIR_TYPE
+  BASE_TYPE
+  | ARRAY_TYPE
+  | PAIR_TYPE
 ;
 
 
 PAIR_TYPE: 'pair';
-INTEGER_TYPE: 'int' ;
-BOOLEAN_TYPE: 'bool' ;
-CHAR_TYPE: 'char' ;
-STRING_TYPE: 'string' ;
-
 
 //base types
 BASE_TYPE:
-  INTEGER_TYPE
-  | BOOLEAN_TYPE
-  | CHAR_TYPE
-  | STRING_TYPE
+  'int'
+  | 'bool'
+  | 'char'
+  | 'string'
 ;
 
 ARRAY_TYPE: TYPE OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET ;
