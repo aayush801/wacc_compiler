@@ -76,7 +76,7 @@ BASE_TYPE:
   | 'string'
 ;
 
-ARRAY_TYPE: TYPE OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET ;
+ARRAY_TYPE: (BASE_TYPE|PAIR_TYPE) ('[]')+ ;
 
 //conditional keywords
 WHILE: 'while' ;
