@@ -4,16 +4,21 @@ options {
   tokenVocab=BasicLexer;
 }
 
-//binary operators
-binaryOper: PLUS | MINUS | DIVIDE | MULTIPLY | MOD | GRE | GR | LSE | LS | EQ | NEQ | AND | OR;
+// EOF indicates that the program must consume to the end of the input.
+prog:
+    BEGIN (func)* stat END EOF
+    | expr EOF
+;
 
-//unary operators
-unaryOper: NOT | MINUS | LENGTH | ORD | CHR ;
+//function
+func: type IDENT OPEN_PARENTHESES paramList? CLOSE_PARENTHESES IS stat END ;
+
+
 
 //statements
 stat:
   SKIP_STATEMENT
-  | TYPE IDENT EQUALS assignRHS
+  | type IDENT EQUALS assignRHS
   | assignLHS EQUALS assignRHS
   | READ assignLHS
   | FREE expr
@@ -40,21 +45,34 @@ assignRHS:
   | array
   | CREATE_PAIR OPEN_PARENTHESES expr COMMA expr CLOSE_PARENTHESES
   | pairElem
-  | CALL IDENT OPEN_PARENTHESES argList CLOSE_PARENTHESES
+  | CALL IDENT OPEN_PARENTHESES argList? CLOSE_PARENTHESES
 ;
 
 //expressions
 expr:
-  INTEGER
+   (MINUS | PLUS)? INTEGER
   | BOOLEAN
-  | CHARACTER
-  | STRING
   | PAIR
   | IDENT
+  | STRING
+  | CHARACTER
   | arrayElem
+  | OPEN_PARENTHESES expr CLOSE_PARENTHESES
   | unaryOper expr
   | expr binaryOper expr
-  | OPEN_PARENTHESES expr CLOSE_PARENTHESES
+;
+
+//binary operators
+binaryOper: PLUS | MINUS | DIVIDE | MULTIPLY | MOD | GRE | GR | LSE | LS | EQ | NEQ | AND | OR;
+
+//unary operators
+unaryOper: NOT | MINUS | LENGTH | ORD | CHR ;
+
+//typings
+type:
+  BASE_TYPE
+  | ARRAY_TYPE
+  | pairType
 ;
 
 //arrays
@@ -73,17 +91,9 @@ pairElem:
   | PAIR_SECOND expr
 ;
 
-// EOF indicates that the program must consume to the end of the input.
-prog:
-    BEGIN (func)* stat END
-    | expr
-;
-
-//function
-func: TYPE IDENT OPEN_PARENTHESES paramList? CLOSE_PARENTHESES IS stat END ;
 
 //parameters
-param: TYPE IDENT;
+param: type IDENT;
 paramList: param (COMMA param)*;
 
 //argument list

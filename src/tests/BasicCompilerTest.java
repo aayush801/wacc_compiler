@@ -18,17 +18,22 @@ public class BasicCompilerTest {
 
   private final Compiler compiler = new Compiler();
 
-  private int compileInstruction(String instruction) throws IOException {
-    int code = compiler.compile(new ByteArrayInputStream((instruction).getBytes(StandardCharsets.UTF_8)));
-    assertThat(code, is(0));
-    return code;
+  private void compileInstruction(String instruction) throws IOException {
+    compiler.compile(new ByteArrayInputStream((instruction).getBytes(StandardCharsets.UTF_8)));
   }
 
   @Test
   public void testAddition() throws IOException {
     String instruction = "1 + 2";
     compileInstruction(instruction);
-    assertThat(compiler.treeString(), is("(prog (expr (expr 1) (binaryOper +) (expr 2)))"));
+    assertThat(compiler.treeString(), is("(prog (expr (expr 1) (binaryOper +) (expr 2)) <EOF>)"));
+  }
+
+  @Test
+  public void testComments() throws IOException {
+    String instruction = "# lmao \n";
+    compileInstruction(instruction);
+    assertThat(compiler.treeString(), is(""));
   }
 
 

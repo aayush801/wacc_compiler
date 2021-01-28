@@ -11,17 +11,17 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface BasicParserVisitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by {@link BasicParser#binaryOper}.
+	 * Visit a parse tree produced by {@link BasicParser#prog}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitBinaryOper(BasicParser.BinaryOperContext ctx);
+	T visitProg(BasicParser.ProgContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link BasicParser#unaryOper}.
+	 * Visit a parse tree produced by {@link BasicParser#func}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitUnaryOper(BasicParser.UnaryOperContext ctx);
+	T visitFunc(BasicParser.FuncContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link BasicParser#stat}.
 	 * @param ctx the parse tree
@@ -46,6 +46,24 @@ public interface BasicParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExpr(BasicParser.ExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link BasicParser#binaryOper}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBinaryOper(BasicParser.BinaryOperContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link BasicParser#unaryOper}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUnaryOper(BasicParser.UnaryOperContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link BasicParser#type}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitType(BasicParser.TypeContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link BasicParser#arrayElem}.
 	 * @param ctx the parse tree
@@ -76,18 +94,6 @@ public interface BasicParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitPairElem(BasicParser.PairElemContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link BasicParser#prog}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitProg(BasicParser.ProgContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link BasicParser#func}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFunc(BasicParser.FuncContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link BasicParser#param}.
 	 * @param ctx the parse tree

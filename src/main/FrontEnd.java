@@ -13,23 +13,19 @@ public class FrontEnd {
       throw new Exception("WACC compiler takes argument of either .wacc file or inline instructions");
     }
 
-
     File waccFile = new File(args[0]);
 
-    InputStream input;
-
-    if(!waccFile.exists()) {
-      // check if args[0] is an instruction
-      input = new ByteArrayInputStream((args[0]).getBytes(StandardCharsets.UTF_8));
-    }else{
-      // check if args[0] is a file
-      input = new FileInputStream(waccFile);
-    }
 
     // create a compiler instance
     Compiler compiler = new Compiler();
 
-    compiler.compile(input);
+    if(!waccFile.exists()) {
+      // check if args[0] is an instruction
+      compiler.compile(new ByteArrayInputStream((args[0]).getBytes()));
+    }else{
+      // check if args[0] is a file
+      compiler.compile(new FileInputStream(waccFile));
+    }
 
     System.out.println(compiler.treeString());
 

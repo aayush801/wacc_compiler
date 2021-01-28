@@ -12,8 +12,9 @@ public class Compiler {
   private BasicLexer lexer;
   private CommonTokenStream tokens;
   private BasicParser parser;
+  private final ParserErrorHandler parserErrorHandler = new ParserErrorHandler();
 
-  public int compile(InputStream inputStream) throws IOException {
+  public void compile(InputStream inputStream) throws IOException {
 
     CharStream input = CharStreams.fromStream(inputStream);
 
@@ -23,8 +24,7 @@ public class Compiler {
 
     parser = new BasicParser(tokens);
 
-    return 0; // successful compilation
-
+    parser.addErrorListener(parserErrorHandler);
   }
 
   public String treeString(){

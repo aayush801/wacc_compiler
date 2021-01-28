@@ -13,7 +13,50 @@ fragment ESCAPED_CHAR:
   | '\\'
 ;
 
-COMMA : ',' ;
+//base types
+BASE_TYPE:
+  'int'
+  | 'bool'
+  | 'char'
+  | 'string'
+;
+
+//prog descriptors
+BEGIN: 'begin';
+END: 'end' ;
+RETURN: 'return' ;
+CALL: 'call';
+EXIT: 'exit' ;
+
+//stat descriptors
+SKIP_STATEMENT : 'skip' ;
+IS: 'is';
+READ: 'read' ;
+FREE: 'free' ;
+PRINT: 'print' ;
+PRINT_LINE: 'println' ;
+
+//conditional keywords
+WHILE: 'while' ;
+DO: 'do' ;
+END_WHILE: 'done' ;
+IF: 'if' ;
+THEN: 'then' ;
+ELSE: 'else' ;
+END_IF: 'fi' ;
+
+
+//brackets
+OPEN_PARENTHESES: '(' ;
+CLOSE_PARENTHESES: ')' ;
+OPEN_SQUARE_BRACKET: '[' ;
+CLOSE_SQUARE_BRACKET: ']' ;
+
+//unary ops
+NOT: '!';
+LENGTH: 'len';
+ORD: 'ord' ;
+CHR: 'chr' ;
 
 //operators
 PLUS: '+' ;
@@ -32,71 +75,17 @@ OR: '||' ;
 
 //assignment
 EQUALS: '=' ;
-
-NOT: '!';
-LENGTH: 'len';
-ORD: 'ord' ;
-CHR: 'chr' ;
-
-//brackets
-OPEN_PARENTHESES: '(' ;
-CLOSE_PARENTHESES: ')' ;
-OPEN_SQUARE_BRACKET: '[' ;
-CLOSE_SQUARE_BRACKET: ']' ;
-
-//prog descriptors
-BEGIN: 'begin';
-END: 'end' ;
-
-//stat descriptors
-IS: 'is';
-SKIP_STATEMENT : 'skip' ;
-READ: 'read' ;
-FREE: 'free' ;
-RETURN: 'return' ;
-EXIT: 'exit' ;
-PRINT: 'print' ;
-PRINT_LINE: 'println' ;
+COMMA : ',' ;
 SEPERATOR: ';' ;
-CALL: 'call';
 
 
-//typings
-TYPE:
-  BASE_TYPE
-  | ARRAY_TYPE
-  | PAIR_TYPE
-;
 
+// whitespace
+WS : [ \r\t\n]+ -> skip ;
 
-PAIR_TYPE: 'pair';
-
-//base types
-BASE_TYPE:
-  'int'
-  | 'bool'
-  | 'char'
-  | 'string'
-;
 
 ARRAY_TYPE: (BASE_TYPE|PAIR_TYPE) ('[]')+ ;
 
-//conditional keywords
-WHILE: 'while' ;
-DO: 'do' ;
-END_WHILE: 'done' ;
-IF: 'if' ;
-THEN: 'then' ;
-ELSE: 'else' ;
-END_IF: 'fi' ;
-
-
-
-//numbers
-fragment DIGIT: [0-9] ;
-fragment INTSIGN: PLUS | MINUS ;
-
-INTEGER: INTSIGN? DIGIT+ ;
 
 //booleans
 BOOLEAN: 'true' | 'false' ;
@@ -111,11 +100,15 @@ CREATE_PAIR: 'newpair' ;
 PAIR: 'null' ;
 PAIR_FIRST: 'fst' ;
 PAIR_SECOND: 'snd' ;
+PAIR_TYPE: 'pair';
+
+//numbers
+fragment DIGIT: [0-9] ;
+INTEGER:  DIGIT+ ;
+
+//comment
+COMMENT : '#' ~[\r\n]* EOL -> skip;
 
 //identifier
 IDENT: ([_a-z]) ([_a-zA-Z0-9])* ;
 
-//comment
-COMMENT: '#' (~[\n])* EOL ;
-
-WS: [ |\t]+ -> skip ;
