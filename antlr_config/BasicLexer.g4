@@ -57,23 +57,20 @@ PRINT_LINE: 'println' ;
 SEPERATOR: ';' ;
 CALL: 'call';
 
+
 //typings
+TYPE:
+  BASE_TYPE,
+  ARRAY_TYPE,
+  PAIR_TYPE
+;
+
+
 PAIR_TYPE: 'pair';
 INTEGER_TYPE: 'int' ;
 BOOLEAN_TYPE: 'bool' ;
 CHAR_TYPE: 'char' ;
 STRING_TYPE: 'string' ;
-ARRAY_TYPE: CLOSE_SQUARE_BRACKET OPEN_SQUARE_BRACKET ;
-
-//conditional keywords
-WHILE: 'while' ;
-DO: 'do' ;
-END_WHILE: 'done' ;
-IF: 'if' ;
-THEN: 'then' ;
-ELSE: 'else' ;
-END_IF: 'fi' ;
-
 
 
 //base types
@@ -83,6 +80,17 @@ BASE_TYPE:
   | CHAR_TYPE
   | STRING_TYPE
 ;
+
+ARRAY_TYPE: TYPE OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET ;
+
+//conditional keywords
+WHILE: 'while' ;
+DO: 'do' ;
+END_WHILE: 'done' ;
+IF: 'if' ;
+THEN: 'then' ;
+ELSE: 'else' ;
+END_IF: 'fi' ;
 
 
 
