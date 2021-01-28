@@ -26,9 +26,9 @@ public class BasicCompilerTest {
 
   @Test
   public void testAddition() throws IOException {
-    String instruction = "begin (1+2) end";
+    String instruction = "1 + 2";
     compileInstruction(instruction);
-    assertThat(compiler.treeString(), is("(prog (expr (expr 1) (binaryOper +) (expr 2)) <EOF>)"));
+    assertThat(compiler.treeString(), is("(prog (expr (expr 1) (binaryOper +) (expr 2)))"));
   }
 
 

@@ -30,6 +30,9 @@ NEQ: '!=' ;
 AND: '&&' ;
 OR: '||' ;
 
+//assignment
+EQUALS: '=' ;
+
 NOT: '!';
 LENGTH: 'len';
 ORD: 'ord' ;
@@ -115,4 +118,4 @@ IDENT: ([_a-z]) ([_a-zA-Z0-9])* ;
 //comment
 COMMENT: '#' (~[\n])* EOL ;
 
-WS: [ \t]+ -> skip ;
+WS: [ |\t]+ -> skip ;

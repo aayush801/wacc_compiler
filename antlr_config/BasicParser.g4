@@ -10,18 +10,11 @@ binaryOper: PLUS | MINUS | DIVIDE | MULTIPLY | MOD | GRE | GR | LSE | LS | EQ | 
 //unary operators
 unaryOper: NOT | MINUS | LENGTH | ORD | CHR ;
 
-//all types
-type:
-  BASE_TYPE
-  | ARRAY_TYPE
-  | pairType
-;
-
 //statements
 stat:
   SKIP_STATEMENT
-  | type IDENT EQ assignRHS
-  | assignLHS EQ assignRHS
+  | TYPE IDENT EQUALS assignRHS
+  | assignLHS EQUALS assignRHS
   | READ assignLHS
   | FREE expr
   | RETURN expr
@@ -81,13 +74,16 @@ pairElem:
 ;
 
 // EOF indicates that the program must consume to the end of the input.
-prog: BEGIN (func)* stat END ;
+prog:
+    BEGIN (func)* stat END
+    | expr
+;
 
 //function
-func: type IDENT OPEN_PARENTHESES paramList? CLOSE_PARENTHESES IS stat END ;
+func: TYPE IDENT OPEN_PARENTHESES paramList? CLOSE_PARENTHESES IS stat END ;
 
 //parameters
-param: type IDENT;
+param: TYPE IDENT;
 paramList: param (COMMA param)*;
 
 //argument list

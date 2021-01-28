@@ -23,12 +23,6 @@ public interface BasicParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitUnaryOper(BasicParser.UnaryOperContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link BasicParser#type}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitType(BasicParser.TypeContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link BasicParser#stat}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
