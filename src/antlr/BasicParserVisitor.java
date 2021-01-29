@@ -23,6 +23,24 @@ public interface BasicParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunc(BasicParser.FuncContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link BasicParser#param}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParam(BasicParser.ParamContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link BasicParser#paramList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParamList(BasicParser.ParamListContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link BasicParser#argList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArgList(BasicParser.ArgListContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link BasicParser#stat}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -46,12 +64,6 @@ public interface BasicParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExpr(BasicParser.ExprContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link BasicParser#binaryOper}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBinaryOper(BasicParser.BinaryOperContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link BasicParser#unaryOper}.
 	 * @param ctx the parse tree
@@ -94,22 +106,4 @@ public interface BasicParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitPairElem(BasicParser.PairElemContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link BasicParser#param}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitParam(BasicParser.ParamContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link BasicParser#paramList}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitParamList(BasicParser.ParamListContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link BasicParser#argList}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArgList(BasicParser.ArgListContext ctx);
 }

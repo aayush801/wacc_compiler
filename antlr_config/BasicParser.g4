@@ -14,6 +14,12 @@ prog:
 func: type IDENT OPEN_PARENTHESES paramList? CLOSE_PARENTHESES IS stat END ;
 
 
+//parameters
+param: type IDENT;
+paramList: param (COMMA param)*;
+
+//argument list
+argList: expr (COMMA expr)* ;
 
 //statements
 stat:
@@ -50,20 +56,21 @@ assignRHS:
 
 //expressions
 expr:
-   (MINUS | PLUS)? INTEGER
+    (PLUS | MINUS)? INTEGER
   | BOOLEAN
   | PAIR
   | IDENT
   | STRING
   | CHARACTER
   | arrayElem
-  | OPEN_PARENTHESES expr CLOSE_PARENTHESES
   | unaryOper expr
-  | expr binaryOper expr
+  | expr (DIVIDE | MULTIPLY | MOD) expr
+  | expr (PLUS | MINUS) expr
+  | expr (GRE | GR | LSE | LS | EQ | NEQ) expr
+  | expr AND expr
+  | expr OR expr
+  | OPEN_PARENTHESES expr CLOSE_PARENTHESES
 ;
-
-//binary operators
-binaryOper: PLUS | MINUS | DIVIDE | MULTIPLY | MOD | GRE | GR | LSE | LS | EQ | NEQ | AND | OR;
 
 //unary operators
 unaryOper: NOT | MINUS | LENGTH | ORD | CHR ;
@@ -91,11 +98,4 @@ pairElem:
   | PAIR_SECOND expr
 ;
 
-
-//parameters
-param: type IDENT;
-paramList: param (COMMA param)*;
-
-//argument list
-argList: expr (COMMA expr)* ;
 

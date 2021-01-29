@@ -1,6 +1,7 @@
 lexer grammar BasicLexer;
+
 // escape characters
-fragment EOL: '\n';
+fragment EOL: '\r'? '\n';
 fragment ESCAPED_CHAR:
   '0'
   | 'b'
@@ -12,6 +13,12 @@ fragment ESCAPED_CHAR:
   | '’'
   | '\\'
 ;
+fragment DIGIT: [0-9] ;
+
+// whitespace
+WS : [ \r\t\n]+ -> skip ;
+//comment
+COMMENT : '#' (~[\r\n])* EOL -> skip;
 
 //base types
 BASE_TYPE:
@@ -20,6 +27,7 @@ BASE_TYPE:
   | 'char'
   | 'string'
 ;
+ARRAY_TYPE: (BASE_TYPE | PAIR_TYPE) ('[]')+ ;
 
 //prog descriptors
 BEGIN: 'begin';
@@ -45,18 +53,11 @@ THEN: 'then' ;
 ELSE: 'else' ;
 END_IF: 'fi' ;
 
-
 //brackets
 OPEN_PARENTHESES: '(' ;
 CLOSE_PARENTHESES: ')' ;
 OPEN_SQUARE_BRACKET: '[' ;
 CLOSE_SQUARE_BRACKET: ']' ;
-
-//unary ops
-NOT: '!';
-LENGTH: 'len';
-ORD: 'ord' ;
-CHR: 'chr' ;
 
 //operators
 PLUS: '+' ;
@@ -73,27 +74,22 @@ NEQ: '!=' ;
 AND: '&&' ;
 OR: '||' ;
 
+//unary ops
+NOT: '!';
+LENGTH: 'len';
+ORD: 'ord' ;
+CHR: 'chr' ;
+
 //assignment
 EQUALS: '=' ;
 COMMA : ',' ;
 SEPERATOR: ';' ;
 
-
-
-// whitespace
-WS : [ \r\t\n]+ -> skip ;
-
-
-ARRAY_TYPE: (BASE_TYPE|PAIR_TYPE) ('[]')+ ;
-
+//integers
+INTEGER: DIGIT+ ;
 
 //booleans
 BOOLEAN: 'true' | 'false' ;
-
-//character
-fragment CHAR: ~[\\'"] | '\\' ESCAPED_CHAR;
-STRING: '"' CHAR* '"' ;
-CHARACTER: '\'' CHAR* '\'' ;
 
 //pair
 CREATE_PAIR: 'newpair' ;
@@ -102,13 +98,11 @@ PAIR_FIRST: 'fst' ;
 PAIR_SECOND: 'snd' ;
 PAIR_TYPE: 'pair';
 
-//numbers
-fragment DIGIT: [0-9] ;
-INTEGER:  DIGIT+ ;
-
-//comment
-COMMENT : '#' ~[\r\n]* EOL -> skip;
+//character
+fragment CHAR: ~[\\'"] | ('\\' ESCAPED_CHAR);
+STRING: '"' CHAR* '"' ;
+CHARACTER: '\'' CHAR* '\'' ;
 
 //identifier
-IDENT: ([_a-z]) ([_a-zA-Z0-9])* ;
+IDENT: [_a-z][_a-zA-Z0-9]* ;
 
