@@ -7,12 +7,13 @@ public enum EXIT_STATUS {
   FAIL;
 
   public int exitCode(){
-    return switch (this) {
-      case FAIL -> -1;
-      case SUCCESS -> 0;
-      case SYNTAX_ERROR -> 100;
-      case SEMANTIC_ERROR -> 200;
-    };
+    switch (this) {
+      case FAIL: return -1;
+      case SUCCESS: return 0;
+      case SYNTAX_ERROR: return 100;
+      case SEMANTIC_ERROR: return 200;
+    }
+    return -1;
   }
 
 }
