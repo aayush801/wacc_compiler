@@ -64,12 +64,17 @@ expr:
   | CHARACTER
   | arrayElem
   | unaryOper expr
-  | expr (DIVIDE | MULTIPLY | MOD) expr
-  | expr (PLUS | MINUS) expr
-  | expr (GRE | GR | LSE | LS | EQ | NEQ) expr
-  | expr AND expr
-  | expr OR expr
+  | expr binaryOper expr
   | OPEN_PARENTHESES expr CLOSE_PARENTHESES
+;
+
+//binary operators
+binaryOper :
+    (DIVIDE | MULTIPLY | MOD)
+  | (PLUS | MINUS)
+  | (GRE | GR | LSE | LS | EQ | NEQ)
+  | AND
+  | OR
 ;
 
 //unary operators

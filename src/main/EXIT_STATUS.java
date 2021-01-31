@@ -8,12 +8,12 @@ public enum EXIT_STATUS {
 
   public int exitCode(){
     switch (this) {
-      case FAIL: return -1;
       case SUCCESS: return 0;
       case SYNTAX_ERROR: return 100;
       case SEMANTIC_ERROR: return 200;
+      case FAIL:
+        default: return -1;
     }
-    return -1;
   }
 
 }

@@ -65,6 +65,12 @@ public interface BasicParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpr(BasicParser.ExprContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link BasicParser#binaryOper}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBinaryOper(BasicParser.BinaryOperContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link BasicParser#unaryOper}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
