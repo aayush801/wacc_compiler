@@ -8,6 +8,7 @@ options {
 prog:
     BEGIN (func)* stat END EOF
     | expr EOF
+    | EOF
 ;
 
 //function

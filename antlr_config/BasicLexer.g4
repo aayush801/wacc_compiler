@@ -18,7 +18,7 @@ fragment DIGIT: [0-9] ;
 // whitespace
 WS : [ \r\t\n]+ -> skip ;
 //comment
-COMMENT : '#' (~[\r\n])* EOL -> skip;
+COMMENT : '#' (~[\r\n])* (EOL | EOF) -> skip;
 
 //base types
 BASE_TYPE:

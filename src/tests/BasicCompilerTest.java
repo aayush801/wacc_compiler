@@ -30,9 +30,9 @@ public class BasicCompilerTest {
 
   @Test
   public void testComments() throws IOException {
-    String instruction = "# lmao \n";
+    String instruction = " # lmao \n";
     compileInstruction(instruction);
-    assertThat(compiler.treeString(), is(""));
+    assertThat(compiler.treeString(), is("(prog <EOF>)"));
   }
 
 
