@@ -1,5 +1,5 @@
 #!/bin/sh
 
 echo runnning the compiler
-java -cp bin:lib/*:. main.FrontEnd $@
+java -cp target/wacc_40-1.0-SNAPSHOT.jar Main $@
 

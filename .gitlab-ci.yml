@@ -1,17 +1,19 @@
 default:
   image: java:latest
 
-stages:
-  - build
-  - test
-
 build:
   stage: build
   script:
-    - make
+    - mvn compile
 
 test:
   stage: test
   script:
-    - make tests
+    - mvn test
 
+deploy:
+  stage: deploy
+  script:
+    - mvn package -Dmaven.test.skip=true
+  only:
+    - master

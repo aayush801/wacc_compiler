@@ -1,39 +1,18 @@
-# Sample Makefile for the WACC Compiler lab: edit this to build your own comiler
 # Locations
+MAVEN := mvn
 
-ANTLR_DIR	:= antlr_config
-SOURCE_DIR	:= src
-OUTPUT_DIR	:= bin
+# make the compiler without running any tests
+all:
+	$(MAVEN) package -Dmaven.test.skip=true
 
-# Tools
-ANTLR	:= antlrBuild
-FIND	:= find
-RM	:= rm -rf
-MKDIR	:= mkdir -p
-JAVA	:= java
-JAVAC	:= javac
+# run all the compiler tests
+test:
+	$(MAVEN) test
 
-JFLAGS	:= -sourcepath $(SOURCE_DIR) -d $(OUTPUT_DIR) -cp java -cp lib/*:
-
-# the make rules
-
-all: rules
-
-# runs the antlr build script then attempts to compile all .java files within src/antlr
-rules:
-	cd $(ANTLR_DIR) && ./$(ANTLR) 
-	$(FIND) $(SOURCE_DIR) -name '*.java' > $@
-	$(MKDIR) $(OUTPUT_DIR)
-	$(JAVAC) $(JFLAGS) @$@
-	$(RM) $@
-
-tests: rules
-	$(JAVA) -cp bin:lib/*: org.junit.runner.JUnitCore tests.BasicCompilerTest
-	$(RM) $@
-
+# cleanup all generated files
 clean:
-	$(RM) rules $(OUTPUT_DIR) $(SOURCE_DIR)/antlr
+	$(MAVEN) clean
 
-.PHONY: all rules clean
+.PHONY: all clean
 
 

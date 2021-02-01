@@ -1,21 +1,17 @@
-package tests;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import main.Compiler;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Test;
 
 // import ANTLR's runtime libraries
 // import antlr package
 
-public class BasicCompilerTest {
+public class CodeGenerationTests {
 
-  private final Compiler compiler = new Compiler();
+  private final WaccCompiler compiler = new WaccCompiler();
 
   private void compileInstruction(String instruction) throws IOException {
     compiler.compile(new ByteArrayInputStream((instruction).getBytes(StandardCharsets.UTF_8)));
@@ -30,7 +26,7 @@ public class BasicCompilerTest {
 
   @Test
   public void testComments() throws IOException {
-    String instruction = " # lmao \n";
+    String instruction = "# random comment \n";
     compileInstruction(instruction);
     assertThat(compiler.treeString(), is("(prog <EOF>)"));
   }

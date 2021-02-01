@@ -1,18 +1,16 @@
-package main;
-
 // import ANTLR's runtime libraries
+import antlr.BasicLexer;
+import antlr.BasicParser;
+import error_handlers.WaccParserHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import org.antlr.v4.runtime.*;
 
-// import antlr package
-import antlr.*;
-
-public class Compiler {
+public class WaccCompiler {
   private BasicLexer lexer;
   private CommonTokenStream tokens;
   private BasicParser parser;
-  private final ParserErrorHandler parserErrorHandler = new ParserErrorHandler();
+  private final WaccParserHandler parserHandler = new WaccParserHandler();
 
   public void compile(InputStream inputStream) throws IOException {
 
@@ -24,14 +22,11 @@ public class Compiler {
 
     parser = new BasicParser(tokens);
 
-    parser.addErrorListener(parserErrorHandler);
+    parser.addErrorListener(parserHandler);
   }
 
   public String treeString(){
     return parser.prog().toStringTree(parser);
   }
-
-
-
 
 }

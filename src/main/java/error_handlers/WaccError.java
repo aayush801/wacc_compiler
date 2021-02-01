@@ -1,12 +1,12 @@
-package main;
+package error_handlers;
 
-public enum EXIT_STATUS {
+public enum WaccError {
   SUCCESS,
   SYNTAX_ERROR,
   SEMANTIC_ERROR,
   FAIL;
 
-  public int exitCode(){
+  public int code(){
     switch (this) {
       case SUCCESS: return 0;
       case SYNTAX_ERROR: return 100;
