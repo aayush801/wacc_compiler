@@ -21,7 +21,9 @@ public class CodeGenerationTests {
   public void testAddition() throws IOException {
     String instruction = "1 + 2";
     compileInstruction(instruction);
-    assertThat(compiler.treeString(), is("(prog (expr (expr 1) (binaryOper +) (expr 2)) <EOF>)"));
+    assertThat(compiler.treeString(),
+        is("(prog (expr (term3 (term3 (term2 (term1 (factor 1)))) +"
+            + " (term2 (term1 (factor 2))))) <EOF>)"));
   }
 
   @Test
