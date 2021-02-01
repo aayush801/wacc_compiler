@@ -57,7 +57,6 @@ assignRHS:
 
 //expressions
 expr:
-    (PLUS | MINUS)? INTEGER
   | BOOLEAN
   | PAIR
   | IDENT
@@ -65,9 +64,31 @@ expr:
   | CHARACTER
   | arrayElem
   | unaryOper expr
-  | expr binaryOper expr
+  | expr MINUS term3
+  | term3
+;
+
+term3:
+  term3 PLUS term2
+  | term2
+;
+
+term2:
+  term2 MULTIPLY term1
+  | term1
+;
+
+term1:
+  term1 DIVIDE factor
+  | factor
+;
+
+
+factor:
+  (PLUS | MINUS)? INTEGER
   | OPEN_PARENTHESES expr CLOSE_PARENTHESES
 ;
+
 
 //binary operators
 binaryOper :
@@ -90,7 +111,7 @@ type:
 
 //arrays
 arrayElem: IDENT (OPEN_SQUARE_BRACKET expr CLOSE_SQUARE_BRACKET)+ ;
-array: OPEN_SQUARE_BRACKET expr (COMMA expr*)? CLOSE_SQUARE_BRACKET ;
+array: OPEN_SQUARE_BRACKET (expr (COMMA expr)*)? CLOSE_SQUARE_BRACKET ;
 
 //pairs
 pairType: PAIR_TYPE OPEN_PARENTHESES pairElemType COMMA pairElemType CLOSE_PARENTHESES ;

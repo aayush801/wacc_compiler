@@ -52,6 +52,26 @@ public class WaccSemanticParser<T> implements BasicParserVisitor<T> {
   }
 
   @Override
+  public T visitTerm1(Term1Context var1) {
+    return null;
+  }
+
+  @Override
+  public T visitTerm2(Term2Context var1) {
+    return null;
+  }
+
+  @Override
+  public T visitTerm3(Term3Context var1) {
+    return null;
+  }
+
+  @Override
+  public T visitFactor(FactorContext var1) {
+    return null;
+  }
+
+  @Override
   public T visitBinaryOper(BinaryOperContext ctx) {
     return null;
   }
