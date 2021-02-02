@@ -15,7 +15,6 @@ public class WaccSemanticParser extends BasicParserBaseVisitor<Void> {
 
   @Override
   public Void visitBinaryOper(BasicParser.BinaryOperContext ctx) {
-    // Problem: We are not actually getting a BinaryOper, but directly a '+'
     System.out.println("Is this a plus? " + ctx.PLUS().toString());
     return null;
   }
@@ -26,13 +25,9 @@ public class WaccSemanticParser extends BasicParserBaseVisitor<Void> {
     return visitChildren(ctx);
   }
 
-  @Override
-  public Void visitTerm3(BasicParser.Term3Context ctx) {
-    System.out.println("we have a term3!!");
-    return visitChildren(ctx);
-  }
-
   @Override public Void visitTerm2(BasicParser.Term2Context ctx) {
+    ParseTree child1 = ctx.getChild(0);
+    //Given a parse tree, return the final type(an enum).
     System.out.println("we have a term2!!");
     return visitChildren(ctx);
   }
@@ -42,19 +37,15 @@ public class WaccSemanticParser extends BasicParserBaseVisitor<Void> {
     return visitChildren(ctx);
   }
 
+  @Override public Void visitBinOp2(BasicParser.BinOp2Context ctx) {
+    System.out.println(ctx.getText());
+    return visitChildren(ctx);
+  }
+
   @Override public Void visitNum(BasicParser.NumContext ctx) {
     System.out.println("It's a number!!");
     System.out.println("Value: " + ctx.INTEGER().toString());
     return null; // Reached the end, so send a null/whatever back
   }
-
-  @Override public Void visitOtherExpr(BasicParser.OtherExprContext ctx) {
-    return visitChildren(ctx);
-  }
-
-
-
-
-
 
 }

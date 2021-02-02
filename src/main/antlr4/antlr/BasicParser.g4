@@ -57,28 +57,15 @@ assignRHS:
 
 //expressions
 expr:
-  | BOOLEAN
+  | boolExpr
   | PAIR
   | IDENT
   | STRING
   | CHARACTER
   | arrayElem
   | unaryOper expr
-  | term5
-;
-
-term5:
-  term5 binOp5 term4
-  | term4
-;
-
-term4:
-  term4 binOp4 term3
-  | term3
-;
-
-term3:
-  term3 binOp3 term2
+  | OPEN_PARENTHESES expr CLOSE_PARENTHESES
+  | expr equalityOp expr
   | term2
 ;
 
@@ -92,12 +79,26 @@ term1:
   | factor
 ;
 
-
-factor:
-  (PLUS | MINUS)? INTEGER                       #num
-  | OPEN_PARENTHESES expr CLOSE_PARENTHESES     #otherExpr
+bool2:
+  | bool2 boolOp2 bool1
+  | bool1
 ;
 
+bool1:
+  | bool1 boolOp1 BOOLEAN
+  | BOOLEAN
+;
+
+factor:
+  (PLUS | MINUS)? INTEGER                        #num
+  | OPEN_PARENTHESES term2 CLOSE_PARENTHESES     #ExprThatGivesAnInt
+;
+
+boolExpr:
+    BOOLEAN
+    | bool2
+    | (factor | CHARACTER) (compareOp) (factor | CHARACTER)
+;
 
 //binary operators
 binaryOper :
@@ -108,9 +109,10 @@ binaryOper :
   | OR
 ;
 
-binOp5 : OR ;
-binOp4 : AND ;
-binOp3 : GRE | GR | LSE | LS | EQ | NEQ ;
+equalityOp : EQ | NEQ ;
+boolOp2 : OR ;
+boolOp1 : AND ;
+compareOp : GRE | GR | LSE | LS | EQ | NEQ ;
 binOp2 : PLUS | MINUS ;
 binOp1 : DIVIDE | MULTIPLY | MOD ;
 

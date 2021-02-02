@@ -101,7 +101,7 @@ PAIR_TYPE: 'pair';
 //character
 fragment CHAR: ~[\\'"] | ('\\' ESCAPED_CHAR);
 STRING: '"' CHAR* '"' ;
-CHARACTER: '\'' CHAR* '\'' ;
+CHARACTER: '\'' CHAR? '\'' ;
 
 //identifier
 IDENT: [_a-z][_a-zA-Z0-9]* ;

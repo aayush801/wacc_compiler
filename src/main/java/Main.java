@@ -18,9 +18,7 @@ public class Main {
 
     // create a compiler instance
 
-    System.out.println("yaaa");
     WaccCompiler compiler = new WaccCompiler();
-    System.out.println("naaa");
 
 
     if(!waccFile.exists()) {

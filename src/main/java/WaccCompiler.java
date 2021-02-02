@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenSource;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,7 +39,8 @@ public class WaccCompiler {
   public void traverseAST() {
     System.out.println("=======");
     WaccSemanticParser myParser = new WaccSemanticParser();
-    myParser.visit(parser.prog());
+    ParseTree copy = parser.prog();
+    myParser.visit(copy);
     System.out.println("=======");
   }
 }

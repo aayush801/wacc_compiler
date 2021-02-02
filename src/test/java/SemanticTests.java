@@ -15,12 +15,12 @@ public class SemanticTests {
 
   private void compileInstruction(String instruction) throws IOException {
     compiler.compile(new ByteArrayInputStream((instruction).getBytes(StandardCharsets.UTF_8)));
-    compiler.traverseAST();
+    //compiler.traverseAST();
   }
 
   @Test
   public void testAddition() throws IOException {
-    String instruction = "1 + 2";
+    String instruction = "true || false && true";
     compileInstruction(instruction);
     assertThat(compiler.treeString(), is("(prog (expr (expr 1) (binaryOper +) (expr 2)) <EOF>)"));
   }
