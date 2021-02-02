@@ -64,22 +64,31 @@ expr:
   | CHARACTER
   | arrayElem
   | unaryOper expr
-  | expr MINUS term3
+  | term5
+;
+
+term5:
+  term5 binOp5 term4
+  | term4
+;
+
+term4:
+  term4 binOp4 term3
   | term3
 ;
 
 term3:
-  term3 PLUS term2
+  term3 binOp3 term2
   | term2
 ;
 
 term2:
-  term2 MULTIPLY term1
+  term2 binOp2 term1
   | term1
 ;
 
 term1:
-  term1 DIVIDE factor
+  term1 binOp1 factor
   | factor
 ;
 
@@ -98,6 +107,12 @@ binaryOper :
   | AND
   | OR
 ;
+
+binOp5 : OR ;
+binOp4 : AND ;
+binOp3 : GRE | GR | LSE | LS | EQ | NEQ ;
+binOp2 : PLUS | MINUS ;
+binOp1 : DIVIDE | MULTIPLY | MOD ;
 
 //unary operators
 unaryOper: NOT | MINUS | LENGTH | ORD | CHR ;

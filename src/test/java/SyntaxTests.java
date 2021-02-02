@@ -23,8 +23,7 @@ public class SyntaxTests {
     String instruction = "1 + 2";
     compileInstruction(instruction);
     assertThat(compiler.treeString(),
-        is("(prog (expr (term3 (term3 (term2 (term1 (factor 1)))) +"
-            + " (term2 (term1 (factor 2))))) <EOF>)"));
+        is("(prog (expr (term5 (term4 (term3 (term2 (term2 (term1 (factor 1))) (binOp2 +) (term1 (factor 2))))))) <EOF>)"));
   }
 
   @Test
