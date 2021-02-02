@@ -85,19 +85,25 @@ bool2:
 ;
 
 bool1:
-  | bool1 boolOp1 BOOLEAN
+  | bool1 boolOp1 bool0
+  | bool0
+;
+
+bool0:
   | BOOLEAN
+  | OPEN_PARENTHESES boolExpr CLOSE_PARENTHESES
+  | IDENT
 ;
 
 factor:
   (PLUS | MINUS)? INTEGER                        #num
   | OPEN_PARENTHESES term2 CLOSE_PARENTHESES     #ExprThatGivesAnInt
+  | IDENT                                        #varNum
 ;
 
 boolExpr:
-    BOOLEAN
     | bool2
-    | (factor | CHARACTER) (compareOp) (factor | CHARACTER)
+    | (factor | CHARACTER | IDENT) compareOp (factor | CHARACTER | IDENT)
 ;
 
 //binary operators
