@@ -1,6 +1,10 @@
+import front_end.WaccSemanticParser;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+
+import org.antlr.v4.runtime.TokenSource;
 
 public class Main {
   public static void main(String[] args) throws Exception {
@@ -13,7 +17,11 @@ public class Main {
 
 
     // create a compiler instance
+
+    System.out.println("yaaa");
     WaccCompiler compiler = new WaccCompiler();
+    System.out.println("naaa");
+
 
     if(!waccFile.exists()) {
       // check if args[0] is an instruction
@@ -25,5 +33,6 @@ public class Main {
 
     System.out.println(compiler.treeString());
 
+    compiler.traverseAST();
   }
 }

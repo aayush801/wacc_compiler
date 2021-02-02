@@ -85,8 +85,8 @@ term1:
 
 
 factor:
-  (PLUS | MINUS)? INTEGER
-  | OPEN_PARENTHESES expr CLOSE_PARENTHESES
+  (PLUS | MINUS)? INTEGER                       #num
+  | OPEN_PARENTHESES expr CLOSE_PARENTHESES     #otherExpr
 ;
 
 

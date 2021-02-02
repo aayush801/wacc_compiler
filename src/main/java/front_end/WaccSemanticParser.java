@@ -1,133 +1,60 @@
 package front_end;
 
+import antlr.BasicParser;
 import antlr.BasicParser.*;
-import antlr.BasicParserVisitor;
+import antlr.BasicParserBaseVisitor;
 import org.antlr.v4.runtime.tree.*;
 
-public class WaccSemanticParser<T> implements BasicParserVisitor<T> {
+public class WaccSemanticParser extends BasicParserBaseVisitor<Void> {
 
   @Override
-  public T visitProg(ProgContext ctx) {
+  public Void visitProg(ProgContext ctx) {
+    System.out.println("Hello");
+    return visitChildren(ctx);
+  }
+
+  @Override
+  public Void visitBinaryOper(BasicParser.BinaryOperContext ctx) {
+    // Problem: We are not actually getting a BinaryOper, but directly a '+'
+    System.out.println("Is this a plus? " + ctx.PLUS().toString());
     return null;
   }
 
   @Override
-  public T visitFunc(FuncContext ctx) {
-    return null;
+  public Void visitExpr(BasicParser.ExprContext ctx) {
+    System.out.println("we have an expression!!");
+    return visitChildren(ctx);
   }
 
   @Override
-  public T visitParam(ParamContext ctx) {
-    return null;
+  public Void visitTerm3(BasicParser.Term3Context ctx) {
+    System.out.println("we have a term3!!");
+    return visitChildren(ctx);
   }
 
-  @Override
-  public T visitParamList(ParamListContext ctx) {
-    return null;
+  @Override public Void visitTerm2(BasicParser.Term2Context ctx) {
+    System.out.println("we have a term2!!");
+    return visitChildren(ctx);
   }
 
-  @Override
-  public T visitArgList(ArgListContext ctx) {
-    return null;
+  @Override public Void visitTerm1(BasicParser.Term1Context ctx) {
+    System.out.println("we have a term1!!");
+    return visitChildren(ctx);
   }
 
-  @Override
-  public T visitStat(StatContext ctx) {
-    return null;
+  @Override public Void visitNum(BasicParser.NumContext ctx) {
+    System.out.println("It's a number!!");
+    System.out.println("Value: " + ctx.INTEGER().toString());
+    return null; // Reached the end, so send a null/whatever back
   }
 
-  @Override
-  public T visitAssignLHS(AssignLHSContext ctx) {
-    return null;
+  @Override public Void visitOtherExpr(BasicParser.OtherExprContext ctx) {
+    return visitChildren(ctx);
   }
 
-  @Override
-  public T visitAssignRHS(AssignRHSContext ctx) {
-    return null;
-  }
 
-  @Override
-  public T visitExpr(ExprContext ctx) {
-    return null;
-  }
 
-  @Override
-  public T visitTerm1(Term1Context var1) {
-    return null;
-  }
 
-  @Override
-  public T visitTerm2(Term2Context var1) {
-    return null;
-  }
 
-  @Override
-  public T visitTerm3(Term3Context var1) {
-    return null;
-  }
 
-  @Override
-  public T visitFactor(FactorContext var1) {
-    return null;
-  }
-
-  @Override
-  public T visitBinaryOper(BinaryOperContext ctx) {
-    return null;
-  }
-
-  @Override
-  public T visitUnaryOper(UnaryOperContext ctx) {
-    return null;
-  }
-
-  @Override
-  public T visitType(TypeContext ctx) {
-    return null;
-  }
-
-  @Override
-  public T visitArrayElem(ArrayElemContext ctx) {
-    return null;
-  }
-
-  @Override
-  public T visitArray(ArrayContext ctx) {
-    return null;
-  }
-
-  @Override
-  public T visitPairType(PairTypeContext ctx) {
-    return null;
-  }
-
-  @Override
-  public T visitPairElemType(PairElemTypeContext ctx) {
-    return null;
-  }
-
-  @Override
-  public T visitPairElem(PairElemContext ctx) {
-    return null;
-  }
-
-  @Override
-  public T visit(ParseTree parseTree) {
-    return null;
-  }
-
-  @Override
-  public T visitChildren(RuleNode ruleNode) {
-    return null;
-  }
-
-  @Override
-  public T visitTerminal(TerminalNode terminalNode) {
-    return null;
-  }
-
-  @Override
-  public T visitErrorNode(ErrorNode errorNode) {
-    return null;
-  }
 }
