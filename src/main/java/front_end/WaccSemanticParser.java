@@ -5,47 +5,126 @@ import antlr.BasicParser.*;
 import antlr.BasicParserBaseVisitor;
 import org.antlr.v4.runtime.tree.*;
 
-public class WaccSemanticParser extends BasicParserBaseVisitor<Void> {
+
+
+public class WaccSemanticParser extends BasicParserBaseVisitor<WACCTypes> {
 
   @Override
-  public Void visitProg(ProgContext ctx) {
-    System.out.println("Hello");
+  public WACCTypes visitProg(ProgContext ctx) {
+    //System.out.println("Hello");
     return visitChildren(ctx);
   }
 
   @Override
-  public Void visitBinaryOper(BasicParser.BinaryOperContext ctx) {
-    System.out.println("Is this a plus? " + ctx.PLUS().toString());
-    return null;
-  }
-
-  @Override
-  public Void visitExpr(BasicParser.ExprContext ctx) {
-    System.out.println("we have an expression!!");
+  public WACCTypes visitExpr(BasicParser.ExprContext ctx) {
+    //System.out.println("we have an expression");
     return visitChildren(ctx);
   }
 
-  @Override public Void visitTerm2(BasicParser.Term2Context ctx) {
+  // ========================  term2 checks ===================================
+
+  @Override public WACCTypes visitTimesDivide(BasicParser.TimesDivideContext ctx) {
+    boolean childrenOK = checkTypes(WACCTypes.INT, ctx.getChild(0), ctx.getChild(2));
+
+      if (childrenOK) {
+        return WACCTypes.INT;
+      }
+      //cry
+      System.out.println("Something went wrong");
+      return WACCTypes.ERROR;
+    }
+
+  @Override public WACCTypes visitGotoTerm1(BasicParser.GotoTerm1Context ctx) {
+     return visitChildren(ctx);  // OK??
+  }
+
+
+
+  // ==========================================================================
+
+
+  // ========================  term1 checks ===================================
+
+  @Override public WACCTypes visitPlusMinus(BasicParser.PlusMinusContext ctx) {
+    boolean childrenOK = checkTypes(WACCTypes.INT, ctx.getChild(0), ctx.getChild(2));
+
+    if (childrenOK) {
+      return WACCTypes.INT;
+    }
+    //cry
+    System.out.println("Something went wrong");
+    return WACCTypes.ERROR;
+  }
+
+  @Override public WACCTypes visitGotoFactor(BasicParser.GotoFactorContext ctx) {
+    return visitChildren(ctx);  // OK??
+  }
+
+  // ==========================================================================
+
+  // ========================  factor checks ==================================
+  @Override
+  public WACCTypes visitVarNum(BasicParser.VarNumContext ctx) {
+    //lookup in ST, verify that it exists in the scope(and outer STs as well), then check its type.
+    String thingy = ctx.getText(); // this is the name of the var
+    System.out.println(thingy);
+    return WACCTypes.INT; //verified
+  }
+
+  @Override public WACCTypes visitExprThatGivesAnInt(BasicParser.ExprThatGivesAnIntContext ctx) {
+    Boolean childOK = checkTypes(WACCTypes.INT, ctx.getChild(1));
+    if (childOK) {
+      return WACCTypes.INT;
+    }
+    //cry
+    System.out.println("Something went wrong");
+    return WACCTypes.ERROR;
+  }
+
+  // ==========================================================================
+
+  @Override public WACCTypes visitNum(BasicParser.NumContext ctx) {
+    return WACCTypes.INT;
+  }
+
+  @Override
+  public WACCTypes visitComparison(BasicParser.ComparisonContext ctx) {
     ParseTree child1 = ctx.getChild(0);
-    //Given a parse tree, return the final type(an enum).
-    System.out.println("we have a term2!!");
-    return visitChildren(ctx);
+    ParseTree child2 = ctx.getChild(2);
+
+    Boolean typesMatch = matchTypes(child1, child2);
+
+    if(typesMatch) {
+      return WACCTypes.BOOL;
+    }
+    //cry
+    System.out.println("Something went wrong");
+    return WACCTypes.ERROR;
   }
 
-  @Override public Void visitTerm1(BasicParser.Term1Context ctx) {
-    System.out.println("we have a term1!!");
-    return visitChildren(ctx);
+  private Boolean checkTypes(WACCTypes expectedType, ParseTree ... trees) {
+    for (ParseTree tree: trees) {
+      WACCTypes thisType = getType(tree);
+      if (thisType != expectedType) {
+        System.out.println("Expected type: " + expectedType + ", Actual type: " + thisType);
+        return false;
+      }
+    }
+    return true;
   }
 
-  @Override public Void visitBinOp2(BasicParser.BinOp2Context ctx) {
-    System.out.println(ctx.getText());
-    return visitChildren(ctx);
+  private WACCTypes getType(ParseTree tree) {
+    WaccSemanticParser tempParser = new WaccSemanticParser();
+    return tempParser.visit(tree);
   }
 
-  @Override public Void visitNum(BasicParser.NumContext ctx) {
-    System.out.println("It's a number!!");
-    System.out.println("Value: " + ctx.INTEGER().toString());
-    return null; // Reached the end, so send a null/whatever back
+  private Boolean matchTypes(ParseTree tree1, ParseTree tree2) {
+    WACCTypes type1 = getType(tree1);
+    WACCTypes type2 = getType(tree2);
+    Boolean typesMatch = type1 == type2;
+    if (!typesMatch) {
+      System.out.println("Expected: " + type1 + ", actual: " + type2);
+    }
+    return typesMatch;
   }
-
 }

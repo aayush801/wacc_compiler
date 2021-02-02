@@ -20,7 +20,7 @@ public class SemanticTests {
 
   @Test
   public void testAddition() throws IOException {
-    String instruction = "true && (2 == 3)";
+    String instruction = "1<c";
     compileInstruction(instruction);
     assertThat(compiler.treeString(), is("(prog (expr (expr 1) (binaryOper +) (expr 2)) <EOF>)"));
   }

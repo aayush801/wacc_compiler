@@ -70,13 +70,13 @@ expr:
 ;
 
 term2:
-  term2 binOp2 term1
-  | term1
+  term2 binOp2 term1   #timesDivide
+  | term1              #gotoTerm1
 ;
 
 term1:
-  term1 binOp1 factor
-  | factor
+  term1 binOp1 factor  #plusMinus
+  | factor             #gotoFactor
 ;
 
 bool2:
@@ -102,19 +102,11 @@ factor:
 ;
 
 boolExpr:
-    | bool2
-    | (factor | CHARACTER | IDENT) compareOp (factor | CHARACTER | IDENT)
+    bool2                                                                   #boolLiter
+    | (factor | CHARACTER | IDENT) compareOp (factor | CHARACTER | IDENT)   #comparison
 ;
 
 //binary operators
-binaryOper :
-    (DIVIDE | MULTIPLY | MOD)
-  | (PLUS | MINUS)
-  | (GRE | GR | LSE | LS | EQ | NEQ)
-  | AND
-  | OR
-;
-
 equalityOp : EQ | NEQ ;
 boolOp2 : OR ;
 boolOp1 : AND ;
