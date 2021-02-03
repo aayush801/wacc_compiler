@@ -22,14 +22,15 @@ public class SyntaxTests {
   public void testAddition() throws IOException {
     String instruction = "1 + 2";
     compileInstruction(instruction);
-    assertThat(compiler.treeString(),is("(prog (expr (expr 1) (binaryOperator +) (expr 2)) <EOF>)"));
+    assertThat(compiler.treeString(),is("(prog (expr (expr 1) + (expr 2)) <EOF>)"));
   }
 
   @Test
   public void testPrecedence() throws IOException {
     String instruction = "1 + 2 * 3 / 2";
     compileInstruction(instruction);
-    assertThat(compiler.treeString(),is("(prog (expr (expr 1) (binaryOperator +) (expr 2)) <EOF>)"));
+    assertThat(compiler.treeString(),
+        is("(prog (expr (expr 1) + (expr (expr (expr 2) * (expr 3)) / (expr 2))) <EOF>)"));
   }
 
   @Test
@@ -39,8 +40,20 @@ public class SyntaxTests {
     assertThat(compiler.treeString(), is("(prog <EOF>)"));
   }
 
+  @Test
+  public void testLessThan() throws IOException {
+    String instruction = "1<c";
+    compileInstruction(instruction);
+    assertThat(compiler.treeString(), is("(prog (expr (expr 1) < (expr c)) <EOF>)"));
+  }
 
-
+  @Test
+  public void testEquality() throws IOException {
+    String instruction = "true && (2 == 3)";
+    compileInstruction(instruction);
+    // THIS DOESN'T WORK YET!
+    //     | (boolExpr | PAIR | IDENT | STRING | CHARACTER | arrayElem | unaryOper expr | OPEN_PARENTHESES expr CLOSE_PARENTHESES | term2) equalityOp expr
+  }
 
     // Input:
     // A .wacc file

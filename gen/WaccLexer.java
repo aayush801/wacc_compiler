@@ -1,4 +1,4 @@
-// Generated from C:/Users/Raul/Desktop/wacc_40/src/main/antlr4/antlr\WaccLexer.g4 by ANTLR 4.9.1
+// Generated from C:/Rohan Pandit/University/Year 2/Term 2/Compilers/wacc_40/src/main/antlr4/antlr\WaccLexer.g4 by ANTLR 4.9.1
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
