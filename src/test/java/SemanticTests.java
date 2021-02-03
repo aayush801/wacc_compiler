@@ -13,22 +13,22 @@ public class SemanticTests {
 
   private final WaccCompiler compiler = new WaccCompiler();
 
-  private void compileInstruction(String instruction) throws IOException {
+  private void compileInstructionAndAnalyseSemantics(String instruction) throws IOException {
     compiler.compile(new ByteArrayInputStream((instruction).getBytes(StandardCharsets.UTF_8)));
-    //compiler.traverseAST();
+    compiler.analyseSemantics();
   }
 
   @Test
   public void testAddition() throws IOException {
     String instruction = "1<c";
-    compileInstruction(instruction);
+    compileInstructionAndAnalyseSemantics(instruction);
     assertThat(compiler.treeString(), is("(prog (expr (expr 1) (binaryOper +) (expr 2)) <EOF>)"));
   }
 
   @Test
   public void testEquality() throws IOException {
     String instruction = "true && (2 == 3)";
-    compileInstruction(instruction);
+    compileInstructionAndAnalyseSemantics(instruction);
     // THIS DOESN'T WORK YET!
     //     | (boolExpr | PAIR | IDENT | STRING | CHARACTER | arrayElem | unaryOper expr | OPEN_PARENTHESES expr CLOSE_PARENTHESES | term2) equalityOp expr
   }

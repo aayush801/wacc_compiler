@@ -1,7 +1,7 @@
-parser grammar BasicParser;
+parser grammar WaccParser;
 
 options {
-  tokenVocab=BasicLexer;
+  tokenVocab=WaccLexer;
 }
 
 // EOF indicates that the program must consume to the end of the input.
@@ -13,7 +13,6 @@ prog:
 
 //function
 func: type IDENT OPEN_PARENTHESES paramList? CLOSE_PARENTHESES IS stat END ;
-
 
 //parameters
 param: type IDENT;
@@ -50,72 +49,32 @@ assignLHS:
 assignRHS:
   expr
   | array
-  | CREATE_PAIR OPEN_PARENTHESES expr COMMA expr CLOSE_PARENTHESES
+  | NEWPAIR OPEN_PARENTHESES expr COMMA expr CLOSE_PARENTHESES
   | pairElem
   | CALL IDENT OPEN_PARENTHESES argList? CLOSE_PARENTHESES
 ;
 
 //expressions
 expr:
-  | boolExpr
-  | PAIR
-  | IDENT
-  | STRING
-  | CHARACTER
-  | arrayElem
-  | unaryOper expr
-  | OPEN_PARENTHESES expr CLOSE_PARENTHESES
-  | expr equalityOp expr
-  | term2
+    (PLUS | MINUS)? INTEGER                     #integer
+  | BOOLEAN                                     #boolean
+  | PAIR                                        #pair
+  | IDENT                                       #identifier
+  | STRING                                      #string
+  | CHARACTER                                   #character
+  | arrayElem                                   #arrayExpr
+  | unaryOperator expr                          #unaryOperation
+  | expr (DIVIDE | MULTIPLY | MOD) expr         #divMulModOperation
+  | expr (PLUS | MINUS) expr                    #plusMinusOperation
+  | expr (GRE | GR | LSE | LS) expr             #greLseComparison
+  | expr (EQ | NEQ) expr                        #eqNeqComparison
+  | expr AND expr                               #logicalAndOperation
+  | expr OR expr                                #logicalOrOperation
+  | OPEN_PARENTHESES expr CLOSE_PARENTHESES     #bracketedExpr
 ;
-
-term2:
-  term2 binOp2 term1   #timesDivide
-  | term1              #gotoTerm1
-;
-
-term1:
-  term1 binOp1 factor  #plusMinus
-  | factor             #gotoFactor
-;
-
-bool2:
-  | bool2 boolOp2 bool1
-  | bool1
-;
-
-bool1:
-  | bool1 boolOp1 bool0
-  | bool0
-;
-
-bool0:
-  | BOOLEAN
-  | OPEN_PARENTHESES boolExpr CLOSE_PARENTHESES
-  | IDENT
-;
-
-factor:
-  (PLUS | MINUS)? INTEGER                        #num
-  | OPEN_PARENTHESES term2 CLOSE_PARENTHESES     #ExprThatGivesAnInt
-  | IDENT                                        #varNum
-;
-
-boolExpr:
-    bool2                                                                   #boolLiter
-    | (factor | CHARACTER | IDENT) compareOp (factor | CHARACTER | IDENT)   #comparison
-;
-
-//binary operators
-equalityOp : EQ | NEQ ;
-boolOp2 : OR ;
-boolOp1 : AND ;
-compareOp : GRE | GR | LSE | LS | EQ | NEQ ;
-binOp2 : PLUS | MINUS ;
-binOp1 : DIVIDE | MULTIPLY | MOD ;
 
 //unary operators
-unaryOper: NOT | MINUS | LENGTH | ORD | CHR ;
+unaryOperator: NOT | MINUS | LENGTH | ORD | CHR ;
 
 //typings
 type:

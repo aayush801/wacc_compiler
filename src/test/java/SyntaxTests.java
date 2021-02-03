@@ -22,8 +22,14 @@ public class SyntaxTests {
   public void testAddition() throws IOException {
     String instruction = "1 + 2";
     compileInstruction(instruction);
-    assertThat(compiler.treeString(),
-        is("(prog (expr (term5 (term4 (term3 (term2 (term2 (term1 (factor 1))) (binOp2 +) (term1 (factor 2))))))) <EOF>)"));
+    assertThat(compiler.treeString(),is("(prog (expr (expr 1) (binaryOperator +) (expr 2)) <EOF>)"));
+  }
+
+  @Test
+  public void testPrecedence() throws IOException {
+    String instruction = "1 + 2 * 3 / 2";
+    compileInstruction(instruction);
+    assertThat(compiler.treeString(),is("(prog (expr (expr 1) (binaryOperator +) (expr 2)) <EOF>)"));
   }
 
   @Test

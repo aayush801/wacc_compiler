@@ -1,10 +1,11 @@
 package front_end;
 
-public enum WACCTypes {
+public enum WaccType {
     INT,
     BOOL,
     STRING,
     CHAR,
-    ERROR,
-    IDENT
+    PAIR,
+    IDENT,
+    ARRAY
 }

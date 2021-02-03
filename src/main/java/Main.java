@@ -1,10 +1,6 @@
-import front_end.WaccSemanticParser;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-
-import org.antlr.v4.runtime.TokenSource;
 
 public class Main {
   public static void main(String[] args) throws Exception {
@@ -13,13 +9,10 @@ public class Main {
       throw new IllegalArgumentException("WACC compiler takes argument of either .wacc file or inline instructions");
     }
 
-    File waccFile = new File(args[0]);
-
-
     // create a compiler instance
-
     WaccCompiler compiler = new WaccCompiler();
 
+    File waccFile = new File(args[0]);
 
     if(!waccFile.exists()) {
       // check if args[0] is an instruction
@@ -31,6 +24,6 @@ public class Main {
 
     System.out.println(compiler.treeString());
 
-    compiler.traverseAST();
+    compiler.analyseSyntactics();
   }
 }

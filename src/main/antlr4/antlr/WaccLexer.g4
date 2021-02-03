@@ -1,7 +1,9 @@
-lexer grammar BasicLexer;
+lexer grammar WaccLexer;
+
+// end of line
+fragment EOL: '\r'? '\n';
 
 // escape characters
-fragment EOL: '\r'? '\n';
 fragment ESCAPED_CHAR:
   '0'
   | 'b'
@@ -13,23 +15,38 @@ fragment ESCAPED_CHAR:
   | '’'
   | '\\'
 ;
+
+// digits
 fragment DIGIT: [0-9] ;
 
 // whitespace
 WS : [ \r\t\n]+ -> skip ;
 //comment
 COMMENT : '#' (~[\r\n])* (EOL | EOF) -> skip;
+// comma
+COMMA : ',' ;
+// statement seperator
+SEPERATOR: ';' ;
 
 //base types
+STRING_TYPE: 'string';
+CHAR_TYPE: 'char';
+BOOL_TYPE: 'bool' ;
+INT_TYPE: 'int' ;
+
 BASE_TYPE:
-  'int'
-  | 'bool'
-  | 'char'
-  | 'string'
+  INT_TYPE
+  | BOOL_TYPE
+  | CHAR_TYPE
+  | STRING_TYPE
 ;
+
+// other types
+PAIR_TYPE: 'pair' ;
 ARRAY_TYPE: (BASE_TYPE | PAIR_TYPE) ('[]')+ ;
 
-//prog descriptors
+
+//prog keywords
 BEGIN: 'begin';
 END: 'end' ;
 RETURN: 'return' ;
@@ -59,7 +76,7 @@ CLOSE_PARENTHESES: ')' ;
 OPEN_SQUARE_BRACKET: '[' ;
 CLOSE_SQUARE_BRACKET: ']' ;
 
-//operators
+//binary operators
 PLUS: '+' ;
 MINUS: '-' ;
 MULTIPLY: '*' ;
@@ -74,31 +91,30 @@ NEQ: '!=' ;
 AND: '&&' ;
 OR: '||' ;
 
-//unary ops
+//unary operators
 NOT: '!';
 LENGTH: 'len';
 ORD: 'ord' ;
 CHR: 'chr' ;
 
-//assignment
+//assignment operator
 EQUALS: '=' ;
-COMMA : ',' ;
-SEPERATOR: ';' ;
 
 //integers
 INTEGER: DIGIT+ ;
 
-//booleans
-BOOLEAN: 'true' | 'false' ;
+//boolean values
+TRUE: 'true' ;
+FALSE: 'false';
+BOOLEAN: TRUE | FALSE ;
 
-//pair
-CREATE_PAIR: 'newpair' ;
+//pairs
+NEWPAIR: 'newpair' ;
 PAIR: 'null' ;
 PAIR_FIRST: 'fst' ;
 PAIR_SECOND: 'snd' ;
-PAIR_TYPE: 'pair';
 
-//character
+//character/string set
 fragment CHAR: ~[\\'"] | ('\\' ESCAPED_CHAR);
 STRING: '"' CHAR* '"' ;
 CHARACTER: '\'' CHAR? '\'' ;

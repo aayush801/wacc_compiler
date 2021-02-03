@@ -1,46 +1,45 @@
 // import ANTLR's runtime libraries
 
-import antlr.BasicLexer;
-import antlr.BasicParser;
+import antlr.WaccLexer;
+import antlr.WaccParser;
 import error_handlers.WaccParserHandler;
-import front_end.WaccSemanticParser;
+import front_end.WaccSemanticeExpressionParser;
+import java.io.IOException;
+import java.io.InputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.TokenSource;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 public class WaccCompiler {
-  private BasicLexer lexer;
+  private WaccLexer lexer;
   private CommonTokenStream tokens;
-  private BasicParser parser;
+  private WaccParser parser;
   private final WaccParserHandler parserHandler = new WaccParserHandler();
 
   public void compile(InputStream inputStream) throws IOException {
 
     CharStream input = CharStreams.fromStream(inputStream);
 
-    lexer = new BasicLexer(input);
+    lexer = new WaccLexer(input);
 
     tokens = new CommonTokenStream(lexer);
 
-    parser = new BasicParser(tokens);
-
-    parser.addErrorListener(parserHandler);
+    analyseSyntactics();
   }
 
   public String treeString(){
     return parser.prog().toStringTree(parser);
   }
 
-  public void traverseAST() {
-    System.out.println("=======");
-    WaccSemanticParser myParser = new WaccSemanticParser();
-    ParseTree copy = parser.prog();
-    myParser.visit(copy);
-    System.out.println("=======");
+  public void analyseSyntactics() {
+    parser = new WaccParser(tokens);
+    parser.addErrorListener(parserHandler);
+  }
+
+  public void analyseSemantics() {
+    WaccSemanticeExpressionParser myParser = new WaccSemanticeExpressionParser();
+    ParseTree tree = parser.prog();
+    myParser.visit(tree);
   }
 }
