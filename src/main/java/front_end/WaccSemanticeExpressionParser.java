@@ -15,8 +15,15 @@ import antlr.WaccParser.LogicalOrOperationContext;
 import antlr.WaccParser.PlusMinusOperationContext;
 import antlr.WaccParser.UnaryOperationContext;
 import org.antlr.v4.runtime.tree.ParseTree;
+import symbol_table.SymbolTable;
 
 public class WaccSemanticeExpressionParser extends WaccSemanticBaseParser {
+
+  protected SymbolTable symTab;
+
+  public WaccSemanticeExpressionParser(SymbolTable st) {
+    this.symTab = st;
+  }
 
   /* ======================= BINARY EXPRESSION SEMANTICS ========================= */
   private WaccType visitBinaryOperation(ExprContext ctx, WaccType type) {

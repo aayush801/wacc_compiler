@@ -10,6 +10,12 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+import symbol_table.SymbolTable;
+import symbol_table.identifier_objects.basic_types.Bool;
+import symbol_table.identifier_objects.basic_types.Char;
+import symbol_table.identifier_objects.basic_types.Int;
+import symbol_table.identifier_objects.basic_types.Pair;
+import symbol_table.identifier_objects.basic_types.Str;
 
 public class WaccCompiler {
   private WaccLexer lexer;
@@ -38,7 +44,14 @@ public class WaccCompiler {
   }
 
   public void analyseSemantics() {
-    WaccSemanticeExpressionParser myParser = new WaccSemanticeExpressionParser();
+    SymbolTable topSt = new SymbolTable();
+    topSt.add("int", new Int(Integer.MIN_VALUE, Integer.MAX_VALUE));
+    topSt.add("string", new Str());
+    topSt.add("char", new Char(0, 255));
+    topSt.add("pair", new Pair());
+    topSt.add("bool", new Bool(0, 1));
+
+    WaccSemanticeExpressionParser myParser = new WaccSemanticeExpressionParser(topSt);
     ParseTree tree = parser.prog();
     myParser.visit(tree);
   }

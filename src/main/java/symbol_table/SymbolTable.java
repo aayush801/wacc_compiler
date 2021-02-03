@@ -6,12 +6,16 @@ import symbol_table.identifier_objects.Identifier;
 
 public class SymbolTable {
 
-  private SymbolTable encSymTable = null;
+  private SymbolTable encSymTable;
   private Map<String, Identifier> dict;
 
   public SymbolTable(SymbolTable st) {
     encSymTable = st;
     dict = new HashMap<>();
+  }
+
+  public SymbolTable() {
+    this(null);
   }
 
   public Map add(String name, Identifier obj) {
