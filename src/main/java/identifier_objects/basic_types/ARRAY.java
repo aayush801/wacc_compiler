@@ -5,16 +5,23 @@ import identifier_objects.TYPE;
 public class ARRAY extends TYPE {
 
   protected final TYPE elementType;
-  protected final int length;
 
-  public ARRAY(TYPE elementType, int length) {
+  public ARRAY(TYPE elementType) {
+    super("array");
     this.elementType = elementType;
-    this.length = length;
   }
 
   @Override
   public String toString(){
-    return "[]";
+    return elementType + "[]";
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof ARRAY) {
+      ARRAY arr = (ARRAY) o;
+      return elementType.equals(arr.elementType);
+    }
+    return false;
+  }
 }

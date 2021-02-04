@@ -4,9 +4,7 @@ import identifier_objects.TYPE;
 
 public class BOOL extends TYPE {
 
-
-  @Override
-  public String toString(){
-    return "bool";
+  public BOOL() {
+    super("bool");
   }
 }

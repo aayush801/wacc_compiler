@@ -4,9 +4,10 @@ import identifier_objects.TYPE;
 
 public class PAIR extends TYPE {
 
-  protected TYPE first, second;
+  protected final TYPE first, second;
 
   public PAIR(TYPE first, TYPE second) {
+    super("pair");
     this.first = first;
     this.second = second;
   }
@@ -15,9 +16,11 @@ public class PAIR extends TYPE {
     this(null, null);
   }
 
-
-  @Override
-  public String toString(){
-    return "pair";
+  public boolean equals(Object o) {
+    if (o instanceof PAIR) {
+      PAIR pair = (PAIR) o;
+      return pair.first.equals(first) && pair.second.equals(second);
+    }
+    return false;
   }
 }

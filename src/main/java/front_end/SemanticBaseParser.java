@@ -18,7 +18,7 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<IDENTIFIE
   }
 
   protected boolean isCompatible(TYPE t1, TYPE t2) {
-    return t1.toString().equals(t2.toString());
+    return t1.equals(t2);
   }
 
   protected FUNCTION visitFunction(String funcIdentifier, ParseTree[] params) {
@@ -44,10 +44,10 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<IDENTIFIE
           return null;
         }
         PARAM formal = ((FUNCTION) function).formals[i];
-        if (!isCompatible(((TYPE) actual).getType(), formal.type)) {
+        if (!isCompatible(((TYPE) actual), formal.type)) {
           System.out.println(
               "ERROR: incompatible types. EXPECTED : " + formal.type + ", ACTUAL : "
-                  + ((TYPE) actual).getType());
+                  + ((TYPE) actual));
           return null;
         }
       }

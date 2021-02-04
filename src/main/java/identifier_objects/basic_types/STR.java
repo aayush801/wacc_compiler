@@ -4,8 +4,7 @@ import identifier_objects.TYPE;
 
 public class STR extends TYPE {
 
-  @Override
-  public String toString(){
-    return "string";
+  public STR() {
+    super("string");
   }
 }
