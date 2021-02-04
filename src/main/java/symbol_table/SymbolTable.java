@@ -37,7 +37,7 @@ public class SymbolTable {
     CHAR charType = new CHAR(0, 255);
     PAIR pairType = new PAIR();
     BOOL boolType = new BOOL();
-    ARRAY arrayType = new ARRAY(null, 0);
+    ARRAY arrayType = new ARRAY();
 
     st.add(intType.toString(), intType);
     st.add(strType.toString(), strType);

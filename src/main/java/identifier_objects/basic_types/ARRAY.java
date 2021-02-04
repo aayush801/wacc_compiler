@@ -11,6 +11,13 @@ public class ARRAY extends TYPE {
     this.elementType = elementType;
   }
 
+  public ARRAY() {
+    this(null);
+  }
+  public ARRAY setElementType(TYPE type) {
+    return new ARRAY(type);
+  }
+
   @Override
   public String toString(){
     return elementType + "[]";
