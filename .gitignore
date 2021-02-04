@@ -1,6 +1,7 @@
 #ignore generated binary files and auto-generated ANTLR code
 target/
 *.tokens
+gen/
 
 # ignore ide generated files
 .idea/
