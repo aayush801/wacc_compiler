@@ -1,14 +1,11 @@
 package identifier_objects.basic_types;
 
-import identifier_objects.intermediate_types.EXPR;
+import identifier_objects.TYPE;
 
-public class BOOL extends EXPR {
-
-  public static String name = "bool";
+public class BOOL extends TYPE {
 
 
-  @Override
-  public String toString() {
-    return name;
+  public BOOL() {
+    super("bool");
   }
 }

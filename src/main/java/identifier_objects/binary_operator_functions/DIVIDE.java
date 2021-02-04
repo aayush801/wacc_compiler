@@ -12,5 +12,4 @@ public class DIVIDE extends BINARY_OPERATION {
     super(type, new PARAM(type), new PARAM(type), ST);
   }
 
-
 }

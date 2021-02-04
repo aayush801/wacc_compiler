@@ -33,6 +33,14 @@ public class SemanticTests {
   }
 
   @Test
+  public void testBracktedExpression() throws IOException {
+    String instruction = "true && (false && true)";
+    compileInstructionAndAnalyseSemantics(instruction);
+    // THIS DOESN'T WORK YET!
+    //     | (boolExpr | PAIR | IDENT | STRING | CHARACTER | arrayElem | unaryOper expr | OPEN_PARENTHESES expr CLOSE_PARENTHESES | term2) equalityOp expr
+  }
+
+  @Test
   public void testArrayElem() throws IOException {
     String instruction = "array [1+2]";
     compileInstructionAndAnalyseSemantics(instruction);

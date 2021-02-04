@@ -1,13 +1,11 @@
 package identifier_objects.basic_types;
 
-import identifier_objects.intermediate_types.EXPR;
+import identifier_objects.TYPE;
 
-public class STR extends EXPR {
+public class STR extends TYPE {
 
-  public static String name = "string";
 
-  @Override
-  public String toString() {
-    return name;
+  public STR() {
+    super("string");
   }
 }

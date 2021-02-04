@@ -21,7 +21,7 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<IDENTIFIE
     return t1.equals(t2);
   }
 
-  protected FUNCTION visitFunction(String funcIdentifier, ParseTree[] params) {
+  protected TYPE visitFunctionCall(String funcIdentifier, ParseTree[] params) {
     // lookup the operator function
     IDENTIFIER function = ST.lookupAll(funcIdentifier);
     if (function == null) {
@@ -45,18 +45,18 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<IDENTIFIE
           System.out.println(
               "ERROR: expression : " + params[i].getText() + " has no type");
           return null;
-        }else {
+        } else {
           PARAM formal = ((FUNCTION) function).formals[i];
-          if (!isCompatible(actual.getType(), formal.type)) {
+          if (!isCompatible((TYPE) actual, formal.type)) {
             System.out.println(
                 "ERROR: incompatible types - '" + params[i].getParent().getText() + "' EXPECTED : "
                     + formal.type + ", ACTUAL : "
-                    + actual.getType());
+                    + actual);
             return null;
           }
         }
       }
-      return (FUNCTION) function;
+      return ((FUNCTION) function).getReturnType();
     }
   }
 }

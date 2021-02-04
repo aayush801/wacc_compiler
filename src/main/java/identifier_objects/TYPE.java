@@ -1,10 +1,16 @@
 package identifier_objects;
 
-public class TYPE implements IDENTIFIER {
+public abstract class TYPE extends IDENTIFIER {
 
-  @Override
-  public TYPE getType() {
-    return this;
+  public TYPE(String name) {
+    super(name);
   }
 
+  public boolean equals(Object o) {
+    if (o instanceof TYPE) {
+      TYPE type = (TYPE) o;
+      return type.getName().equals(name);
+    }
+    return false;
+  }
 }

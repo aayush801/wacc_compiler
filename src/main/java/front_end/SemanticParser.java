@@ -1,8 +1,8 @@
 package front_end;
 
 import antlr.WaccParser;
-import antlr.WaccParser.ArrayExprContext;
 import antlr.WaccParser.BooleanContext;
+import antlr.WaccParser.BracketedExprContext;
 import antlr.WaccParser.CharacterContext;
 import antlr.WaccParser.IdentifierContext;
 import antlr.WaccParser.IntegerContext;
@@ -22,7 +22,6 @@ import identifier_objects.basic_types.CHAR;
 import identifier_objects.basic_types.INT;
 import identifier_objects.basic_types.PAIR;
 import identifier_objects.basic_types.STR;
-import identifier_objects.intermediate_types.EXPR;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -86,7 +85,7 @@ public class SemanticParser extends SemanticBaseParser {
       System.out.println(ctx.IDENT().getText() + " is undefined");
       return null;
     }else if(!(array instanceof ARRAY)) {
-      System.out.println(ctx.IDENT().getSymbol().getLine()+ ":" + ctx.IDENT().getSymbol().getCharPositionInLine() + ", "+ctx.IDENT().getText() + " is not of type " + ARRAY.name);
+      System.out.println(ctx.IDENT().getSymbol().getLine()+ ":" + ctx.IDENT().getSymbol().getCharPositionInLine() + ", "+ctx.IDENT().getText() + " is not of type array");
       return null;
     }else{
       for (ParseTree exprTree:  ctx.expr()){
@@ -94,17 +93,20 @@ public class SemanticParser extends SemanticBaseParser {
         if(expr == null){
           System.out.println(exprTree.getText() + " is undefined");
           return null;
-        }else if(!(expr.getType() instanceof INT)){
-          System.out.println(exprTree.getText() + " is not of type " + INT.name);
+        }else if(!(expr instanceof INT)){
+          System.out.println(exprTree.getText() + " is not of type int");
           return null;
         }
       }
       return (ARRAY) array;
     }
   }
+  /* ======================= BRACKETED EXPRESSION SEMANTICS ========================= */
+  @Override
+  public IDENTIFIER visitBracketedExpr(BracketedExprContext ctx) { return visit(ctx.expr()); }
 
   /* ======================= BINARY EXPRESSION SEMANTICS ========================= */
-  private FUNCTION visitBinaryOperation(ParserRuleContext ctx) {
+  private TYPE visitBinaryOperation(ParserRuleContext ctx) {
     if (ctx.getChildCount() != 3) {
       System.out.println("Binary Operator only takes two parameters");
       return null;
@@ -112,50 +114,50 @@ public class SemanticParser extends SemanticBaseParser {
     ParseTree lExpr = ctx.getChild(0);
     ParseTree rExpr = ctx.getChild(2);
     String operatorIdentifier = ctx.getChild(1).getText();
-    return visitFunction(operatorIdentifier, new ParseTree[]{lExpr, rExpr});
+    return visitFunctionCall(operatorIdentifier, new ParseTree[]{lExpr, rExpr});
   }
 
   @Override
-  public FUNCTION visitPlusMinusOperation(PlusMinusOperationContext ctx) {
+  public TYPE visitPlusMinusOperation(PlusMinusOperationContext ctx) {
     return visitBinaryOperation(ctx);
   }
 
   @Override
-  public FUNCTION visitDivMulModOperation(WaccParser.DivMulModOperationContext ctx) {
+  public TYPE visitDivMulModOperation(WaccParser.DivMulModOperationContext ctx) {
     return visitBinaryOperation(ctx);
   }
 
   @Override
-  public FUNCTION visitLogicalOrOperation(WaccParser.LogicalOrOperationContext ctx) {
+  public TYPE visitLogicalOrOperation(WaccParser.LogicalOrOperationContext ctx) {
     return visitBinaryOperation(ctx);
   }
 
   @Override
-  public FUNCTION visitGreLseComparison(WaccParser.GreLseComparisonContext ctx) {
+  public TYPE visitGreLseComparison(WaccParser.GreLseComparisonContext ctx) {
     return visitBinaryOperation(ctx);
   }
 
   @Override
-  public FUNCTION visitEqNeqComparison(WaccParser.EqNeqComparisonContext ctx) {
+  public TYPE visitEqNeqComparison(WaccParser.EqNeqComparisonContext ctx) {
     return visitBinaryOperation(ctx);
   }
 
   @Override
-  public FUNCTION visitLogicalAndOperation(WaccParser.LogicalAndOperationContext ctx) {
+  public TYPE visitLogicalAndOperation(WaccParser.LogicalAndOperationContext ctx) {
     return visitBinaryOperation(ctx);
   }
 
   /* ======================= UNARY EXPRESSION SEMANTICS ========================= */
 
   @Override
-  public FUNCTION visitUnaryOperation(UnaryOperationContext ctx) {
+  public TYPE visitUnaryOperation(UnaryOperationContext ctx) {
     if (ctx.getChildCount() != 2) {
       System.out.println("Unary Operator only takes one parameter");
       return null;
     }
     String operatorIdentifier = ctx.unaryOperator().getText();
     ParseTree expr = ctx.getChild(1);
-    return visitFunction(operatorIdentifier, new ParseTree[]{expr});
+    return visitFunctionCall(operatorIdentifier, new ParseTree[]{expr});
   }
 
 }

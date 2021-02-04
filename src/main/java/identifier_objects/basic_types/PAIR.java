@@ -1,15 +1,13 @@
 package identifier_objects.basic_types;
 
 import identifier_objects.TYPE;
-import identifier_objects.intermediate_types.EXPR;
 
-public class PAIR extends EXPR {
+public class PAIR extends TYPE {
 
-  public static String name = "pair";
-
-  protected TYPE first, second;
+  protected final TYPE first, second;
 
   public PAIR(TYPE first, TYPE second) {
+    super("pair");
     this.first = first;
     this.second = second;
   }
@@ -18,9 +16,11 @@ public class PAIR extends EXPR {
     this(null, null);
   }
 
-
-  @Override
-  public String toString() {
-    return name;
+  public boolean equals(Object o) {
+    if (o instanceof PAIR) {
+      PAIR pair = (PAIR) o;
+      return pair.first.equals(first) && pair.second.equals(second);
+    }
+    return false;
   }
 }
