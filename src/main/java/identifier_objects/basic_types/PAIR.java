@@ -1,13 +1,14 @@
 package identifier_objects.basic_types;
 
 import identifier_objects.TYPE;
+import identifier_objects.polymorhpic_types.EQUATABLE;
 
-public class PAIR extends TYPE {
-
+public class PAIR extends EQUATABLE {
+  public static String name = "pair";
   protected final TYPE first, second;
 
   public PAIR(TYPE first, TYPE second) {
-    super("pair");
+    super(name);
     this.first = first;
     this.second = second;
   }

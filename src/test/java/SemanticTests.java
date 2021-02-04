@@ -25,24 +25,26 @@ public class SemanticTests {
   }
 
   @Test
-  public void testEquality() throws IOException {
-    String instruction = "true && 1 + 2";
+  public void testEquatableFunction() throws IOException {
+    String instruction = "array[5] == true";
     compileInstructionAndAnalyseSemantics(instruction);
-    // THIS DOESN'T WORK YET!
-    //     | (boolExpr | PAIR | IDENT | STRING | CHARACTER | arrayElem | unaryOper expr | OPEN_PARENTHESES expr CLOSE_PARENTHESES | term2) equalityOp expr
   }
 
   @Test
-  public void testBracktedExpression() throws IOException {
+  public void testPolymorphicFunction() throws IOException {
+    String instruction = "2 > '2'";
+    compileInstructionAndAnalyseSemantics(instruction);
+  }
+
+  @Test
+  public void testBracketedExpression() throws IOException {
     String instruction = "true && (false && true)";
     compileInstructionAndAnalyseSemantics(instruction);
-    // THIS DOESN'T WORK YET!
-    //     | (boolExpr | PAIR | IDENT | STRING | CHARACTER | arrayElem | unaryOper expr | OPEN_PARENTHESES expr CLOSE_PARENTHESES | term2) equalityOp expr
   }
 
   @Test
   public void testArrayElem() throws IOException {
-    String instruction = "array [1+2]";
+    String instruction = "array [a+2]";
     compileInstructionAndAnalyseSemantics(instruction);
   }
 

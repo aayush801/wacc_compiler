@@ -18,7 +18,7 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<IDENTIFIE
   }
 
   protected boolean isCompatible(TYPE t1, TYPE t2) {
-    return t1.equals(t2);
+    return t2.equals(t1);
   }
 
   protected TYPE visitFunctionCall(String funcIdentifier, ParseTree[] params) {
@@ -30,10 +30,10 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<IDENTIFIE
     } else if (!(function instanceof FUNCTION)) {
       System.out.println(funcIdentifier + " is not a function");
       return null;
-    } else if(params.length != ((FUNCTION) function).formals.length) {
-      System.out.println("Error : "+ funcIdentifier + ", invalid number of parameters given");
+    } else if (params.length != ((FUNCTION) function).formals.length) {
+      System.out.println("Error : " + funcIdentifier + ", invalid number of parameters given");
       return null;
-    }else{
+    } else {
       // checks all the parameter types match up
       for (int i = 0; i < params.length; i++) {
         IDENTIFIER actual = visit(params[i]);
@@ -43,13 +43,13 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<IDENTIFIE
           return null;
         } else if (!(actual instanceof TYPE)) {
           System.out.println(
-              "ERROR: expression : " + params[i].getText() + " has no type");
+              "ERROR (expression) : " + params[i].getText() + " has no type");
           return null;
         } else {
           PARAM formal = ((FUNCTION) function).formals[i];
           if (!isCompatible((TYPE) actual, formal.type)) {
             System.out.println(
-                "ERROR: incompatible types - '" + params[i].getParent().getText() + "' EXPECTED : "
+                "ERROR (incompatible types) : " + params[i].getParent().getText() + ", EXPECTED : "
                     + formal.type + ", ACTUAL : "
                     + actual);
             return null;
