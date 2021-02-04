@@ -66,7 +66,7 @@ expr:
   | unaryOperator expr                          #unaryOperation
   | expr (DIVIDE | MULTIPLY | MOD) expr         #divMulModOperation
   | expr (PLUS | MINUS) expr                    #plusMinusOperation
-  | expr (GRE | GR | LSE | LS) expr             #greLseComparison
+  | expr (GT | GTE | LT | LTE) expr             #greLseComparison
   | expr (EQ | NEQ) expr                        #eqNeqComparison
   | expr AND expr                               #logicalAndOperation
   | expr OR expr                                #logicalOrOperation

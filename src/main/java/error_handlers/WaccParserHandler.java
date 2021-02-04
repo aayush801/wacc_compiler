@@ -1,6 +1,8 @@
 package error_handlers;
 
-import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 
 public class WaccParserHandler extends BaseErrorListener {
 

@@ -42,7 +42,7 @@ public class SyntaxTests {
 
   @Test
   public void testLessThan() throws IOException {
-    String instruction = "1<c";
+    String instruction = "1 < c";
     compileInstruction(instruction);
     assertThat(compiler.treeString(), is("(prog (expr (expr 1) < (expr c)) <EOF>)"));
   }
@@ -54,18 +54,5 @@ public class SyntaxTests {
     // THIS DOESN'T WORK YET!
     //     | (boolExpr | PAIR | IDENT | STRING | CHARACTER | arrayElem | unaryOper expr | OPEN_PARENTHESES expr CLOSE_PARENTHESES | term2) equalityOp expr
   }
-
-    // Input:
-    // A .wacc file
-
-    // Main body:
-    // make tokens(lexical analysis)
-    // parse it
-    // do semantic analysis
-
-    // Return:
-    // 0 if it was OK
-    // 100 if one or more syntax errors
-    // 200 if one or more semantic errors
 
 }

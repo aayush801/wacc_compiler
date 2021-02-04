@@ -82,10 +82,10 @@ MINUS: '-' ;
 MULTIPLY: '*' ;
 DIVIDE: '/' ;
 MOD: '%' ;
-GR: '>' ;
-GRE: '>=' ;
-LS: '<' ;
-LSE: '<=' ;
+GT: '>' ;
+GTE: '>=' ;
+LT: '<' ;
+LTE: '<=' ;
 EQ: '==' ;
 NEQ: '!=' ;
 AND: '&&' ;
@@ -104,9 +104,9 @@ EQUALS: '=' ;
 INTEGER: DIGIT+ ;
 
 //boolean values
-TRUE: 'true' ;
-FALSE: 'false';
 BOOLEAN: TRUE | FALSE ;
+TRUE: 'true';
+FALSE: 'false';
 
 //pairs
 NEWPAIR: 'newpair' ;
