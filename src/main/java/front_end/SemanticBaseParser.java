@@ -18,19 +18,22 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<IDENTIFIE
   }
 
   protected boolean isCompatible(TYPE t1, TYPE t2) {
-    return t1.toString().equals(t2.toString());
+    return t1.equals(t2);
   }
 
   protected FUNCTION visitFunction(String funcIdentifier, ParseTree[] params) {
     // lookup the operator function
     IDENTIFIER function = ST.lookupAll(funcIdentifier);
     if (function == null) {
-      System.out.println("Error Operator " + funcIdentifier + " undefined");
+      System.out.println("Error" + funcIdentifier + " undefined");
       return null;
     } else if (!(function instanceof FUNCTION)) {
-      System.out.println("Operator " + funcIdentifier + " is not a function");
+      System.out.println(funcIdentifier + " is not a function");
       return null;
-    } else {
+    } else if(params.length != ((FUNCTION) function).formals.length) {
+      System.out.println("Error : "+ funcIdentifier + ", invalid number of parameters given");
+      return null;
+    }else{
       // checks all the parameter types match up
       for (int i = 0; i < params.length; i++) {
         IDENTIFIER actual = visit(params[i]);
@@ -42,13 +45,15 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<IDENTIFIE
           System.out.println(
               "ERROR: expression : " + params[i].getText() + " has no type");
           return null;
-        }
-        PARAM formal = ((FUNCTION) function).formals[i];
-        if (!isCompatible(((TYPE) actual).getType(), formal.type)) {
-          System.out.println(
-              "ERROR: incompatible types. EXPECTED : " + formal.type + ", ACTUAL : "
-                  + ((TYPE) actual).getType());
-          return null;
+        }else {
+          PARAM formal = ((FUNCTION) function).formals[i];
+          if (!isCompatible(actual.getType(), formal.type)) {
+            System.out.println(
+                "ERROR: incompatible types - '" + params[i].getParent().getText() + "' EXPECTED : "
+                    + formal.type + ", ACTUAL : "
+                    + actual.getType());
+            return null;
+          }
         }
       }
       return (FUNCTION) function;

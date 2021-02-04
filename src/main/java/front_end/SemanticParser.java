@@ -1,6 +1,7 @@
 package front_end;
 
 import antlr.WaccParser;
+import antlr.WaccParser.ArrayExprContext;
 import antlr.WaccParser.BooleanContext;
 import antlr.WaccParser.CharacterContext;
 import antlr.WaccParser.IdentifierContext;
@@ -15,11 +16,13 @@ import identifier_objects.FUNCTION;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.PARAM;
 import identifier_objects.TYPE;
+import identifier_objects.basic_types.ARRAY;
 import identifier_objects.basic_types.BOOL;
 import identifier_objects.basic_types.CHAR;
 import identifier_objects.basic_types.INT;
 import identifier_objects.basic_types.PAIR;
 import identifier_objects.basic_types.STR;
+import identifier_objects.intermediate_types.EXPR;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -77,10 +80,30 @@ public class SemanticParser extends SemanticBaseParser {
     ST.add(ctx.IDENT().getText(), param);
     return param;
   }
+  @Override public ARRAY visitArrayElem(WaccParser.ArrayElemContext ctx){
+    IDENTIFIER array = ST.lookupAll(ctx.IDENT().getText());
+    if(array == null){
+      System.out.println(ctx.IDENT().getText() + " is undefined");
+      return null;
+    }else if(!(array instanceof ARRAY)) {
+      System.out.println(ctx.IDENT().getSymbol().getLine()+ ":" + ctx.IDENT().getSymbol().getCharPositionInLine() + ", "+ctx.IDENT().getText() + " is not of type " + ARRAY.name);
+      return null;
+    }else{
+      for (ParseTree exprTree:  ctx.expr()){
+        IDENTIFIER expr = visit(exprTree);
+        if(expr == null){
+          System.out.println(exprTree.getText() + " is undefined");
+          return null;
+        }else if(!(expr.getType() instanceof INT)){
+          System.out.println(exprTree.getText() + " is not of type " + INT.name);
+          return null;
+        }
+      }
+      return (ARRAY) array;
+    }
+  }
 
   /* ======================= BINARY EXPRESSION SEMANTICS ========================= */
-
-
   private FUNCTION visitBinaryOperation(ParserRuleContext ctx) {
     if (ctx.getChildCount() != 3) {
       System.out.println("Binary Operator only takes two parameters");
@@ -123,7 +146,6 @@ public class SemanticParser extends SemanticBaseParser {
   }
 
   /* ======================= UNARY EXPRESSION SEMANTICS ========================= */
-
 
   @Override
   public FUNCTION visitUnaryOperation(UnaryOperationContext ctx) {

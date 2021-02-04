@@ -4,6 +4,8 @@ import identifier_objects.TYPE;
 
 public class ARRAY extends TYPE {
 
+  public static String name = "array";
+
   protected final TYPE elementType;
   protected final int length;
 
@@ -13,8 +15,8 @@ public class ARRAY extends TYPE {
   }
 
   @Override
-  public String toString(){
-    return "[]";
+  public String toString() {
+    return name;
   }
 
 }

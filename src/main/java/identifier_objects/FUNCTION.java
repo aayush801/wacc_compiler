@@ -19,5 +19,4 @@ public class FUNCTION extends TYPE {
     return this.returnType;
   }
 
-
 }

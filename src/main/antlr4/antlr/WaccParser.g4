@@ -59,9 +59,9 @@ expr:
     (PLUS | MINUS)? INTEGER                     #integer
   | BOOLEAN                                     #boolean
   | PAIR                                        #pair
-  | IDENT                                       #identifier
   | STRING                                      #string
   | CHARACTER                                   #character
+  | IDENT                                       #identifier
   | arrayElem                                   #arrayExpr
   | unaryOperator expr                          #unaryOperation
   | expr (DIVIDE | MULTIPLY | MOD) expr         #divMulModOperation

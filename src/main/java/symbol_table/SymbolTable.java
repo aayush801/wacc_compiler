@@ -14,6 +14,7 @@ import identifier_objects.binary_operator_functions.MOD;
 import identifier_objects.binary_operator_functions.MULTIPLY;
 import identifier_objects.binary_operator_functions.OR;
 import identifier_objects.binary_operator_functions.PLUS;
+import identifier_objects.intermediate_types.EXPR;
 import identifier_objects.unary_operator_functions.CHR;
 import identifier_objects.unary_operator_functions.LEN;
 import identifier_objects.unary_operator_functions.NEGATE;
@@ -31,20 +32,21 @@ public class SymbolTable {
   static public SymbolTable TopSymbolTable() {
     SymbolTable st = new SymbolTable();
 
-    // define literals
+    // define types
     INT intType = new INT(Integer.MIN_VALUE, Integer.MAX_VALUE);
     STR strType = new STR();
     CHAR charType = new CHAR(0, 255);
     PAIR pairType = new PAIR();
     BOOL boolType = new BOOL();
-    ARRAY arrayType = new ARRAY(null, 0);
+    ARRAY arrayType = new ARRAY(new EXPR(), 0);
 
-    st.add(intType.toString(), intType);
-    st.add(strType.toString(), strType);
-    st.add(charType.toString(), charType);
-    st.add(pairType.toString(), pairType);
-    st.add(boolType.toString(), boolType);
-    st.add(arrayType.toString(), arrayType);
+    // add literals to symbol table
+    st.add(INT.name, intType);
+    st.add(STR.name, strType);
+    st.add(CHAR.name, charType);
+    st.add(PAIR.name, pairType);
+    st.add(BOOL.name, boolType);
+    st.add(ARRAY.name, arrayType);
 
     // add primitive binary functions
     st.add(PLUS.name, new PLUS(intType, st));

@@ -1,8 +1,10 @@
 package identifier_objects.basic_types;
 
-import identifier_objects.TYPE;
+import identifier_objects.intermediate_types.EXPR;
 
-public class INT extends TYPE {
+public class INT extends EXPR {
+
+  public static String name = "int";
   protected final int min, max;
 
   public INT(int min, int max) {
@@ -11,7 +13,7 @@ public class INT extends TYPE {
   }
 
   @Override
-  public String toString(){
-    return "int";
+  public String toString() {
+    return name;
   }
 }
