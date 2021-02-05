@@ -1,6 +1,6 @@
 package identifier_objects;
 
-public class TYPE extends IDENTIFIER {
+public abstract class TYPE extends IDENTIFIER {
 
   public TYPE(String name) {
     super(name);

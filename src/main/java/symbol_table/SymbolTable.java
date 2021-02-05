@@ -1,7 +1,6 @@
 package symbol_table;
 
 import identifier_objects.IDENTIFIER;
-import identifier_objects.TYPE;
 import identifier_objects.basic_types.ARRAY;
 import identifier_objects.basic_types.BOOL;
 import identifier_objects.basic_types.CHAR;
@@ -81,7 +80,6 @@ public class SymbolTable {
     st.add(NEGATE.name, new NEGATE(intType, st));
     st.add(NOT.name, new NOT(boolType, st));
 
-
     return st;
   }
 
@@ -92,6 +90,10 @@ public class SymbolTable {
   public SymbolTable(SymbolTable st) {
     encSymTable = st;
     dict = new HashMap<>();
+  }
+
+  public SymbolTable getEncSymTable() {
+    return encSymTable;
   }
 
   public void add(String name, IDENTIFIER obj) {
