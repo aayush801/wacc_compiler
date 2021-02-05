@@ -1,6 +1,6 @@
 package error;
 
-public class VariableNotFound extends ERROR {
+public class VariableNotFound extends WaccError {
 
   protected String identifier;
 

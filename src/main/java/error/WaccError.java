@@ -1,10 +1,10 @@
 package error;
 
-public abstract class ERROR {
+public abstract class WaccError {
 
   protected String name;
 
-  public ERROR(String name) {
+  public WaccError(String name) {
     this.name = name;
   }
 
@@ -14,6 +14,6 @@ public abstract class ERROR {
 
   @Override
   public boolean equals(Object o) {
-    return toString().equals(o.toString());
+    return toString().equals(  o.toString());
   }
 }

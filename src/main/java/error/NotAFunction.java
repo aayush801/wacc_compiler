@@ -1,6 +1,6 @@
 package error;
 
-public class NotAFunction extends ERROR {
+public class NotAFunction extends WaccError {
 
   protected String identifier;
 

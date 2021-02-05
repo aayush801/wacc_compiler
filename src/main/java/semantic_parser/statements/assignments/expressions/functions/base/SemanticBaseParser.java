@@ -9,7 +9,7 @@ import antlr.WaccParser.PairContext;
 import antlr.WaccParser.StringContext;
 import antlr.WaccParser.TypeContext;
 import antlr.WaccParserBaseVisitor;
-import error.ERROR;
+import error.WaccError;
 import error.VariableNotFound;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
@@ -22,7 +22,7 @@ import symbol_table.SymbolTable;
 public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
 
   protected SymbolTable ST;
-  protected List<ERROR> errors;
+  protected List<WaccError> errors;
 
   // initialize with the top symbol table
   public SemanticBaseParser() {
@@ -79,7 +79,7 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
   @Override public ARRAY visitArrayElem(WaccParser.ArrayElemContext ctx){
     IDENTIFIER array = ST.lookupAll(ctx.IDENT().getText());
     if(array == null){
-      errors.add((ERROR) new VariableNotFound(ctx.IDENT().getText()));
+      errors.add((WaccError) new VariableNotFound(ctx.IDENT().getText()));
       System.out.println(ctx.IDENT().getText() + " is undefined");
       return null;
     }else if(!(array instanceof ARRAY)) {

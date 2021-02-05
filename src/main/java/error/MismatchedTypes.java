@@ -2,7 +2,7 @@ package error;
 
 import identifier_objects.TYPE;
 
-public class MismatchedTypes extends ERROR {
+public class MismatchedTypes extends WaccError {
 
   protected TYPE expected, actual;
 
