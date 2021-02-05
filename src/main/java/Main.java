@@ -16,6 +16,7 @@ public class Main {
 
     File waccFile = new File(args[0]);
 
+
     if (!waccFile.exists()) {
       // check if args[0] is an instruction
       inputStream = new ByteArrayInputStream((args[0]).getBytes());
@@ -29,6 +30,8 @@ public class Main {
 
     // compile the code and get the error code value
     WaccErrorCode errorCode = compiler.compile();
+
+    System.out.println(compiler.getErrors().get(0));
 
     System.exit(errorCode.code());
 
