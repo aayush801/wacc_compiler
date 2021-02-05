@@ -2,16 +2,7 @@ package error;
 
 public class NotAFunction extends WaccError {
 
-  protected String identifier;
-
-  public NotAFunction(String identifer) {
-    super("NotAFunction");
-    this.identifier = identifer;
+  public NotAFunction(String identifier) {
+    super("\"" + identifier + "\" is not a function");
   }
-
-  @Override
-  public String toString() {
-    return "\"" + identifier + "\" is not a function";
-  }
-
 }
