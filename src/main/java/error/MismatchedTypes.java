@@ -2,7 +2,7 @@ package error;
 
 import identifier_objects.TYPE;
 
-public class MismatchedTypes extends Error {
+public class MismatchedTypes extends ERROR {
 
   protected TYPE expected, actual;
 

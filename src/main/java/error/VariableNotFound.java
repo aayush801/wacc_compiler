@@ -1,6 +1,6 @@
 package error;
 
-public class VariableNotFound extends Error {
+public class VariableNotFound extends ERROR {
 
   protected String identifier;
 

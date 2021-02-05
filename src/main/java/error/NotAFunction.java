@@ -1,10 +1,11 @@
 package error;
 
-public class NotAFunction {
+public class NotAFunction extends ERROR {
 
   protected String identifier;
 
   public NotAFunction(String identifer) {
+    super("NotAFunction");
     this.identifier = identifer;
   }
 

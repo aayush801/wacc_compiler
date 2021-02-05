@@ -9,19 +9,25 @@ import antlr.WaccParser.PairContext;
 import antlr.WaccParser.StringContext;
 import antlr.WaccParser.TypeContext;
 import antlr.WaccParserBaseVisitor;
+import error.ERROR;
+import error.VariableNotFound;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
 import identifier_objects.basic_types.*;
+import java.util.ArrayList;
+import java.util.List;
 import org.antlr.v4.runtime.tree.ParseTree;
 import symbol_table.SymbolTable;
 
 public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
 
   protected SymbolTable ST;
+  protected List<ERROR> errors;
 
   // initialize with the top symbol table
   public SemanticBaseParser() {
     this.ST = SymbolTable.TopSymbolTable();
+    this.errors = new ArrayList<>();
   }
 
   protected boolean isCompatible(TYPE t1, TYPE t2) {
@@ -73,6 +79,7 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
   @Override public ARRAY visitArrayElem(WaccParser.ArrayElemContext ctx){
     IDENTIFIER array = ST.lookupAll(ctx.IDENT().getText());
     if(array == null){
+      errors.add((ERROR) new VariableNotFound(ctx.IDENT().getText()));
       System.out.println(ctx.IDENT().getText() + " is undefined");
       return null;
     }else if(!(array instanceof ARRAY)) {
