@@ -8,7 +8,7 @@ import java.io.IOException;
 import error_handlers.WaccErrorCode;
 import org.junit.Test;
 
-public class wacc_examples_tests {
+public class wacc_examples_syntax_tests {
 
     private WaccCompiler compileAndParseSyntactics(String fileName) throws IOException {
         File waccFile = new File(fileName);
@@ -17,6 +17,14 @@ public class wacc_examples_tests {
         return compiler;
     }
 
+    private void file_checker(String base, String[] files) throws IOException {
+        for (String file : files) {
+            String file_path = base + file;
+            WaccCompiler compiler = compileAndParseSyntactics(file_path);
+//            System.out.println(file + ":" + compiler.getErrors());
+            assertThat(compiler.compile(), is(WaccErrorCode.SYNTAX_ERROR));
+        }
+    }
 
     @Test
     public void syntax_invalid_examples_array() throws IOException {
@@ -31,25 +39,16 @@ public class wacc_examples_tests {
         String[] files = {"badComment.wacc", "badComment2.wacc", "badEscape.wacc", "beginNoend.wacc", "bgnErr.wacc",
                 "multipleBegins.wacc", "noBody.wacc", "skpErr.wacc", "unescapedChar.wacc"};
 
-        for (String file : files) {
-            String file_path = base + file;
-            WaccCompiler compiler = compileAndParseSyntactics(file_path);
-//            System.out.println(file + ":" + compiler.getErrors());
-            assertThat(compiler.compile(), is(WaccErrorCode.SYNTAX_ERROR));
-        }
+        file_checker(base, files);
     }
+
 
     @Test
     public void syntax_invalid_examples_expressions() throws IOException {
         String base = "test_data/invalid/syntaxErr/expressions/";
         String[] files = {"missingOperand1.wacc", "missingOperand2.wacc", "printlnConcat.wacc"};
 
-        for (String file : files) {
-            String file_path = base + file;
-            WaccCompiler compiler = compileAndParseSyntactics(file_path);
-//            System.out.println(file + ":" + compiler.getErrors());
-            assertThat(compiler.compile(), is(WaccErrorCode.SYNTAX_ERROR));
-        }
+        file_checker(base, files);
     }
 
     @Test
@@ -61,12 +60,7 @@ public class wacc_examples_tests {
                 "functionReturnInLoop.wacc", "functionScopeDef.wacc", "mutualRecursionNoReturn.wacc",
                 "noBodyAfterFuncs.wacc", "thisIsNotC.wacc"};
 
-        for (String file : files) {
-            String file_path = base + file;
-            WaccCompiler compiler = compileAndParseSyntactics(file_path);
-//            System.out.println(file + ":" + compiler.getErrors());
-            assertThat(compiler.compile(), is(WaccErrorCode.SYNTAX_ERROR));
-        }
+        file_checker(base, files);
     }
 
     @Test
@@ -74,12 +68,7 @@ public class wacc_examples_tests {
         String base = "test_data/invalid/syntaxErr/if/";
         String[] files = {"ifiErr.wacc", "ifNoelse.wacc", "ifNofi.wacc", "ifNothen.wacc"};
 
-        for (String file : files) {
-            String file_path = base + file;
-            WaccCompiler compiler = compileAndParseSyntactics(file_path);
-//            System.out.println(file + ":" + compiler.getErrors());
-            assertThat(compiler.compile(), is(WaccErrorCode.SYNTAX_ERROR));
-        }
+        file_checker(base, files);
     }
 
     @Test
@@ -87,12 +76,7 @@ public class wacc_examples_tests {
         String base = "test_data/invalid/syntaxErr/pairs/";
         String[] files = {"badLookup01.wacc", "badLookup02.wacc"};
 
-        for (String file : files) {
-            String file_path = base + file;
-            WaccCompiler compiler = compileAndParseSyntactics(file_path);
-//            System.out.println(file + ":" + compiler.getErrors());
-            assertThat(compiler.compile(), is(WaccErrorCode.SYNTAX_ERROR));
-        }
+        file_checker(base, files);
     }
 
     @Test
@@ -100,12 +84,7 @@ public class wacc_examples_tests {
         String base = "test_data/invalid/syntaxErr/print/";
         String[] files = {"printlnCharArry.wacc"};
 
-        for (String file : files) {
-            String file_path = base + file;
-            WaccCompiler compiler = compileAndParseSyntactics(file_path);
-//            System.out.println(file + ":" + compiler.getErrors());
-            assertThat(compiler.compile(), is(WaccErrorCode.SYNTAX_ERROR));
-        }
+        file_checker(base, files);
     }
 
     @Test
@@ -113,12 +92,7 @@ public class wacc_examples_tests {
         String base = "test_data/invalid/syntaxErr/sequence/";
         String[] files = {"doubleSeq.wacc", "emptySeq.wacc", "endSeq.wacc", "extraSeq.wacc", "missingSeq.wacc"};
 
-        for (String file : files) {
-            String file_path = base + file;
-            WaccCompiler compiler = compileAndParseSyntactics(file_path);
-//            System.out.println(file + ":" + compiler.getErrors());
-            assertThat(compiler.compile(), is(WaccErrorCode.SYNTAX_ERROR));
-        }
+        file_checker(base, files);
     }
 
     @Test
@@ -127,12 +101,7 @@ public class wacc_examples_tests {
         String[] files = {"badintAssignments.wacc", "badintAssignments1.wacc", "badintAssignments2.wacc",
                 "bigIntAssignment.wacc", "varNoName.wacc"};
 
-        for (String file : files) {
-            String file_path = base + file;
-            WaccCompiler compiler = compileAndParseSyntactics(file_path);
-//            System.out.println(file + ":" + compiler.getErrors());
-            assertThat(compiler.compile(), is(WaccErrorCode.SYNTAX_ERROR));
-        }
+        file_checker(base, files);
     }
 
     @Test
@@ -141,11 +110,6 @@ public class wacc_examples_tests {
         String[] files = {"donoErr.wacc", "dooErr.wacc", "whileNodo.wacc",
                 "whileNodone.wacc", "whilErr.wacc"};
 
-        for (String file : files) {
-            String file_path = base + file;
-            WaccCompiler compiler = compileAndParseSyntactics(file_path);
-//            System.out.println(file + ":" + compiler.getErrors());
-            assertThat(compiler.compile(), is(WaccErrorCode.SYNTAX_ERROR));
-        }
+        file_checker(base, files);
     }
 }
