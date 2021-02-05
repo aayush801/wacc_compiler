@@ -29,17 +29,17 @@ COMMA : ',' ;
 SEPERATOR: ';' ;
 
 //base types
-STRING_TYPE: 'string';
-CHAR_TYPE: 'char';
-BOOL_TYPE: 'bool' ;
-INT_TYPE: 'int' ;
-
 BASE_TYPE:
-  INT_TYPE
+    INT_TYPE
   | BOOL_TYPE
   | CHAR_TYPE
   | STRING_TYPE
 ;
+
+STRING_TYPE: 'string';
+CHAR_TYPE: 'char';
+BOOL_TYPE: 'bool' ;
+INT_TYPE: 'int' ;
 
 // other types
 PAIR_TYPE: 'pair' ;

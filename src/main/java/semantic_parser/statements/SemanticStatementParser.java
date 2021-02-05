@@ -4,6 +4,7 @@ import antlr.WaccParser;
 import antlr.WaccParser.BeginStatContext;
 import antlr.WaccParser.PrintCallContext;
 import antlr.WaccParser.ReadCallContext;
+import error.MismatchedTypes;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
 import identifier_objects.VARIABLE;
@@ -12,11 +13,10 @@ import java.util.Collections;
 import semantic_parser.statements.assignments.SemanticAssignmentParser;
 import symbol_table.SymbolTable;
 
-public class SemanticStatementParser extends SemanticAssignmentParser {
+public abstract class SemanticStatementParser extends SemanticAssignmentParser {
 
   @Override
   public Object visitAssignIdent(WaccParser.AssignIdentContext ctx) {
-    // type IDENT EQUALS assignRHS
     TYPE typeLHS = visitType(ctx.type());
     if (typeLHS == null) {
       // type is undefined
@@ -24,7 +24,8 @@ public class SemanticStatementParser extends SemanticAssignmentParser {
     }
 
     IDENTIFIER identifier = visitIdentifier(ctx.IDENT().getText());
-    if (identifier == null) {
+    if (identifier != null) {
+      System.out.println("assignment already defined");
       // identifier is undefined in the local scope
       return null;
     }
@@ -45,6 +46,7 @@ public class SemanticStatementParser extends SemanticAssignmentParser {
 
   @Override
   public Object visitAssignVars(WaccParser.AssignVarsContext ctx) {
+
     TYPE typeLHS = visitAssignLHS(ctx.assignLHS());
     if (typeLHS == null) {
       // type is undefined
@@ -57,10 +59,13 @@ public class SemanticStatementParser extends SemanticAssignmentParser {
       return null;
     }
 
-    if (isCompatible(typeLHS, typeRHS)) {
-      // if both sides have compatible types update the scope variable
-      ST.add(ctx.assignLHS().IDENT().getText(), new VARIABLE(typeLHS));
+    if (!isCompatible(typeLHS, typeRHS)) {
+      errors.add(new MismatchedTypes(typeLHS, typeRHS));
+      return null;
     }
+
+    // if both sides have compatible types update the scope variable
+    ST.add(ctx.assignLHS().IDENT().getText(), new VARIABLE(typeLHS));
 
     return null;
   }
@@ -71,8 +76,11 @@ public class SemanticStatementParser extends SemanticAssignmentParser {
   @Override
   public Object visitBeginStat(BeginStatContext ctx) {
     // create new scope
-    ST = new SymbolTable(ST);
-    return visit(ctx.stat());
+    SymbolTable oldScope = ST;
+    ST = new SymbolTable(oldScope);
+    visit(ctx.stat());
+    ST = oldScope;
+    return null;
   }
 
   @Override
@@ -93,6 +101,8 @@ public class SemanticStatementParser extends SemanticAssignmentParser {
       // reset scope to oldScope and then create a scope for statement 2
       ST = new SymbolTable(oldScope);
       visit(ctx.stat(1));
+
+      ST = oldScope;
     }
     return null;
   }
@@ -108,24 +118,25 @@ public class SemanticStatementParser extends SemanticAssignmentParser {
       return null;
     } else {
       // create new scope for statement
-      ST = new SymbolTable(ST);
-      return visit(ctx.stat());
+      SymbolTable oldScope = ST;
+      ST = new SymbolTable(oldScope);
+      visit(ctx.stat());
+      ST = oldScope;
+      return null;
     }
   }
 
   /* =================== STATEMENT CHAINS ===================== */
 
   /* THIS FUNC MIGHT NOT BE NEEDED */
-  @Override
-  public Object visitSeperateStat(WaccParser.SeperateStatContext ctx) {
-    return visitChildren(ctx);
-  }
+//  @Override
 
-  /* THIS FUNC MIGHT NOT BE NEEDED */
-  @Override
-  public Object visitSkipStat(WaccParser.SkipStatContext ctx) {
-    return visitChildren(ctx);
-  }
+//
+//  /* THIS FUNC MIGHT NOT BE NEEDED */
+//  @Override
+//  public Object visitSkipStat(WaccParser.SkipStatContext ctx) {
+//    return visitChildren(ctx);
+//  }
 
 
   /* =================== STATEMENT OPERATIONS ===================== */

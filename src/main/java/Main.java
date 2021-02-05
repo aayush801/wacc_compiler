@@ -24,8 +24,9 @@ public class Main {
       compiler.compile(new FileInputStream(waccFile));
     }
 
-    System.out.println(compiler.treeString());
-
     compiler.parseSyntactics();
+    compiler.parseSemantics();
+
+    //System.out.println(compiler.treeString());
   }
 }

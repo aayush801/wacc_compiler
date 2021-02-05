@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class SemanticExpressionParser extends SemanticFunctionParser {
+public abstract class SemanticExpressionParser extends SemanticFunctionParser {
 
 
   /* ======================= BRACKETED EXPRESSION SEMANTICS ========================= */

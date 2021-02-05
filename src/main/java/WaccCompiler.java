@@ -25,7 +25,6 @@ public class WaccCompiler {
 
     parser = new WaccParser(tokens);
 
-    parseSyntactics();
   }
 
   public String treeString() {
@@ -40,5 +39,10 @@ public class WaccCompiler {
     SemanticParser semanticParser = new SemanticParser();
     ParseTree tree = parser.prog();
     semanticParser.visit(tree);
+    System.out.println(semanticParser.getErrors());
   }
+
+
+
+
 }

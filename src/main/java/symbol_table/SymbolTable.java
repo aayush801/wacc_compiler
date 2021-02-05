@@ -100,7 +100,7 @@ public class SymbolTable {
     dict.put(name, obj);
   }
 
-  // lookup identifier in the current symbol table
+  // lookup identifier in the local scope
   public IDENTIFIER lookup(String name) {
     return dict.get(name);
   }

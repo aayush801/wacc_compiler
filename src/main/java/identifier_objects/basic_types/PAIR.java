@@ -13,6 +13,14 @@ public class PAIR extends EQUATABLE {
     this.second = second;
   }
 
+  public TYPE getFirst(){
+    return first;
+  }
+
+  public TYPE getSecond(){
+    return second;
+  }
+
   public PAIR() {
     this(null, null);
   }

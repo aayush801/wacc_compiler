@@ -22,6 +22,7 @@ paramList: param (COMMA param)*;
 //argument list
 argList: expr (COMMA expr)* ;
 
+
 //statements
 stat:
     SKIP_STATEMENT                        #skipStat
@@ -38,6 +39,14 @@ stat:
   | BEGIN stat END                        #beginStat
   | stat SEPERATOR stat                   #seperateStat
 ;
+
+//typings
+type:
+  BASE_TYPE
+  | ARRAY_TYPE
+  | pairType
+;
+
 
 //left hand side assignment
 assignLHS:
@@ -77,12 +86,7 @@ expr:
 //unary operators
 unaryOperator: NOT | MINUS | LENGTH | ORD | CHR ;
 
-//typings
-type:
-  BASE_TYPE
-  | ARRAY_TYPE
-  | pairType
-;
+
 
 //arrays
 arrayElem: IDENT (OPEN_SQUARE_BRACKET expr CLOSE_SQUARE_BRACKET)+ ;

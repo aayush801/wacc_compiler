@@ -32,7 +32,7 @@ public class SemanticTests {
 
   @Test
   public void testPolymorphicFunction() throws IOException {
-    String instruction = "false > 2";
+    String instruction = "5 > 2";
     compileInstructionAndAnalyseSemantics(instruction);
   }
 
@@ -45,6 +45,19 @@ public class SemanticTests {
   @Test
   public void testArrayElem() throws IOException {
     String instruction = "array [a+2]";
+    compileInstructionAndAnalyseSemantics(instruction);
+  }
+
+  @Test
+  public void testStatement() throws IOException {
+    String instruction = "begin\n"
+        + "  int x = 12 ;\n"
+        + "  begin\n"
+        + "    bool x = true ;\n"
+        + "    x = 5\n"
+        + "  end ;\n"
+        + "  exit x \n"
+        + "end";
     compileInstructionAndAnalyseSemantics(instruction);
   }
 

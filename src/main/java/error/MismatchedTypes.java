@@ -14,7 +14,7 @@ public class MismatchedTypes extends WaccError {
 
   @Override
   public String toString() {
-    return "Expected value of type " + expected.toString().toUpperCase() +
-        "but got type" + actual.toString().toUpperCase();
+    return "Expected value of type : " + expected.toString().toUpperCase() +
+        ", but got type : " + actual.toString().toUpperCase();
   }
 }

@@ -13,6 +13,10 @@ public class ARRAY extends EQUATABLE {
     this.elementType = elementType;
   }
 
+  public TYPE getType(){
+    return elementType;
+  }
+
   @Override
   public String toString(){
     return elementType + "[]";

@@ -4,6 +4,7 @@ import antlr.WaccParser.FuncCallContext;
 import antlr.WaccParser.FuncDeclContext;
 import antlr.WaccParser.ParamContext;
 import antlr.WaccParser.ParamListContext;
+import semantic_parser.SemanticParser;
 import semantic_parser.statements.assignments.expressions.functions.base.SemanticBaseParser;
 import identifier_objects.FUNCTION;
 import identifier_objects.IDENTIFIER;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
 import symbol_table.SymbolTable;
 
-public class SemanticFunctionParser extends SemanticBaseParser {
+public abstract class SemanticFunctionParser extends SemanticBaseParser {
 
   /* ============== HELPER METHOD FOR ALL TYPES OF FUNCTION CALLS ============== */
 
@@ -22,7 +23,7 @@ public class SemanticFunctionParser extends SemanticBaseParser {
     // lookup the operator function
     IDENTIFIER function = ST.lookupAll(funcIdentifier);
     if (function == null) {
-      System.out.println("Error" + funcIdentifier + " undefined");
+      System.out.println("Error : " + funcIdentifier + " undefined");
       return null;
     } else if (!(function instanceof FUNCTION)) {
       System.out.println(funcIdentifier + " is not a function");
@@ -81,7 +82,8 @@ public class SemanticFunctionParser extends SemanticBaseParser {
     }
 
     // create new scope
-    ST = new SymbolTable(ST);
+    SymbolTable oldScope = ST;
+    ST = new SymbolTable(oldScope);
 
     // implicitly adds the params to the new scope
     List<PARAM> paramList = visitParamList(ctx.paramList());
@@ -93,7 +95,11 @@ public class SemanticFunctionParser extends SemanticBaseParser {
     FUNCTION newFunction = new FUNCTION(returnType, paramList, ST);
     ST.getEncSymTable().add(identifier, newFunction);
 
-    return visit(ctx.stat());
+    visit(ctx.stat());
+
+    ST = oldScope;
+
+    return null;
   }
 
 
