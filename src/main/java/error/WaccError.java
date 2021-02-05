@@ -14,6 +14,9 @@ public abstract class WaccError {
 
   @Override
   public boolean equals(Object o) {
-    return toString().equals(  o.toString());
+    if(o instanceof String) {
+      return toString().equals(o.toString());
+    }
+    return false;
   }
 }

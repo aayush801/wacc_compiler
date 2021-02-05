@@ -4,6 +4,8 @@ import antlr.WaccParser.FuncCallContext;
 import antlr.WaccParser.FuncDeclContext;
 import antlr.WaccParser.ParamContext;
 import antlr.WaccParser.ParamListContext;
+import error.NotAFunction;
+import error.Undefined;
 import semantic_parser.SemanticParser;
 import semantic_parser.statements.assignments.expressions.functions.base.SemanticBaseParser;
 import identifier_objects.FUNCTION;
@@ -23,10 +25,10 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     // lookup the operator function
     IDENTIFIER function = ST.lookupAll(funcIdentifier);
     if (function == null) {
-      System.out.println("Error : " + funcIdentifier + " undefined");
+      errors.add(new Undefined(funcIdentifier));
       return null;
     } else if (!(function instanceof FUNCTION)) {
-      System.out.println(funcIdentifier + " is not a function");
+      errors.add(new NotAFunction(funcIdentifier));
       return null;
     } else if (params.size() != ((FUNCTION) function).formals.size()) {
       System.out.println("Error : " + funcIdentifier + ", invalid number of parameters given");
@@ -37,8 +39,7 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
         ParserRuleContext expr = params.get(i);
         IDENTIFIER actual = (IDENTIFIER) visit(expr);
         if (actual == null) {
-          System.out.println(
-              "ERROR: " + expr.getText() + " is undefined");
+          errors.add(new Undefined(expr.getText()));
           return null;
         } else if (!(actual instanceof TYPE)) {
           System.out.println(
