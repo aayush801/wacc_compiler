@@ -104,6 +104,10 @@ public class SymbolTable {
     return encSymTable;
   }
 
+  public int size(){
+    return dict.size();
+  }
+
   public void add(String name, IDENTIFIER obj) {
     dict.put(name, obj);
   }

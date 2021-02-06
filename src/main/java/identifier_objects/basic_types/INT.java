@@ -13,4 +13,9 @@ public class INT extends TYPE {
     this.max = max;
   }
 
+  public INT() {
+    this(Integer.MIN_VALUE,Integer.MAX_VALUE);
+
+  }
+
 }

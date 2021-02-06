@@ -9,7 +9,7 @@
 # Program:
 
 begin
-  while tru do
+  while 15 do
     if 15 + 6 then 
       skip 
     else 

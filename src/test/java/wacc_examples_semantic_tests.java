@@ -25,17 +25,16 @@ public class wacc_examples_semantic_tests {
             String file_path = base + file;
             WaccCompiler compiler = compileAndParseSemantics(file_path);
             if(compiler.compile() != WaccErrorCode.SEMANTIC_ERROR){
-                System.out.println(compiler.getErrors());
-                System.out.println(file);
             }
+            System.out.println(file);
+            System.out.println(compiler.getErrors());
 //            assertThat(compiler.compile(), is(WaccErrorCode.SEMANTIC_ERROR));
-
         }
     }
 
 
     @Test
-    public void semantic_invalid_examples_basic() throws IOException {
+    public void semantic_invalid_examples_exit() throws IOException {
         String base = "test_data/invalid/semanticErr/exit/";
         String[] files = {"badCharExit.wacc", "exitNonInt.wacc", "globalReturn.wacc"};
 

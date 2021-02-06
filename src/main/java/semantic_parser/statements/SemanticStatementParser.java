@@ -11,6 +11,7 @@ import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
 import identifier_objects.VARIABLE;
 import identifier_objects.basic_types.BOOL;
+import identifier_objects.basic_types.INT;
 import identifier_objects.unary_operator_functions.FREE;
 import identifier_objects.unary_operator_functions.PRINT;
 import identifier_objects.unary_operator_functions.PRINT_LINE;
@@ -60,10 +61,9 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
 
   @Override
   public Object visitAssignVars(WaccParser.AssignVarsContext ctx) {
-    TYPE typeLHS = visitAssignLHS(ctx.assignLHS());
+    IDENTIFIER typeLHS = visitAssignLHS(ctx.assignLHS());
     if (typeLHS == null) {
       // type is undefined
-      errors.add(new Undefined(ctx));
       return null;
     }
 
@@ -78,7 +78,7 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
     }
 
     // if both sides have compatible types update the scope variable
-    ST.add(ctx.assignLHS().IDENT().getText(), new VARIABLE(typeLHS));
+    ST.add(ctx.assignLHS().IDENT().getText(), new VARIABLE((TYPE)typeLHS));
 
     return null;
   }
@@ -98,11 +98,14 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
 
   @Override
   public Object visitIfThenElse(WaccParser.IfThenElseContext ctx) {
+
     Object obj = visit(ctx.expr());
     if (obj == null) {
       // the expression is undefined
+      errors.add(new Undefined(ctx.expr()));
       return null;
     } else if (!(obj instanceof BOOL)) {
+      errors.add(new MismatchedTypes(ctx, (TYPE) obj, new BOOL()));
       // the expression does not have type bool it is not valid semantics
       return null;
     } else {
@@ -123,13 +126,14 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
 
   @Override
   public Object visitWhileDo(WaccParser.WhileDoContext ctx) {
-
     Object obj = visit(ctx.expr());
     if (obj == null) {
       // the expression is undefined
+       errors.add(new Undefined(ctx.expr()));
       return null;
     } else if (!(obj instanceof BOOL)) {
       // the expression does not have type bool it is not valid semantics
+      errors.add(new MismatchedTypes(ctx, (TYPE) obj, new BOOL()));
       return null;
     } else {
       // create new scope for statement
@@ -159,7 +163,19 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
 
   @Override
   public TYPE visitExitCall(WaccParser.ExitCallContext ctx) {
-    return visitExpr(ctx.expr());
+
+    TYPE obj = visitExpr(ctx.expr());
+    if (obj == null) {
+      // the expression is undefined
+      errors.add(new Undefined(ctx.expr()));
+      return null;
+    } else if (!(obj instanceof INT)) {
+      // the expression does not have type bool it is not valid semantics
+      errors.add(new MismatchedTypes(ctx,obj, new INT()));
+      return null;
+    }
+
+    return obj;
   }
 
   /* =================== STATEMENT OPERATIONS ===================== */

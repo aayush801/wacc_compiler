@@ -56,15 +56,22 @@ public class SemanticTests {
   @Test
   public void testStatement() throws IOException {
     String instruction =
-          "begin\n"
-        + "  int x = 12 ;\n"
-        + "  begin\n"
-        + "    bool x = true ;\n"
-        + "    x = 5\n"
-        + "  end ;\n"
-        + "  exit x \n"
-        + "end";
+          "# tries to exit using a character\n" +
+                  "\n" +
+                  "# Output:\n" +
+                  "# #semantic_error#\n" +
+                  "\n" +
+                  "# Exit:\n" +
+                  "# 200\n" +
+                  "\n" +
+                  "# Program:\n" +
+                  "\n" +
+                  "begin\n" +
+                  "  exit 'a'\n" +
+                  "end\n";
     WaccCompiler compiler = compileAndParseSemantics(instruction);
+    System.out.println(compiler.getErrors());
+
     assertThat(compiler.hasErrors(), is(false));
   }
 

@@ -1,6 +1,9 @@
 package semantic_parser.statements.assignments;
 
 import antlr.WaccParser;
+import errors.semantic_errors.MismatchedTypes;
+import errors.semantic_errors.Undefined;
+import identifier_objects.FUNCTION;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
 import identifier_objects.VARIABLE;
@@ -11,32 +14,8 @@ import semantic_parser.statements.assignments.expressions.SemanticExpressionPars
 public abstract class SemanticAssignmentParser extends SemanticExpressionParser {
 
   @Override
-  public TYPE visitAssignLHS(WaccParser.AssignLHSContext ctx) {
-    IDENTIFIER identifier = (IDENTIFIER) visitChildren(ctx);
-    if (identifier == null) {
-      // identifier is undefined
-      return null;
-    }
-
-    if (identifier instanceof VARIABLE) {
-      // assignment LHS is not a valid TYPE
-      return ((VARIABLE) identifier).getType();
-    }
-
-    if (identifier instanceof ARRAY) {
-      // assignment LHS is not a valid TYPE
-      return ((ARRAY) identifier);
-    }
-
-    if (identifier instanceof PAIR) {
-      if(ctx.pairElem().PAIR_FIRST() != null){
-        return ((PAIR) identifier).getFirst();
-      }else{
-        return ((PAIR) identifier).getSecond();
-      }
-    }
-
-    return null;
+  public IDENTIFIER visitAssignLHS(WaccParser.AssignLHSContext ctx) {
+    return visitIdentifier(ctx.IDENT().getText());
   }
 
   @Override

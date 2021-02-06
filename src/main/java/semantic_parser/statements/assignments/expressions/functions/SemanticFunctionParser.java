@@ -11,6 +11,8 @@ import identifier_objects.FUNCTION;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.PARAM;
 import identifier_objects.TYPE;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -76,6 +78,8 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
 
   @Override
   public TYPE visitFuncCall(FuncCallContext ctx) {
+
+
     return visitFunctionCall(ctx, ctx.IDENT().getText(),
         ctx.argList().expr().stream().map(e -> (ParserRuleContext) e).collect(
             Collectors.toList()));
@@ -87,6 +91,7 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     TYPE returnType = visitType(ctx.type());
     if (returnType == null) {
       // if type is not defined
+      errors.add(new Undefined(ctx));
       return null;
     }
 
@@ -108,9 +113,16 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
 
     // add the function to the parent scope
     FUNCTION newFunction = new FUNCTION(returnType, paramList, ST);
+
+
     oldScope.add(identifier, newFunction);
 
     TYPE returnedType = (TYPE) visit(ctx.stat());
+
+    if(returnedType == null){
+      System.out.println("testing");
+    }
+
     if (!isCompatible(returnedType, returnType)) {
       // the returned type is not compatible with the return type of the function
       errors.add(new MismatchedTypes(ctx, returnedType, returnType));
@@ -126,6 +138,10 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
   /* ============== PARAMETER CHECKS ============== */
   @Override
   public List<PARAM> visitParamList(ParamListContext ctx) {
+
+    if(ctx == null) {
+      return Collections.emptyList();
+    }
     return ctx.param().stream().map(this::visitParam).collect(Collectors.toList());
   }
 
