@@ -73,7 +73,7 @@ expr:
   | CHARACTER                                   #character
   | IDENT                                       #identifier
   | arrayElem                                   #arrayExpr
-  | unaryOperator expr                          #unaryOperation
+  | op=unaryOperator expr                       #unaryOperation
   | expr op=(DIVIDE | MULTIPLY | MOD) expr      #divMulModOperation
   | expr op=(PLUS | MINUS) expr                 #plusMinusOperation
   | expr op=(GT | GTE | LT | LTE) expr          #greLseComparison

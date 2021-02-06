@@ -32,7 +32,7 @@ public class SemanticTests {
 
   @Test
   public void testPolymorphicFunction() throws IOException {
-    String instruction = "5 > 2";
+    String instruction = "'2' > 2";
     compileInstructionAndAnalyseSemantics(instruction);
   }
 

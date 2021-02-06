@@ -22,6 +22,7 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
   /* ============== HELPER METHOD FOR ALL TYPES OF FUNCTION CALLS ============== */
 
   protected TYPE visitFunctionCall(String funcIdentifier, List<ParserRuleContext> params) {
+
     // lookup the operator function
     IDENTIFIER function = ST.lookupAll(funcIdentifier);
     if (function == null) {
@@ -31,9 +32,10 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
       errors.add(new NotAFunction(funcIdentifier));
       return null;
     } else if (params.size() != ((FUNCTION) function).formals.size()) {
-      System.out.println("Error : " + funcIdentifier + ", invalid number of parameters given");
+      System.out.println("Error : invalid number of parameters for '"+funcIdentifier +"' given. WAS : "+params.size()+", EXPECTED : " + ((FUNCTION) function).formals.size()  );
       return null;
     } else {
+
       // checks all the parameter types match up
       for (int i = 0; i < params.size(); i++) {
         ParserRuleContext expr = params.get(i);
@@ -47,11 +49,11 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
           return null;
         } else {
           PARAM formal = ((FUNCTION) function).formals.get(i);
-          if (!isCompatible((TYPE) actual, formal.type)) {
+          if (!isCompatible(((TYPE) actual).getType(), formal.type)) {
             System.out.println(
                 "ERROR (incompatible types) : " + expr.getParent().getText() + ", EXPECTED : "
                     + formal.type + ", ACTUAL : "
-                    + actual);
+                    + ((TYPE) actual).getType());
             return null;
           }
         }
@@ -94,9 +96,17 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
 
     // add the function to the parent scope
     FUNCTION newFunction = new FUNCTION(returnType, paramList, ST);
-    ST.getEncSymTable().add(identifier, newFunction);
+    oldScope.add(identifier, newFunction);
 
-    visit(ctx.stat());
+    TYPE returnedType = (TYPE) visit(ctx.stat());
+    if(returnedType != null){
+      // if there is a returned value from the func body we need to check
+      // that it is compatible with the return type of the function
+      if(!isCompatible(returnedType, returnType)){
+        // the returned type is not compatible
+        return null;
+      }
+    }
 
     ST = oldScope;
 
@@ -115,6 +125,7 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     // get the type
     TYPE type = visitType(ctx.type());
     if (type == null) {
+      System.out.println("param : " +ctx.getText() + " is undefined");
       // type is undefined
       return null;
     }
@@ -129,6 +140,7 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     PARAM param = new PARAM(type);
     // add newly defined variable to scope
     ST.add(ctx.IDENT().getText(), param);
+
     return param;
   }
 

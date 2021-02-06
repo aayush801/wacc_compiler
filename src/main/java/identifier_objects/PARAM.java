@@ -9,13 +9,14 @@ public class PARAM extends TYPE {
     this.type = type;
   }
 
+  @Override
   public TYPE getType() {
     return type;
   }
 
   @Override
   public String toString(){
-   return "undefined";
+   return name;
   }
 
 }

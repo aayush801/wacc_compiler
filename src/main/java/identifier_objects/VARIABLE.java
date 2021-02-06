@@ -9,7 +9,9 @@ public class VARIABLE extends TYPE {
     this.type = type;
   }
 
+  @Override
   public TYPE getType() {
     return type;
   }
+
 }

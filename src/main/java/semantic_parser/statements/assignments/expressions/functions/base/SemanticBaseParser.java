@@ -36,7 +36,7 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
   /* ======================= LITERAL EXPRESSION SEMANTICS ========================= */
 
   public IDENTIFIER visitIdentifier(String identifier) {
-    return ST.lookup(identifier);
+    return ST.lookupAll(identifier);
   }
 
   @Override

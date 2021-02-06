@@ -128,9 +128,6 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
 
   /* =================== STATEMENT CHAINS ===================== */
 
-  /* THIS FUNC MIGHT NOT BE NEEDED */
-//  @Override
-
 //
 //  /* THIS FUNC MIGHT NOT BE NEEDED */
 //  @Override
@@ -138,6 +135,18 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
 //    return visitChildren(ctx);
 //  }
 
+  /* =================== STATEMENT SPECIAL OPERATIONS ===================== */
+
+  @Override
+  public TYPE visitReturnCall(WaccParser.ReturnCallContext ctx) {
+    return (TYPE) visit(ctx.expr());
+  }
+
+
+  @Override
+  public TYPE visitExitCall(WaccParser.ExitCallContext ctx) {
+    return (TYPE) visit(ctx.expr());
+  }
 
   /* =================== STATEMENT OPERATIONS ===================== */
 
@@ -147,28 +156,20 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
   }
 
   @Override
+  public TYPE visitPrintlnCall(WaccParser.PrintlnCallContext ctx) {
+    return visitFunctionCall(ctx.PRINT_LINE().getText(), Collections.singletonList(ctx.expr()));
+  }
+
+  @Override
   public TYPE visitPrintCall(PrintCallContext ctx) {
     return visitFunctionCall(ctx.PRINT().getText(), Collections.singletonList(ctx.expr()));
   }
 
-  @Override
-  public TYPE visitReturnCall(WaccParser.ReturnCallContext ctx) {
-    return visitFunctionCall(ctx.RETURN().getText(), Collections.singletonList(ctx.expr()));
-  }
 
   @Override
   public TYPE visitFreeCall(WaccParser.FreeCallContext ctx) {
     return visitFunctionCall(ctx.FREE().getText(), Collections.singletonList(ctx.expr()));
   }
 
-  @Override
-  public TYPE visitPrintlnCall(WaccParser.PrintlnCallContext ctx) {
-    return visitFunctionCall(ctx.PRINT_LINE().getText(), Collections.singletonList(ctx.expr()));
-  }
-
-  @Override
-  public TYPE visitExitCall(WaccParser.ExitCallContext ctx) {
-    return visitFunctionCall(ctx.EXIT().getText(), Collections.singletonList(ctx.expr()));
-  }
 
 }

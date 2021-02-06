@@ -21,12 +21,16 @@ import identifier_objects.binary_operator_functions.NEQ;
 import identifier_objects.binary_operator_functions.OR;
 import identifier_objects.binary_operator_functions.PLUS;
 import identifier_objects.polymorhpic_types.COMPARABLE;
-import identifier_objects.polymorhpic_types.EQUATABLE;
+import identifier_objects.polymorhpic_types.EXPR;
 import identifier_objects.unary_operator_functions.CHR;
+import identifier_objects.unary_operator_functions.FREE;
 import identifier_objects.unary_operator_functions.LEN;
 import identifier_objects.unary_operator_functions.NEGATE;
 import identifier_objects.unary_operator_functions.NOT;
 import identifier_objects.unary_operator_functions.ORD;
+import identifier_objects.unary_operator_functions.PRINT;
+import identifier_objects.unary_operator_functions.PRINT_LINE;
+import identifier_objects.unary_operator_functions.READ;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,12 +67,12 @@ public class SymbolTable {
     st.add(MOD.name, new MOD(intType, st));
 
     // polymorphic types are unique to the function hence each function has a new object
-    st.add(NEQ.name, new NEQ(boolType, new EQUATABLE(null), st));
-    st.add(EQ.name, new EQ(boolType, new EQUATABLE(null), st));
-    st.add(GT.name, new GT(boolType, new COMPARABLE(null), st));
-    st.add(GTE.name, new GTE(boolType, new COMPARABLE(null), st));
-    st.add(LT.name, new LT(boolType, new COMPARABLE(null), st));
-    st.add(LTE.name, new LTE(boolType, new COMPARABLE(null), st));
+    st.add(NEQ.name, new NEQ(boolType, new EXPR(), st));
+    st.add(EQ.name, new EQ(boolType, new EXPR(), st));
+    st.add(GT.name, new GT(boolType, new COMPARABLE(), st));
+    st.add(GTE.name, new GTE(boolType, new COMPARABLE(), st));
+    st.add(LT.name, new LT(boolType, new COMPARABLE(), st));
+    st.add(LTE.name, new LTE(boolType, new COMPARABLE(), st));
 
     st.add(AND.name, new AND(boolType, st));
     st.add(OR.name, new OR(boolType, st));
@@ -79,6 +83,11 @@ public class SymbolTable {
     st.add(LEN.name, new LEN(intType, arrayType, st));
     st.add(NEGATE.name, new NEGATE(intType, st));
     st.add(NOT.name, new NOT(boolType, st));
+
+    st.add(PRINT.name, new PRINT(new EXPR(), st));
+    st.add(PRINT_LINE.name, new PRINT_LINE(new EXPR(), st));
+    st.add(READ.name, new READ(new EXPR(), st));
+    st.add(FREE.name, new FREE(new EXPR(), st));
 
     return st;
   }
