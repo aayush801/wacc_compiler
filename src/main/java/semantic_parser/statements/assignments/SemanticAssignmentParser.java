@@ -12,7 +12,7 @@ public abstract class SemanticAssignmentParser extends SemanticExpressionParser 
 
   @Override
   public TYPE visitAssignLHS(WaccParser.AssignLHSContext ctx) {
-    IDENTIFIER identifier = visitIdentifier(ctx.IDENT().getText());
+    IDENTIFIER identifier = (IDENTIFIER) visitChildren(ctx);
     if (identifier == null) {
       // identifier is undefined
       return null;
@@ -25,7 +25,7 @@ public abstract class SemanticAssignmentParser extends SemanticExpressionParser 
 
     if (identifier instanceof ARRAY) {
       // assignment LHS is not a valid TYPE
-      return ((ARRAY) identifier).getType();
+      return ((ARRAY) identifier);
     }
 
     if (identifier instanceof PAIR) {

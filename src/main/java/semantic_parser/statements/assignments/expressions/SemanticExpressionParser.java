@@ -26,42 +26,42 @@ public abstract class SemanticExpressionParser extends SemanticFunctionParser {
 
   @Override
   public TYPE visitPlusMinusOperation(PlusMinusOperationContext ctx) {
-    return visitFunctionCall(ctx.op.getText(),
+    return visitFunctionCall(ctx, ctx.op.getText(),
         ctx.expr().stream().map(e -> (ParserRuleContext) e).collect(
             Collectors.toList()));
   }
 
   @Override
   public TYPE visitDivMulModOperation(WaccParser.DivMulModOperationContext ctx) {
-    return visitFunctionCall(ctx.op.getText(),
+    return visitFunctionCall(ctx, ctx.op.getText(),
         ctx.expr().stream().map(e -> (ParserRuleContext) e).collect(
             Collectors.toList()));
   }
 
   @Override
   public TYPE visitLogicalOrOperation(WaccParser.LogicalOrOperationContext ctx) {
-    return visitFunctionCall(ctx.op.getText(),
+    return visitFunctionCall(ctx, ctx.op.getText(),
         ctx.expr().stream().map(e -> (ParserRuleContext) e).collect(
             Collectors.toList()));
   }
 
   @Override
   public TYPE visitGreLseComparison(WaccParser.GreLseComparisonContext ctx) {
-    return visitFunctionCall(ctx.op.getText(),
+    return visitFunctionCall(ctx, ctx.op.getText(),
         ctx.expr().stream().map(e -> (ParserRuleContext) e).collect(
             Collectors.toList()));
   }
 
   @Override
   public TYPE visitEqNeqComparison(WaccParser.EqNeqComparisonContext ctx) {
-    return visitFunctionCall(ctx.op.getText(),
+    return visitFunctionCall(ctx, ctx.op.getText(),
         ctx.expr().stream().map(e -> (ParserRuleContext) e).collect(
             Collectors.toList()));
   }
 
   @Override
   public TYPE visitLogicalAndOperation(WaccParser.LogicalAndOperationContext ctx) {
-    return visitFunctionCall(ctx.op.getText(),
+    return visitFunctionCall(ctx, ctx.op.getText(),
         ctx.expr().stream().map(e -> (ParserRuleContext) e).collect(
             Collectors.toList()));
   }
@@ -84,7 +84,7 @@ public abstract class SemanticExpressionParser extends SemanticFunctionParser {
       funcIdentifier = ctx.unaryOperator().getText();
     }
 
-    return visitFunctionCall(funcIdentifier, Collections.singletonList(ctx.expr()));
+    return visitFunctionCall(ctx, funcIdentifier, Collections.singletonList(ctx.expr()));
   }
 
 }

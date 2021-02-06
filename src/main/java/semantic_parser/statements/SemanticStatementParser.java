@@ -4,12 +4,15 @@ import antlr.WaccParser;
 import antlr.WaccParser.BeginStatContext;
 import antlr.WaccParser.PrintCallContext;
 import antlr.WaccParser.ReadCallContext;
+import error.DuplicateIdentifier;
 import error.MismatchedTypes;
+import error.Undefined;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
 import identifier_objects.VARIABLE;
 import identifier_objects.basic_types.BOOL;
 import java.util.Collections;
+import javax.swing.UIDefaults;
 import semantic_parser.statements.assignments.SemanticAssignmentParser;
 import symbol_table.SymbolTable;
 
@@ -17,29 +20,35 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
 
   @Override
   public Object visitAssignIdent(WaccParser.AssignIdentContext ctx) {
+
     TYPE typeLHS = visitType(ctx.type());
     if (typeLHS == null) {
+      errors.add(new Undefined(ctx.type()));
       // type is undefined
       return null;
     }
 
     IDENTIFIER identifier = visitIdentifier(ctx.IDENT().getText());
     if (identifier != null) {
-      System.out.println("assignment already defined");
-      // identifier is undefined in the local scope
+      // identifier already exists within the scope
+      errors.add(new DuplicateIdentifier(ctx, ctx.IDENT().getText()));
       return null;
     }
 
     TYPE typeRHS = visitAssignRHS(ctx.assignRHS());
     if (typeRHS == null) {
       // type of rhs statement undefined
+      errors.add(new Undefined(ctx.assignRHS()));
       return null;
     }
 
-    if (isCompatible(typeLHS, typeRHS)) {
-      // if both sides have compatible types, add the new variable to the scope
-      ST.add(ctx.IDENT().getText(), new VARIABLE(typeLHS));
+    if (!isCompatible(typeLHS, typeRHS)) {
+      // if both sides are NOT compatible
+      errors.add(new MismatchedTypes(ctx, typeLHS, typeRHS));
+      return null;
     }
+
+    ST.add(ctx.IDENT().getText(), new VARIABLE(typeLHS));
 
     return null;
   }
@@ -60,7 +69,6 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
     }
 
     if (!isCompatible(typeLHS, typeRHS)) {
-      errors.add(new MismatchedTypes(typeLHS, typeRHS));
       return null;
     }
 
@@ -94,6 +102,7 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
       return null;
     } else {
       SymbolTable oldScope = ST;
+
       // create new scope for statement 1
       ST = new SymbolTable(oldScope);
       visit(ctx.stat(0));
@@ -109,6 +118,7 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
 
   @Override
   public Object visitWhileDo(WaccParser.WhileDoContext ctx) {
+
     Object obj = visit(ctx.expr());
     if (obj == null) {
       // the expression is undefined
@@ -152,23 +162,23 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
 
   @Override
   public TYPE visitReadCall(ReadCallContext ctx) {
-    return visitFunctionCall(ctx.READ().getText(), Collections.singletonList(ctx.assignLHS()));
+    return visitFunctionCall(ctx, ctx.READ().getText(), Collections.singletonList(ctx.assignLHS()));
   }
 
   @Override
   public TYPE visitPrintlnCall(WaccParser.PrintlnCallContext ctx) {
-    return visitFunctionCall(ctx.PRINT_LINE().getText(), Collections.singletonList(ctx.expr()));
+    return visitFunctionCall(ctx, ctx.PRINT_LINE().getText(), Collections.singletonList(ctx.expr()));
   }
 
   @Override
   public TYPE visitPrintCall(PrintCallContext ctx) {
-    return visitFunctionCall(ctx.PRINT().getText(), Collections.singletonList(ctx.expr()));
+    return visitFunctionCall(ctx, ctx.PRINT().getText(), Collections.singletonList(ctx.expr()));
   }
 
 
   @Override
   public TYPE visitFreeCall(WaccParser.FreeCallContext ctx) {
-    return visitFunctionCall(ctx.FREE().getText(), Collections.singletonList(ctx.expr()));
+    return visitFunctionCall(ctx, ctx.FREE().getText(), Collections.singletonList(ctx.expr()));
   }
 
 

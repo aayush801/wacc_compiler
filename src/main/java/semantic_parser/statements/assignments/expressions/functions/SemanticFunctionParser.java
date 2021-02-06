@@ -4,67 +4,88 @@ import antlr.WaccParser.FuncCallContext;
 import antlr.WaccParser.FuncDeclContext;
 import antlr.WaccParser.ParamContext;
 import antlr.WaccParser.ParamListContext;
+import error.MismatchedTypes;
 import error.NotAFunction;
 import error.Undefined;
-import semantic_parser.SemanticParser;
-import semantic_parser.statements.assignments.expressions.functions.base.SemanticBaseParser;
 import identifier_objects.FUNCTION;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.PARAM;
 import identifier_objects.TYPE;
+import identifier_objects.VARIABLE;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
+import semantic_parser.statements.assignments.expressions.functions.base.SemanticBaseParser;
 import symbol_table.SymbolTable;
 
 public abstract class SemanticFunctionParser extends SemanticBaseParser {
 
   /* ============== HELPER METHOD FOR ALL TYPES OF FUNCTION CALLS ============== */
 
-  protected TYPE visitFunctionCall(String funcIdentifier, List<ParserRuleContext> params) {
+  protected TYPE visitFunctionCall(ParserRuleContext ctx, String funcIdentifier,
+      List<ParserRuleContext> params) {
 
     // lookup the operator function
-    IDENTIFIER function = ST.lookupAll(funcIdentifier);
-    if (function == null) {
-      errors.add(new Undefined(funcIdentifier));
+    IDENTIFIER identifier = visitIdentifier(funcIdentifier);
+    if (identifier == null) {
+      errors.add(new Undefined(ctx, funcIdentifier));
       return null;
-    } else if (!(function instanceof FUNCTION)) {
-      errors.add(new NotAFunction(funcIdentifier));
-      return null;
-    } else if (params.size() != ((FUNCTION) function).formals.size()) {
-      System.out.println("Error : invalid number of parameters for '"+funcIdentifier +"' given. WAS : "+params.size()+", EXPECTED : " + ((FUNCTION) function).formals.size()  );
-      return null;
-    } else {
-
-      // checks all the parameter types match up
-      for (int i = 0; i < params.size(); i++) {
-        ParserRuleContext expr = params.get(i);
-        IDENTIFIER actual = (IDENTIFIER) visit(expr);
-        if (actual == null) {
-          errors.add(new Undefined(expr.getText()));
-          return null;
-        } else if (!(actual instanceof TYPE)) {
-          System.out.println(
-              "ERROR (expression) : " + expr.getText() + " has no type");
-          return null;
-        } else {
-          PARAM formal = ((FUNCTION) function).formals.get(i);
-          if (!isCompatible(((TYPE) actual).getType(), formal.type)) {
-            System.out.println(
-                "ERROR (incompatible types) : " + expr.getParent().getText() + ", EXPECTED : "
-                    + formal.type + ", ACTUAL : "
-                    + ((TYPE) actual).getType());
-            return null;
-          }
-        }
-      }
-      return ((FUNCTION) function).getReturnType();
     }
+    // check functionIdent
+    if (!(identifier instanceof FUNCTION)) {
+      errors.add(new NotAFunction(ctx, funcIdentifier));
+      return null;
+    }
+
+    FUNCTION function = (FUNCTION) identifier;
+
+    if (params.size() != function.formals.size()) {
+      System.out.println(
+          "Error : invalid number of parameters for '" + funcIdentifier + "' given. WAS : " + params
+              .size() + ", EXPECTED : " + function.formals.size());
+      return null;
+    }
+
+    // checks all the parameter types match up
+    for (int i = 0; i < params.size(); i++) {
+
+      ParserRuleContext expr = params.get(i);
+      IDENTIFIER actual = (IDENTIFIER) visit(expr);
+
+      if (actual == null) {
+        errors.add(new Undefined(expr));
+        return null;
+      }
+
+      /* Variables enclose an actual type */
+      if(actual instanceof VARIABLE ){
+        actual = ((VARIABLE) actual).getType();
+      }
+
+      /* Parameters enclose an actual type */
+      if(actual instanceof PARAM ){
+        actual = ((PARAM) actual).getType();
+      }
+
+      if (!(actual instanceof TYPE)) {
+        System.out.println(
+            "ERROR (expression) : " + expr.getText() + " has no type");
+        return null;
+      }
+
+      TYPE actualType = ((TYPE) actual);
+      PARAM formal = function.formals.get(i);
+      if (!isCompatible(actualType, formal.getType())) {
+        return null;
+      }
+
+    }
+    return ((FUNCTION) function).getReturnType();
   }
 
   @Override
   public TYPE visitFuncCall(FuncCallContext ctx) {
-    return visitFunctionCall(ctx.IDENT().getText(),
+    return visitFunctionCall(ctx, ctx.IDENT().getText(),
         ctx.argList().expr().stream().map(e -> (ParserRuleContext) e).collect(
             Collectors.toList()));
   }
@@ -99,13 +120,10 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     oldScope.add(identifier, newFunction);
 
     TYPE returnedType = (TYPE) visit(ctx.stat());
-    if(returnedType != null){
-      // if there is a returned value from the func body we need to check
-      // that it is compatible with the return type of the function
-      if(!isCompatible(returnedType, returnType)){
-        // the returned type is not compatible
-        return null;
-      }
+    if (!isCompatible(returnedType, returnType)) {
+      // the returned type is not compatible with the return type of the function
+      errors.add(new MismatchedTypes(ctx, returnedType, returnType));
+      return null;
     }
 
     ST = oldScope;
@@ -125,7 +143,8 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     // get the type
     TYPE type = visitType(ctx.type());
     if (type == null) {
-      System.out.println("param : " +ctx.getText() + " is undefined");
+      errors.add(new Undefined(ctx));
+      System.out.println("param : " + ctx.getText() + " is undefined");
       // type is undefined
       return null;
     }

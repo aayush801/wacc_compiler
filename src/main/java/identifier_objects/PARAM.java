@@ -1,15 +1,14 @@
 package identifier_objects;
 
-public class PARAM extends TYPE {
+public class PARAM extends IDENTIFIER {
 
-  public TYPE type;
+  private final TYPE type;
 
   public PARAM(TYPE type) {
     super("param");
     this.type = type;
   }
 
-  @Override
   public TYPE getType() {
     return type;
   }

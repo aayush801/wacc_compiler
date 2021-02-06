@@ -22,7 +22,6 @@ paramList: param (COMMA param)*;
 //argument list
 argList: expr (COMMA expr)* ;
 
-
 //statements
 stat:
     SKIP_STATEMENT                        #skipStat
@@ -42,11 +41,21 @@ stat:
 
 //typings
 type:
-  BASE_TYPE
-  | ARRAY_TYPE
+  baseType
   | pairType
+  | arrayType
 ;
 
+//base types
+baseType:
+    INT_TYPE
+  | BOOL_TYPE
+  | CHAR_TYPE
+  | STRING_TYPE
+;
+
+// array initialisation type
+arrayType : (baseType | pairType) (OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET)+;
 
 //left hand side assignment
 assignLHS:
@@ -86,8 +95,6 @@ expr:
 //unary operators
 unaryOperator: NOT | MINUS | LENGTH | ORD | CHR ;
 
-
-
 //arrays
 arrayElem: IDENT (OPEN_SQUARE_BRACKET expr CLOSE_SQUARE_BRACKET)+ ;
 array: OPEN_SQUARE_BRACKET (expr (COMMA expr)*)? CLOSE_SQUARE_BRACKET ;
@@ -95,8 +102,8 @@ array: OPEN_SQUARE_BRACKET (expr (COMMA expr)*)? CLOSE_SQUARE_BRACKET ;
 //pairs
 pairType: PAIR_TYPE OPEN_PARENTHESES pairElemType COMMA pairElemType CLOSE_PARENTHESES ;
 pairElemType:
-  BASE_TYPE
-  | ARRAY_TYPE
+  baseType
+  | arrayType
   | PAIR_TYPE
 ;
 pairElem:

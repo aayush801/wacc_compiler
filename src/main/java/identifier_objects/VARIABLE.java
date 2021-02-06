@@ -1,6 +1,6 @@
 package identifier_objects;
 
-public class VARIABLE extends TYPE {
+public class VARIABLE extends IDENTIFIER {
 
   TYPE type;
 
@@ -9,7 +9,6 @@ public class VARIABLE extends TYPE {
     this.type = type;
   }
 
-  @Override
   public TYPE getType() {
     return type;
   }

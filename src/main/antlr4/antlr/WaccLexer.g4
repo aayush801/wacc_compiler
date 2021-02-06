@@ -28,22 +28,12 @@ COMMA : ',' ;
 // statement seperator
 SEPERATOR: ';' ;
 
-//base types
-BASE_TYPE:
-    INT_TYPE
-  | BOOL_TYPE
-  | CHAR_TYPE
-  | STRING_TYPE
-;
-
+// types
 STRING_TYPE: 'string';
 CHAR_TYPE: 'char';
 BOOL_TYPE: 'bool' ;
 INT_TYPE: 'int' ;
-
-// other types
 PAIR_TYPE: 'pair' ;
-ARRAY_TYPE: (BASE_TYPE | PAIR_TYPE) ('[]')+ ;
 
 
 //prog keywords
