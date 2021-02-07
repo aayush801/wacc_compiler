@@ -21,7 +21,10 @@ public class SemanticTests {
   @Test
   public void testArrayElem() throws IOException {
     String instruction =
-        "begin \n" + "bool[] array = [true, false] ; \n" + "array[5] = true\n" + "end";
+        "begin \n"
+            + "bool[] array = [true, false] ; \n"
+            + "array[5] = true\n"
+            + "end";
     WaccCompiler compiler = new WaccCompiler(instruction);
     ErrorCode errorCode = compiler.compile();
     System.out.println(compiler.getErrors());
@@ -30,11 +33,14 @@ public class SemanticTests {
 
   @Test
   public void testPolymorphicFunction() throws IOException {
-    String instruction = "begin \n" + "bool b = 2 > 2 ;\n" + "bool x = 'a' > 'b' \n" + "end";
+    String instruction = "begin \n"
+        + "bool b = 2 > '2' ;\n"
+        + "bool x = 'a' > 'b' \n"
+        + "end";
     WaccCompiler compiler = new WaccCompiler(instruction);
     ErrorCode errorCode = compiler.compile();
     System.out.println(compiler.getErrors());
-    assertThat(errorCode, is(ErrorCode.SUCCESS));
+    assertThat(errorCode, is(ErrorCode.SEMANTIC_ERROR));
   }
 
   @Test

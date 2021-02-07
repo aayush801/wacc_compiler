@@ -1,7 +1,12 @@
 package middleware.ast.statement_ast;
 
-import middleware.ast.AbstractSyntaxTree;
+import middleware.ast.NodeAST;
+import org.antlr.v4.runtime.Token;
 
-public class StatementAST extends AbstractSyntaxTree {
+public abstract class StatementAST extends NodeAST {
+
+  public StatementAST(Token token) {
+    super(token);
+  }
 
 }

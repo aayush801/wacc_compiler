@@ -1,23 +1,26 @@
 package identifier_objects;
 
+import java.util.ArrayList;
 import java.util.List;
 import symbol_table.SymbolTable;
 
 public class FUNCTION extends IDENTIFIER {
 
   public final TYPE returnType;
-  public final SymbolTable ST;
-  public final List<PARAM> formals;
+  public final List<PARAM> formals = new ArrayList<>();
+  private SymbolTable ST;
 
-  public FUNCTION(TYPE returnType, List<PARAM> formals, SymbolTable ST) {
+  public FUNCTION(TYPE returnType) {
     super("function");
     this.returnType = returnType;
-    this.ST = ST;
-    this.formals = formals;
   }
 
-  public SymbolTable getST(){
+  public SymbolTable getST() {
     return ST;
+  }
+
+  public void setST(SymbolTable ST) {
+    this.ST = ST;
   }
 
   public TYPE getReturnType() {
@@ -38,5 +41,4 @@ public class FUNCTION extends IDENTIFIER {
     }
     return false;
   }
-
 }

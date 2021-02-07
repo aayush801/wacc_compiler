@@ -1,15 +1,16 @@
 package errors.semantic_errors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 
 public class GlobalScope extends WaccSemanticError {
 
-  public GlobalScope(ParserRuleContext ctx) {
-    super(ctx);
+  public GlobalScope(Token token) {
+    super(token);
   }
 
-  public GlobalScope(ParserRuleContext ctx, String offendingSymbol) {
-    super(ctx, offendingSymbol);
+  public GlobalScope(Token token, String offendingSymbol) {
+    super(token, offendingSymbol);
   }
 
   @Override

@@ -75,16 +75,14 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
 
   @Override
   public TYPE visitPairElem(WaccParser.PairElemContext ctx) {
-    TYPE expr = new PAIR(); //TODO: Doing the .expr() broke on Nandhu's machine, so he commented it out for now
-    //TYPE expr = (TYPE) visitExpr(ctx.epxr());
-
+    TYPE expr = (TYPE) visitExpr(ctx.expr());
     if (expr == null) {
-      addError(new Undefined(ctx));
+      addError(new Undefined(ctx.expr().start));
       return null;
     }
 
     if (!(expr instanceof PAIR)) {
-      addError(new MismatchedTypes(ctx, expr, new PAIR()));
+      addError(new MismatchedTypes(ctx.expr().start, expr, new PAIR()));
       return null;
     }
 
@@ -99,7 +97,6 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
     }
 
     return null;
-
   }
 
 
@@ -134,7 +131,7 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
     }
 
     if (type == null) {
-      errors.add(new Undefined(ctx, typeText));
+      errors.add(new Undefined(ctx.start, typeText));
       return null;
     }
 
@@ -221,7 +218,7 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
     for (ParseTree expr : ctx.expr()) {
       TYPE actualType = (TYPE) visit(expr);
       if (!isCompatible(actualType, expectedType)) {
-        errors.add(new MismatchedTypes(ctx, actualType, expectedType));
+        errors.add(new MismatchedTypes(ctx.start, actualType, expectedType));
         return null;
       }
     }
@@ -232,12 +229,12 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
   public TYPE visitArrayElem(WaccParser.ArrayElemContext ctx) {
     IDENTIFIER identifier = visitIdentifier(ctx.IDENT().getText());
     if (identifier == null) {
-      errors.add(new Undefined(ctx, ctx.IDENT().getText()));
+      errors.add(new Undefined(ctx.IDENT().getSymbol()));
       return null;
     }
 
     if (!(identifier instanceof ARRAY)) {
-      addError(new MismatchedTypes(ctx, identifier, new ARRAY(new INT())));
+      addError(new MismatchedTypes(ctx.IDENT().getSymbol(), identifier, new ARRAY(new INT())));
       return null;
     }
 
@@ -248,12 +245,12 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
       Object obj = visit(exprTree);
 
       if (obj == null) {
-        errors.add(new Undefined(ctx, exprTree.getText()));
+        errors.add(new Undefined(ctx.start, exprTree.getText()));
         return null;
       }
 
       if (!(obj instanceof INT)) {
-        addError(new MismatchedTypes(ctx, (IDENTIFIER) obj, new INT()));
+        addError(new MismatchedTypes(ctx.start, (IDENTIFIER) obj, new INT()));
         return null;
       }
     }

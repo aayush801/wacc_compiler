@@ -24,9 +24,9 @@ public abstract class SemanticExpressionParser extends SemanticFunctionParser {
 //      ExpressionAST left = ...;
 //      ExpressionAST right = ...;
 
-      ExpressionAST left = new ExpressionAST((TYPE) visit(ctx.expr(0)));
-      ExpressionAST right = new ExpressionAST((TYPE) visit(ctx.expr(1)));
-      ExpressionAST expressionAST = new ExpressionAST(type, left, operator, right);
+//      ExpressionAST left = new ExpressionAST((TYPE) visit(ctx.expr(0)));
+//      ExpressionAST right = new ExpressionAST((TYPE) visit(ctx.expr(1)));
+//      ExpressionAST expressionAST = new ExpressionAST(type, left, operator, right);
       return type;
     }
 
