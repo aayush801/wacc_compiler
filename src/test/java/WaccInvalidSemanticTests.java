@@ -9,10 +9,14 @@ public class WaccInvalidSemanticTests {
 
 
   private void files_checker(String base, String[] files) throws IOException {
+    WaccCompiler compiler;
+    ErrorCode errorCode;
+    String file_path;
+    
     for (String file : files) {
-      String file_path = base + file;
-      WaccCompiler compiler = new WaccCompiler(new FileInputStream(file_path));
-      ErrorCode errorCode = compiler.compile();
+      file_path = base + file;
+      compiler = new WaccCompiler(new FileInputStream(file_path));
+      errorCode = compiler.compile();
       if (errorCode != ErrorCode.SEMANTIC_ERROR) {
         System.out.println(file);
         System.out.println(compiler.getErrors());
@@ -26,7 +30,8 @@ public class WaccInvalidSemanticTests {
   @Test
   public void semantic_invalid_examples_exit() throws IOException {
     String base = "test_data/invalid/semanticErr/exit/";
-    String[] files = {"badCharExit.wacc", "exitNonInt.wacc", "globalReturn.wacc"};
+    String[] files
+        = {"badCharExit.wacc", "exitNonInt.wacc", "globalReturn.wacc"};
 
     files_checker(base, files);
   }
@@ -35,9 +40,10 @@ public class WaccInvalidSemanticTests {
   @Test
   public void semantic_invalid_examples_expressions() throws IOException {
     String base = "test_data/invalid/semanticErr/expressions/";
-    String[] files = {"boolOpTypeErr.wacc", "exprTypeErr.wacc", "intOpTypeErr.wacc",
-        "lessPairExpr.wacc",
-        "mixedOpTypeErr.wacc", "moreArrExpr.wacc", "stringElemErr.wacc"};
+    String[] files =
+        {"boolOpTypeErr.wacc", "exprTypeErr.wacc", "intOpTypeErr.wacc",
+            "lessPairExpr.wacc", "mixedOpTypeErr.wacc",
+            "moreArrExpr.wacc", "stringElemErr.wacc"};
 
     files_checker(base, files);
   }
@@ -45,11 +51,12 @@ public class WaccInvalidSemanticTests {
   @Test
   public void semantic_invalid_examples_functions() throws IOException {
     String base = "test_data/invalid/semanticErr/function/";
-    String[] files = {"functionAssign.wacc", "functionBadArgUse.wacc", "functionBadCall.wacc",
-        "functionBadParam.wacc",
-        "functionBadReturn.wacc", "functionOverArgs.wacc", "functionRedefine.wacc",
-        "functionSwapArgs.wacc",
-        "functionUnderArgs.wacc", "funcVarAccess.wacc"};
+    String[] files =
+        {"functionAssign.wacc", "functionBadArgUse.wacc",
+            "functionBadCall.wacc", "functionBadParam.wacc",
+            "functionBadReturn.wacc", "functionOverArgs.wacc",
+            "functionRedefine.wacc", "functionSwapArgs.wacc",
+            "functionUnderArgs.wacc", "funcVarAccess.wacc"};
 
     files_checker(base, files);
 
@@ -76,7 +83,8 @@ public class WaccInvalidSemanticTests {
   @Test
   public void semantic_invalid_examples_multiple() throws IOException {
     String base = "test_data/invalid/semanticErr/multiple/";
-    String[] files = {"funcMess.wacc", "ifAndWhileErrs.wacc", "messyExpr.wacc",
+    String[] files
+        = {"funcMess.wacc", "ifAndWhileErrs.wacc", "messyExpr.wacc",
         "multiCaseSensitivity.wacc",
         "multiTypeErrs.wacc"};
 
@@ -123,23 +131,16 @@ public class WaccInvalidSemanticTests {
   @Test
   public void semantic_invalid_examples_variables() throws IOException {
     String base = "test_data/invalid/semanticErr/variables/";
-    String[] files = {"basicTypeErr01.wacc",
-        "basicTypeErr02.wacc",
-        "basicTypeErr03.wacc",
-        "basicTypeErr04.wacc",
-        "basicTypeErr05.wacc",
-        "basicTypeErr06.wacc",
-        "basicTypeErr07.wacc",
-        "basicTypeErr08.wacc",
-        "basicTypeErr09.wacc",
-        "basicTypeErr10.wacc",
-        "basicTypeErr11.wacc",
-        "basicTypeErr12.wacc",
-        "caseMatters.wacc",
-        "doubleDeclare.wacc",
-        "undeclaredScopeVar.wacc",
-        "undeclaredVar.wacc",
-        "undeclaredVarAccess.wacc"};
+    String[] files =
+        {"basicTypeErr01.wacc",
+            "basicTypeErr02.wacc", "basicTypeErr03.wacc",
+            "basicTypeErr04.wacc", "basicTypeErr05.wacc",
+            "basicTypeErr06.wacc", "basicTypeErr07.wacc",
+            "basicTypeErr08.wacc", "basicTypeErr09.wacc",
+            "basicTypeErr10.wacc", "basicTypeErr11.wacc",
+            "basicTypeErr12.wacc", "caseMatters.wacc",
+            "doubleDeclare.wacc", "undeclaredScopeVar.wacc",
+            "undeclaredVar.wacc", "undeclaredVarAccess.wacc"};
 
     files_checker(base, files);
   }

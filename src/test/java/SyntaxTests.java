@@ -13,19 +13,29 @@ public class SyntaxTests {
 
   @Test
   public void testAddition() throws IOException {
-    String instruction = "begin \n" + "int x = 1 + 2 \n" + "end";
+    String instruction =
+        "begin \n" +
+            "int x = 1 + 2 \n" +
+            "end";
     check(instruction, false);
   }
 
   @Test
   public void testComplexArithmetic() throws IOException {
-    String instruction = "begin \n" + "int x = 1 + 2 * 3 / 2 \n" + "end";
+    String instruction
+        = "begin \n" +
+        "int x = 1 + 2 * 3 / 2 \n" +
+        "end";
     check(instruction, false);
   }
 
   @Test
   public void testComments() throws IOException {
-    String instruction = "begin \n"+"# random comment \n" +"int x = 2\n"+"end";
+    String instruction
+        = "begin \n" +
+        "# random comment \n" +
+        "int x = 2\n" +
+        "end";
     WaccCompiler compiler = new WaccCompiler(instruction);
     compiler.compile();
     assertThat(compiler.hasErrors(), is(false));
@@ -35,13 +45,13 @@ public class SyntaxTests {
   @Test
   public void testReturnStatements() throws IOException {
     String instruction =
-        "begin \n"
-            + "bool f(bool b) \n"
-            + "is \n"
-                + "if x then skip else return true fi \n"
-            + "end\n"
-            + "skip\n"
-        + "end";
+        "begin \n" +
+            "bool f(bool b) \n" +
+            "is \n" +
+            "if x then skip else return true fi \n" +
+            "end\n" +
+            "skip\n" +
+            "end";
     check(instruction, true);
   }
 
