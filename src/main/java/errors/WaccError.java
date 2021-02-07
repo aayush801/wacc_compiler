@@ -1,13 +1,20 @@
-package error;
+package errors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 
 public abstract class WaccError {
-  protected String partOfCodeWithError;
+
   protected String code;
   protected int lineNo;
   protected int lineCol;
   protected ParserRuleContext ctx;
+
+  public WaccError(Recognizer<?, ?>recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e){
+    this.lineNo = line;
+    this.lineCol = charPositionInLine;
+  }
 
   public WaccError(ParserRuleContext ctx) {
     this.ctx = ctx;
@@ -16,20 +23,20 @@ public abstract class WaccError {
     this.lineCol = ctx.getStart().getCharPositionInLine();
   }
 
-  public WaccError(ParserRuleContext ctx, String partOfCodeWithError) {
+  public WaccError(ParserRuleContext ctx, String offendingSymbol) {
     this(ctx);
-    int position = code.indexOf(partOfCodeWithError);
+    int position = code.indexOf(offendingSymbol);
     code = code.substring(0, position) + "->" + code.substring(position);
   }
 
   public String getErrorMessage() {
-    System.out.println("This method should be override");
+    System.out.println("THIS METHOD SHOULD BE OVERRIDDEN");
     return null;
   }
 
   @Override
   public String toString() {
-    return "line " + this.lineNo + ":" + this.lineCol + " " + getErrorMessage();
+    return "found at line " + lineNo + ":" + lineCol + " " + getErrorMessage();
   }
 
   @Override

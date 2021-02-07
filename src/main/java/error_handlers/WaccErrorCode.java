@@ -1,6 +1,6 @@
 package error_handlers;
 
-public enum WaccError {
+public enum WaccErrorCode {
   SUCCESS,
   SYNTAX_ERROR,
   SEMANTIC_ERROR,

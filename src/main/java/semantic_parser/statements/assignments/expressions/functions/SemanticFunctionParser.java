@@ -4,14 +4,13 @@ import antlr.WaccParser.FuncCallContext;
 import antlr.WaccParser.FuncDeclContext;
 import antlr.WaccParser.ParamContext;
 import antlr.WaccParser.ParamListContext;
-import error.MismatchedTypes;
-import error.NotAFunction;
-import error.Undefined;
+import errors.semantic_errors.MismatchedTypes;
+import errors.semantic_errors.NotAFunction;
+import errors.semantic_errors.Undefined;
 import identifier_objects.FUNCTION;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.PARAM;
 import identifier_objects.TYPE;
-import identifier_objects.VARIABLE;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -57,15 +56,6 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
         return null;
       }
 
-      /* Variables enclose an actual type */
-      if(actual instanceof VARIABLE ){
-        actual = ((VARIABLE) actual).getType();
-      }
-
-      /* Parameters enclose an actual type */
-      if(actual instanceof PARAM ){
-        actual = ((PARAM) actual).getType();
-      }
 
       if (!(actual instanceof TYPE)) {
         System.out.println(

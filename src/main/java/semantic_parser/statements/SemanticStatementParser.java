@@ -4,15 +4,14 @@ import antlr.WaccParser;
 import antlr.WaccParser.BeginStatContext;
 import antlr.WaccParser.PrintCallContext;
 import antlr.WaccParser.ReadCallContext;
-import error.DuplicateIdentifier;
-import error.MismatchedTypes;
-import error.Undefined;
+import errors.semantic_errors.DuplicateIdentifier;
+import errors.semantic_errors.MismatchedTypes;
+import errors.semantic_errors.Undefined;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
 import identifier_objects.VARIABLE;
 import identifier_objects.basic_types.BOOL;
 import java.util.Collections;
-import javax.swing.UIDefaults;
 import semantic_parser.statements.assignments.SemanticAssignmentParser;
 import symbol_table.SymbolTable;
 
@@ -28,7 +27,9 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
       return null;
     }
 
-    IDENTIFIER identifier = visitIdentifier(ctx.IDENT().getText());
+    // for this type of assignment we only lookup in the local scope as
+    // we are allowed to redefine variables in WACC
+    IDENTIFIER identifier = ST.lookup(ctx.IDENT().getText());
     if (identifier != null) {
       // identifier already exists within the scope
       errors.add(new DuplicateIdentifier(ctx, ctx.IDENT().getText()));

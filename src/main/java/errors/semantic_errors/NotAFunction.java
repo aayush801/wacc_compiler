@@ -1,8 +1,8 @@
-package error;
+package errors.semantic_errors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class NotAFunction extends WaccError {
+public class NotAFunction extends WaccSemanticError {
 
 
   public NotAFunction(ParserRuleContext ctx) {

@@ -1,8 +1,8 @@
-package error;
+package errors.semantic_errors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class DuplicateIdentifier extends WaccError{
+public class DuplicateIdentifier extends WaccSemanticError {
 
   public DuplicateIdentifier(ParserRuleContext ctx) {
     super(ctx);

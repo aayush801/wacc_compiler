@@ -57,7 +57,6 @@ public class SymbolTable {
     st.add(CHAR.name, charType);
     st.add(PAIR.name, pairType);
     st.add(BOOL.name, boolType);
-    st.add(ARRAY.name, arrayType);
 
     /* ====== PRIMITIVE BINARY FUNCTIONS ======= */
     st.add(PLUS.name, new PLUS(intType, st));

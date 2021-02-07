@@ -1,8 +1,8 @@
-package error;
+package errors.semantic_errors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class Undefined extends WaccError{
+public class Undefined extends WaccSemanticError {
 
 
   public Undefined(ParserRuleContext ctx) {

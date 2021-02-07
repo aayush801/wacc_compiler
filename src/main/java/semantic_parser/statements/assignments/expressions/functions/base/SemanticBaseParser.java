@@ -9,9 +9,9 @@ import antlr.WaccParser.PairContext;
 import antlr.WaccParser.StringContext;
 import antlr.WaccParser.TypeContext;
 import antlr.WaccParserBaseVisitor;
-import error.MismatchedTypes;
-import error.Undefined;
-import error.WaccError;
+import errors.semantic_errors.MismatchedTypes;
+import errors.semantic_errors.Undefined;
+import errors.WaccError;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.PARAM;
 import identifier_objects.TYPE;
@@ -33,8 +33,12 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
   protected SymbolTable ST = SymbolTable.TopSymbolTable();
   protected List<WaccError> errors = new ArrayList<>();
 
-  public List<String> getErrors() {
-    return errors.stream().map(Object::toString).collect(Collectors.toList());
+  public List<WaccError> getErrors() {
+    return errors;
+  }
+
+  public boolean hasErrors() {
+    return errors.size() > 0;
   }
 
   protected boolean isCompatible(TYPE t1, TYPE t2) {
@@ -73,19 +77,22 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
   /* ======================= LITERAL EXPRESSION SEMANTICS ========================= */
   /* Note: this is actual values that are stored in memory like true/false/1/2/3 */
 
-  public TYPE visitIdentifier(String identifier) {
+  public IDENTIFIER visitIdentifier(String identifier) {
     IDENTIFIER obj = ST.lookupAll(identifier);
+
     if (obj instanceof VARIABLE) {
-      return ((VARIABLE) obj).getType();
-    } else if (obj instanceof PARAM) {
       return ((VARIABLE) obj).getType();
     }
 
-    return null;
+    if (obj instanceof PARAM) {
+      return ((PARAM) obj).getType();
+    }
+
+    return obj;
   }
 
   @Override
-  public TYPE visitIdentifier(IdentifierContext ctx) {
+  public IDENTIFIER visitIdentifier(IdentifierContext ctx) {
     return visitIdentifier(ctx.IDENT().getText());
   }
 
@@ -137,23 +144,14 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
       return null;
     }
 
-    if (!(identifier instanceof VARIABLE)) {
+    if (!(identifier instanceof ARRAY)) {
       System.out.println(
           ctx.IDENT().getSymbol().getLine() + ":" + ctx.IDENT().getSymbol().getCharPositionInLine()
               + ", " + ctx.IDENT().getText() + " is not a variable");
       return null;
     }
 
-    VARIABLE variable = (VARIABLE) identifier;
-
-    if(!(variable.getType() instanceof ARRAY)) {
-      System.out.println(
-          ctx.IDENT().getSymbol().getLine() + ":" + ctx.IDENT().getSymbol().getCharPositionInLine()
-              + ", " + ctx.IDENT().getText() + " is not an array");
-      return null;
-    }
-
-    ARRAY array = (ARRAY) variable.getType();
+    ARRAY array = (ARRAY) identifier;
 
     for (ParseTree exprTree : ctx.expr()) {
 
@@ -164,19 +162,7 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
         return null;
       }
 
-      /* Variables enclose an actual type */
-      if(obj instanceof VARIABLE ){
-        obj = ((VARIABLE) obj).getType();
-      }
-
-      /* Parameters enclose an actual type */
-      if(obj instanceof PARAM){
-        obj = ((PARAM) obj).getType();
-      }
-
-      TYPE expr = (TYPE) obj;
-
-      if (!(expr instanceof INT)) {
+      if (!(obj instanceof INT)) {
         System.out.println(exprTree.getText() + " is not of type int");
         return null;
       }

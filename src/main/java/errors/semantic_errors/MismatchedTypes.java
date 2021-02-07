@@ -1,9 +1,9 @@
-package error;
+package errors.semantic_errors;
 
 import identifier_objects.TYPE;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class MismatchedTypes extends WaccError {
+public class MismatchedTypes extends WaccSemanticError {
 
   private TYPE actual;
   private TYPE expected;

@@ -1,58 +1,56 @@
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import antlr.WaccParser.ProgContext;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import org.junit.Test;
 
 // import ANTLR's runtime libraries
 // import antlr package
 
 public class SyntaxTests {
-
-  private final WaccCompiler compiler = new WaccCompiler();
-
-  private void compileInstruction(String instruction) throws IOException {
-    compiler.compile(new ByteArrayInputStream((instruction).getBytes(StandardCharsets.UTF_8)));
+  private WaccCompiler compileAndParseSyntactics(String instruction) throws IOException {
+    WaccCompiler compiler = new WaccCompiler(
+        new ByteArrayInputStream(instruction.getBytes(StandardCharsets.UTF_8)));
+    compiler.parseSyntactics();
+    return compiler;
   }
 
   @Test
   public void testAddition() throws IOException {
     String instruction = "1 + 2";
-    compileInstruction(instruction);
-    assertThat(compiler.treeString(),is("(prog (expr (expr 1) + (expr 2)) <EOF>)"));
+    WaccCompiler compiler = compileAndParseSyntactics(instruction);
+    assertThat(compiler.hasErrors(), is(false));
   }
 
   @Test
-  public void testPrecedence() throws IOException {
+  public void testComplexArithmetic() throws IOException {
     String instruction = "1 + 2 * 3 / 2";
-    compileInstruction(instruction);
-    assertThat(compiler.treeString(),
-        is("(prog (expr (expr 1) + (expr (expr (expr 2) * (expr 3)) / (expr 2))) <EOF>)"));
+    WaccCompiler compiler = compileAndParseSyntactics(instruction);
+    assertThat(compiler.hasErrors(), is(false));
   }
 
   @Test
   public void testComments() throws IOException {
     String instruction = "# random comment \n";
-    compileInstruction(instruction);
-    assertThat(compiler.treeString(), is("(prog <EOF>)"));
+    WaccCompiler compiler = compileAndParseSyntactics(instruction);
+    assertThat(compiler.hasErrors(), is(false));
   }
 
   @Test
   public void testLessThan() throws IOException {
     String instruction = "1 < c";
-    compileInstruction(instruction);
-    assertThat(compiler.treeString(), is("(prog (expr (expr 1) < (expr c)) <EOF>)"));
+    WaccCompiler compiler = compileAndParseSyntactics(instruction);
+    assertThat(compiler.hasErrors(), is(false));
   }
 
   @Test
-  public void testEquality() throws IOException {
-    String instruction = "true && (2 == 3)";
-    compileInstruction(instruction);
-    // THIS DOESN'T WORK YET!
-    //     | (boolExpr | PAIR | IDENT | STRING | CHARACTER | arrayElem | unaryOper expr | OPEN_PARENTHESES expr CLOSE_PARENTHESES | term2) equalityOp expr
+  public void testIfElse() throws IOException {
+    String instruction = "begin if then else end";
+    WaccCompiler compiler = compileAndParseSyntactics(instruction);
+    assertThat(compiler.hasErrors(), is(true));
   }
 
 }

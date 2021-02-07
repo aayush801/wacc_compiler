@@ -1,48 +1,89 @@
 // import ANTLR's runtime libraries
+
 import antlr.WaccLexer;
 import antlr.WaccParser;
-import error_handlers.WaccParserHandler;
+import antlr.WaccParser.ProgContext;
+import error_handlers.SyntaxErrorListener;
+import error_handlers.WaccErrorCode;
+import errors.WaccError;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
-import semantic_parser.SemanticParser;
+import semantic_parser.SemanticParserVisitor;
 
 public class WaccCompiler {
 
-  private WaccParser parser;
-  private final WaccParserHandler parserHandler = new WaccParserHandler();
+  private final List<WaccError> errors = new ArrayList<>();
+  private final WaccParser syntaxParser;
+  private final SemanticParserVisitor semanticParserVisitor = new SemanticParserVisitor();
+  private final SyntaxErrorListener syntaxErrorListener = new SyntaxErrorListener();
 
-  public void compile(InputStream inputStream) throws IOException {
-
+  public WaccCompiler(InputStream inputStream) throws IOException {
     CharStream input = CharStreams.fromStream(inputStream);
 
     WaccLexer lexer = new WaccLexer(input);
 
     CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-    parser = new WaccParser(tokens);
+    syntaxParser = new WaccParser(tokens);
+  }
+
+  public WaccErrorCode compile() {
+
+    parseSemantics(parseSyntactics());
+
+    if (syntaxErrorListener.hasErrors()) {
+
+      return WaccErrorCode.SYNTAX_ERROR;
+
+    } else if (semanticParserVisitor.hasErrors()) {
+
+      return WaccErrorCode.SEMANTIC_ERROR;
+
+    } else {
+
+      return WaccErrorCode.SUCCESS;
+
+    }
 
   }
 
-  public String treeString() {
-    return parser.prog().toStringTree(parser);
+  public ProgContext parseSyntactics() {
+
+    syntaxParser.removeErrorListeners();
+    syntaxParser.addErrorListener(syntaxErrorListener);
+
+    ProgContext progContext = syntaxParser.prog();
+
+    errors.addAll(syntaxErrorListener.getErrors());
+
+
+    return progContext;
+
   }
 
-  public void parseSyntactics() {
-    parser.addErrorListener(parserHandler);
+  public void parseSemantics(ProgContext AST) {
+
+    semanticParserVisitor.visit(AST);
+
+    errors.addAll(semanticParserVisitor.getErrors());
+
   }
 
-  public void parseSemantics() {
-    SemanticParser semanticParser = new SemanticParser();
-    ParseTree tree = parser.prog();
-    semanticParser.visit(tree);
-    System.out.println(semanticParser.getErrors());
+  public List<WaccError> getErrors() {
+
+    return errors;
+
   }
 
+  public boolean hasErrors() {
 
+    return errors.size() > 0;
 
+  }
 
 }

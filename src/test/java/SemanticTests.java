@@ -11,41 +11,46 @@ import org.junit.Test;
 
 public class SemanticTests {
 
-  private final WaccCompiler compiler = new WaccCompiler();
-
-  private void compileInstructionAndAnalyseSemantics(String instruction) throws IOException {
-    compiler.compile(new ByteArrayInputStream((instruction).getBytes(StandardCharsets.UTF_8)));
-    compiler.parseSemantics();
+  private WaccCompiler compileAndParseSemantics(String instruction) throws IOException {
+    WaccCompiler compiler = new WaccCompiler(
+        new ByteArrayInputStream(instruction.getBytes(StandardCharsets.UTF_8)));
+    compiler.parseSemantics(compiler.parseSyntactics());
+    return compiler;
   }
 
   @Test
   public void testTypeCheck() throws IOException {
     String instruction = "1 + c";
-    compileInstructionAndAnalyseSemantics(instruction);
+    WaccCompiler compiler = compileAndParseSemantics(instruction);
+    assertThat(compiler.hasErrors(), is(true));
   }
 
   @Test
   public void testEquatableFunction() throws IOException {
     String instruction = "array[5] == true";
-    compileInstructionAndAnalyseSemantics(instruction);
+    WaccCompiler compiler = compileAndParseSemantics(instruction);
+    assertThat(compiler.hasErrors(), is(true));
   }
 
   @Test
   public void testPolymorphicFunction() throws IOException {
     String instruction = "'2' > 2";
-    compileInstructionAndAnalyseSemantics(instruction);
+    WaccCompiler compiler = compileAndParseSemantics(instruction);
+    assertThat(compiler.hasErrors(), is(true));
   }
 
   @Test
   public void testBracketedExpression() throws IOException {
     String instruction = "true && (false && true)";
-    compileInstructionAndAnalyseSemantics(instruction);
+    WaccCompiler compiler = compileAndParseSemantics(instruction);
+    assertThat(compiler.hasErrors(), is(false));
   }
 
   @Test
   public void testArrayElem() throws IOException {
     String instruction = "array [a+2]";
-    compileInstructionAndAnalyseSemantics(instruction);
+    WaccCompiler compiler = compileAndParseSemantics(instruction);
+    assertThat(compiler.hasErrors(), is(true));
   }
 
   @Test
@@ -59,7 +64,8 @@ public class SemanticTests {
         + "  end ;\n"
         + "  exit x \n"
         + "end";
-    compileInstructionAndAnalyseSemantics(instruction);
+    WaccCompiler compiler = compileAndParseSemantics(instruction);
+    assertThat(compiler.hasErrors(), is(false));
   }
 
 }
