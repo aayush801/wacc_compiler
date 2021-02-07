@@ -70,7 +70,7 @@ public abstract class SemanticExpressionParser extends SemanticFunctionParser {
 
   @Override
   public TYPE visitUnaryOperation(UnaryOperationContext ctx) {
-    /** @IMPORTANT
+    /* @IMPORTANT
      *  Some unary functions have the same operator as the binary operators
      *  (e.g - is used for subtraction (1-2) and also negation (-2))
      *  hence we must explicitly call these function identifiers*/

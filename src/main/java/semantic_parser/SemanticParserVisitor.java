@@ -6,6 +6,4 @@ import semantic_parser.statements.SemanticStatementParser;
 
 public class SemanticParserVisitor extends SemanticStatementParser {
 
-
-
 }

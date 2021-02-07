@@ -13,9 +13,10 @@ public class EXPR extends TYPE {
     if(o instanceof TYPE){
       TYPE type = (TYPE) o;
       if(name != null){
-        return name.equals(type.getName());
-      }else {
-        //name = type.getName();
+        return super.equals(o);
+      } else {
+        // binds this type to object type
+        name = type.getName();
         return true;
       }
     }

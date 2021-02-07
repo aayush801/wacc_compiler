@@ -65,7 +65,9 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
 
       TYPE actualType = ((TYPE) actual);
       PARAM formal = function.formals.get(i);
+
       if (!isCompatible(actualType, formal.getType())) {
+        errors.add(new MismatchedTypes(ctx, actualType, formal.getType()));
         return null;
       }
 

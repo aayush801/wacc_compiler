@@ -1,10 +1,11 @@
 package errors;
 
+import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 
-public abstract class WaccError {
+public abstract class WaccError extends BaseErrorListener {
 
   protected String code;
   protected int lineNo;

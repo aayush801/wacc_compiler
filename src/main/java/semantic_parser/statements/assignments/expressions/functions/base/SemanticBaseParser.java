@@ -44,8 +44,9 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
   protected boolean isCompatible(TYPE t1, TYPE t2) {
     return t2.equals(t1);
   }
-  /* ======================= TYPING SEMANTICS ========================= */
 
+
+  /* ======================= TYPING SEMANTICS ========================= */
   @Override
   public TYPE visitType(TypeContext ctx) {
     return (TYPE) visitChildren(ctx);
