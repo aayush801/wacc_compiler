@@ -50,7 +50,8 @@ public class SemanticTests {
 
   @Test
   public void testStatement() throws IOException {
-    String instruction = "begin\n"
+    String instruction =
+          "begin\n"
         + "  int x = 12 ;\n"
         + "  begin\n"
         + "    bool x = true ;\n"

@@ -73,12 +73,19 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
   /* ======================= LITERAL EXPRESSION SEMANTICS ========================= */
   /* Note: this is actual values that are stored in memory like true/false/1/2/3 */
 
-  public IDENTIFIER visitIdentifier(String identifier) {
-    return ST.lookupAll(identifier);
+  public TYPE visitIdentifier(String identifier) {
+    IDENTIFIER obj = ST.lookupAll(identifier);
+    if (obj instanceof VARIABLE) {
+      return ((VARIABLE) obj).getType();
+    } else if (obj instanceof PARAM) {
+      return ((VARIABLE) obj).getType();
+    }
+
+    return null;
   }
 
   @Override
-  public IDENTIFIER visitIdentifier(IdentifierContext ctx) {
+  public TYPE visitIdentifier(IdentifierContext ctx) {
     return visitIdentifier(ctx.IDENT().getText());
   }
 
