@@ -94,15 +94,15 @@ EQUALS: '=' ;
 INTEGER: DIGIT+ ;
 
 //boolean values
-BOOLEAN: TRUE | FALSE ;
 TRUE: 'true';
 FALSE: 'false';
 
 //pairs
 NEWPAIR: 'newpair' ;
-PAIR: 'null' ;
 PAIR_FIRST: 'fst' ;
 PAIR_SECOND: 'snd' ;
+
+NULL: 'null' ;
 
 //character/string set
 fragment CHAR: ~[\\'"] | ('\\' ESCAPED_CHAR);

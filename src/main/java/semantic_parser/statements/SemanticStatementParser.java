@@ -11,6 +11,10 @@ import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
 import identifier_objects.VARIABLE;
 import identifier_objects.basic_types.BOOL;
+import identifier_objects.unary_operator_functions.FREE;
+import identifier_objects.unary_operator_functions.PRINT;
+import identifier_objects.unary_operator_functions.PRINT_LINE;
+import identifier_objects.unary_operator_functions.READ;
 import java.util.Collections;
 import semantic_parser.statements.assignments.SemanticAssignmentParser;
 import symbol_table.SymbolTable;
@@ -150,36 +154,35 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
 
   @Override
   public TYPE visitReturnCall(WaccParser.ReturnCallContext ctx) {
-    return (TYPE) visit(ctx.expr());
+    return visitExpr(ctx.expr());
   }
-
 
   @Override
   public TYPE visitExitCall(WaccParser.ExitCallContext ctx) {
-    return (TYPE) visit(ctx.expr());
+    return visitExpr(ctx.expr());
   }
 
   /* =================== STATEMENT OPERATIONS ===================== */
 
   @Override
   public TYPE visitReadCall(ReadCallContext ctx) {
-    return visitFunctionCall(ctx, ctx.READ().getText(), Collections.singletonList(ctx.assignLHS()));
+    return visitFunctionCall(ctx, READ.name, Collections.singletonList(ctx.assignLHS()));
   }
 
   @Override
   public TYPE visitPrintlnCall(WaccParser.PrintlnCallContext ctx) {
-    return visitFunctionCall(ctx, ctx.PRINT_LINE().getText(), Collections.singletonList(ctx.expr()));
+    return visitFunctionCall(ctx, PRINT_LINE.name, Collections.singletonList(ctx.expr()));
   }
 
   @Override
   public TYPE visitPrintCall(PrintCallContext ctx) {
-    return visitFunctionCall(ctx, ctx.PRINT().getText(), Collections.singletonList(ctx.expr()));
+    return visitFunctionCall(ctx, PRINT.name, Collections.singletonList(ctx.expr()));
   }
 
 
   @Override
   public TYPE visitFreeCall(WaccParser.FreeCallContext ctx) {
-    return visitFunctionCall(ctx, ctx.FREE().getText(), Collections.singletonList(ctx.expr()));
+    return visitFunctionCall(ctx, FREE.name, Collections.singletonList(ctx.expr()));
   }
 
 

@@ -75,21 +75,21 @@ assignRHS:
 
 //expressions
 expr:
-    (PLUS | MINUS)? INTEGER                     #integer
-  | BOOLEAN                                     #boolean
-  | PAIR                                        #pair
-  | STRING                                      #string
-  | CHARACTER                                   #character
-  | IDENT                                       #identifier
-  | arrayElem                                   #arrayExpr
-  | op=unaryOperator expr                       #unaryOperation
-  | expr op=(DIVIDE | MULTIPLY | MOD) expr      #divMulModOperation
-  | expr op=(PLUS | MINUS) expr                 #plusMinusOperation
-  | expr op=(GT | GTE | LT | LTE) expr          #greLseComparison
-  | expr op=(EQ | NEQ) expr                     #eqNeqComparison
-  | expr op=AND expr                            #logicalAndOperation
-  | expr op=OR expr                             #logicalOrOperation
-  | OPEN_PARENTHESES expr CLOSE_PARENTHESES     #bracketedExpr
+    intLiter
+  | boolLiter
+  | pairLiter
+  | strLiter
+  | charLiter
+  | identifier
+  | arrayElem
+  | unaryOperator expr
+  | expr binaryOperator=(DIVIDE | MULTIPLY | MOD) expr
+  | expr binaryOperator=(PLUS | MINUS) expr
+  | expr binaryOperator=(GT | GTE | LT | LTE) expr
+  | expr binaryOperator=(EQ | NEQ) expr
+  | expr binaryOperator=AND expr
+  | expr binaryOperator=OR expr
+  | OPEN_PARENTHESES expr CLOSE_PARENTHESES
 ;
 
 //unary operators
@@ -112,4 +112,9 @@ pairElem:
 ;
 newPair: NEWPAIR OPEN_PARENTHESES expr COMMA expr CLOSE_PARENTHESES;
 
-
+intLiter: (PLUS | MINUS)? INTEGER;
+boolLiter: TRUE | FALSE ;
+pairLiter: NULL;
+strLiter: STRING;
+charLiter: CHARACTER;
+identifier: IDENT;

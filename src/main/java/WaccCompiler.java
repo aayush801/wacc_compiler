@@ -18,7 +18,7 @@ import semantic_parser.SemanticParserVisitor;
 public class WaccCompiler {
 
   private final List<WaccError> errors = new ArrayList<>();
-  private final WaccParser syntaxParser;
+  private final WaccParser parser;
   private final SemanticParserVisitor semanticParserVisitor = new SemanticParserVisitor();
   private final SyntaxErrorListener syntaxErrorListener = new SyntaxErrorListener();
 
@@ -26,10 +26,14 @@ public class WaccCompiler {
     CharStream input = CharStreams.fromStream(inputStream);
 
     WaccLexer lexer = new WaccLexer(input);
+    lexer.removeErrorListeners();
 
     CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-    syntaxParser = new WaccParser(tokens);
+    parser = new WaccParser(tokens);
+
+    parser.removeErrorListeners();
+    parser.addErrorListener(syntaxErrorListener);
   }
 
   public WaccErrorCode compile() {
@@ -54,13 +58,9 @@ public class WaccCompiler {
 
   public ProgContext parseSyntactics() {
 
-    syntaxParser.removeErrorListeners();
-    syntaxParser.addErrorListener(syntaxErrorListener);
-
-    ProgContext progContext = syntaxParser.prog();
+    ProgContext progContext = parser.prog();
 
     errors.addAll(syntaxErrorListener.getErrors());
-
 
     return progContext;
 

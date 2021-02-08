@@ -1,17 +1,17 @@
 package semantic_parser.statements.assignments.expressions.functions.base;
 
 import antlr.WaccParser;
-import antlr.WaccParser.BooleanContext;
-import antlr.WaccParser.CharacterContext;
+import antlr.WaccParser.BoolLiterContext;
+import antlr.WaccParser.CharLiterContext;
 import antlr.WaccParser.IdentifierContext;
-import antlr.WaccParser.IntegerContext;
-import antlr.WaccParser.PairContext;
-import antlr.WaccParser.StringContext;
+import antlr.WaccParser.IntLiterContext;
+import antlr.WaccParser.PairLiterContext;
+import antlr.WaccParser.StrLiterContext;
 import antlr.WaccParser.TypeContext;
 import antlr.WaccParserBaseVisitor;
+import errors.WaccError;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
-import errors.WaccError;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.PARAM;
 import identifier_objects.TYPE;
@@ -24,7 +24,6 @@ import identifier_objects.basic_types.PAIR;
 import identifier_objects.basic_types.STR;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.antlr.v4.runtime.tree.ParseTree;
 import symbol_table.SymbolTable;
 
@@ -44,7 +43,6 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
   protected boolean isCompatible(TYPE t1, TYPE t2) {
     return t2.equals(t1);
   }
-
 
   /* ======================= TYPING SEMANTICS ========================= */
   @Override
@@ -98,23 +96,28 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
   }
 
   @Override
-  public CHAR visitCharacter(CharacterContext ctx) {
+  public CHAR visitCharLiter(CharLiterContext ctx) {
     return (CHAR) ST.lookupAll(CHAR.name);
   }
 
   @Override
-  public BOOL visitBoolean(BooleanContext ctx) {
+  public BOOL visitBoolLiter(BoolLiterContext ctx) {
     return (BOOL) ST.lookupAll(BOOL.name);
   }
 
   @Override
-  public STR visitString(StringContext ctx) {
+  public STR visitStrLiter(StrLiterContext ctx) {
     return (STR) ST.lookupAll(STR.name);
   }
 
   @Override
-  public INT visitInteger(IntegerContext ctx) {
+  public INT visitIntLiter(IntLiterContext ctx) {
     return (INT) ST.lookupAll(INT.name);
+  }
+
+  @Override
+  public PAIR visitPairLiter(PairLiterContext ctx) {
+    return (PAIR) ST.lookupAll(PAIR.name);
   }
 
   @Override
@@ -123,17 +126,12 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
     // make sure each expr in the array is of the same type
     for (ParseTree expr : ctx.expr()) {
       TYPE actualType = (TYPE) visit(expr);
-      if(!isCompatible(actualType, expectedType)){
+      if (!isCompatible(actualType, expectedType)) {
         errors.add(new MismatchedTypes(ctx, actualType, expectedType));
         return null;
       }
     }
     return new ARRAY(expectedType);
-  }
-
-  @Override
-  public PAIR visitPair(PairContext ctx) {
-    return (PAIR) ST.lookupAll(PAIR.name);
   }
 
   @Override
@@ -147,8 +145,12 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
 
     if (!(identifier instanceof ARRAY)) {
       System.out.println(
-          ctx.IDENT().getSymbol().getLine() + ":" + ctx.IDENT().getSymbol().getCharPositionInLine()
-              + ", " + ctx.IDENT().getText() + " is not a variable");
+          ctx.IDENT().getSymbol().getLine()
+              + ":"
+              + ctx.IDENT().getSymbol().getCharPositionInLine()
+              + ", "
+              + ctx.IDENT().getText()
+              + " is not a variable");
       return null;
     }
 
@@ -167,11 +169,8 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
         System.out.println(exprTree.getText() + " is not of type int");
         return null;
       }
-
     }
 
     return array;
-
   }
-
 }

@@ -30,6 +30,7 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
       errors.add(new Undefined(ctx, funcIdentifier));
       return null;
     }
+    
     // check functionIdent
     if (!(identifier instanceof FUNCTION)) {
       errors.add(new NotAFunction(ctx, funcIdentifier));
@@ -72,7 +73,7 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
       }
 
     }
-    return ((FUNCTION) function).getReturnType();
+    return function.getReturnType();
   }
 
   @Override
