@@ -15,8 +15,8 @@ public abstract class SemanticExpressionParser extends SemanticFunctionParser {
   public TYPE visitExpr(ExprContext ctx) {
     /* ======================= BINARY EXPRESSION SEMANTICS ========================= */
     if (ctx.binaryOperator != null) {
-      return visitFunctionCall(
-          ctx, ctx.binaryOperator.getText(), Arrays.asList(ctx.expr(0), ctx.expr(1)));
+      return visitFunctionCall(ctx, ctx.binaryOperator.getText(),
+          Arrays.asList(ctx.expr(0), ctx.expr(1)));
     }
 
     /* ======================= UNARY EXPRESSION SEMANTICS ========================= */

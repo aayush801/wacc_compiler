@@ -5,6 +5,7 @@ import antlr.WaccParser.FuncDeclContext;
 import antlr.WaccParser.ParamContext;
 import antlr.WaccParser.ParamListContext;
 import errors.semantic_errors.DuplicateIdentifier;
+import errors.semantic_errors.InvalidArguments;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.NotAFunction;
 import errors.semantic_errors.Undefined;
@@ -29,13 +30,13 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     // lookup the operator function
     IDENTIFIER identifier = visitIdentifier(funcIdentifier);
     if (identifier == null) {
-      errors.add(new Undefined(ctx, funcIdentifier));
+      addError(new Undefined(ctx, funcIdentifier));
       return null;
     }
 
     // check functionIdent
     if (!(identifier instanceof FUNCTION)) {
-      errors.add(new NotAFunction(ctx, funcIdentifier));
+      addError(new NotAFunction(ctx, funcIdentifier));
       return null;
     }
 
@@ -46,6 +47,8 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
       System.out.println(
           "Error : invalid number of parameters for '" + funcIdentifier + "' given. WAS : " + params
               .size() + ", EXPECTED : " + function.formals.size());
+      addError(new InvalidArguments(ctx, funcIdentifier,
+          function.formals.size(), params.size()));
       return null;
     }
 
@@ -55,14 +58,14 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
       ParserRuleContext expr = params.get(i);
       IDENTIFIER actualType = (IDENTIFIER) visit(expr);
       if (actualType == null) {
-        errors.add(new Undefined(expr));
+        addError(new Undefined(expr));
         hadError = true;
 
       } else {
 
         PARAM formal = function.formals.get(i);
         if (!isCompatible(actualType, formal.getType())) {
-          errors.add(new MismatchedTypes(ctx, actualType, formal.getType()));
+          addError(new MismatchedTypes(ctx, actualType, formal.getType()));
           hadError = true;
         }
       }
@@ -75,8 +78,9 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
   public TYPE visitFuncCall(FuncCallContext ctx) {
     List<ParserRuleContext> params = new ArrayList<>();
     if (ctx.argList() != null) {
-      params = ctx.argList().expr().stream().map(e -> (ParserRuleContext) e).collect(
-          Collectors.toList());
+      params = ctx.argList().expr().stream()
+          .map(e -> (ParserRuleContext) e)
+          .collect(Collectors.toList());
     }
     return visitFunctionCall(ctx, ctx.IDENT().getText(), params);
   }
@@ -87,13 +91,13 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     TYPE returnType = visitType(ctx.type());
     if (returnType == null) {
       // if type is not defined
-      errors.add(new Undefined(ctx));
+      addError(new Undefined(ctx));
       return null;
     }
 
     String identifier = ctx.IDENT().getText();
     if (visitIdentifier(identifier) != null) {
-      errors.add(new DuplicateIdentifier(ctx, identifier));
+      addError(new DuplicateIdentifier(ctx, identifier));
       // if identifier has already been declared in local scope it cannot be used
       return null;
     }
@@ -121,7 +125,7 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
 
     if (!isCompatible(returnedType, returnType)) {
       // the returned type is not compatible with the return type of the function
-      errors.add(new MismatchedTypes(ctx, returnedType, returnType));
+      addError(new MismatchedTypes(ctx, returnedType, returnType));
       return null;
     }
 
@@ -143,7 +147,7 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     // get the type
     TYPE type = visitType(ctx.type());
     if (type == null) {
-      errors.add(new Undefined(ctx));
+      addError(new Undefined(ctx));
       System.out.println("param : " + ctx.getText() + " is undefined");
       // type is undefined
       return null;
@@ -153,6 +157,7 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     if (ST.lookup(identifier) != null) {
       // if the identifier has already been used return an error
       System.out.println("Error duplicate identifier " + identifier);
+      addError(new DuplicateIdentifier(ctx, identifier));
       return null;
     }
 
