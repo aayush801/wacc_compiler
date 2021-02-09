@@ -8,8 +8,7 @@ import org.antlr.v4.runtime.Recognizer;
 public abstract class WaccError extends BaseErrorListener {
 
   protected String code;
-  protected int lineNo;
-  protected int lineCol;
+  protected int lineNo, lineCol;
   protected ParserRuleContext ctx;
 
   public WaccError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,

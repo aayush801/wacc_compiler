@@ -5,8 +5,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class MismatchedTypes extends WaccSemanticError {
 
-  private IDENTIFIER actual;
-  private IDENTIFIER expected;
+  private IDENTIFIER actual, expected;
 
   public MismatchedTypes(ParserRuleContext ctx) {
     super(ctx);

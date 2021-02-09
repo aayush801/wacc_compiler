@@ -41,7 +41,7 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
     return !getErrors().isEmpty();
   }
 
-  public void addError(WaccError error) {
+  protected void addError(WaccError error) {
     getErrors().add(error);
   }
 

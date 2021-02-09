@@ -14,7 +14,8 @@ public class SyntaxErrorListener extends BaseErrorListener {
   private final List<WaccError> errors = new ArrayList<>();
 
   @Override
-  public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+  public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
+      int charPositionInLine, String msg, RecognitionException e) {
     errors.add(new WaccSyntaxError(recognizer, offendingSymbol, line, charPositionInLine, msg, e));
   }
 

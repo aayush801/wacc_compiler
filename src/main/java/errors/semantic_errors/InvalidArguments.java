@@ -9,15 +9,17 @@ public class InvalidArguments extends WaccSemanticError {
 
   public InvalidArguments(ParserRuleContext ctx, String func, int required, int given) {
     super(ctx);
+    setValues(func, required, given);
+  }
+
+  private void setValues(String func, int required, int given) {
     this.func = func;
     this.required = required;
     this.given = given;
   }
 
   public InvalidArguments(String func, int required, int given) {
-    this.func = func;
-    this.required = required;
-    this.given = given;
+    setValues(func, required, given);
   }
 
   @Override

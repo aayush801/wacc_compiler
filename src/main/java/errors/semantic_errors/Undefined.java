@@ -4,7 +4,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class Undefined extends WaccSemanticError {
 
-
   public Undefined(ParserRuleContext ctx) {
     super(ctx);
   }

@@ -37,53 +37,37 @@ public class WaccCompiler {
   }
 
   public WaccErrorCode compile() {
-
     parseSemantics(parseSyntactics());
 
     if (syntaxErrorListener.hasErrors()) {
-
       return WaccErrorCode.SYNTAX_ERROR;
 
     } else if (semanticParserVisitor.hasErrors()) {
-
       return WaccErrorCode.SEMANTIC_ERROR;
 
     } else {
-
       return WaccErrorCode.SUCCESS;
-
     }
-
   }
 
   public ProgContext parseSyntactics() {
-
     ProgContext progContext = parser.prog();
-
     errors.addAll(syntaxErrorListener.getErrors());
 
     return progContext;
-
   }
 
   public void parseSemantics(ProgContext AST) {
-
     semanticParserVisitor.visit(AST);
-
     errors.addAll(semanticParserVisitor.getErrors());
-
   }
 
   public List<WaccError> getErrors() {
-
     return errors;
-
   }
 
   public boolean hasErrors() {
-
     return !getErrors().isEmpty();
-
   }
 
 }
