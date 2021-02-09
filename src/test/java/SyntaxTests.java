@@ -2,6 +2,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import antlr.WaccParser.ProgContext;
+import errors.WaccError;
+import errors.syntax_errors.WaccSyntaxError;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -13,8 +15,8 @@ import org.junit.Test;
 public class SyntaxTests {
 
   private WaccCompiler compileAndParseSyntactics(String instruction) throws IOException {
-    WaccCompiler compiler = new WaccCompiler(
-        new ByteArrayInputStream(instruction.getBytes(StandardCharsets.UTF_8)));
+    WaccCompiler compiler
+        = new WaccCompiler(new ByteArrayInputStream(instruction.getBytes(StandardCharsets.UTF_8)));
     compiler.parseSyntactics();
     return compiler;
   }

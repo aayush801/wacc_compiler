@@ -6,8 +6,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 public abstract class WaccError extends BaseErrorListener {
 
   private String code;
-  private final int lineNo;
-  private final int lineCol;
+  private final int lineNo, lineCol;
+
 
   public WaccError(int line, int charPositionInLine, String code) {
     this.lineNo = line;
@@ -31,10 +31,7 @@ public abstract class WaccError extends BaseErrorListener {
     code = code.substring(0, position) + "->" + code.substring(position);
   }
 
-  public String getErrorMessage() {
-    System.out.println("THIS METHOD SHOULD BE OVERRIDDEN");
-    return null;
-  }
+  public abstract String getErrorMessage();
 
   @Override
   public String toString() {

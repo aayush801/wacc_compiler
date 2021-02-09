@@ -34,6 +34,7 @@ public abstract class SemanticExpressionParser extends SemanticFunctionParser {
       } else {
         unOpIdentifier = ctx.unaryOperator().getText();
       }
+
       return visitFunctionCall(ctx, unOpIdentifier, Collections.singletonList(ctx.expr(0)));
     }
 

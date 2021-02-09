@@ -6,7 +6,7 @@ import java.io.IOException;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class wacc_examples_semantic_tests {
+public class WaccSemanticTests {
 
 
     private void files_checker(String base, String[] files) throws IOException {

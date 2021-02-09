@@ -12,6 +12,7 @@ public class DuplicateIdentifier extends WaccSemanticError {
     super(ctx, partOfCodeWithError);
   }
 
+
   @Override
   public String getErrorMessage() {
     return " identifier is already defined";

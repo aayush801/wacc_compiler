@@ -24,7 +24,7 @@ public class InvalidArguments extends WaccSemanticError {
   public boolean equals(Object o) {
     if (o instanceof InvalidArguments) {
       InvalidArguments e = (InvalidArguments) o;
-      return given == e.given && required == e.required;
+      return func.equals(e.func) && given == e.given && required == e.required;
     }
     return false;
   }

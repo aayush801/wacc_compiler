@@ -1,6 +1,7 @@
 package errors.syntax_errors;
 
 import errors.WaccError;
+import errors.semantic_errors.WaccSemanticError;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 
@@ -22,5 +23,13 @@ public class WaccSyntaxError extends WaccError {
   @Override
   public String toString() {
     return "Syntax Error " + super.toString();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof WaccSemanticError) {
+      return getErrorMessage().equals(((WaccSemanticError) o).getErrorMessage());
+    }
+    return false;
   }
 }

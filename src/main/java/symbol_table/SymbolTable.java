@@ -105,7 +105,7 @@ public class SymbolTable {
     return encSymTable;
   }
 
-  public int size(){
+  public int size() {
     return dict.size();
   }
 
@@ -120,16 +120,12 @@ public class SymbolTable {
 
   // backtracking algorithm to lookup identifier if it is in scope
   public IDENTIFIER lookupAll(String name) {
-    SymbolTable st = this;
-    IDENTIFIER obj;
-    while (st != null) {
+    IDENTIFIER obj = null;
+    SymbolTable st;
+    for (st = this; obj == null && st != null; st = st.encSymTable) {
       obj = st.lookup(name);
-      if (obj != null) {
-        return obj;
-      }
-      st = st.encSymTable;
     }
-    return null;
+    return obj;
   }
 
 }

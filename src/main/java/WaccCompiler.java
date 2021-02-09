@@ -83,9 +83,7 @@ public class WaccCompiler {
   }
 
   public List<WaccError> getErrors() {
-
     return errors;
-
   }
 
   public boolean hasErrors() {

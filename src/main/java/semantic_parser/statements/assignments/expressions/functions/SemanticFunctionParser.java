@@ -45,8 +45,8 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     if (params.size() != function.formals.size()) {
       // NEED TO CREATE NEW ERROR CLASS
       System.out.println(
-          "Error : invalid number of parameters for '" + funcIdentifier + "' given. WAS : " + params
-              .size() + ", EXPECTED : " + function.formals.size());
+          "Error : invalid number of parameters for '" + funcIdentifier +
+              "' given. WAS : " + params.size() + ", EXPECTED : " + function.formals.size());
       addError(new InvalidArguments(ctx, funcIdentifier,
           function.formals.size(), params.size()));
       return null;
@@ -60,9 +60,7 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
       if (actualType == null) {
         addError(new Undefined(expr));
         hadError = true;
-
       } else {
-
         PARAM formal = function.formals.get(i);
         if (!isCompatible(actualType, formal.getType())) {
           addError(new MismatchedTypes(ctx, actualType, formal.getType()));
@@ -139,8 +137,9 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
   /* ============== PARAMETER CHECKS ============== */
   @Override
   public List<PARAM> visitParamList(ParamListContext ctx) {
-
-    return ctx.param().stream().map(this::visitParam).collect(Collectors.toList());
+    return ctx.param().stream()
+        .map(this::visitParam)
+        .collect(Collectors.toList());
   }
 
   @Override
