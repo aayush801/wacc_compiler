@@ -3,6 +3,7 @@ package identifier_objects.basic_types;
 import identifier_objects.TYPE;
 
 public class PAIR extends TYPE {
+
   public static String name = "pair";
   protected final TYPE first, second;
 
@@ -12,11 +13,11 @@ public class PAIR extends TYPE {
     this.second = second;
   }
 
-  public TYPE getFirst(){
+  public TYPE getFirst() {
     return first;
   }
 
-  public TYPE getSecond(){
+  public TYPE getSecond() {
     return second;
   }
 

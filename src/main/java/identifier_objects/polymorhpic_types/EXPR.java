@@ -10,9 +10,9 @@ public class EXPR extends TYPE {
 
   @Override
   public boolean equals(Object o) {
-    if(o instanceof TYPE){
+    if (o instanceof TYPE) {
       TYPE type = (TYPE) o;
-      if(name != null){
+      if (name != null) {
         return super.equals(o);
       } else {
         // binds this type to object type

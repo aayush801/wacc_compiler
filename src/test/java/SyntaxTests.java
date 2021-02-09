@@ -1,9 +1,6 @@
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import antlr.WaccParser.ProgContext;
-import errors.WaccError;
-import errors.syntax_errors.WaccSyntaxError;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

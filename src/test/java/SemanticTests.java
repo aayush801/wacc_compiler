@@ -1,13 +1,7 @@
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import errors.WaccError;
-import errors.semantic_errors.MismatchedTypes;
-import errors.semantic_errors.Undefined;
-import identifier_objects.basic_types.BOOL;
-import identifier_objects.basic_types.CHAR;
-import identifier_objects.basic_types.INT;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

@@ -2,7 +2,7 @@ package errors.semantic_errors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class GlobalScope extends WaccSemanticError{
+public class GlobalScope extends WaccSemanticError {
 
   public GlobalScope(ParserRuleContext ctx) {
     super(ctx);

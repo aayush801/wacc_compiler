@@ -1,7 +1,6 @@
 package semantic_parser.statements.assignments.expressions;
 
 import antlr.WaccParser.ExprContext;
-import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
 import identifier_objects.unary_operator_functions.NEGATE;
 import identifier_objects.unary_operator_functions.NOT;

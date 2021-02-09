@@ -3,6 +3,7 @@ package identifier_objects.basic_types;
 import identifier_objects.TYPE;
 
 public class ARRAY extends TYPE {
+
   public static String name = "array";
 
   protected final TYPE elementType;
@@ -12,12 +13,12 @@ public class ARRAY extends TYPE {
     this.elementType = elementType;
   }
 
-  public TYPE getType(){
+  public TYPE getType() {
     return elementType;
   }
 
   @Override
-  public String toString(){
+  public String toString() {
     return elementType + "[]";
   }
 

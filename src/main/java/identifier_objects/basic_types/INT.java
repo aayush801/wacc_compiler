@@ -1,7 +1,6 @@
 package identifier_objects.basic_types;
 
 import identifier_objects.TYPE;
-import javax.print.attribute.standard.NumberUp;
 
 public class INT extends TYPE {
 
@@ -22,7 +21,7 @@ public class INT extends TYPE {
     try {
       int integer = Integer.parseInt(x);
       return min <= integer && integer <= max;
-    }catch (NumberFormatException e){
+    } catch (NumberFormatException e) {
       return false;
     }
   }

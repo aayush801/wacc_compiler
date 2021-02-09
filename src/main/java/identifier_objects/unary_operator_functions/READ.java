@@ -4,7 +4,8 @@ import identifier_objects.PARAM;
 import identifier_objects.polymorhpic_types.EXPR;
 import symbol_table.SymbolTable;
 
-public class READ extends UNARY_OPERATION{
+public class READ extends UNARY_OPERATION {
+
   public static final String name = "read";
 
   public READ(EXPR type, SymbolTable st) {

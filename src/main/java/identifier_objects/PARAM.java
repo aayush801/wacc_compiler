@@ -14,8 +14,8 @@ public class PARAM extends IDENTIFIER {
   }
 
   @Override
-  public String toString(){
-   return name;
+  public String toString() {
+    return name;
   }
 
 }

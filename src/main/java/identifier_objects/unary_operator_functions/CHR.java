@@ -6,9 +6,10 @@ import identifier_objects.basic_types.INT;
 import symbol_table.SymbolTable;
 
 public class CHR extends UNARY_OPERATION {
+
   public static final String name = "chr";
 
-  public CHR(CHAR returnType, INT paramType, SymbolTable ST){
+  public CHR(CHAR returnType, INT paramType, SymbolTable ST) {
     super(returnType, new PARAM(paramType), ST);
   }
 }

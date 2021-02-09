@@ -17,7 +17,8 @@ public class MismatchedTypes extends WaccSemanticError {
 
   @Override
   public String getErrorMessage() {
-    return "Expected value of type : " + ((expected == null) ? "null" : expected.toString().toUpperCase()) +
+    return "Expected value of type : " + ((expected == null) ? "null"
+        : expected.toString().toUpperCase()) +
         ", but got type : " + ((actual == null) ? "null" : actual.toString().toUpperCase());
   }
 

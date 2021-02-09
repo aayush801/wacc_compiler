@@ -66,7 +66,9 @@ public class WaccCompiler {
     ProgContext AST = parser.prog();
 
     // only do further syntax analysis if tokenization passed
-    if(!syntaxErrorListener.hasErrors()) syntacticParser.visit(AST);
+    if (!syntaxErrorListener.hasErrors()) {
+      syntacticParser.visit(AST);
+    }
 
     errors.addAll(syntaxErrorListener.getErrors());
 

@@ -6,10 +6,10 @@ import identifier_objects.basic_types.INT;
 public class COMPARABLE extends EXPR {
 
   @Override
-  public String toString(){
-    if(name == null) {
+  public String toString() {
+    if (name == null) {
       return CHAR.name + " or " + INT.name;
-    }else{
+    } else {
       return name;
     }
   }

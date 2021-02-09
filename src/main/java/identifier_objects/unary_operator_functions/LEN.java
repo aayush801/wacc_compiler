@@ -6,9 +6,10 @@ import identifier_objects.basic_types.INT;
 import symbol_table.SymbolTable;
 
 public class LEN extends UNARY_OPERATION {
+
   public static final String name = "len";
 
-  public LEN(INT returnType, ARRAY paramType, SymbolTable ST){
+  public LEN(INT returnType, ARRAY paramType, SymbolTable ST) {
     super(returnType, new PARAM(paramType), ST);
   }
 }

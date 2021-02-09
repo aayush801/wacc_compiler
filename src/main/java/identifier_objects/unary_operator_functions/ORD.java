@@ -6,9 +6,10 @@ import identifier_objects.basic_types.INT;
 import symbol_table.SymbolTable;
 
 public class ORD extends UNARY_OPERATION {
+
   public static final String name = "ord";
 
-  public ORD(INT returnType, CHAR paramType, SymbolTable ST){
+  public ORD(INT returnType, CHAR paramType, SymbolTable ST) {
     super(returnType, new PARAM(paramType), ST);
   }
 }
