@@ -3,7 +3,7 @@ package errors.semantic_errors;
 import errors.WaccError;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class WaccSemanticError extends WaccError {
+public abstract class WaccSemanticError extends WaccError {
 
   public WaccSemanticError(ParserRuleContext ctx) {
     super(ctx);
@@ -11,9 +11,6 @@ public class WaccSemanticError extends WaccError {
 
   public WaccSemanticError(ParserRuleContext ctx, String offendingSymbol) {
     super(ctx, offendingSymbol);
-  }
-
-  public WaccSemanticError() {
   }
 
   @Override

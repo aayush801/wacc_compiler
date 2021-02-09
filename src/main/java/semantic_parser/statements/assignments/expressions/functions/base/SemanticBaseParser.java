@@ -42,13 +42,14 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
   }
 
   public void addError(WaccError error) {
-    getErrors().add(error);
+    errors.add(error);
   }
 
   protected boolean isCompatible(IDENTIFIER t1, IDENTIFIER t2) {
     if (t1 instanceof TYPE && t2 instanceof TYPE) {
       return t2.equals(t1);
     }
+
     return false;
   }
 

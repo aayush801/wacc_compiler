@@ -10,7 +10,7 @@ public class WaccSyntaxError extends WaccError {
 
   public WaccSyntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
       int charPositionInLine, String msg, RecognitionException e) {
-    super(recognizer, offendingSymbol, line, charPositionInLine, msg, e);
+    super(line, charPositionInLine, offendingSymbol.toString());
     this.msg = msg;
   }
 

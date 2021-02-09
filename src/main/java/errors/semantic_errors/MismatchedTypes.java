@@ -5,21 +5,9 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class MismatchedTypes extends WaccSemanticError {
 
-  private IDENTIFIER actual;
-  private IDENTIFIER expected;
+  private final IDENTIFIER actual;
+  private final IDENTIFIER expected;
 
-  public MismatchedTypes(ParserRuleContext ctx) {
-    super(ctx);
-  }
-
-  public MismatchedTypes(ParserRuleContext ctx, String partOfCodeWithError) {
-    super(ctx, partOfCodeWithError);
-  }
-
-  public MismatchedTypes(IDENTIFIER actual, IDENTIFIER expected) {
-    this.actual = actual;
-    this.expected = expected;
-  }
 
   public MismatchedTypes(ParserRuleContext ctx, IDENTIFIER actual, IDENTIFIER expected) {
     super(ctx);
@@ -30,8 +18,8 @@ public class MismatchedTypes extends WaccSemanticError {
 
   @Override
   public String getErrorMessage() {
-    return "Expected value of type : " + expected.toString().toUpperCase() +
-        ", but got type : " + actual.toString().toUpperCase();
+    return "Expected value of type : " + ((expected == null) ? "null" : expected.toString().toUpperCase()) +
+        ", but got type : " + ((actual == null) ? "null" : actual.toString().toUpperCase());
   }
 
   @Override

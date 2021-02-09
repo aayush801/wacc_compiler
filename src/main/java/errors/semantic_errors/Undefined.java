@@ -15,15 +15,7 @@ public class Undefined extends WaccSemanticError {
 
   @Override
   public String getErrorMessage() {
-    return "\"" + code + "\" is undefined";
+    return " is undefined";
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (o instanceof Undefined) {
-      Undefined e = (Undefined) o;
-      return code.equals(e.code);
-    }
-    return false;
-  }
 }

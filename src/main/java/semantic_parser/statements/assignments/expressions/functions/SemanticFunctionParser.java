@@ -95,10 +95,10 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
       return null;
     }
 
-    String identifier = ctx.IDENT().getText();
-    if (visitIdentifier(identifier) != null) {
-      addError(new DuplicateIdentifier(ctx, identifier));
+    String funcIdentifier = ctx.IDENT().getText();
+    if (visitIdentifier(funcIdentifier) != null) {
       // if identifier has already been declared in local scope it cannot be used
+      addError(new DuplicateIdentifier(ctx, funcIdentifier));
       return null;
     }
 
@@ -115,12 +115,13 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     // add the function to the parent scope
     FUNCTION newFunction = new FUNCTION(returnType, paramList, ST);
 
-    oldScope.add(identifier, newFunction);
+    oldScope.add(funcIdentifier, newFunction);
 
-    TYPE returnedType = (TYPE) visit(ctx.stat());
+    IDENTIFIER returnedType = (IDENTIFIER) visit(ctx.stat());
 
     if (returnedType == null) {
-      System.out.println("testing");
+      addError(new Undefined(ctx));
+      return null;
     }
 
     if (!isCompatible(returnedType, returnType)) {

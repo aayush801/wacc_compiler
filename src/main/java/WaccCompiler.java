@@ -3,8 +3,6 @@
 import antlr.WaccLexer;
 import antlr.WaccParser;
 import antlr.WaccParser.ProgContext;
-import error_handlers.SyntaxErrorListener;
-import error_handlers.WaccErrorCode;
 import errors.WaccError;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,14 +11,18 @@ import java.util.List;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import semantic_parser.SemanticParserVisitor;
+import semantic_parser.SemanticParser;
+import syntactic_parser.SyntacticParser;
+import syntactic_parser.SyntaxErrorListener;
 
 public class WaccCompiler {
 
   private final List<WaccError> errors = new ArrayList<>();
   private final WaccParser parser;
-  private final SemanticParserVisitor semanticParserVisitor = new SemanticParserVisitor();
   private final SyntaxErrorListener syntaxErrorListener = new SyntaxErrorListener();
+
+  private final SemanticParser semanticParser = new SemanticParser();
+  private final SyntacticParser syntacticParser = new SyntacticParser(syntaxErrorListener);
 
   public WaccCompiler(InputStream inputStream) throws IOException {
     CharStream input = CharStreams.fromStream(inputStream);
@@ -36,41 +38,47 @@ public class WaccCompiler {
     parser.addErrorListener(syntaxErrorListener);
   }
 
-  public WaccErrorCode compile() {
+  public ErrorCode compile() {
 
-    parseSemantics(parseSyntactics());
+    ProgContext AST = parseSyntactics();
 
     if (syntaxErrorListener.hasErrors()) {
-
-      return WaccErrorCode.SYNTAX_ERROR;
-
-    } else if (semanticParserVisitor.hasErrors()) {
-
-      return WaccErrorCode.SEMANTIC_ERROR;
-
-    } else {
-
-      return WaccErrorCode.SUCCESS;
+      // we dont do semantic analysis if syntax fails
+      return ErrorCode.SYNTAX_ERROR;
 
     }
+
+    parseSemantics(AST);
+
+    if (semanticParser.hasErrors()) {
+
+      return ErrorCode.SEMANTIC_ERROR;
+
+    }
+
+    return ErrorCode.SUCCESS;
+
 
   }
 
   public ProgContext parseSyntactics() {
 
-    ProgContext progContext = parser.prog();
+    ProgContext AST = parser.prog();
+
+    // only do further syntax analysis if tokenization passed
+    if(!syntaxErrorListener.hasErrors()) syntacticParser.visit(AST);
 
     errors.addAll(syntaxErrorListener.getErrors());
 
-    return progContext;
+    return AST;
 
   }
 
   public void parseSemantics(ProgContext AST) {
 
-    semanticParserVisitor.visit(AST);
+    semanticParser.visit(AST);
 
-    errors.addAll(semanticParserVisitor.getErrors());
+    errors.addAll(semanticParser.getErrors());
 
   }
 
@@ -82,7 +90,7 @@ public class WaccCompiler {
 
   public boolean hasErrors() {
 
-    return !getErrors().isEmpty();
+    return !errors.isEmpty();
 
   }
 

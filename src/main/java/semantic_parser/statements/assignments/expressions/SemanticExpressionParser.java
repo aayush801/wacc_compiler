@@ -1,6 +1,7 @@
 package semantic_parser.statements.assignments.expressions;
 
 import antlr.WaccParser.ExprContext;
+import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
 import identifier_objects.unary_operator_functions.NEGATE;
 import identifier_objects.unary_operator_functions.NOT;
@@ -46,6 +47,11 @@ public abstract class SemanticExpressionParser extends SemanticFunctionParser {
     }
 
     /* ============ check literals and identifiers ============ */
-    return (TYPE) visitChildren(ctx);
+
+    Object obj = visitChildren(ctx);
+    if (!(obj instanceof TYPE)) {
+      return null;
+    }
+    return (TYPE) obj;
   }
 }

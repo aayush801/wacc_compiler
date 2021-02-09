@@ -5,6 +5,7 @@ import antlr.WaccParser.BeginStatContext;
 import antlr.WaccParser.PrintCallContext;
 import antlr.WaccParser.ReadCallContext;
 import errors.semantic_errors.DuplicateIdentifier;
+import errors.semantic_errors.GlobalScope;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
 import identifier_objects.IDENTIFIER;
@@ -41,7 +42,7 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
       return null;
     }
 
-    TYPE typeRHS = visitAssignRHS(ctx.assignRHS());
+    IDENTIFIER typeRHS = (IDENTIFIER) visitAssignRHS(ctx.assignRHS());
     if (typeRHS == null) {
       // type of rhs statement undefined
       addError(new Undefined(ctx.assignRHS()));
@@ -61,14 +62,14 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
 
   @Override
   public Object visitAssignVars(WaccParser.AssignVarsContext ctx) {
-    IDENTIFIER typeLHS = visitAssignLHS(ctx.assignLHS());
+    IDENTIFIER typeLHS = (IDENTIFIER) visitAssignLHS(ctx.assignLHS());
     if (typeLHS == null) {
-      addError(new Undefined(ctx, ctx.assignLHS().getText()));
       // type is undefined
+      addError(new Undefined(ctx, ctx.assignLHS().getText()));
       return null;
     }
 
-    TYPE typeRHS = visitAssignRHS(ctx.assignRHS());
+    IDENTIFIER typeRHS = (IDENTIFIER) visitAssignRHS(ctx.assignRHS());
     if (typeRHS == null) {
       // type is undefined
       return null;
@@ -92,38 +93,50 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
   public Object visitBeginStat(BeginStatContext ctx) {
     // create new scope
     SymbolTable oldScope = ST;
+
     ST = new SymbolTable(oldScope);
-    visit(ctx.stat());
+
+    Object returnedStat = visit(ctx.stat());
+
     ST = oldScope;
-    return null;
+
+    return returnedStat;
   }
 
   @Override
   public Object visitIfThenElse(WaccParser.IfThenElseContext ctx) {
 
-    Object obj = visit(ctx.expr());
-    if (obj == null) {
+    TYPE expr = visitExpr(ctx.expr());
+    if (expr == null) {
       // the expression is undefined
       addError(new Undefined(ctx.expr()));
       return null;
-    } else if (!(obj instanceof BOOL)) {
-      addError(new MismatchedTypes(ctx, (TYPE) obj, new BOOL()));
+    }
+
+    if (!(expr instanceof BOOL)) {
+      addError(new MismatchedTypes(ctx, expr, new BOOL()));
       // the expression does not have type bool it is not valid semantics
       return null;
-    } else {
-      SymbolTable oldScope = ST;
-
-      // create new scope for statement 1
-      ST = new SymbolTable(oldScope);
-      visit(ctx.stat(0));
-
-      // reset scope to oldScope and then create a scope for statement 2
-      ST = new SymbolTable(oldScope);
-      visit(ctx.stat(1));
-
-      ST = oldScope;
     }
-    return null;
+
+    SymbolTable oldScope = ST;
+
+    // create new scope for statement 1
+    ST = new SymbolTable(oldScope);
+    IDENTIFIER returnedStat1 = (IDENTIFIER) visit(ctx.stat(0));
+
+    // reset scope to oldScope and then create a scope for statement 2
+    ST = new SymbolTable(oldScope);
+    IDENTIFIER returnedStat2 = (IDENTIFIER) visit(ctx.stat(1));
+
+    if (!isCompatible(returnedStat1, returnedStat2)) {
+      System.out.println("herer");
+      addError(new MismatchedTypes(ctx, returnedStat1, returnedStat2));
+      return null;
+    }
+
+    ST = oldScope;
+    return returnedStat1;
   }
 
   @Override
@@ -133,18 +146,21 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
       // the expression is undefined
       addError(new Undefined(ctx.expr()));
       return null;
-    } else if (!(obj instanceof BOOL)) {
+    }
+
+    if (!(obj instanceof BOOL)) {
       // the expression does not have type bool it is not valid semantics
       addError(new MismatchedTypes(ctx, (TYPE) obj, new BOOL()));
       return null;
-    } else {
-      // create new scope for statement
-      SymbolTable oldScope = ST;
-      ST = new SymbolTable(oldScope);
-      visit(ctx.stat());
-      ST = oldScope;
-      return null;
     }
+
+    // create new scope for statement
+    SymbolTable oldScope = ST;
+    ST = new SymbolTable(oldScope);
+    Object returnedStat = visit(ctx.stat());
+    ST = oldScope;
+    return returnedStat;
+
   }
 
   /* =================== STATEMENT CHAINS ===================== */
@@ -160,6 +176,11 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
 
   @Override
   public TYPE visitReturnCall(WaccParser.ReturnCallContext ctx) {
+    // should not be able to return from the global scope
+    if (ST.getEncSymTable() == null) {
+      addError(new GlobalScope(ctx));
+      return null;
+    }
     return visitExpr(ctx.expr());
   }
 
@@ -171,7 +192,9 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
       // the expression is undefined
       addError(new Undefined(ctx.expr()));
       return null;
-    } else if (!(obj instanceof INT)) {
+    }
+
+    if (!(obj instanceof INT)) {
       // the expression does not have type bool it is not valid semantics
       addError(new MismatchedTypes(ctx, obj, new INT()));
       return null;

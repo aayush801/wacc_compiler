@@ -13,22 +13,7 @@ import semantic_parser.statements.assignments.expressions.SemanticExpressionPars
 
 public abstract class SemanticAssignmentParser extends SemanticExpressionParser {
 
-  @Override
-  public IDENTIFIER visitAssignLHS(WaccParser.AssignLHSContext ctx) {
-    return visitIdentifier(ctx.IDENT().getText());
-  }
 
-  @Override
-  public TYPE visitAssignRHS(WaccParser.AssignRHSContext ctx) {
-    Object obj = visitChildren(ctx);
-    if (obj == null) {
-      // identifier is undefined
-      return null;
-    } else if (!(obj instanceof TYPE)) {
-      // assignment LHS is not a valid TYPE
-      return null;
-    }
-    return (TYPE) obj;
-  }
+
 
 }

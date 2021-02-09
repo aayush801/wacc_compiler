@@ -22,6 +22,7 @@ import identifier_objects.binary_operator_functions.OR;
 import identifier_objects.binary_operator_functions.PLUS;
 import identifier_objects.polymorhpic_types.COMPARABLE;
 import identifier_objects.polymorhpic_types.EXPR;
+import identifier_objects.polymorhpic_types.FREEABLE;
 import identifier_objects.unary_operator_functions.CHR;
 import identifier_objects.unary_operator_functions.FREE;
 import identifier_objects.unary_operator_functions.LEN;
@@ -85,8 +86,8 @@ public class SymbolTable {
 
     st.add(PRINT.name, new PRINT(new EXPR(), st));
     st.add(PRINT_LINE.name, new PRINT_LINE(new EXPR(), st));
-    st.add(READ.name, new READ(new EXPR(), st));
-    st.add(FREE.name, new FREE(new EXPR(), st));
+    st.add(READ.name, new READ(new COMPARABLE(), st));
+    st.add(FREE.name, new FREE(new FREEABLE(), st));
 
     return st;
   }

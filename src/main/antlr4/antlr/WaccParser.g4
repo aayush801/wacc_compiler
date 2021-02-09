@@ -107,8 +107,8 @@ pairElemType:
   | PAIR_TYPE
 ;
 pairElem:
-  PAIR_FIRST IDENT
-  | PAIR_SECOND IDENT
+  PAIR_FIRST expr
+  | PAIR_SECOND expr
 ;
 newPair: NEWPAIR OPEN_PARENTHESES expr COMMA expr CLOSE_PARENTHESES;
 

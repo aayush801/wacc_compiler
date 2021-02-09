@@ -14,15 +14,7 @@ public class DuplicateIdentifier extends WaccSemanticError {
 
   @Override
   public String getErrorMessage() {
-    return "\"" + code + "\" identifier is already defined";
+    return " identifier is already defined";
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (o instanceof DuplicateIdentifier) {
-      DuplicateIdentifier e = (DuplicateIdentifier) o;
-      return code.equals(e.code);
-    }
-    return false;
-  }
 }

@@ -2,24 +2,20 @@ package errors;
 
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
 
 public abstract class WaccError extends BaseErrorListener {
 
-  protected String code;
-  protected int lineNo;
-  protected int lineCol;
-  protected ParserRuleContext ctx;
+  private String code;
+  private final int lineNo;
+  private final int lineCol;
 
-  public WaccError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
-      int charPositionInLine, String msg, RecognitionException e) {
+  public WaccError(int line, int charPositionInLine, String code) {
     this.lineNo = line;
     this.lineCol = charPositionInLine;
+    this.code = code;
   }
 
   public WaccError(ParserRuleContext ctx) {
-    this.ctx = ctx;
     this.code = ctx.getText();
     this.lineNo = ctx.getStart().getLine();
     this.lineCol = ctx.getStart().getCharPositionInLine();
@@ -27,11 +23,12 @@ public abstract class WaccError extends BaseErrorListener {
 
   public WaccError(ParserRuleContext ctx, String offendingSymbol) {
     this(ctx);
-    int position = code.indexOf(offendingSymbol);
-    code = code.substring(0, position) + "->" + code.substring(position);
+    highlightOffendingSymbol(offendingSymbol);
   }
 
-  protected WaccError() {
+  public void highlightOffendingSymbol(String offendingSymbol) {
+    int position = code.indexOf(offendingSymbol);
+    code = code.substring(0, position) + "->" + code.substring(position);
   }
 
   public String getErrorMessage() {
@@ -41,7 +38,7 @@ public abstract class WaccError extends BaseErrorListener {
 
   @Override
   public String toString() {
-    return "found at line " + lineNo + ":" + lineCol + " " + getErrorMessage();
+    return "\"" + code + "\" found at line " + lineNo + ":" + lineCol + " " + getErrorMessage();
   }
 
   @Override

@@ -76,9 +76,7 @@ public class SemanticTests {
             "end\n";
     WaccCompiler compiler = compileAndParseSemantics(instruction);
     System.out.println(compiler.getErrors());
-
     assertThat(compiler.hasErrors(), is(true));
-    assertTrue(compiler.getErrors().contains(new MismatchedTypes(new CHAR(), new INT())));
   }
 
 }

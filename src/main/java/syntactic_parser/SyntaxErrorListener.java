@@ -1,4 +1,4 @@
-package error_handlers;
+package syntactic_parser;
 
 import errors.WaccError;
 import errors.syntax_errors.WaccSyntaxError;
@@ -15,6 +15,7 @@ public class SyntaxErrorListener extends BaseErrorListener {
 
   @Override
   public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+
     errors.add(new WaccSyntaxError(recognizer, offendingSymbol, line, charPositionInLine, msg, e));
   }
 
@@ -29,5 +30,6 @@ public class SyntaxErrorListener extends BaseErrorListener {
   public boolean hasErrors(){
     return errors.size() > 0;
   }
+
 
 }

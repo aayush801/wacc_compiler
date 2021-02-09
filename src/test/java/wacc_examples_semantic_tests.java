@@ -1,34 +1,24 @@
-import error_handlers.WaccErrorCode;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class wacc_examples_semantic_tests {
 
-    private WaccErrorCode compileAndParseSemantics(String fileName) throws IOException {
-        File waccFile = new File(fileName);
-        WaccCompiler compiler = new WaccCompiler(new FileInputStream(waccFile));
-        WaccErrorCode errorCode = compiler.compile();
-        //System.out.println(compiler.getErrors());
-        return errorCode;
-    }
 
     private void files_checker(String base, String[] files) throws IOException {
-        System.out.println("the following files contain semantic errors but dont throw semantic errors: ");
         for (String file : files) {
             String file_path = base + file;
-            WaccErrorCode waccErrorCode = compileAndParseSemantics(file_path);
-            if(waccErrorCode != WaccErrorCode.SEMANTIC_ERROR){
+            WaccCompiler compiler = new WaccCompiler(new FileInputStream(file_path));
+            ErrorCode errorCode = compiler.compile();
+            if(errorCode != ErrorCode.SEMANTIC_ERROR){
                 System.out.println(file);
+                System.out.println(compiler.getErrors());
             }
-//            assertThat(compiler.compile(), is(WaccErrorCode.SEMANTIC_ERROR));
+            assertThat(compiler.compile(), is(ErrorCode.SEMANTIC_ERROR));
         }
     }
 
