@@ -110,5 +110,5 @@ STRING: '"' CHAR* '"' ;
 CHARACTER: '\'' CHAR? '\'' ;
 
 //identifier
-IDENT: [_a-z][_a-zA-Z0-9]* ;
+IDENT: [_a-zA-Z][_a-zA-Z0-9]* ;
 

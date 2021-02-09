@@ -21,7 +21,7 @@ public class wacc_examples_syntax_tests {
         for (String file : files) {
             String file_path = base + file;
             WaccCompiler compiler = compileAndParseSyntactics(file_path);
-//            System.out.println(file + ":" + compiler.getErrors());
+            System.out.println(file + ":" + compiler.getErrors());
             assertThat(compiler.compile(), is(WaccErrorCode.SYNTAX_ERROR));
         }
     }

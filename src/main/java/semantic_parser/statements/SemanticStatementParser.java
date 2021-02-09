@@ -60,10 +60,10 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
 
   @Override
   public Object visitAssignVars(WaccParser.AssignVarsContext ctx) {
-
     TYPE typeLHS = visitAssignLHS(ctx.assignLHS());
     if (typeLHS == null) {
       // type is undefined
+      errors.add(new Undefined(ctx));
       return null;
     }
 

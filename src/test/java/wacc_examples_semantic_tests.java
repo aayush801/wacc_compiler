@@ -25,6 +25,7 @@ public class wacc_examples_semantic_tests {
             String file_path = base + file;
             WaccCompiler compiler = compileAndParseSemantics(file_path);
             if(compiler.compile() != WaccErrorCode.SEMANTIC_ERROR){
+                System.out.println(compiler.getErrors());
                 System.out.println(file);
             }
 //            assertThat(compiler.compile(), is(WaccErrorCode.SEMANTIC_ERROR));

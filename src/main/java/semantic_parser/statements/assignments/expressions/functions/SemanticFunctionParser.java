@@ -48,10 +48,8 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
 
     // checks all the parameter types match up
     for (int i = 0; i < params.size(); i++) {
-
       ParserRuleContext expr = params.get(i);
       IDENTIFIER actual = (IDENTIFIER) visit(expr);
-
       if (actual == null) {
         errors.add(new Undefined(expr));
         return null;

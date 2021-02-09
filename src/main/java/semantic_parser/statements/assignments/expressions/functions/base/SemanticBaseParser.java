@@ -27,6 +27,7 @@ import java.util.List;
 import org.antlr.v4.runtime.tree.ParseTree;
 import symbol_table.SymbolTable;
 
+
 public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
 
   protected SymbolTable ST = SymbolTable.TopSymbolTable();
@@ -112,6 +113,15 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
 
   @Override
   public INT visitIntLiter(IntLiterContext ctx) {
+    try {
+      Integer.parseInt(ctx.getText());
+    } catch (NumberFormatException e) {
+      // stop compilation if int overflow occurs.
+      System.out.println("Integer overflow at line: " + ctx.getStart().getLine());
+      System.exit(100);
+    }
+
+    // What is this doing? This is just a number lol why the lookup?
     return (INT) ST.lookupAll(INT.name);
   }
 
