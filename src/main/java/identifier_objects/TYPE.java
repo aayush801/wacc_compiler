@@ -6,11 +6,4 @@ public abstract class TYPE extends IDENTIFIER {
     super(name);
   }
 
-  public boolean equals(Object o) {
-    if (o instanceof TYPE) {
-      TYPE type = (TYPE) o;
-      return type.getName().equals(name);
-    }
-    return false;
-  }
 }

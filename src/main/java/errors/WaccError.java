@@ -12,7 +12,8 @@ public abstract class WaccError extends BaseErrorListener {
   protected int lineCol;
   protected ParserRuleContext ctx;
 
-  public WaccError(Recognizer<?, ?>recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e){
+  public WaccError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
+      int charPositionInLine, String msg, RecognitionException e) {
     this.lineNo = line;
     this.lineCol = charPositionInLine;
   }
@@ -30,6 +31,9 @@ public abstract class WaccError extends BaseErrorListener {
     code = code.substring(0, position) + "->" + code.substring(position);
   }
 
+  protected WaccError() {
+  }
+
   public String getErrorMessage() {
     System.out.println("THIS METHOD SHOULD BE OVERRIDDEN");
     return null;
@@ -42,7 +46,7 @@ public abstract class WaccError extends BaseErrorListener {
 
   @Override
   public boolean equals(Object o) {
-    if(o instanceof WaccError) {
+    if (o instanceof WaccError) {
       return toString().equals(o.toString());
     }
     return false;

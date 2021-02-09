@@ -13,6 +13,9 @@ public class WaccSemanticError extends WaccError {
     super(ctx, offendingSymbol);
   }
 
+  public WaccSemanticError() {
+  }
+
   @Override
   public String toString() {
     return "Semantic Error " + super.toString();

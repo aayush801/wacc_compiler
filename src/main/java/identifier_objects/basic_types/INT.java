@@ -15,7 +15,6 @@ public class INT extends TYPE {
 
   public INT() {
     this(Integer.MIN_VALUE,Integer.MAX_VALUE);
-
   }
 
 }

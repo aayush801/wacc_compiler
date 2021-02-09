@@ -11,6 +11,7 @@ import org.junit.Test;
 // import antlr package
 
 public class SyntaxTests {
+
   private WaccCompiler compileAndParseSyntactics(String instruction) throws IOException {
     WaccCompiler compiler = new WaccCompiler(
         new ByteArrayInputStream(instruction.getBytes(StandardCharsets.UTF_8)));

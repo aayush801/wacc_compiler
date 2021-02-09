@@ -12,4 +12,8 @@ public class CHAR extends TYPE {
     this.min = min;
     this.max = max;
   }
+
+  public CHAR() {
+    this(0, 255);
+  }
 }

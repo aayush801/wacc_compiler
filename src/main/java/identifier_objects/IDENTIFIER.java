@@ -16,4 +16,13 @@ public abstract class IDENTIFIER {
   public String toString() {
     return name;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof IDENTIFIER) {
+      IDENTIFIER id = (IDENTIFIER) o;
+      return id.getName().equals(name);
+    }
+    return false;
+  }
 }

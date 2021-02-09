@@ -82,7 +82,7 @@ public class WaccCompiler {
 
   public boolean hasErrors() {
 
-    return !errors.isEmpty();
+    return !getErrors().isEmpty();
 
   }
 

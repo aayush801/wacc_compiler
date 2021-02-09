@@ -16,6 +16,10 @@ public class MismatchedTypes extends WaccSemanticError {
     super(ctx, partOfCodeWithError);
   }
 
+  public MismatchedTypes(IDENTIFIER actual, IDENTIFIER expected) {
+    this.actual = actual;
+    this.expected = expected;
+  }
 
   public MismatchedTypes(ParserRuleContext ctx, IDENTIFIER actual, IDENTIFIER expected) {
     super(ctx);
@@ -29,4 +33,14 @@ public class MismatchedTypes extends WaccSemanticError {
     return "Expected value of type : " + expected.toString().toUpperCase() +
         ", but got type : " + actual.toString().toUpperCase();
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof MismatchedTypes) {
+      MismatchedTypes e = (MismatchedTypes) o;
+      return actual.equals(e.actual) && expected.equals(e.expected);
+    }
+    return false;
+  }
+
 }
