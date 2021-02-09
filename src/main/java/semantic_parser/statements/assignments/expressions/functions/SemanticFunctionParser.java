@@ -4,6 +4,7 @@ import antlr.WaccParser.FuncCallContext;
 import antlr.WaccParser.FuncDeclContext;
 import antlr.WaccParser.ParamContext;
 import antlr.WaccParser.ParamListContext;
+import errors.semantic_errors.DuplicateIdentifier;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.NotAFunction;
 import errors.semantic_errors.Undefined;
@@ -11,8 +12,7 @@ import identifier_objects.FUNCTION;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.PARAM;
 import identifier_objects.TYPE;
-
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -32,7 +32,7 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
       errors.add(new Undefined(ctx, funcIdentifier));
       return null;
     }
-    
+
     // check functionIdent
     if (!(identifier instanceof FUNCTION)) {
       errors.add(new NotAFunction(ctx, funcIdentifier));
@@ -42,47 +42,43 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     FUNCTION function = (FUNCTION) identifier;
 
     if (params.size() != function.formals.size()) {
+      // NEED TO CREATE NEW ERROR CLASS
       System.out.println(
           "Error : invalid number of parameters for '" + funcIdentifier + "' given. WAS : " + params
               .size() + ", EXPECTED : " + function.formals.size());
       return null;
     }
 
+    boolean hadError = false;
     // checks all the parameter types match up
     for (int i = 0; i < params.size(); i++) {
       ParserRuleContext expr = params.get(i);
-      IDENTIFIER actual = (IDENTIFIER) visit(expr);
-      if (actual == null) {
+      IDENTIFIER actualType = (IDENTIFIER) visit(expr);
+      if (actualType == null) {
         errors.add(new Undefined(expr));
-        return null;
-      }
+        hadError = true;
 
+      } else {
 
-      if (!(actual instanceof TYPE)) {
-        System.out.println(
-            "ERROR (expression) : " + expr.getText() + " has no type");
-        return null;
-      }
-
-      TYPE actualType = ((TYPE) actual);
-      PARAM formal = function.formals.get(i);
-
-      if (!isCompatible(actualType, formal.getType())) {
-        errors.add(new MismatchedTypes(ctx, actualType, formal.getType()));
-        return null;
+        PARAM formal = function.formals.get(i);
+        if (!isCompatible(actualType, formal.getType())) {
+          errors.add(new MismatchedTypes(ctx, actualType, formal.getType()));
+          hadError = true;
+        }
       }
 
     }
-    return function.getReturnType();
+    return hadError ? null : function.getReturnType();
   }
 
   @Override
   public TYPE visitFuncCall(FuncCallContext ctx) {
-
-
-    return visitFunctionCall(ctx, ctx.IDENT().getText(),
-        ctx.argList().expr().stream().map(e -> (ParserRuleContext) e).collect(
-            Collectors.toList()));
+    List<ParserRuleContext> params = new ArrayList<>();
+    if (ctx.argList() != null) {
+      params = ctx.argList().expr().stream().map(e -> (ParserRuleContext) e).collect(
+          Collectors.toList());
+    }
+    return visitFunctionCall(ctx, ctx.IDENT().getText(), params);
   }
 
   /* =============== FUNCTION DECLARATION =============== */
@@ -97,6 +93,7 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
 
     String identifier = ctx.IDENT().getText();
     if (visitIdentifier(identifier) != null) {
+      errors.add(new DuplicateIdentifier(ctx, identifier));
       // if identifier has already been declared in local scope it cannot be used
       return null;
     }
@@ -106,20 +103,19 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     ST = new SymbolTable(oldScope);
 
     // implicitly adds the params to the new scope
-    List<PARAM> paramList = visitParamList(ctx.paramList());
-    if (paramList == null) {
-      return null;
+    List<PARAM> paramList = new ArrayList<>();
+    if (ctx.paramList() != null) {
+      paramList = visitParamList(ctx.paramList());
     }
 
     // add the function to the parent scope
     FUNCTION newFunction = new FUNCTION(returnType, paramList, ST);
 
-
     oldScope.add(identifier, newFunction);
 
     TYPE returnedType = (TYPE) visit(ctx.stat());
 
-    if(returnedType == null){
+    if (returnedType == null) {
       System.out.println("testing");
     }
 
@@ -139,9 +135,6 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
   @Override
   public List<PARAM> visitParamList(ParamListContext ctx) {
 
-    if(ctx == null) {
-      return Collections.emptyList();
-    }
     return ctx.param().stream().map(this::visitParam).collect(Collectors.toList());
   }
 

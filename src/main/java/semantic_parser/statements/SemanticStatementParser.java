@@ -50,7 +50,7 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
 
     if (!isCompatible(typeLHS, typeRHS)) {
       // if both sides are NOT compatible
-      errors.add(new MismatchedTypes(ctx, typeLHS, typeRHS));
+      errors.add(new MismatchedTypes(ctx, typeRHS, typeLHS));
       return null;
     }
 
@@ -63,6 +63,7 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
   public Object visitAssignVars(WaccParser.AssignVarsContext ctx) {
     IDENTIFIER typeLHS = visitAssignLHS(ctx.assignLHS());
     if (typeLHS == null) {
+      errors.add(new Undefined(ctx, ctx.assignLHS().getText()));
       // type is undefined
       return null;
     }
@@ -74,6 +75,7 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
     }
 
     if (!isCompatible(typeLHS, typeRHS)) {
+      errors.add(new MismatchedTypes(ctx, typeRHS, typeLHS));
       return null;
     }
 

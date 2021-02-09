@@ -1,12 +1,12 @@
 package errors.semantic_errors;
 
-import identifier_objects.TYPE;
+import identifier_objects.IDENTIFIER;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class MismatchedTypes extends WaccSemanticError {
 
-  private TYPE actual;
-  private TYPE expected;
+  private IDENTIFIER actual;
+  private IDENTIFIER expected;
 
   public MismatchedTypes(ParserRuleContext ctx) {
     super(ctx);
@@ -16,7 +16,8 @@ public class MismatchedTypes extends WaccSemanticError {
     super(ctx, partOfCodeWithError);
   }
 
-  public MismatchedTypes(ParserRuleContext ctx, TYPE actual, TYPE expected) {
+
+  public MismatchedTypes(ParserRuleContext ctx, IDENTIFIER actual, IDENTIFIER expected) {
     super(ctx);
     this.actual = actual;
     this.expected = expected;

@@ -12,22 +12,22 @@ import static org.junit.Assert.assertThat;
 
 public class wacc_examples_semantic_tests {
 
-    private WaccCompiler compileAndParseSemantics(String fileName) throws IOException {
+    private WaccErrorCode compileAndParseSemantics(String fileName) throws IOException {
         File waccFile = new File(fileName);
         WaccCompiler compiler = new WaccCompiler(new FileInputStream(waccFile));
-        compiler.parseSemantics(compiler.parseSyntactics());
-        return compiler;
+        WaccErrorCode errorCode = compiler.compile();
+        //System.out.println(compiler.getErrors());
+        return errorCode;
     }
 
     private void files_checker(String base, String[] files) throws IOException {
         System.out.println("the following files contain semantic errors but dont throw semantic errors: ");
         for (String file : files) {
             String file_path = base + file;
-            WaccCompiler compiler = compileAndParseSemantics(file_path);
-            if(compiler.compile() != WaccErrorCode.SEMANTIC_ERROR){
+            WaccErrorCode waccErrorCode = compileAndParseSemantics(file_path);
+            if(waccErrorCode != WaccErrorCode.SEMANTIC_ERROR){
+                System.out.println(file);
             }
-            System.out.println(file);
-            System.out.println(compiler.getErrors());
 //            assertThat(compiler.compile(), is(WaccErrorCode.SEMANTIC_ERROR));
         }
     }
@@ -50,8 +50,6 @@ public class wacc_examples_semantic_tests {
         "mixedOpTypeErr.wacc","moreArrExpr.wacc","stringElemErr.wacc"};
 
         files_checker(base, files);
-
-
     }
 
     @Test
