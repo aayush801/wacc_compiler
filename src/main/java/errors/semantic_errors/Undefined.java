@@ -13,6 +13,10 @@ public class Undefined extends WaccSemanticError {
     super(ctx, partOfCodeWithError);
   }
 
+  public Undefined(String code) {
+    this.code = code;
+  }
+
   @Override
   public String getErrorMessage() {
     return "\"" + code + "\" is undefined";

@@ -13,6 +13,10 @@ public class NotAFunction extends WaccSemanticError {
     super(ctx, partOfCodeWithError);
   }
 
+  public NotAFunction(String code) {
+    this.code = code;
+  }
+
   @Override
   public String getErrorMessage() {
     return "\"" + code + "\" is not a function";

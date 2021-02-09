@@ -34,10 +34,7 @@ public abstract class WaccError extends BaseErrorListener {
   protected WaccError() {
   }
 
-  public String getErrorMessage() {
-    System.out.println("THIS METHOD SHOULD BE OVERRIDDEN");
-    return null;
-  }
+  public abstract String getErrorMessage();
 
   @Override
   public String toString() {

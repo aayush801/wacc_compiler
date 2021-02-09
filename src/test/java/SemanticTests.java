@@ -2,7 +2,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import errors.WaccError;
 import errors.semantic_errors.MismatchedTypes;
+import errors.semantic_errors.Undefined;
 import identifier_objects.basic_types.BOOL;
 import identifier_objects.basic_types.CHAR;
 import identifier_objects.basic_types.INT;
@@ -28,6 +30,7 @@ public class SemanticTests {
     String instruction = "1 + c";
     WaccCompiler compiler = compileAndParseSemantics(instruction);
     assertThat(compiler.hasErrors(), is(true));
+    assertTrue(compiler.getErrors().contains(new Undefined("c")));
   }
 
   @Test
@@ -35,6 +38,10 @@ public class SemanticTests {
     String instruction = "array[5] == true";
     WaccCompiler compiler = compileAndParseSemantics(instruction);
     assertThat(compiler.hasErrors(), is(true));
+    for (WaccError e : compiler.getErrors()) {
+      System.out.println(e);
+    }
+    assertTrue(compiler.getErrors().contains(new Undefined("->array[5]")));
   }
 
   @Test
@@ -42,6 +49,7 @@ public class SemanticTests {
     String instruction = "'2' > 2";
     WaccCompiler compiler = compileAndParseSemantics(instruction);
     assertThat(compiler.hasErrors(), is(true));
+    assertTrue(compiler.getErrors().contains(new MismatchedTypes(new INT(), new CHAR())));
   }
 
   @Test
@@ -56,6 +64,7 @@ public class SemanticTests {
     String instruction = "array [a+2]";
     WaccCompiler compiler = compileAndParseSemantics(instruction);
     assertThat(compiler.hasErrors(), is(true));
+    assertTrue(compiler.getErrors().contains(new Undefined("->array[a+2]")));
   }
 
   @Test

@@ -12,6 +12,10 @@ public class DuplicateIdentifier extends WaccSemanticError {
     super(ctx, partOfCodeWithError);
   }
 
+  public DuplicateIdentifier(String code) {
+    this.code = code;
+  }
+
   @Override
   public String getErrorMessage() {
     return "\"" + code + "\" identifier is already defined";
