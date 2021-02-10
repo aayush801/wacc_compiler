@@ -5,10 +5,7 @@ options {
 }
 
 // EOF indicates that the program must consume to the end of the input.
-prog:
-      BEGIN (funcDecl)* stat END EOF
-    | EOF
-;
+prog: BEGIN (funcDecl)* stat END EOF ;
 
 //function
 funcDecl: type IDENT OPEN_PARENTHESES paramList? CLOSE_PARENTHESES IS stat END ;

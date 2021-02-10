@@ -25,10 +25,20 @@ public class PAIR extends TYPE {
     this(null, null);
   }
 
+  public boolean isNullPair(){
+    return first == null && second == null;
+  }
+
+  @Override
+  public String toString(){
+    return name + "(" + ((first == null) ? "null" : first.toString()) + ", " + ((second == null) ? "null" : second.toString()) +")";
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (o instanceof PAIR) {
       PAIR pair = (PAIR) o;
-      return pair.first.equals(first) && pair.second.equals(second);
+      return isNullPair() || pair.isNullPair() || (pair.getFirst().equals(first) && pair.getSecond().equals(second));
     }
     return false;
   }

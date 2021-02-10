@@ -22,6 +22,7 @@ import identifier_objects.basic_types.CHAR;
 import identifier_objects.basic_types.INT;
 import identifier_objects.basic_types.PAIR;
 import identifier_objects.basic_types.STR;
+import identifier_objects.polymorhpic_types.EXPR;
 import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -59,13 +60,80 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
   }
 
   @Override
+  public TYPE visitPairType(WaccParser.PairTypeContext ctx) {
+    TYPE pairElemType1 = visitPairElemType(ctx.pairElemType(0));
+    TYPE pairElemType2 = visitPairElemType(ctx.pairElemType(1));
+    return new PAIR(pairElemType1, pairElemType2);
+  }
+
+  @Override
+  public TYPE visitNewPair(WaccParser.NewPairContext ctx) {
+    TYPE pairElemType1 = (TYPE) visitExpr(ctx.expr(0));
+    TYPE pairElemType2 = (TYPE) visitExpr(ctx.expr(1));
+    return new PAIR(pairElemType1, pairElemType2);
+  }
+
+  @Override
+  public TYPE visitPairElem(WaccParser.PairElemContext ctx) {
+    TYPE expr = (TYPE) visitExpr(ctx.expr());
+
+    if (expr == null) {
+      addError(new Undefined(ctx));
+      return null;
+    }
+
+    if (!(expr instanceof PAIR)) {
+      addError(new MismatchedTypes(ctx, expr, new PAIR()));
+      return null;
+    }
+
+    PAIR pair = (PAIR) expr;
+
+    if (ctx.PAIR_FIRST() != null) {
+      return pair.getFirst();
+    }
+
+    if (ctx.PAIR_SECOND() != null) {
+      return pair.getSecond();
+    }
+
+    return null;
+
+  }
+
+
+  @Override
+  public TYPE visitPairElemType(WaccParser.PairElemTypeContext ctx) {
+
+    if (ctx.baseType() != null) {
+      return visitBaseType(ctx.baseType());
+    }
+
+    if (ctx.arrayType() != null) {
+      return visitArrayType(ctx.arrayType());
+    }
+
+    if (ctx.PAIR_TYPE() != null) {
+      return (TYPE) ST.lookupAll(PAIR.name);
+    }
+
+    return null;
+  }
+
+  @Override
   public TYPE visitArrayType(WaccParser.ArrayTypeContext ctx) {
-    System.out.println("dafuq");
-    TYPE type = visitBaseType(ctx.baseType());
-    System.out.println("visited");
+    TYPE type;
+    String typeText;
+    if (ctx.baseType() != null) {
+      type = visitBaseType(ctx.baseType());
+      typeText = ctx.baseType().getText();
+    } else {
+      type = visitPairType(ctx.pairType());
+      typeText = ctx.pairType().getText();
+    }
 
     if (type == null) {
-      errors.add(new Undefined(ctx, ctx.baseType().getText()));
+      errors.add(new Undefined(ctx, typeText));
       return null;
     }
 
@@ -142,6 +210,11 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
 
   @Override
   public ARRAY visitArray(WaccParser.ArrayContext ctx) {
+
+    if(ctx.expr(0) == null){
+      return new ARRAY(new EXPR());
+    }
+
     TYPE expectedType = (TYPE) visit(ctx.expr(0));
     // make sure each expr in the array is of the same type
     for (ParseTree expr : ctx.expr()) {
@@ -159,18 +232,10 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
     IDENTIFIER identifier = visitIdentifier(ctx.IDENT().getText());
     if (identifier == null) {
       errors.add(new Undefined(ctx, ctx.IDENT().getText()));
-      System.out.println(ctx.IDENT().getText() + " is undefined");
       return null;
     }
 
     if (!(identifier instanceof ARRAY)) {
-      System.out.println(
-          ctx.IDENT().getSymbol().getLine()
-              + ":"
-              + ctx.IDENT().getSymbol().getCharPositionInLine()
-              + ", "
-              + ctx.IDENT().getText()
-              + " is not a variable");
       addError(new MismatchedTypes(ctx, identifier, new ARRAY(new INT())));
       return null;
     }
@@ -187,7 +252,6 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
       }
 
       if (!(obj instanceof INT)) {
-        System.out.println(exprTree.getText() + " is not of type int");
         addError(new MismatchedTypes(ctx, (IDENTIFIER) obj, new INT()));
         return null;
       }

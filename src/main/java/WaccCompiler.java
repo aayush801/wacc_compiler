@@ -34,13 +34,14 @@ public class WaccCompiler {
     CharStream input = CharStreams.fromStream(inputStream);
 
     WaccLexer lexer = new WaccLexer(input);
-    lexer.removeErrorListeners();
+    inputStream.close();
+    //lexer.removeErrorListeners();
 
     CommonTokenStream tokens = new CommonTokenStream(lexer);
 
     parser = new WaccParser(tokens);
 
-    parser.removeErrorListeners();
+   // parser.removeErrorListeners();
     parser.addErrorListener(syntaxErrorListener);
   }
 

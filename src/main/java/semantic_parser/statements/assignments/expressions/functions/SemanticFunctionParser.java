@@ -81,12 +81,11 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
   }
 
   /* =============== FUNCTION DECLARATION =============== */
-  @Override
-  public Object visitFuncDecl(FuncDeclContext ctx) {
+  protected Object visitFuncHeader(FuncDeclContext ctx) {
     TYPE returnType = visitType(ctx.type());
     if (returnType == null) {
       // if type is not defined
-      addError(new Undefined(ctx));
+      addError(new Undefined(ctx.type()));
       return null;
     }
 
@@ -98,8 +97,7 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     }
 
     // create new scope
-    SymbolTable oldScope = ST;
-    ST = new SymbolTable(oldScope);
+    ST = new SymbolTable(ST, returnType);
 
     // implicitly adds the params to the new scope
     List<PARAM> paramList = new ArrayList<>();
@@ -110,22 +108,32 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     // add the function to the parent scope
     FUNCTION newFunction = new FUNCTION(returnType, paramList, ST);
 
-    oldScope.add(funcIdentifier, newFunction);
+    ST = ST.getEncSymTable();
 
-    IDENTIFIER returnedType = (IDENTIFIER) visit(ctx.stat());
+    ST.add(funcIdentifier, newFunction);
 
-    if (returnedType == null) {
-      addError(new Undefined(ctx));
+
+    return newFunction;
+  }
+
+  public Object visitFuncBody(FuncDeclContext ctx) {
+
+    IDENTIFIER identifier = visitIdentifier(ctx.IDENT().getText());
+    if (identifier == null) {
+      // if identifier has already been declared in local scope it cannot be used
+      addError(new Undefined(ctx, ctx.IDENT().getText()));
       return null;
     }
 
-    if (!isCompatible(returnedType, returnType)) {
-      // the returned type is not compatible with the return type of the function
-      addError(new MismatchedTypes(ctx, returnedType, returnType));
+    if (!(identifier instanceof FUNCTION)) {
+      addError(new NotAFunction(ctx, ctx.IDENT().getText()));
       return null;
     }
+    FUNCTION funcIdentifier = (FUNCTION) identifier;
 
-    ST = oldScope;
+    ST = funcIdentifier.getST();
+    visit(ctx.stat());
+    ST = ST.getEncSymTable();
 
     return null;
   }
@@ -144,16 +152,14 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     // get the type
     TYPE type = visitType(ctx.type());
     if (type == null) {
-      addError(new Undefined(ctx));
-      System.out.println("param : " + ctx.getText() + " is undefined");
       // type is undefined
+      addError(new Undefined(ctx.type()));
       return null;
     }
 
     String identifier = ctx.IDENT().getText();
     if (ST.lookup(identifier) != null) {
       // if the identifier has already been used return an error
-      System.out.println("Error duplicate identifier " + identifier);
       addError(new DuplicateIdentifier(ctx, identifier));
       return null;
     }

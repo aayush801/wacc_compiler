@@ -16,7 +16,7 @@ public class WaccInvalidSyntacticTests {
         System.out.println(file);
         System.out.println(compiler.getErrors());
       }
-      assertThat(compiler.compile(), is(ErrorCode.SYNTAX_ERROR));
+      assertThat(errorCode, is(ErrorCode.SYNTAX_ERROR));
     }
   }
 
