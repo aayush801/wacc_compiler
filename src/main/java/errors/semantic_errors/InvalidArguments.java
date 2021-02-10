@@ -15,8 +15,8 @@ public class InvalidArguments extends WaccSemanticError {
   }
 
   @Override
-  public String toString() {
-    return super.toString() + "invalid number of parameters for '" + func + "' given."
+  public String getErrorMessage() {
+    return "invalid number of parameters for '" + func + "' given."
         + " WAS : " + given + ", EXPECTED : " + required;
   }
 

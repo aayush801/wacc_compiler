@@ -17,6 +17,7 @@ public class WaccSemanticTests {
         System.out.println(file);
         System.out.println(compiler.getErrors());
       }
+
       assertThat(compiler.compile(), is(ErrorCode.SEMANTIC_ERROR));
     }
   }

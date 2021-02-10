@@ -44,9 +44,6 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
 
     if (params.size() != function.formals.size()) {
       // NEED TO CREATE NEW ERROR CLASS
-      System.out.println(
-          "Error : invalid number of parameters for '" + funcIdentifier +
-              "' given. WAS : " + params.size() + ", EXPECTED : " + function.formals.size());
       addError(new InvalidArguments(ctx, funcIdentifier,
           function.formals.size(), params.size()));
       return null;
