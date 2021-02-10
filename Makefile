@@ -3,7 +3,7 @@ MAVEN := mvn
 
 # make the compiler without running any tests
 all:
-	$(MAVEN) package -Dmaven.test.skip=true
+	$(MAVEN) install -Dmaven.test.skip=true
 
 # run all the compiler tests
 test:
