@@ -16,6 +16,6 @@ public class COMPARABLE extends EXPR {
 
   @Override
   public boolean equals(Object o) {
-    return (o instanceof CHAR || o instanceof INT) && super.equals(o);
+    return (o instanceof CHAR || o instanceof INT);// && super.equals(o);
   }
 }

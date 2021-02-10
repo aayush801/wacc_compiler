@@ -49,7 +49,6 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
     if (t1 instanceof TYPE && t2 instanceof TYPE) {
       return t2.equals(t1);
     }
-
     return false;
   }
 
@@ -153,7 +152,7 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
   }
 
   @Override
-  public ARRAY visitArrayElem(WaccParser.ArrayElemContext ctx) {
+  public TYPE visitArrayElem(WaccParser.ArrayElemContext ctx) {
     IDENTIFIER identifier = visitIdentifier(ctx.IDENT().getText());
     if (identifier == null) {
       errors.add(new Undefined(ctx, ctx.IDENT().getText()));
@@ -191,6 +190,6 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
       }
     }
 
-    return array;
+    return array.getType();
   }
 }

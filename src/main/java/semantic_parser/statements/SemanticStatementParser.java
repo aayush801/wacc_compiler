@@ -11,6 +11,7 @@ import errors.semantic_errors.Undefined;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
 import identifier_objects.VARIABLE;
+import identifier_objects.basic_types.ARRAY;
 import identifier_objects.basic_types.BOOL;
 import identifier_objects.basic_types.INT;
 import identifier_objects.unary_operator_functions.FREE;
@@ -18,6 +19,7 @@ import identifier_objects.unary_operator_functions.PRINT;
 import identifier_objects.unary_operator_functions.PRINT_LINE;
 import identifier_objects.unary_operator_functions.READ;
 import java.util.Collections;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import semantic_parser.statements.assignments.SemanticAssignmentParser;
 import symbol_table.SymbolTable;
 
@@ -80,10 +82,19 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
       return null;
     }
 
-    // if both sides have compatible types update the scope variable
-    ST.add(ctx.assignLHS().IDENT().getText(), new VARIABLE((TYPE) typeLHS));
+    TerminalNode iden = ctx.assignLHS().IDENT();
+    String name;
+    if (iden != null) {
+      name = iden.getText();
+    } else {
+      String txt = ctx.assignLHS().getText();
+      name = txt.substring(0, txt.indexOf("["));
+    }
 
-    return null;
+    // if both sides have compatible types update the scope variable
+    ST.add(name, new VARIABLE((TYPE) typeLHS));
+
+    return typeLHS;
   }
 
 
