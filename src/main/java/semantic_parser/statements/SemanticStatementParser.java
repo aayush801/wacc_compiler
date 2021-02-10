@@ -11,7 +11,6 @@ import errors.semantic_errors.Undefined;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
 import identifier_objects.VARIABLE;
-import identifier_objects.basic_types.ARRAY;
 import identifier_objects.basic_types.BOOL;
 import identifier_objects.basic_types.INT;
 import identifier_objects.unary_operator_functions.FREE;
@@ -19,7 +18,6 @@ import identifier_objects.unary_operator_functions.PRINT;
 import identifier_objects.unary_operator_functions.PRINT_LINE;
 import identifier_objects.unary_operator_functions.READ;
 import java.util.Collections;
-import org.antlr.v4.runtime.tree.TerminalNode;
 import semantic_parser.statements.assignments.SemanticAssignmentParser;
 import symbol_table.SymbolTable;
 
@@ -44,7 +42,7 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
       return null;
     }
 
-    IDENTIFIER typeRHS = (IDENTIFIER) visitAssignRHS(ctx.assignRHS());
+    IDENTIFIER typeRHS = visitAssignRHS(ctx.assignRHS());
     if (typeRHS == null) {
       // type of rhs statement undefined
       addError(new Undefined(ctx.assignRHS()));
@@ -83,18 +81,6 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
       return null;
     }
 
-    TerminalNode iden = ctx.assignLHS().IDENT();
-    String name;
-    if (iden != null) {
-      name = iden.getText();
-    } else {
-      String txt = ctx.assignLHS().getText();
-      name = txt.substring(0, txt.indexOf("["));
-    }
-
-    // if both sides have compatible types update the scope variable
-    ST.add(name, new VARIABLE((TYPE) typeLHS));
-
     return typeLHS;
   }
 
@@ -104,13 +90,12 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
   @Override
   public Object visitBeginStat(BeginStatContext ctx) {
     // create new scope
-    SymbolTable oldScope = ST;
 
-    ST = new SymbolTable(oldScope);
+    ST = new SymbolTable(ST);
 
     Object returnedStat = visit(ctx.stat());
 
-    ST = oldScope;
+    ST = ST.getEncSymTable();
 
     return returnedStat;
   }
@@ -131,23 +116,16 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
       return null;
     }
 
-    SymbolTable oldScope = ST;
     // create new scope for statement 1
-    ST = new SymbolTable(oldScope);
-    IDENTIFIER returnedStat1 = (IDENTIFIER) visit(ctx.stat(0));
+    ST = new SymbolTable(ST);
+    visit(ctx.stat(0));
 
     // reset scope to oldScope and then create a scope for statement 2
-    ST = new SymbolTable(oldScope);
-    IDENTIFIER returnedStat2 = (IDENTIFIER) visit(ctx.stat(1));
+    ST = new SymbolTable(ST.getEncSymTable());
+    visit(ctx.stat(1));
 
-    //syntax parsing guarantees that either both returnedStat1 and returnedStat2 have return blocks, or both are null;
-    if (returnedStat1 != null && returnedStat2 != null && !isCompatible(returnedStat1, returnedStat2)) {
-      addError(new MismatchedTypes(ctx, returnedStat1, returnedStat2));
-      return null;
-    }
-
-    ST = oldScope;
-    return returnedStat1;
+    ST = ST.getEncSymTable();
+    return null;
   }
 
   @Override
@@ -166,11 +144,10 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
     }
 
     // create new scope for statement
-    SymbolTable oldScope = ST;
-    ST = new SymbolTable(oldScope);
-    Object returnedStat = visit(ctx.stat());
-    ST = oldScope;
-    return returnedStat;
+    ST = new SymbolTable(ST);
+    visit(ctx.stat());
+    ST = ST.getEncSymTable();
+    return null;
 
   }
 
@@ -192,11 +169,19 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
       addError(new GlobalScope(ctx));
       return null;
     }
-    return visitExpr(ctx.expr());
+
+    TYPE expr = visitExpr(ctx.expr());
+
+    if (ST.getScopeReturnType() != null && !isCompatible(expr, ST.getScopeReturnType())) {
+      addError(new MismatchedTypes(ctx, expr, ST.getScopeReturnType()));
+      return null;
+    }
+
+    return expr;
   }
 
   @Override
-  public TYPE visitExitCall(WaccParser.ExitCallContext ctx) {
+  public INT visitExitCall(WaccParser.ExitCallContext ctx) {
 
     TYPE obj = visitExpr(ctx.expr());
     if (obj == null) {
@@ -211,7 +196,7 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
       return null;
     }
 
-    return obj;
+    return (INT) obj;
   }
 
   /* =================== STATEMENT OPERATIONS ===================== */

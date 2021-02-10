@@ -1,6 +1,7 @@
 package symbol_table;
 
 import identifier_objects.IDENTIFIER;
+import identifier_objects.TYPE;
 import identifier_objects.basic_types.ARRAY;
 import identifier_objects.basic_types.BOOL;
 import identifier_objects.basic_types.CHAR;
@@ -39,6 +40,7 @@ public class SymbolTable {
 
   private final SymbolTable encSymTable;
   private final Map<String, IDENTIFIER> dict;
+  protected TYPE scopeReturnType = null;
 
   // generate top symbol table
   static public SymbolTable TopSymbolTable() {
@@ -50,7 +52,7 @@ public class SymbolTable {
     CHAR charType = new CHAR(0, 255);
     PAIR pairType = new PAIR();
     BOOL boolType = new BOOL();
-    ARRAY arrayType = new ARRAY(null);
+    ARRAY arrayType = new ARRAY(new EXPR());
 
     // add literals to symbol table
     st.add(INT.name, intType);
@@ -96,13 +98,25 @@ public class SymbolTable {
     this(null);
   }
 
+  public SymbolTable(SymbolTable st, TYPE scopeReturnType){
+    this(st);
+    this.scopeReturnType = scopeReturnType;
+  }
+
   public SymbolTable(SymbolTable st) {
     encSymTable = st;
+    if(st != null) {
+      scopeReturnType = st.getScopeReturnType();
+    }
     dict = new HashMap<>();
   }
 
   public SymbolTable getEncSymTable() {
     return encSymTable;
+  }
+
+  public TYPE getScopeReturnType(){
+    return scopeReturnType;
   }
 
   public int size() {

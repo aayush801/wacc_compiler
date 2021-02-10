@@ -29,7 +29,7 @@ public class SyntaxTests {
 
   @Test
   public void testComments() throws IOException {
-    String instruction = "# random comment \n";
+    String instruction = "begin \n"+"# random comment \n" +"int x = 2\n"+"end";
     WaccCompiler compiler = new WaccCompiler(instruction);
     compiler.compile();
     assertThat(compiler.hasErrors(), is(false));

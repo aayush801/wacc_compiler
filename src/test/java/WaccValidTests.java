@@ -22,7 +22,7 @@ public class WaccValidTests {
             System.out.println(child.getName());
             System.out.println(compiler.getErrors());
           }
-          assertThat(compiler.compile(), is(ErrorCode.SUCCESS));
+          assertThat(errorCode, is(ErrorCode.SUCCESS));
         }
       }
     }

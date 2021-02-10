@@ -16,6 +16,10 @@ public class FUNCTION extends IDENTIFIER {
     this.formals = formals;
   }
 
+  public SymbolTable getST(){
+    return ST;
+  }
+
   public TYPE getReturnType() {
     return returnType;
   }
