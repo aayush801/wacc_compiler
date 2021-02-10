@@ -1,10 +1,7 @@
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import errors.WaccError;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import org.junit.Test;
 
 // import ANTLR's runtime libraries
@@ -12,70 +9,71 @@ import org.junit.Test;
 
 public class SemanticTests {
 
-  private WaccCompiler compileAndParseSemantics(String instruction) throws IOException {
-    WaccCompiler compiler = new WaccCompiler(
-        new ByteArrayInputStream(instruction.getBytes(StandardCharsets.UTF_8)));
-    compiler.parseSemantics(compiler.parseSyntactics());
-    return compiler;
-  }
-
   @Test
-  public void testTypeCheck() throws IOException {
-    String instruction = "1 + c";
-    WaccCompiler compiler = compileAndParseSemantics(instruction);
-    assertThat(compiler.hasErrors(), is(true));
-  }
-
-  @Test
-  public void testEquatableFunction() throws IOException {
-    String instruction = "array[5] == true";
-    WaccCompiler compiler = compileAndParseSemantics(instruction);
-    assertThat(compiler.hasErrors(), is(true));
-    for (WaccError e : compiler.getErrors()) {
-      System.out.println(e);
-    }
-  }
-
-  @Test
-  public void testPolymorphicFunction() throws IOException {
-    String instruction = "'2' > 2";
-    WaccCompiler compiler = compileAndParseSemantics(instruction);
-    assertThat(compiler.hasErrors(), is(true));
-  }
-
-  @Test
-  public void testBracketedExpression() throws IOException {
-    String instruction = "true && (false && true)";
-    WaccCompiler compiler = compileAndParseSemantics(instruction);
-    assertThat(compiler.hasErrors(), is(false));
+  public void testUndefined() throws IOException {
+    String instruction = "begin int c = 1 + c end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    ErrorCode errorCode = compiler.compile();
+    System.out.println(compiler.getErrors());
+    assertThat(errorCode, is(ErrorCode.SEMANTIC_ERROR));
   }
 
   @Test
   public void testArrayElem() throws IOException {
-    String instruction = "array [a+2]";
-    WaccCompiler compiler = compileAndParseSemantics(instruction);
-    assertThat(compiler.hasErrors(), is(true));
+    String instruction =
+        "begin \n" + "bool[] array = [true, false] ; \n" + "array[5] = true\n" + "end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    ErrorCode errorCode = compiler.compile();
+    System.out.println(compiler.getErrors());
+    assertThat(errorCode, is(ErrorCode.SUCCESS));
   }
 
   @Test
-  public void testStatement() throws IOException {
-    String instruction =
-        "# tries to exit using a character\n" +
-            "\n" +
-            "# Output:\n" +
-            "# #semantic_error#\n" +
-            "\n" +
-            "# Exit:\n" +
-            "# 200\n" +
-            "\n" +
-            "# Program:\n" +
-            "\n" +
-            "begin\n" +
-            "  exit 'a'\n" +
-            "end\n";
-    WaccCompiler compiler = compileAndParseSemantics(instruction);
+  public void testPolymorphicFunction() throws IOException {
+    String instruction = "begin \n" + "bool b = 2 > 2 ;\n" + "bool x = 'a' > 'b' \n" + "end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    ErrorCode errorCode = compiler.compile();
     System.out.println(compiler.getErrors());
-    assertThat(compiler.hasErrors(), is(true));
+    assertThat(errorCode, is(ErrorCode.SUCCESS));
   }
 
+  @Test
+  public void testPrecedence() throws IOException {
+    String instruction = "begin bool b = true || (false && true) end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    ErrorCode errorCode = compiler.compile();
+    System.out.println(compiler.getErrors());
+    assertThat(errorCode, is(ErrorCode.SUCCESS));
+  }
+
+  @Test
+  public void testMismatchedAssignmentTypes() throws IOException {
+    String instruction = "begin bool a = true; int x = a + 2 end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    ErrorCode errorCode = compiler.compile();
+    System.out.println(compiler.getErrors());
+    assertThat(errorCode, is(ErrorCode.SEMANTIC_ERROR));
+  }
+
+  @Test
+  public void testExitStatementIsStrictlyTyped() throws IOException {
+    String instruction =
+        "# tries to exit using a character\n"
+            + "\n"
+            + "# Output:\n"
+            + "# #semantic_error#\n"
+            + "\n"
+            + "# Exit:\n"
+            + "# 200\n"
+            + "\n"
+            + "# Program:\n"
+            + "\n"
+            + "begin\n"
+            + "  exit 'a'\n"
+            + "end\n";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    ErrorCode errorCode = compiler.compile();
+    System.out.println(compiler.getErrors());
+    assertThat(errorCode, is(ErrorCode.SEMANTIC_ERROR));
+  }
 }

@@ -1,38 +1,54 @@
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 public class Main {
 
   public static void main(String[] args) throws Exception {
-    InputStream inputStream;
+    WaccCompiler compiler;
+    System.out.println("Welcome to the WACC compiler!");
 
-    if (args.length < 1) {
-      throw new IllegalArgumentException(
-          "WACC compiler takes argument of either .wacc file or inline instructions");
-    }
+    if (args.length == 0) {
 
-    File waccFile = new File(args[0]);
+      Scanner scanner = new Scanner(System.in);
 
-    if (!waccFile.exists()) {
-      // check if args[0] is an instruction
-      inputStream = new ByteArrayInputStream((args[0]).getBytes());
+      StringBuilder instructions = new StringBuilder();
+
+      int lineNo = 0;
+
+      System.out.print(lineNo + " > ");
+
+      while (scanner.hasNextLine()) {
+
+        System.out.print(++lineNo + " > ");
+
+        instructions.append(scanner.nextLine());
+
+      }
+
+      scanner.close();
+
+      compiler = new WaccCompiler(instructions.toString());
+
+    } else if (args.length == 1) {
+
+      compiler = new WaccCompiler(new FileInputStream(args[0]));
+
     } else {
-      // check if args[0] is a file
-      inputStream = new FileInputStream(waccFile);
-    }
 
-    // create a compiler instance
-    WaccCompiler compiler = new WaccCompiler(inputStream);
+      throw new IllegalArgumentException("WACC compiler requires a .wacc file to compile");
+
+    }
 
     // compile the code and get the error code value
     ErrorCode errorCode = compiler.compile();
 
-    System.out.println(compiler.getErrors().get(0));
+    // print all errors generated to console
+    compiler.getErrors().forEach(System.out::println);
 
     System.exit(errorCode.code());
 
-    //System.out.println(compiler.treeString());
   }
 }

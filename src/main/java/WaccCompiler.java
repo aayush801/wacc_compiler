@@ -4,8 +4,10 @@ import antlr.WaccLexer;
 import antlr.WaccParser;
 import antlr.WaccParser.ProgContext;
 import errors.WaccError;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.CharStream;
@@ -16,13 +18,17 @@ import syntactic_parser.SyntacticParser;
 import syntactic_parser.SyntaxErrorListener;
 
 public class WaccCompiler {
+  private final WaccParser parser;
 
   private final List<WaccError> errors = new ArrayList<>();
-  private final WaccParser parser;
   private final SyntaxErrorListener syntaxErrorListener = new SyntaxErrorListener();
 
   private final SemanticParser semanticParser = new SemanticParser();
   private final SyntacticParser syntacticParser = new SyntacticParser(syntaxErrorListener);
+
+  public WaccCompiler(String inputString) throws IOException {
+    this(new ByteArrayInputStream(inputString.getBytes(StandardCharsets.UTF_8)));
+  }
 
   public WaccCompiler(InputStream inputStream) throws IOException {
     CharStream input = CharStreams.fromStream(inputStream);

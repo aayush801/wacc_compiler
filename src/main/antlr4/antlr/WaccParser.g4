@@ -6,8 +6,7 @@ options {
 
 // EOF indicates that the program must consume to the end of the input.
 prog:
-    BEGIN (funcDecl)* stat END EOF
-    | expr EOF
+      BEGIN (funcDecl)* stat END EOF
     | EOF
 ;
 
