@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import org.junit.Test;
 
-public class WaccSemanticTests {
+public class WaccInvalidSemanticTests {
 
 
   private void files_checker(String base, String[] files) throws IOException {

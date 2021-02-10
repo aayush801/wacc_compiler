@@ -64,16 +64,17 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
 
   @Override
   public Object visitAssignVars(WaccParser.AssignVarsContext ctx) {
-    IDENTIFIER typeLHS = (IDENTIFIER) visitAssignLHS(ctx.assignLHS());
+    IDENTIFIER typeLHS = visitAssignLHS(ctx.assignLHS());
     if (typeLHS == null) {
       // type is undefined
       addError(new Undefined(ctx, ctx.assignLHS().getText()));
       return null;
     }
 
-    IDENTIFIER typeRHS = (IDENTIFIER) visitAssignRHS(ctx.assignRHS());
+    IDENTIFIER typeRHS = visitAssignRHS(ctx.assignRHS());
     if (typeRHS == null) {
       // type is undefined
+      addError(new Undefined(ctx, ctx.assignRHS().getText()));
       return null;
     }
 
@@ -131,7 +132,6 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
     }
 
     SymbolTable oldScope = ST;
-
     // create new scope for statement 1
     ST = new SymbolTable(oldScope);
     IDENTIFIER returnedStat1 = (IDENTIFIER) visit(ctx.stat(0));
@@ -140,8 +140,8 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
     ST = new SymbolTable(oldScope);
     IDENTIFIER returnedStat2 = (IDENTIFIER) visit(ctx.stat(1));
 
-    if (!isCompatible(returnedStat1, returnedStat2)) {
-      System.out.println("herer");
+    //syntax parsing guarantees that either both returnedStat1 and returnedStat2 have return blocks, or both are null;
+    if (returnedStat1 != null && returnedStat2 != null && !isCompatible(returnedStat1, returnedStat2)) {
       addError(new MismatchedTypes(ctx, returnedStat1, returnedStat2));
       return null;
     }

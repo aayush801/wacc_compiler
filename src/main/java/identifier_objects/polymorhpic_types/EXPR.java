@@ -1,6 +1,8 @@
 package identifier_objects.polymorhpic_types;
 
 import identifier_objects.TYPE;
+import identifier_objects.basic_types.CHAR;
+import identifier_objects.basic_types.INT;
 
 public class EXPR extends TYPE {
 
@@ -9,18 +11,12 @@ public class EXPR extends TYPE {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (o instanceof TYPE) {
-      TYPE type = (TYPE) o;
-      if (name != null) {
-        return super.equals(o);
-      } else {
-        // binds this type to object type
-        name = type.getName();
-        return true;
-      }
-    }
-    return false;
+  public String toString() {
+    return "EXPR";
   }
 
+  @Override
+  public boolean equals(Object o) {
+    return o instanceof TYPE;
+  }
 }

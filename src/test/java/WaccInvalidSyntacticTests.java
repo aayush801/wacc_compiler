@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import org.junit.Test;
 
-public class WaccSyntacticTests {
+public class WaccInvalidSyntacticTests {
 
   private void file_checker(String base, String[] files) throws IOException {
     for (String file : files) {

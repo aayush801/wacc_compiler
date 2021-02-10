@@ -5,14 +5,14 @@ fragment EOL: '\r'? '\n';
 
 // escape characters
 fragment ESCAPED_CHAR:
-  '0'
+    '0'
   | 'b'
   | 't'
   | 'n'
   | 'f'
   | 'r'
   | '"'
-  | '’'
+  | '\''
   | '\\'
 ;
 
@@ -105,7 +105,7 @@ PAIR_SECOND: 'snd' ;
 NULL: 'null' ;
 
 //character/string set
-fragment CHAR: ~[\\'"] | ('\\' ESCAPED_CHAR);
+fragment CHAR:  ~[\\'"] | ('\\' ESCAPED_CHAR);
 STRING: '"' CHAR* '"' ;
 CHARACTER: '\'' CHAR? '\'' ;
 

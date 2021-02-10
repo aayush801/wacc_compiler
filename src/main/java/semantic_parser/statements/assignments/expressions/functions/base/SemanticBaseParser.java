@@ -60,7 +60,10 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
 
   @Override
   public TYPE visitArrayType(WaccParser.ArrayTypeContext ctx) {
+    System.out.println("dafuq");
     TYPE type = visitBaseType(ctx.baseType());
+    System.out.println("visited");
+
     if (type == null) {
       errors.add(new Undefined(ctx, ctx.baseType().getText()));
       return null;

@@ -26,8 +26,8 @@ public class SyntacticParser extends WaccParserBaseVisitor<Boolean> {
   /* SPECIFICALLY DEALS WITH STATEMENT BLOCKS THAT DO NOT ENCLOSE A RETURN STATEMENT */
   @Override
   public Boolean visitFuncDecl(WaccParser.FuncDeclContext ctx) {
-    Boolean stat = visit(ctx.stat());
-    if (!stat) {
+    Boolean statHasReturn = visit(ctx.stat());
+    if (!statHasReturn) {
       listener.syntaxError(null, ctx.IDENT().getText(), ctx.getStart().getLine(),
           ctx.getStart().getCharPositionInLine(),
           "Function " + ctx.IDENT().getText() + " is not ended with a return or an exit statement.",
@@ -40,6 +40,10 @@ public class SyntacticParser extends WaccParserBaseVisitor<Boolean> {
   public Boolean visitIfThenElse(WaccParser.IfThenElseContext ctx) {
     return visit(ctx.stat(0)) && visit(ctx.stat(1));
   }
+
+  @Override
+  public Boolean visitWhileDo(WaccParser.WhileDoContext ctx) { return visit(ctx.stat()); }
+
 
   @Override
   public Boolean visitReturnCall(WaccParser.ReturnCallContext ctx) {
