@@ -14,4 +14,8 @@ public class AbstractSyntaxTree {
     this.semanticErrors = semanticErrors;
     this.symbolTable = symbolTable;
   }
+
+  private void error(WaccError e) {
+    semanticErrors.add(e);
+  }
 }

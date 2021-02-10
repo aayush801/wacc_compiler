@@ -9,12 +9,12 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.misc.Utils;
 
-public class SemanticErrorListener extends BaseErrorListener {
+public class SemanticErrorListener {
 
-  private final List<WaccError> errors = new ArrayList<>();
+  private final List<WaccError> errors;
 
   public SemanticErrorListener() {
-
+    errors = new ArrayList<>();
   }
 
   public List<WaccError> getErrors() {
@@ -29,4 +29,7 @@ public class SemanticErrorListener extends BaseErrorListener {
     return !errors.isEmpty();
   }
 
+  public void add(WaccError e) {
+    errors.add(e);
+  }
 }

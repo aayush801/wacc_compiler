@@ -8,6 +8,7 @@ import errors.semantic_errors.DuplicateIdentifier;
 import errors.semantic_errors.GlobalScope;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
+import identifier_objects.FUNCTION;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
 import identifier_objects.VARIABLE;
@@ -36,7 +37,7 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
     // for this type of assignment we only lookup in the local scope as
     // we are allowed to redefine variables in WACC
     IDENTIFIER identifier = ST.lookup(ctx.IDENT().getText());
-    if (identifier != null) {
+    if (identifier != null && !(identifier instanceof FUNCTION)) {
       // identifier already exists within the scope
       addError(new DuplicateIdentifier(ctx, ctx.IDENT().getText()));
       return null;
