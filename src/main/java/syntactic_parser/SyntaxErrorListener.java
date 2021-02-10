@@ -29,7 +29,7 @@ public class SyntaxErrorListener extends BaseErrorListener {
   }
 
   public boolean hasErrors() {
-    return errors.size() > 0;
+    return !errors.isEmpty();
   }
 
 

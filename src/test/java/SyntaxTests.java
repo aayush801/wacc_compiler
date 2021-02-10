@@ -14,25 +14,19 @@ public class SyntaxTests {
   @Test
   public void testAddition() throws IOException {
     String instruction = "begin \n" + "int x = 1 + 2 \n" + "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.compile();
-    assertThat(compiler.hasErrors(), is(false));
+    check(instruction, false);
   }
 
   @Test
   public void testComplexArithmetic() throws IOException {
     String instruction = "begin \n" + "int x = 1 + 2 * 3 / 2 \n" + "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.compile();
-    assertThat(compiler.hasErrors(), is(false));
+    check(instruction, false);
   }
 
   @Test
   public void testComments() throws IOException {
     String instruction = "# random comment \n";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.compile();
-    assertThat(compiler.hasErrors(), is(false));
+    check(instruction, false);
   }
 
 
@@ -46,24 +40,25 @@ public class SyntaxTests {
             + "end\n"
             + "skip\n"
         + "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.compile();
-    assertThat(compiler.hasErrors(), is(true));
+    check(instruction, true);
   }
 
   @Test
   public void testLessThan() throws IOException {
     String instruction = "begin \n" + "bool b = 1 < 5 \n" + "end \n";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.compile();
-    assertThat(compiler.hasErrors(), is(false));
+    check(instruction, false);
   }
 
   @Test
   public void testIfElse() throws IOException {
     String instruction = "begin if then else end";
+    check(instruction, true);
+  }
+
+  private void check(String instruction, boolean b) throws IOException {
     WaccCompiler compiler = new WaccCompiler(instruction);
     compiler.compile();
-    assertThat(compiler.hasErrors(), is(true));
+    assertThat(compiler.hasErrors(), is(b));
   }
+
 }
