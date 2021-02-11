@@ -30,13 +30,13 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     // lookup the operator function
     IDENTIFIER identifier = visitIdentifier(funcIdentifier);
     if (identifier == null) {
-      addError(new Undefined(ctx, funcIdentifier));
+      addError(new Undefined(ctx.start, funcIdentifier));
       return null;
     }
 
     // check functionIdent
     if (!(identifier instanceof FUNCTION)) {
-      addError(new NotAFunction(ctx, funcIdentifier));
+      addError(new NotAFunction(ctx.start, funcIdentifier));
       return null;
     }
 
@@ -44,7 +44,7 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
 
     if (params.size() != function.formals.size()) {
       // NEED TO CREATE NEW ERROR CLASS
-      addError(new InvalidArguments(ctx, funcIdentifier,
+      addError(new InvalidArguments(ctx.start, funcIdentifier,
           function.formals.size(), params.size()));
       return null;
     }
@@ -55,12 +55,12 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
       ParserRuleContext expr = params.get(i);
       IDENTIFIER actualType = (IDENTIFIER) visit(expr);
       if (actualType == null) {
-        addError(new Undefined(expr));
+        addError(new Undefined(expr.start));
         hadError = true;
       } else {
         PARAM formal = function.formals.get(i);
         if (!isCompatible(actualType, formal.getType())) {
-          addError(new MismatchedTypes(ctx, actualType, formal.getType()));
+          addError(new MismatchedTypes(ctx.start, actualType, formal.getType()));
           hadError = true;
         }
       }
@@ -85,14 +85,14 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     TYPE returnType = visitType(ctx.type());
     if (returnType == null) {
       // if type is not defined
-      addError(new Undefined(ctx.type()));
+      addError(new Undefined(ctx.type().start));
       return null;
     }
 
     String funcIdentifier = ctx.IDENT().getText();
     if (visitIdentifier(funcIdentifier) != null) {
       // if identifier has already been declared in local scope it cannot be used
-      addError(new DuplicateIdentifier(ctx, funcIdentifier));
+      addError(new DuplicateIdentifier(ctx.IDENT().getSymbol(), funcIdentifier));
       return null;
     }
 
@@ -121,12 +121,12 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     IDENTIFIER identifier = visitIdentifier(ctx.IDENT().getText());
     if (identifier == null) {
       // if identifier has already been declared in local scope it cannot be used
-      addError(new Undefined(ctx, ctx.IDENT().getText()));
+      addError(new Undefined(ctx.IDENT().getSymbol()));
       return null;
     }
 
     if (!(identifier instanceof FUNCTION)) {
-      addError(new NotAFunction(ctx, ctx.IDENT().getText()));
+      addError(new NotAFunction(ctx.IDENT().getSymbol()));
       return null;
     }
     FUNCTION funcIdentifier = (FUNCTION) identifier;
@@ -153,14 +153,14 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     TYPE type = visitType(ctx.type());
     if (type == null) {
       // type is undefined
-      addError(new Undefined(ctx.type()));
+      addError(new Undefined(ctx.type().start));
       return null;
     }
 
     String identifier = ctx.IDENT().getText();
     if (ST.lookup(identifier) != null) {
       // if the identifier has already been used return an error
-      addError(new DuplicateIdentifier(ctx, identifier));
+      addError(new DuplicateIdentifier(ctx.IDENT().getSymbol()));
       return null;
     }
 

@@ -1,15 +1,17 @@
 package errors.semantic_errors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 
 public class NotAFunction extends WaccSemanticError {
 
-  public NotAFunction(ParserRuleContext ctx) {
-    super(ctx);
+
+  public NotAFunction(Token token) {
+    super(token);
   }
 
-  public NotAFunction(ParserRuleContext ctx, String partOfCodeWithError) {
-    super(ctx, partOfCodeWithError);
+  public NotAFunction(Token token, String offendingSymbol) {
+    super(token, offendingSymbol);
   }
 
   @Override

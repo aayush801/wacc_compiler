@@ -2,14 +2,15 @@ package errors.semantic_errors;
 
 import identifier_objects.IDENTIFIER;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 
 public class MismatchedTypes extends WaccSemanticError {
 
   private final IDENTIFIER actual, expected;
 
 
-  public MismatchedTypes(ParserRuleContext ctx, IDENTIFIER actual, IDENTIFIER expected) {
-    super(ctx);
+  public MismatchedTypes(Token token, IDENTIFIER actual, IDENTIFIER expected) {
+    super(token);
     this.actual = actual;
     this.expected = expected;
   }

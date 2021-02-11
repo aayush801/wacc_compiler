@@ -1,15 +1,16 @@
 package errors.semantic_errors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 
 public class Undefined extends WaccSemanticError {
 
-  public Undefined(ParserRuleContext ctx) {
-    super(ctx);
+  public Undefined(Token token) {
+    super(token);
   }
 
-  public Undefined(ParserRuleContext ctx, String partOfCodeWithError) {
-    super(ctx, partOfCodeWithError);
+  public Undefined(Token token, String partOfCodeWithError) {
+    super(token, partOfCodeWithError);
   }
 
   @Override

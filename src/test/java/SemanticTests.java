@@ -30,7 +30,7 @@ public class SemanticTests {
 
   @Test
   public void testPolymorphicFunction() throws IOException {
-    String instruction = "begin \n" + "bool b = 2 > 2 ;\n" + "bool x = 'a' > 'b' \n" + "end";
+    String instruction = "begin \n" + "bool b = true > '2' ;\n" + "bool x = 'a' > 'b' \n" + "end";
     WaccCompiler compiler = new WaccCompiler(instruction);
     ErrorCode errorCode = compiler.compile();
     System.out.println(compiler.getErrors());
