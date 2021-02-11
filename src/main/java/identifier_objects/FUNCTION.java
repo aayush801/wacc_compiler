@@ -6,18 +6,21 @@ import symbol_table.SymbolTable;
 public class FUNCTION extends IDENTIFIER {
 
   public final TYPE returnType;
-  public final SymbolTable ST;
   public final List<PARAM> formals;
+  public SymbolTable ST;
 
-  public FUNCTION(TYPE returnType, List<PARAM> formals, SymbolTable ST) {
+  public FUNCTION(TYPE returnType, List<PARAM> formals) {
     super("function");
     this.returnType = returnType;
-    this.ST = ST;
     this.formals = formals;
   }
 
-  public SymbolTable getST(){
+  public SymbolTable getST() {
     return ST;
+  }
+
+  public void setST(SymbolTable ST) {
+    this.ST = ST;
   }
 
   public TYPE getReturnType() {
@@ -38,5 +41,4 @@ public class FUNCTION extends IDENTIFIER {
     }
     return false;
   }
-
 }
