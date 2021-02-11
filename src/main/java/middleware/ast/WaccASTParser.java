@@ -141,7 +141,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public StatementAST visitFreeCall(FreeCallContext ctx) {
-    return null;
+    return new FreeAST(ctx.start, visitExpr(ctx.expr()));
   }
 
   @Override
