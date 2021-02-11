@@ -6,10 +6,10 @@ import middleware.ast.statement_ast.StatementAST;
 import org.antlr.v4.runtime.Token;
 
 public class ProgAST extends NodeAST {
-private List<FunctionDeclarationAST> functionDeclarationASTS;
+private NodeASTList<FunctionDeclarationAST> functionDeclarationASTS;
 private StatementAST statementAST;
 
-  public ProgAST(Token token, List<FunctionDeclarationAST> functionDeclarationASTS, StatementAST statementAST) {
+  public ProgAST(Token token, NodeASTList<FunctionDeclarationAST> functionDeclarationASTS, StatementAST statementAST) {
     super(token);
     this.functionDeclarationASTS = functionDeclarationASTS;
     this.statementAST = statementAST;

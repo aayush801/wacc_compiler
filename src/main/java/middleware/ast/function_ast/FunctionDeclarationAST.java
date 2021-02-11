@@ -7,8 +7,8 @@ import identifier_objects.FUNCTION;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
 import identifier_objects.polymorhpic_types.EXPR;
-import java.util.List;
 import middleware.ast.NodeAST;
+import middleware.ast.NodeASTList;
 import middleware.ast.statement_ast.StatementAST;
 import org.antlr.v4.runtime.Token;
 import symbol_table.SymbolTable;
@@ -17,11 +17,11 @@ public class FunctionDeclarationAST extends NodeAST {
 
   private final String returnTypeName;
   private final String funcname;
-  private final List<ParamAST> paramASTList;
+  private final NodeASTList<ParamAST> paramASTList;
   private final StatementAST statementAST;
   public FUNCTION funcObj;
 
-  public FunctionDeclarationAST(Token token, String returnTypeName, String funcname, List<ParamAST>  paramASTList, StatementAST statementAST) {
+  public FunctionDeclarationAST(Token token, String returnTypeName, String funcname, NodeASTList<ParamAST> paramASTList, StatementAST statementAST) {
     super(token);
     this.returnTypeName = returnTypeName;
     this.funcname = funcname;

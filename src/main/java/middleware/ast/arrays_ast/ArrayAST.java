@@ -6,15 +6,16 @@ import identifier_objects.basic_types.ARRAY;
 import identifier_objects.polymorhpic_types.EXPR;
 import java.util.List;
 import middleware.ast.NodeAST;
+import middleware.ast.NodeASTList;
 import middleware.ast.expression_ast.ExpressionAST;
 import org.antlr.v4.runtime.Token;
 
 public class ArrayAST extends NodeAST {
 
   public ARRAY arrayObj;
-  private List<ExpressionAST> expressionASTList;
+  private NodeASTList<ExpressionAST> expressionASTList;
 
-  public ArrayAST(Token token, List<ExpressionAST> expressionASTList) {
+  public ArrayAST(Token token, NodeASTList<ExpressionAST> expressionASTList) {
     super(token);
     this.expressionASTList = expressionASTList;
   }

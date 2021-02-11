@@ -8,16 +8,17 @@ import identifier_objects.IDENTIFIER;
 import identifier_objects.polymorhpic_types.EXPR;
 import java.util.List;
 import middleware.ast.NodeAST;
+import middleware.ast.NodeASTList;
 import middleware.ast.expression_ast.ExpressionAST;
 import org.antlr.v4.runtime.Token;
 
 public class FunctionCallAST extends NodeAST {
 
   private final String funcname;
-  private final List<ExpressionAST> actuals;
+  private final NodeASTList<ExpressionAST> actuals;
   public FUNCTION funcObj;
 
-  public FunctionCallAST(Token token, String funcname, List<ExpressionAST> actuals) {
+  public FunctionCallAST(Token token, String funcname, NodeASTList<ExpressionAST> actuals) {
     super(token);
     this.funcname = funcname;
     this.actuals = actuals;
@@ -37,10 +38,10 @@ public class FunctionCallAST extends NodeAST {
       // check typing match for parameters
       for (int i = 0; i < actuals.size(); i++) {
         actuals.get(i).check();
-        if (!(isCompatible(actuals.get(i).type, ((FUNCTION) function).formals.get(i).getType()))) {
+        if (!(isCompatible(actuals.get(i).getType(), ((FUNCTION) function).formals.get(i).getType()))) {
           addError(
               new MismatchedTypes(
-                  token, actuals.get(i).type, ((FUNCTION) function).formals.get(i).getType()));
+                  token, actuals.get(i).getType(), ((FUNCTION) function).formals.get(i).getType()));
         }
       }
       funcObj = (FUNCTION) function;

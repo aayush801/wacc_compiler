@@ -9,15 +9,16 @@ import identifier_objects.basic_types.INT;
 import identifier_objects.polymorhpic_types.EXPR;
 import java.util.List;
 import middleware.ast.NodeAST;
+import middleware.ast.NodeASTList;
 import middleware.ast.expression_ast.ExpressionAST;
 import org.antlr.v4.runtime.Token;
 
-public class ArrayElemAST extends NodeAST {
+public class ArrayElemAST extends ExpressionAST {
   public ARRAY arrayObj;
   private String arrayName;
-  private List<ExpressionAST> expressionASTS;
+  private NodeASTList<ExpressionAST> expressionASTS;
 
-  public ArrayElemAST(Token token, String arrayName, List<ExpressionAST> expressionASTS) {
+  public ArrayElemAST(Token token, String arrayName, NodeASTList<ExpressionAST> expressionASTS) {
     super(token);
     this.arrayName = arrayName;
     this.expressionASTS = expressionASTS;
