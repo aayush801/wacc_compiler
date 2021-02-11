@@ -158,6 +158,7 @@ public class CodeGenerationTests {
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
   }
 
+  @Test
   public void testPrintTriangle() throws IOException {
     String instruction = "\n"
         + "begin\n"
