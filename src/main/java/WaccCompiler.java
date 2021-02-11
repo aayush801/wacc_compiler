@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import middleware.ast.NodeAST;
+import middleware.ast.WaccASTParser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -23,7 +25,7 @@ public class WaccCompiler {
   private final List<WaccError> errors = new ArrayList<>();
   private final SyntaxErrorListener syntaxErrorListener = new SyntaxErrorListener();
 
-  private final SemanticParser semanticParser = new SemanticParser();
+  private final WaccASTParser semanticParser = new WaccASTParser();//new SemanticParser();
   private final SyntacticParser syntacticParser = new SyntacticParser(syntaxErrorListener);
 
   public WaccCompiler(String inputString) throws IOException {
@@ -35,14 +37,16 @@ public class WaccCompiler {
 
     WaccLexer lexer = new WaccLexer(input);
     inputStream.close();
-    //lexer.removeErrorListeners();
+    lexer.removeErrorListeners();
 
     CommonTokenStream tokens = new CommonTokenStream(lexer);
 
     parser = new WaccParser(tokens);
 
-   // parser.removeErrorListeners();
+    parser.removeErrorListeners();
     parser.addErrorListener(syntaxErrorListener);
+
+    NodeAST.setSemanticErrors(errors);
   }
 
   public ErrorCode compile() {
@@ -57,7 +61,7 @@ public class WaccCompiler {
 
     parseSemantics(AST);
 
-    if (semanticParser.hasErrors()) {
+    if (!errors.isEmpty()) {
 
       return ErrorCode.SEMANTIC_ERROR;
 
@@ -86,8 +90,6 @@ public class WaccCompiler {
   public void parseSemantics(ProgContext AST) {
 
     semanticParser.visit(AST);
-
-    errors.addAll(semanticParser.getErrors());
 
   }
 

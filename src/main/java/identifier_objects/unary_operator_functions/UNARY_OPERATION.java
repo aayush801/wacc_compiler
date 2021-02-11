@@ -9,6 +9,8 @@ import symbol_table.SymbolTable;
 public class UNARY_OPERATION extends FUNCTION {
 
   public UNARY_OPERATION(TYPE returnType, PARAM param, SymbolTable st) {
-    super(returnType, Collections.singletonList(param), st);
+    super(returnType);
+    formals.add(param);
+    setST(st);
   }
 }

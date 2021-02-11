@@ -1,10 +1,10 @@
 package middleware.ast.arrays_ast;
 
 import errors.semantic_errors.MismatchedTypes;
+import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
 import identifier_objects.basic_types.ARRAY;
 import identifier_objects.polymorhpic_types.EXPR;
-import java.util.List;
 import middleware.ast.NodeAST;
 import middleware.ast.NodeASTList;
 import middleware.ast.expression_ast.ExpressionAST;
@@ -26,13 +26,19 @@ public class ArrayAST extends NodeAST {
       arrayObj = new ARRAY(new EXPR());
     } else {
       expressionASTList.get(0).check();
-      TYPE curType = expressionASTList.get(0).getType();
-      for (ExpressionAST expressionAST : expressionASTList) {
-        expressionAST.check();
-        if (!(isCompatible( expressionAST.getType(), curType)))
-          addError(new MismatchedTypes(expressionAST.token, expressionAST.getType(), curType));
+      IDENTIFIER curType = expressionASTList.get(0).getType();
+      if (!(curType instanceof TYPE)) {
+        addError(
+            new MismatchedTypes(
+                expressionASTList.get(0).token, expressionASTList.get(0).getType(), new EXPR()));
+      } else {
+        for (ExpressionAST expressionAST : expressionASTList) {
+          expressionAST.check();
+          if (!(isCompatible(expressionAST.getType(), curType)))
+            addError(new MismatchedTypes(expressionAST.token, expressionAST.getType(), curType));
+        }
+        arrayObj = new ARRAY((TYPE) curType);
       }
-      arrayObj = new ARRAY(curType);
     }
   }
 }

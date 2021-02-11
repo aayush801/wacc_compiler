@@ -1,5 +1,6 @@
 package middleware.ast;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
@@ -11,6 +12,11 @@ public class NodeASTList<T> extends NodeAST implements Iterable<T> {
   public NodeASTList(Token token, List<T> ASTList) {
     super(token);
     this.ASTList = ASTList;
+  }
+
+  public NodeASTList(Token token) {
+    super(token);
+    this.ASTList = new ArrayList<T>();
   }
 
   public boolean isEmpty(){
