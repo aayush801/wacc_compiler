@@ -1,6 +1,7 @@
 package middleware.ast.pair_ast;
 
 import errors.semantic_errors.MismatchedTypes;
+import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
 import identifier_objects.basic_types.PAIR;
 import middleware.ast.NodeAST;
@@ -21,7 +22,7 @@ public class PairElemAST extends NodeAST {
 
     @Override
     public void check() {
-        TYPE exprtype = expr.getType();
+        IDENTIFIER exprtype = expr.getType();
         if (!(exprtype instanceof PAIR)) {
             addError(new MismatchedTypes(token, exprtype, new PAIR()));
         } else {

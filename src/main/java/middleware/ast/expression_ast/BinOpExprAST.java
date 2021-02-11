@@ -1,11 +1,19 @@
 package middleware.ast.expression_ast;
 
 import errors.semantic_errors.MismatchedTypes;
-import identifier_objects.TYPE;
+import identifier_objects.IDENTIFIER;
 import identifier_objects.basic_types.*;
 import org.antlr.v4.runtime.Token;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class BinOpExprAST extends ExpressionAST {
+
+    protected final List<String> NUM_BIN_OPS = Arrays.asList("+", "-", "*", "/", "%");
+    protected final List<String> NUM_CHAR_BIN_OPS = Arrays.asList(">", "<", ">=", "<=");
+    protected final List<String> EXPR_BIN_OPS = Arrays.asList("==", "!=");
+
     private final ExpressionAST left;
     private final ExpressionAST right;
     private final String operator;
@@ -21,8 +29,9 @@ public class BinOpExprAST extends ExpressionAST {
     public void check() {
         left.check();
         right.check();
-        TYPE lefttype = left.getType();
-        TYPE righttype = right.getType();
+
+        IDENTIFIER lefttype = left.getType();
+        IDENTIFIER righttype = right.getType();
 
         if(NUM_BIN_OPS.contains(operator)) {
             boolean leftInt = lefttype instanceof INT;
@@ -68,5 +77,6 @@ public class BinOpExprAST extends ExpressionAST {
             addError(new MismatchedTypes(token, new BOOL(), righttype));
         }
         type = new BOOL();
-   }
+    }
+
 }

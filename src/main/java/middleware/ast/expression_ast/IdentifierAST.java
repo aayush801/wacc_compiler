@@ -1,8 +1,12 @@
 package middleware.ast.expression_ast;
 
+import errors.semantic_errors.MismatchedTypes;
+import errors.semantic_errors.Undefined;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
 import org.antlr.v4.runtime.Token;
+
+import javax.swing.text.StyledEditorKit;
 
 public class IdentifierAST extends ExpressionAST {
 
@@ -11,22 +15,18 @@ public class IdentifierAST extends ExpressionAST {
     public IdentifierAST(Token token, String identifier) {
         super(token);
         this.identifier = identifier;
-        type = calcType();
+        type = ST.lookup(identifier);
     }
 
-    public IdentifierAST(Token token, String identifier, TYPE type) {
-        super(token);
-        this.identifier = identifier;
-        this.type = type;
-    }
-
-    private TYPE calcType() {
-        IDENTIFIER ident = ST.lookup(identifier);
-
-        if (ident instanceof TYPE) {
-            return (TYPE) ident;
-        } else {
-            return null;
+    @Override
+    public void check() {
+        if (type == null) {
+            addError(new Undefined(token, token.toString()));
         }
+    }
+
+    @Override
+    public boolean isIdent() {
+        return true;
     }
 }

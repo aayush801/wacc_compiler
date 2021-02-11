@@ -1,26 +1,22 @@
 package middleware.ast.expression_ast;
 
-import identifier_objects.TYPE;
+import identifier_objects.IDENTIFIER;
 import middleware.ast.NodeAST;
 import org.antlr.v4.runtime.Token;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 
 public class ExpressionAST extends NodeAST {
-  protected TYPE type;
-  protected final List<String> NUM_BIN_OPS = Arrays.asList("+", "-", "*", "/", "%");
-  protected final List<String> NUM_CHAR_BIN_OPS = Arrays.asList(">", "<", ">=", "<=");
-  protected final List<String> EXPR_BIN_OPS = Arrays.asList("==", "!=");
+
+  protected IDENTIFIER type;
 
   public ExpressionAST(Token token) {
     super(token);
   }
 
-  public TYPE getType() {
+  public IDENTIFIER getType() {
     return type;
   }
+
+  public boolean isIdent() { return false; }
 
 }
