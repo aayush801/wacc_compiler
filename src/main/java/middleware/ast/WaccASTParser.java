@@ -211,12 +211,40 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public LHSAssignAST visitAssignLHS(AssignLHSContext ctx) {
-    return new LHSAssignAST(ctx.start);
+    if (ctx.IDENT() != null) {
+      return new LHSAssignAST(ctx.start, ctx.IDENT().getText());
+    }
+    if (ctx.arrayElem() != null) {
+      return new LHSAssignAST(ctx.start, visitArrayElem(ctx.arrayElem()));
+    }
+    if (ctx.pairElem() != null) {
+      return new LHSAssignAST(ctx.start, visitPairElem(ctx.pairElem()));
+    }
+    return null;
   }
 
   @Override
   public RHSAssignAST visitAssignRHS(AssignRHSContext ctx) {
-    return new RHSAssignAST(ctx.start);
+    if (ctx.expr() != null) {
+      return new RHSAssignAST(ctx.start, visitExpr(ctx.expr()));
+    }
+    if (ctx.array() != null) {
+      return new RHSAssignAST(ctx.start, visitArray(ctx.array()));
+
+    }
+    if (ctx.newPair() != null) {
+      return new RHSAssignAST(ctx.start, visitNewPair(ctx.newPair()));
+
+    }
+    if (ctx.pairElem() != null) {
+      return new RHSAssignAST(ctx.start, visitPairElem(ctx.pairElem()));
+
+    }
+    if (ctx.funcCall() != null) {
+      return new RHSAssignAST(ctx.start, visitFuncCall(ctx.funcCall()));
+
+    }
+    return null;
   }
 
   @Override
@@ -237,14 +265,16 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     if (ctx.arrayElem() != null) {
       return visitArrayElem(ctx.arrayElem());
     }
+
     Object obj = visitChildren(ctx);
 
-    if (!(obj instanceof LiteralsAST)) {
-      System.out.println("something wnet wrong in expression");
-      return null;
+    if (obj instanceof LiteralsAST || obj instanceof IdentifierAST) {
+      return (ExpressionAST) obj;
     }
 
-    return (ExpressionAST) obj;
+    return null;
+
+
   }
 
   //  @Override
@@ -261,7 +291,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   }
 
   @Override
-  public NodeAST visitArray(ArrayContext ctx) {
+  public ArrayAST visitArray(ArrayContext ctx) {
     NodeASTList<ExpressionAST> exprs =
         new NodeASTList<>(
             ctx.start, ctx.expr().stream().map(this::visitExpr).collect(Collectors.toList()));
@@ -291,12 +321,12 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   }
 
   @Override
-  public NodeAST visitPairElem(PairElemContext ctx) {
+  public PairElemAST visitPairElem(PairElemContext ctx) {
     return new PairElemAST(ctx.start, visitExpr(ctx.expr()), ctx.PAIR_FIRST() != null ? 0 : 1);
   }
 
   @Override
-  public NodeAST visitNewPair(NewPairContext ctx) {
+  public NewPairAST visitNewPair(NewPairContext ctx) {
     return new NewPairAST(ctx.start, visitExpr(ctx.expr(0)), visitExpr(ctx.expr(1)));
   }
 

@@ -89,8 +89,8 @@ public class WaccCompiler {
 
   public void parseSemantics(ProgContext AST) {
 
-    semanticParser.visit(AST);
-
+    NodeAST tree = semanticParser.visit(AST);
+    tree.check();
   }
 
   public List<WaccError> getErrors() {

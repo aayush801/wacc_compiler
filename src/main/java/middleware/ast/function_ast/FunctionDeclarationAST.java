@@ -43,6 +43,7 @@ public class FunctionDeclarationAST extends NodeAST {
 
   public void checkStatement(){
     ST = funcObj.getST();
+    System.out.println(ST);
     statementAST.check();
     ST = ST.getEncSymTable();
   }
@@ -52,6 +53,7 @@ public class FunctionDeclarationAST extends NodeAST {
     checkFunctionAndGetReturnType();
 
     ST = new SymbolTable(ST);
+    funcObj.setST(ST);
 
     for(ParamAST paramAST : paramASTList){
       paramAST.check();
@@ -59,5 +61,6 @@ public class FunctionDeclarationAST extends NodeAST {
     }
 
     ST = ST.getEncSymTable();
+    System.out.println(ST);
   }
 }
