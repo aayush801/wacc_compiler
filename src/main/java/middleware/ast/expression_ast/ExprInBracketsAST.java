@@ -10,4 +10,10 @@ public class ExprInBracketsAST extends ExpressionAST {
         super(token);
         this.expr = expr;
     }
+
+    @Override
+    public void check() {
+        expr.check();
+        type = expr.getType();
+    }
 }
