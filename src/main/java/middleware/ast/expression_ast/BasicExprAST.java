@@ -10,6 +10,6 @@ public class BasicExprAST extends ExpressionAST{
 
     @Override
     public void check() {
-        super.check();
+
     }
 }
