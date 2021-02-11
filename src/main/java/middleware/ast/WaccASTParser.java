@@ -34,7 +34,6 @@ import antlr.WaccParser.ReadCallContext;
 import antlr.WaccParser.ReturnCallContext;
 import antlr.WaccParser.SeperateStatContext;
 import antlr.WaccParser.SkipStatContext;
-import antlr.WaccParser.StatContext;
 import antlr.WaccParser.StrLiterContext;
 import antlr.WaccParser.TypeContext;
 import antlr.WaccParser.WhileDoContext;
@@ -44,16 +43,14 @@ import identifier_objects.basic_types.CHAR;
 import identifier_objects.basic_types.INT;
 import identifier_objects.basic_types.PAIR;
 import identifier_objects.basic_types.STR;
-import identifier_objects.unary_operator_functions.FREE;
-import identifier_objects.unary_operator_functions.PRINT;
-import identifier_objects.unary_operator_functions.PRINT_LINE;
-import java.util.Collections;
 import java.util.stream.Collectors;
 import middleware.ast.arrays_ast.ArrayAST;
 import middleware.ast.arrays_ast.ArrayElemAST;
 import middleware.ast.arrays_ast.ArrayTypeAST;
 import middleware.ast.arrays_ast.BaseTypeAST;
+import middleware.ast.arrays_ast.PairElemTypeAST;
 import middleware.ast.arrays_ast.PairTypeAST;
+import middleware.ast.arrays_ast.TypeAST;
 import middleware.ast.expression_ast.BinOpExprAST;
 import middleware.ast.expression_ast.ExpressionAST;
 import middleware.ast.expression_ast.IdentifierAST;
@@ -64,7 +61,21 @@ import middleware.ast.function_ast.FunctionDeclarationAST;
 import middleware.ast.function_ast.ParamAST;
 import middleware.ast.pair_ast.NewPairAST;
 import middleware.ast.pair_ast.PairElemAST;
-import middleware.ast.statement_ast.*;
+import middleware.ast.statement_ast.AssignmentAST;
+import middleware.ast.statement_ast.BeginAST;
+import middleware.ast.statement_ast.ChainedStatementAST;
+import middleware.ast.statement_ast.ExitAST;
+import middleware.ast.statement_ast.FreeAST;
+import middleware.ast.statement_ast.IfElseAST;
+import middleware.ast.statement_ast.LHSAssignAST;
+import middleware.ast.statement_ast.PrintAST;
+import middleware.ast.statement_ast.RHSAssignAST;
+import middleware.ast.statement_ast.ReadAST;
+import middleware.ast.statement_ast.ReturnAST;
+import middleware.ast.statement_ast.SkipAST;
+import middleware.ast.statement_ast.StatementAST;
+import middleware.ast.statement_ast.VariableDeclarationAST;
+import middleware.ast.statement_ast.WhileAST;
 
 public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
@@ -79,25 +90,31 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public FunctionDeclarationAST visitFuncDecl(FuncDeclContext ctx) {
-    if(ctx.paramList() != null)
-    return new FunctionDeclarationAST(
-        ctx.start,
-        ctx.type().getText(),
-        ctx.IDENT().getText(),
-        visitParamList(ctx.paramList()),
-        (StatementAST) visit(ctx.stat()));
-    else
+    if (ctx.paramList() != null) {
+      return new FunctionDeclarationAST(
+          ctx.start,
+          ctx.type().getText(),
+          ctx.IDENT().getText(),
+          visitParamList(ctx.paramList()),
+          (StatementAST) visit(ctx.stat()));
+    } else {
       return new FunctionDeclarationAST(
           ctx.start,
           ctx.type().getText(),
           ctx.IDENT().getText(),
           new NodeASTList<>(ctx.start),
           (StatementAST) visit(ctx.stat()));
+    }
   }
 
   @Override
   public FunctionCallAST visitFuncCall(FuncCallContext ctx) {
-    NodeASTList<ExpressionAST> actuals = visitArgList(ctx.argList());
+    NodeASTList<ExpressionAST> actuals;
+    if (ctx.argList() != null) {
+      actuals = visitArgList(ctx.argList());
+    } else {
+      actuals = new NodeASTList<>(ctx.start);
+    }
     return new FunctionCallAST(ctx.start, ctx.IDENT().getText(), actuals);
   }
 
@@ -114,8 +131,13 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public NodeASTList<ExpressionAST> visitArgList(ArgListContext ctx) {
-    return new NodeASTList<>(
-        ctx.start, ctx.expr().stream().map(this::visitExpr).collect(Collectors.toList()));
+    if (ctx.expr() != null) {
+      return new NodeASTList<>(
+          ctx.start, ctx.expr().stream().map(this::visitExpr).collect(Collectors.toList()));
+    } else {
+      return new NodeASTList<>(
+          ctx.start);
+    }
   }
 
   @Override
@@ -126,12 +148,14 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   @Override
   public IfElseAST visitIfThenElse(IfThenElseContext ctx) {
     return new IfElseAST(
-        ctx.start, visitExpr(ctx.expr()), (StatementAST) visit(ctx.stat(0)), (StatementAST) visit(ctx.stat(1)));
+        ctx.start, visitExpr(ctx.expr()), (StatementAST) visit(ctx.stat(0)),
+        (StatementAST) visit(ctx.stat(1)));
   }
 
   @Override
   public StatementAST visitAssignIdent(AssignIdentContext ctx) {
-    return new VariableDeclarationAST(ctx.start, ctx.type().getText(), ctx.IDENT().getText());
+    return new VariableDeclarationAST(ctx.start, visitType(ctx.type()), ctx.IDENT().getText(),
+        visitAssignRHS(ctx.assignRHS()));
   }
 
   @Override
@@ -161,7 +185,8 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public StatementAST visitSeperateStat(SeperateStatContext ctx) {
-    return new ChainedStatementAST(ctx.start, (StatementAST) visit(ctx.stat(0)), (StatementAST) visit(ctx.stat(1)));
+    return new ChainedStatementAST(ctx.start, (StatementAST) visit(ctx.stat(0)),
+        (StatementAST) visit(ctx.stat(1)));
   }
 
   @Override
@@ -171,16 +196,12 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public StatementAST visitSkipStat(SkipStatContext ctx) {
-    return null;
+    return new SkipAST(ctx.start);
   }
 
   @Override
   public StatementAST visitReadCall(ReadCallContext ctx) {
-    //    NodeASTList<ExpressionAST> exprs =
-    //        new NodeASTList<>(ctx.start,
-    // Collections.singletonList(visitAssignLHS(ctx.assignLHS())));
-    //    return new FunctionCallAST(ctx.start, READ.name, exprs);
-    return null;
+    return new ReadAST(ctx.start, visitAssignLHS(ctx.assignLHS()));
   }
 
   @Override
@@ -190,23 +211,24 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   }
 
   @Override
-  public NodeAST visitType(TypeContext ctx) {
-    return visitChildren(ctx);
+  public TypeAST visitType(TypeContext ctx) {
+    return (TypeAST) visitChildren(ctx);
   }
 
   @Override
   public BaseTypeAST visitBaseType(BaseTypeContext ctx) {
-    return new BaseTypeAST(ctx.start);
+    return new BaseTypeAST(ctx.start, ctx.getText());
   }
 
   @Override
   public ArrayTypeAST visitArrayType(ArrayTypeContext ctx) {
-    if (ctx.baseType() != null)
+    if (ctx.baseType() != null) {
       return new ArrayTypeAST(
-          ctx.start, ctx.OPEN_SQUARE_BRACKET().size(), visitBaseType(ctx.baseType()), null);
-    else
+          ctx.start, ctx.OPEN_SQUARE_BRACKET().size(), visitBaseType(ctx.baseType()));
+    } else {
       return new ArrayTypeAST(
-          ctx.start, ctx.OPEN_SQUARE_BRACKET().size(), null, visitPairType(ctx.pairType()));
+          ctx.start, ctx.OPEN_SQUARE_BRACKET().size(), visitPairType(ctx.pairType()));
+    }
   }
 
   @Override
@@ -300,21 +322,24 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public PairTypeAST visitPairType(PairTypeContext ctx) {
-    return new PairTypeAST(ctx.start);
+
+    return new PairTypeAST(ctx.start, visitPairElemType(ctx.pairElemType(0)),
+        visitPairElemType(ctx.pairElemType(1)));
   }
 
   @Override
-  public NodeAST visitPairElemType(PairElemTypeContext ctx) {
+  public PairElemTypeAST visitPairElemType(PairElemTypeContext ctx) {
+
     if (ctx.baseType() != null) {
-      return visitBaseType(ctx.baseType());
+      return new PairElemTypeAST(ctx.start, visitBaseType(ctx.baseType()));
     }
 
     if (ctx.arrayType() != null) {
-      return visitArrayType(ctx.arrayType());
+      return new PairElemTypeAST(ctx.start, visitArrayType(ctx.arrayType()));
     }
 
     if (ctx.PAIR_TYPE() != null) {
-      return new LiteralsAST(ctx.start, new PAIR());
+      return new PairElemTypeAST(ctx.start,ctx.PAIR_TYPE().getText());
     }
 
     return null;
@@ -332,27 +357,27 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public NodeAST visitIntLiter(IntLiterContext ctx) {
-    return new LiteralsAST(ctx.start, new INT());
+    return new LiteralsAST(ctx.start, ctx.getText(), new INT());
   }
 
   @Override
   public NodeAST visitBoolLiter(BoolLiterContext ctx) {
-    return new LiteralsAST(ctx.start, new BOOL());
+    return new LiteralsAST(ctx.start, ctx.getText(), new BOOL());
   }
 
   @Override
   public NodeAST visitPairLiter(PairLiterContext ctx) {
-    return new LiteralsAST(ctx.start, null);
+    return new LiteralsAST(ctx.start, ctx.getText(), new PAIR());
   }
 
   @Override
   public NodeAST visitStrLiter(StrLiterContext ctx) {
-    return new LiteralsAST(ctx.start, new STR());
+    return new LiteralsAST(ctx.start, ctx.getText(), new STR());
   }
 
   @Override
   public NodeAST visitCharLiter(CharLiterContext ctx) {
-    return new LiteralsAST(ctx.start, new CHAR());
+    return new LiteralsAST(ctx.start, ctx.getText(), new CHAR());
   }
 
   @Override

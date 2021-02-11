@@ -10,35 +10,39 @@ import org.antlr.v4.runtime.Token;
 
 public class NewPairAST extends NodeAST {
 
-  private final ExpressionAST fst;
-  private final ExpressionAST snd;
+  private final ExpressionAST fstExpr;
+  private final ExpressionAST sndExpr;
 
   public PAIR pair;
 
-  public NewPairAST(Token token, ExpressionAST fst, ExpressionAST snd) {
+  public NewPairAST(Token token, ExpressionAST fstExpr, ExpressionAST sndExpr) {
     super(token);
-    this.fst = fst;
-    this.snd = snd;
+    this.fstExpr = fstExpr;
+    this.sndExpr = sndExpr;
   }
 
-  public ExpressionAST getFst() {
-    return fst;
+  public PAIR getPair() {
+    return pair;
   }
 
-  public ExpressionAST getSnd() {
-    return snd;
+  public ExpressionAST getFstExpr() {
+    return fstExpr;
+  }
+
+  public ExpressionAST getSndExpr() {
+    return sndExpr;
   }
 
   @Override
   public void check() {
-    fst.check();
-    snd.check();
-    if (!(fst.getType() instanceof TYPE))
-      addError(new MismatchedTypes(fst.token, fst.getType(), new EXPR()));
-    else if (!(snd.getType() instanceof TYPE))
-      addError(new MismatchedTypes(snd.token, snd.getType(), new EXPR()));
+    fstExpr.check();
+    sndExpr.check();
+    if (!(fstExpr.getType() instanceof TYPE))
+      addError(new MismatchedTypes(fstExpr.token, fstExpr.getType(), new EXPR()));
+    else if (!(sndExpr.getType() instanceof TYPE))
+      addError(new MismatchedTypes(sndExpr.token, sndExpr.getType(), new EXPR()));
     else {
-      pair = new PAIR((TYPE) fst.getType(), (TYPE) snd.getType());
+      pair = new PAIR((TYPE) fstExpr.getType(), (TYPE) sndExpr.getType());
     }
   }
 }

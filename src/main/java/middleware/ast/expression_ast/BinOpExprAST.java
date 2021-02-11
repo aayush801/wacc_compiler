@@ -29,7 +29,6 @@ public class BinOpExprAST extends ExpressionAST {
     public void check() {
         left.check();
         right.check();
-
         IDENTIFIER lefttype = left.getType();
         IDENTIFIER righttype = right.getType();
 

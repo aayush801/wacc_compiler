@@ -20,6 +20,10 @@ public class PairElemAST extends NodeAST {
         this.index = index;
     }
 
+    public TYPE getType() {
+        return type;
+    }
+
     @Override
     public void check() {
         IDENTIFIER exprtype = expr.getType();

@@ -29,28 +29,31 @@ public class FunctionDeclarationAST extends NodeAST {
     this.statementAST = statementAST;
   }
 
-  private void checkFunctionAndGetReturnType(){
+  private boolean checkFunctionAndGetReturnType(){
     IDENTIFIER type = ST.lookupAll(returnTypeName);
     IDENTIFIER function = ST.lookup(funcname);
-    if(type == null) addError(new Undefined(token, returnTypeName));
+    if(type == null) addError(new Undefined(token));
     else if (!(type instanceof TYPE)) addError(new MismatchedTypes(token, type, new EXPR()));
-    else if (function != null) addError(new DuplicateIdentifier(token, funcname));
+    else if (function != null) addError(new DuplicateIdentifier(token));
     else {
      funcObj = new FUNCTION((TYPE) type);
      ST.add(funcname, funcObj);
+     return true;
     }
+    return false;
   }
 
-  public void checkStatement(){
-    ST = funcObj.getST();
-    System.out.println(ST);
-    statementAST.check();
-    ST = ST.getEncSymTable();
+  public void checkStatement() {
+    if (funcObj != null) {
+      ST = funcObj.getST();
+      statementAST.check();
+      ST = ST.getEncSymTable();
+    }
   }
 
   @Override
   public void check() {
-    checkFunctionAndGetReturnType();
+    if(!checkFunctionAndGetReturnType()) return;
 
     ST = new SymbolTable(ST);
     funcObj.setST(ST);
@@ -61,6 +64,5 @@ public class FunctionDeclarationAST extends NodeAST {
     }
 
     ST = ST.getEncSymTable();
-    System.out.println(ST);
   }
 }

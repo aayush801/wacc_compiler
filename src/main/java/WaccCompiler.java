@@ -36,7 +36,6 @@ public class WaccCompiler {
     CharStream input = CharStreams.fromStream(inputStream);
 
     WaccLexer lexer = new WaccLexer(input);
-    inputStream.close();
     lexer.removeErrorListeners();
 
     CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -47,6 +46,8 @@ public class WaccCompiler {
     parser.addErrorListener(syntaxErrorListener);
 
     NodeAST.setSemanticErrors(errors);
+
+    inputStream.close();
   }
 
   public ErrorCode compile() {
@@ -88,7 +89,7 @@ public class WaccCompiler {
   }
 
   public void parseSemantics(ProgContext AST) {
-
+    NodeAST.reset();
     NodeAST tree = semanticParser.visit(AST);
     tree.check();
   }

@@ -17,8 +17,7 @@ public class ExitAST extends StatementAST {
   @Override
   public void check() {
     expressionAST.check();
-    if (ST.getEncSymTable() == null) addError(new GlobalScope(token));
-    else if (!(expressionAST.getType() instanceof INT))
+    if (!(expressionAST.getType() instanceof INT))
       addError(new MismatchedTypes(expressionAST.token, expressionAST.getType(), new INT()));
   }
 }

@@ -12,12 +12,16 @@ import org.antlr.v4.runtime.Token;
 
 public class ArrayAST extends NodeAST {
 
-  public ARRAY arrayObj;
+  private ARRAY arrayObj;
   private NodeASTList<ExpressionAST> expressionASTList;
 
   public ArrayAST(Token token, NodeASTList<ExpressionAST> expressionASTList) {
     super(token);
     this.expressionASTList = expressionASTList;
+  }
+
+  public ARRAY getArrayObj() {
+    return arrayObj;
   }
 
   @Override

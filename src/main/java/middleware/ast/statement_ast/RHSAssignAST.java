@@ -1,5 +1,9 @@
 package middleware.ast.statement_ast;
 
+import errors.semantic_errors.MismatchedTypes;
+import errors.semantic_errors.Undefined;
+import identifier_objects.TYPE;
+import identifier_objects.polymorhpic_types.EXPR;
 import middleware.ast.arrays_ast.ArrayAST;
 import middleware.ast.expression_ast.ExpressionAST;
 import middleware.ast.function_ast.FunctionCallAST;
@@ -14,6 +18,12 @@ public class RHSAssignAST extends StatementAST {
   private NewPairAST newPair;
   private PairElemAST pairElem;
   private FunctionCallAST funcCall;
+
+  private TYPE type;
+
+  public TYPE getType() {
+    return type;
+  }
 
   public RHSAssignAST(Token token, ExpressionAST expr) {
     super(token);
@@ -44,22 +54,51 @@ public class RHSAssignAST extends StatementAST {
   public void check() {
     if (expr != null) {
       expr.check();
+      if (!(expr.getType() instanceof TYPE)) {
+        addError(new MismatchedTypes(token, expr.getType(), new EXPR()));
+      } else {
+        type = (TYPE) expr.getType();
+      }
       return;
     }
+
     if (array != null) {
       array.check();
+      if (array.getArrayObj() == null) {
+        addError(new Undefined(token, array.token.getText()));
+      } else {
+        type = array.getArrayObj();
+      }
       return;
     }
+
     if (newPair != null) {
       newPair.check();
+      if (newPair.getPair() == null) {
+        addError(new Undefined(token, newPair.token.getText()));
+      } else {
+        type = newPair.getPair();
+      }
       return;
     }
+
     if (pairElem != null) {
       pairElem.check();
+      if (pairElem.getType() == null) {
+        addError(new Undefined(token, pairElem.token.getText()));
+      } else {
+        type = pairElem.getType();
+      }
       return;
     }
+
     if (funcCall != null) {
       funcCall.check();
+      if (funcCall.getFuncObj() == null) {
+        addError(new Undefined(token, funcCall.token.getText()));
+      } else {
+        type = funcCall.getFuncObj().getReturnType();
+      }
     }
   }
 }

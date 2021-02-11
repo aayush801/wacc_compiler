@@ -24,6 +24,10 @@ public class FunctionCallAST extends NodeAST {
     this.actuals = actuals;
   }
 
+  public FUNCTION getFuncObj() {
+    return funcObj;
+  }
+
   @Override
   public void check() {
     IDENTIFIER function = ST.lookupAll(funcname);

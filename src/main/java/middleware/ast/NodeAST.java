@@ -4,6 +4,7 @@ import errors.WaccError;
 import errors.semantic_errors.WaccSemanticError;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
+import identifier_objects.VARIABLE;
 import java.util.List;
 import org.antlr.v4.runtime.Token;
 import symbol_table.SymbolTable;
@@ -22,8 +23,12 @@ public abstract class NodeAST {
     NodeAST.semanticErrors = semanticErrors;
   }
 
+  public static void reset(){
+    ST = SymbolTable.TopSymbolTable();
+  }
+
   public void check(){
-    throw new Error("need to ovveride this function");
+    throw new Error("need to override this function");
   }
 
   protected void addError(WaccSemanticError error) {

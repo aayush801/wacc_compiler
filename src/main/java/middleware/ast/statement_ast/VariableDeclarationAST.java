@@ -4,34 +4,53 @@ import errors.semantic_errors.DuplicateIdentifier;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
 import identifier_objects.IDENTIFIER;
-import identifier_objects.TYPE;
 import identifier_objects.VARIABLE;
-import identifier_objects.polymorhpic_types.EXPR;
+import identifier_objects.basic_types.ARRAY;
+import middleware.ast.arrays_ast.TypeAST;
 import org.antlr.v4.runtime.Token;
 
 public class VariableDeclarationAST extends StatementAST {
 
-  private final String typename;
+  private final TypeAST typeAST;
   private final String varname;
-
+  private final RHSAssignAST RHS;
   public VARIABLE varObj;
 
-  public VariableDeclarationAST(Token token, String typename, String varname) {
+  public VariableDeclarationAST(Token token, TypeAST typeAST, String varname, RHSAssignAST RHS) {
     super(token);
-    this.typename = typename;
+    this.typeAST = typeAST;
     this.varname = varname;
+    this.RHS = RHS;
   }
 
   @Override
   public void check() {
-    IDENTIFIER type = ST.lookupAll(typename);
-    IDENTIFIER variable = ST.lookup(varname);
-    if (type == null) addError(new Undefined(token, typename));
-    else if (!(type instanceof TYPE)) addError(new MismatchedTypes(token, type, new EXPR()));
-    else if (variable != null) addError(new DuplicateIdentifier(token, varname));
-    else {
-      varObj = new VARIABLE((TYPE) type);
-      ST.add(varname, varObj);
+    typeAST.check();
+    if (typeAST.getType() == null) {
+      addError(new Undefined(token, typeAST.token.getText()));
+      return;
     }
+
+    IDENTIFIER variable = ST.lookup(varname);
+
+    if (variable != null) {
+      addError(new DuplicateIdentifier(token));
+      return;
+    }
+
+    RHS.check();
+    if(RHS.getType() == null){
+      addError(new Undefined(RHS.token));
+      return;
+    }
+
+    if(!isCompatible(RHS.getType(), typeAST.getType())){
+      addError(new MismatchedTypes(token, RHS.getType(), typeAST.getType()));
+      return;
+    }
+
+    varObj = new VARIABLE(typeAST.getType());
+
+    ST.add(varname, varObj);
   }
 }
