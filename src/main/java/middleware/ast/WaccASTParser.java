@@ -64,17 +64,7 @@ import middleware.ast.function_ast.FunctionDeclarationAST;
 import middleware.ast.function_ast.ParamAST;
 import middleware.ast.pair_ast.NewPairAST;
 import middleware.ast.pair_ast.PairElemAST;
-import middleware.ast.statement_ast.AssignmentAST;
-import middleware.ast.statement_ast.BeginAST;
-import middleware.ast.statement_ast.ChainedStatementAST;
-import middleware.ast.statement_ast.ExitAST;
-import middleware.ast.statement_ast.IfElseAST;
-import middleware.ast.statement_ast.LHSAssignAST;
-import middleware.ast.statement_ast.RHSAssignAST;
-import middleware.ast.statement_ast.ReturnAST;
-import middleware.ast.statement_ast.StatementAST;
-import middleware.ast.statement_ast.VariableDeclarationAST;
-import middleware.ast.statement_ast.WhileAST;
+import middleware.ast.statement_ast.*;
 
 public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
@@ -84,7 +74,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
         new NodeASTList<>(
             ctx.start,
             ctx.funcDecl().stream().map(this::visitFuncDecl).collect(Collectors.toList()));
-    return new ProgAST(ctx.start, functionDeclASTS, visitStat(ctx.stat()));
+    return new ProgAST(ctx.start, functionDeclASTS, (StatementAST) visit(ctx.stat()));
   }
 
   @Override
@@ -95,14 +85,14 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
         ctx.type().getText(),
         ctx.IDENT().getText(),
         visitParamList(ctx.paramList()),
-        visitStat(ctx.stat()));
+        (StatementAST) visit(ctx.stat()));
     else
       return new FunctionDeclarationAST(
           ctx.start,
           ctx.type().getText(),
           ctx.IDENT().getText(),
           new NodeASTList<>(ctx.start),
-          visitStat(ctx.stat()));
+          (StatementAST) visit(ctx.stat()));
   }
 
   @Override
@@ -136,70 +126,56 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   @Override
   public IfElseAST visitIfThenElse(IfThenElseContext ctx) {
     return new IfElseAST(
-        ctx.start, visitExpr(ctx.expr()), visitStat(ctx.stat(0)), visitStat(ctx.stat(1)));
-  }
-
-  public StatementAST visitStat(StatContext ctx) {
-    Object obj = visit(ctx);
-    if (obj == null) {
-      System.out.println("Made an error in visitStat");
-      return null;
-    }
-
-    if (!(obj instanceof StatementAST)) {
-      System.out.println("Erron in visitStat, not returning a statement ast node");
-      return null;
-    }
-
-    return (StatementAST) obj;
+        ctx.start, visitExpr(ctx.expr()), (StatementAST) visit(ctx.stat(0)), (StatementAST) visit(ctx.stat(1)));
   }
 
   @Override
-  public NodeAST visitAssignIdent(AssignIdentContext ctx) {
+  public StatementAST visitAssignIdent(AssignIdentContext ctx) {
     return new VariableDeclarationAST(ctx.start, ctx.type().getText(), ctx.IDENT().getText());
   }
 
   @Override
-  public NodeAST visitWhileDo(WhileDoContext ctx) {
-    return new WhileAST(ctx.start, visitExpr(ctx.expr()), visitStat(ctx.stat()));
+  public StatementAST visitWhileDo(WhileDoContext ctx) {
+    return new WhileAST(ctx.start, visitExpr(ctx.expr()), (StatementAST) visit(ctx.stat()));
   }
 
   @Override
-  public NodeAST visitFreeCall(FreeCallContext ctx) {
-    NodeASTList<ExpressionAST> exprs =
-        new NodeASTList<>(ctx.start, Collections.singletonList(visitExpr(ctx.expr())));
-    return new FunctionCallAST(ctx.start, FREE.name, exprs);
-  }
-
-  @Override
-  public NodeAST visitPrintlnCall(PrintlnCallContext ctx) {
-    NodeASTList<ExpressionAST> exprs =
-        new NodeASTList<>(ctx.start, Collections.singletonList(visitExpr(ctx.expr())));
-    return new FunctionCallAST(ctx.start, PRINT_LINE.name, exprs);
-  }
-
-  @Override
-  public NodeAST visitExitCall(ExitCallContext ctx) {
-    return new ExitAST(ctx.start, visitExpr(ctx.expr()));
-  }
-
-  @Override
-  public NodeAST visitSeperateStat(SeperateStatContext ctx) {
-    return new ChainedStatementAST(ctx.start, visitStat(ctx.stat(0)), visitStat(ctx.stat(1)));
-  }
-
-  @Override
-  public NodeAST visitBeginStat(BeginStatContext ctx) {
-    return new BeginAST(ctx.start, visitStat(ctx.stat()));
-  }
-
-  @Override
-  public NodeAST visitSkipStat(SkipStatContext ctx) {
+  public StatementAST visitFreeCall(FreeCallContext ctx) {
     return null;
   }
 
   @Override
-  public NodeAST visitReadCall(ReadCallContext ctx) {
+  public StatementAST visitPrintlnCall(PrintlnCallContext ctx) {
+    return new PrintAST(ctx.start, visitExpr(ctx.expr()), 1);
+  }
+
+  @Override
+  public StatementAST visitPrintCall(PrintCallContext ctx) {
+    return new PrintAST(ctx.start, visitExpr(ctx.expr()), 0);
+  }
+
+  @Override
+  public StatementAST visitExitCall(ExitCallContext ctx) {
+    return new ExitAST(ctx.start, visitExpr(ctx.expr()));
+  }
+
+  @Override
+  public StatementAST visitSeperateStat(SeperateStatContext ctx) {
+    return new ChainedStatementAST(ctx.start, (StatementAST) visit(ctx.stat(0)), (StatementAST) visit(ctx.stat(1)));
+  }
+
+  @Override
+  public StatementAST visitBeginStat(BeginStatContext ctx) {
+    return new BeginAST(ctx.start, (StatementAST) visit(ctx.stat()));
+  }
+
+  @Override
+  public StatementAST visitSkipStat(SkipStatContext ctx) {
+    return null;
+  }
+
+  @Override
+  public StatementAST visitReadCall(ReadCallContext ctx) {
     //    NodeASTList<ExpressionAST> exprs =
     //        new NodeASTList<>(ctx.start,
     // Collections.singletonList(visitAssignLHS(ctx.assignLHS())));
@@ -208,14 +184,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   }
 
   @Override
-  public NodeAST visitPrintCall(PrintCallContext ctx) {
-    NodeASTList<ExpressionAST> exprs =
-        new NodeASTList<>(ctx.start, Collections.singletonList(visitExpr(ctx.expr())));
-    return new FunctionCallAST(ctx.start, PRINT.name, exprs);
-  }
-
-  @Override
-  public NodeAST visitAssignVars(AssignVarsContext ctx) {
+  public StatementAST visitAssignVars(AssignVarsContext ctx) {
     return new AssignmentAST(
         ctx.start, visitAssignLHS(ctx.assignLHS()), visitAssignRHS(ctx.assignRHS()));
   }
