@@ -29,7 +29,7 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
 
     TYPE typeLHS = visitType(ctx.type());
     if (typeLHS == null) {
-      addError(new Undefined(ctx.type()));
+      addError(new Undefined(ctx.type().start));
       // type is undefined
       return null;
     }
@@ -39,20 +39,20 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
     IDENTIFIER identifier = ST.lookup(ctx.IDENT().getText());
     if (identifier != null && !(identifier instanceof FUNCTION)) {
       // identifier already exists within the scope
-      addError(new DuplicateIdentifier(ctx, ctx.IDENT().getText()));
+      addError(new DuplicateIdentifier(ctx.IDENT().getSymbol()));
       return null;
     }
 
     IDENTIFIER typeRHS = visitAssignRHS(ctx.assignRHS());
     if (typeRHS == null) {
       // type of rhs statement undefined
-      addError(new Undefined(ctx.assignRHS()));
+      addError(new Undefined(ctx.assignRHS().start));
       return null;
     }
 
     if (!isCompatible(typeLHS, typeRHS)) {
       // if both sides are NOT compatible
-      addError(new MismatchedTypes(ctx, typeRHS, typeLHS));
+      addError(new MismatchedTypes(ctx.assignRHS().start, typeRHS, typeLHS));
       return null;
     }
 
@@ -66,19 +66,19 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
     IDENTIFIER typeLHS = visitAssignLHS(ctx.assignLHS());
     if (typeLHS == null) {
       // type is undefined
-      addError(new Undefined(ctx, ctx.assignLHS().getText()));
+      addError(new Undefined(ctx.assignLHS().start));
       return null;
     }
 
     IDENTIFIER typeRHS = visitAssignRHS(ctx.assignRHS());
     if (typeRHS == null) {
       // type is undefined
-      addError(new Undefined(ctx, ctx.assignRHS().getText()));
+      addError(new Undefined(ctx.assignRHS().start));
       return null;
     }
 
     if (!isCompatible(typeLHS, typeRHS)) {
-      addError(new MismatchedTypes(ctx, typeRHS, typeLHS));
+      addError(new MismatchedTypes(ctx.assignRHS().start, typeRHS, typeLHS));
       return null;
     }
 
@@ -107,12 +107,12 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
     TYPE expr = visitExpr(ctx.expr());
     if (expr == null) {
       // the expression is undefined
-      addError(new Undefined(ctx.expr()));
+      addError(new Undefined(ctx.expr().start));
       return null;
     }
 
     if (!(expr instanceof BOOL)) {
-      addError(new MismatchedTypes(ctx, expr, new BOOL()));
+      addError(new MismatchedTypes(ctx.expr().start, expr, new BOOL()));
       // the expression does not have type bool it is not valid semantics
       return null;
     }
@@ -134,13 +134,13 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
     Object obj = visit(ctx.expr());
     if (obj == null) {
       // the expression is undefined
-      addError(new Undefined(ctx.expr()));
+      addError(new Undefined(ctx.expr().start));
       return null;
     }
 
     if (!(obj instanceof BOOL)) {
       // the expression does not have type bool it is not valid semantics
-      addError(new MismatchedTypes(ctx, (TYPE) obj, new BOOL()));
+      addError(new MismatchedTypes(ctx.expr().start, (TYPE) obj, new BOOL()));
       return null;
     }
 
@@ -167,14 +167,14 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
   public TYPE visitReturnCall(WaccParser.ReturnCallContext ctx) {
     // should not be able to return from the global scope
     if (ST.getEncSymTable() == null) {
-      addError(new GlobalScope(ctx));
+      addError(new GlobalScope(ctx.start));
       return null;
     }
 
     TYPE expr = visitExpr(ctx.expr());
 
     if (ST.getScopeReturnType() != null && !isCompatible(expr, ST.getScopeReturnType())) {
-      addError(new MismatchedTypes(ctx, expr, ST.getScopeReturnType()));
+      addError(new MismatchedTypes(ctx.expr().start, expr, ST.getScopeReturnType()));
       return null;
     }
 
@@ -187,13 +187,13 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
     TYPE obj = visitExpr(ctx.expr());
     if (obj == null) {
       // the expression is undefined
-      addError(new Undefined(ctx.expr()));
+      addError(new Undefined(ctx.expr().start));
       return null;
     }
 
     if (!(obj instanceof INT)) {
       // the expression does not have type bool it is not valid semantics
-      addError(new MismatchedTypes(ctx, obj, new INT()));
+      addError(new MismatchedTypes(ctx.expr().start, obj, new INT()));
       return null;
     }
 
@@ -216,7 +216,6 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
   public TYPE visitPrintCall(PrintCallContext ctx) {
     return visitFunctionCall(ctx, PRINT.name, Collections.singletonList(ctx.expr()));
   }
-
 
   @Override
   public TYPE visitFreeCall(WaccParser.FreeCallContext ctx) {

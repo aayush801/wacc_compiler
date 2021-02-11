@@ -9,7 +9,10 @@ import symbol_table.SymbolTable;
 public class BINARY_OPERATION extends FUNCTION {
 
   public BINARY_OPERATION(TYPE returnType, PARAM left, PARAM right, SymbolTable st) {
-    super(returnType, Arrays.asList(left, right), st);
+    super(returnType);
+    formals.add(left);
+    formals.add(right);
+    setST(st);
   }
 
 }

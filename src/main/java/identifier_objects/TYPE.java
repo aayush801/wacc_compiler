@@ -6,4 +6,7 @@ public abstract class TYPE extends IDENTIFIER {
     super(name);
   }
 
+  public TYPE getType(){
+    return this;
+  }
 }
