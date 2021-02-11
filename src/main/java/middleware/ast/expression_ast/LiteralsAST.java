@@ -4,6 +4,7 @@ import identifier_objects.TYPE;
 import org.antlr.v4.runtime.Token;
 
 public class LiteralsAST extends ExpressionAST{
+    public TYPE type;
 
     public LiteralsAST(Token token, TYPE type) {
         super(token);
