@@ -19,9 +19,9 @@ public class ReturnAST extends StatementAST {
   public void check() {
     expressionAST.check();
     if (ST.getEncSymTable() == null) addError(new GlobalScope(token));
-    else if (!(isCompatible(expressionAST.type, ST.getScopeReturnType())))
+    else if (!(isCompatible(expressionAST.getType(), ST.getScopeReturnType())))
       addError(
-          new MismatchedTypes(expressionAST.token, expressionAST.type, ST.getScopeReturnType()));
-    else type = expressionAST.type;
+          new MismatchedTypes(expressionAST.token, expressionAST.getType(), ST.getScopeReturnType()));
+    else type = expressionAST.getType();
   }
 }

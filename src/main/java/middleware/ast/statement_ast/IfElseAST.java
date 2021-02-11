@@ -25,8 +25,8 @@ public class IfElseAST extends StatementAST {
   @Override
   public void check() {
     expressionAST.check();
-    if (!(expressionAST.type instanceof BOOL))
-      addError(new MismatchedTypes(expressionAST.token, expressionAST.type, new BOOL()));
+    if (!(expressionAST.getType() instanceof BOOL))
+      addError(new MismatchedTypes(expressionAST.token, expressionAST.getType(), new BOOL()));
     else{
       ST = new SymbolTable(ST);
       firstStatAST.check();

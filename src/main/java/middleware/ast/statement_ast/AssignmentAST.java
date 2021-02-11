@@ -28,8 +28,8 @@ public class AssignmentAST extends StatementAST {
     if (variable == null) addError(new Undefined(token, varname));
     else if (!(variable instanceof VARIABLE))
       addError(new MismatchedTypes(token, variable, new VARIABLE(new EXPR())));
-    else if (!isCompatible(((VARIABLE) variable).getType(), exprAST.type))
-      addError(new MismatchedTypes(token, ((VARIABLE) variable).getType(), exprAST.type));
+    else if (!isCompatible(((VARIABLE) variable).getType(), exprAST.getType()))
+      addError(new MismatchedTypes(token, ((VARIABLE) variable).getType(), exprAST.getType()));
     else ST.add(varname, varObj);
   }
 }

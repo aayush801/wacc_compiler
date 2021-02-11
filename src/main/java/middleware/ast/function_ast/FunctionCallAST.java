@@ -37,10 +37,10 @@ public class FunctionCallAST extends NodeAST {
       // check typing match for parameters
       for (int i = 0; i < actuals.size(); i++) {
         actuals.get(i).check();
-        if (!(isCompatible(actuals.get(i).type, ((FUNCTION) function).formals.get(i).getType()))) {
+        if (!(isCompatible(actuals.get(i).getType(), ((FUNCTION) function).formals.get(i).getType()))) {
           addError(
               new MismatchedTypes(
-                  token, actuals.get(i).type, ((FUNCTION) function).formals.get(i).getType()));
+                  token, actuals.get(i).getType(), ((FUNCTION) function).formals.get(i).getType()));
         }
       }
       funcObj = (FUNCTION) function;
