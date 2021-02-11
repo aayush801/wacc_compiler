@@ -1,13 +1,11 @@
 package middleware.ast.statement_ast;
 
-import identifier_objects.TYPE;
-import identifier_objects.VARIABLE;
+import identifier_objects.*;
 import middleware.ast.AbstractSyntaxTree;
 
 import errors.semantic_errors.DuplicateIdentifier;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
-import identifier_objects.IDENTIFIER;
 import identifier_objects.VARIABLE;
 import identifier_objects.basic_types.ARRAY;
 import middleware.ast.arrays_ast.TypeAST;
@@ -37,7 +35,7 @@ public class VariableDeclarationAST extends StatementAST {
 
     IDENTIFIER variable = ST.lookup(varname);
 
-    if (variable != null) {
+    if (variable != null && !(variable instanceof FUNCTION)) {
       addError(new DuplicateIdentifier(token));
       return;
     }
