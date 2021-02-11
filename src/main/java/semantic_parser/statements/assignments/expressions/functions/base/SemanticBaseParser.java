@@ -75,7 +75,8 @@ public abstract class SemanticBaseParser extends WaccParserBaseVisitor<Object> {
 
   @Override
   public TYPE visitPairElem(WaccParser.PairElemContext ctx) {
-    TYPE expr = (TYPE) visitExpr(ctx.expr());
+    TYPE expr = new PAIR(); //TODO: Doing the .expr() broke on Nandhu's machine, so he commented it out for now
+    //TYPE expr = (TYPE) visitExpr(ctx.epxr());
 
     if (expr == null) {
       addError(new Undefined(ctx));

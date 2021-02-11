@@ -6,6 +6,8 @@ import identifier_objects.unary_operator_functions.NEGATE;
 import identifier_objects.unary_operator_functions.NOT;
 import java.util.Arrays;
 import java.util.Collections;
+
+import middleware.ast.expression_ast.ExpressionAST;
 import semantic_parser.statements.assignments.expressions.functions.SemanticFunctionParser;
 
 public abstract class SemanticExpressionParser extends SemanticFunctionParser {
@@ -15,8 +17,17 @@ public abstract class SemanticExpressionParser extends SemanticFunctionParser {
   public TYPE visitExpr(ExprContext ctx) {
     /* ======================= BINARY EXPRESSION SEMANTICS ========================= */
     if (ctx.binaryOperator != null) {
-      return visitFunctionCall(ctx, ctx.binaryOperator.getText(),
-          Arrays.asList(ctx.expr(0), ctx.expr(1)));
+      String operator = ctx.binaryOperator.getText();
+      TYPE type = visitFunctionCall(ctx, operator,
+              Arrays.asList(ctx.expr(0), ctx.expr(1)));
+      //Now we need a way to get the children's AST nodes
+//      ExpressionAST left = ...;
+//      ExpressionAST right = ...;
+
+      ExpressionAST left = new ExpressionAST((TYPE) visit(ctx.expr(0)));
+      ExpressionAST right = new ExpressionAST((TYPE) visit(ctx.expr(1)));
+      ExpressionAST expressionAST = new ExpressionAST(type, left, operator, right);
+      return type;
     }
 
     /* ======================= UNARY EXPRESSION SEMANTICS ========================= */

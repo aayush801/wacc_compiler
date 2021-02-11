@@ -2,7 +2,6 @@ package middleware.ast.statement_ast;
 
 import identifier_objects.TYPE;
 import identifier_objects.VARIABLE;
-import middleware.ast.AbstractSyntaxTree;
 
 public class VariableDeclarationAST extends StatementAST {
 
