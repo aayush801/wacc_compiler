@@ -6,7 +6,9 @@ import org.antlr.v4.runtime.Token;
 
 public class ExpressionAST extends NodeAST {
   public TYPE type;
+
   public ExpressionAST(Token token) {
     super(token);
   }
+
 }
