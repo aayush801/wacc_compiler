@@ -24,4 +24,9 @@ public class PairTypeAST extends TypeAST {
     pairElemType2.check();
     type = new PAIR(pairElemType1.getType(), pairElemType2.getType());
   }
+
+  @Override
+  public TYPE getType() {
+    return type;
+  }
 }
