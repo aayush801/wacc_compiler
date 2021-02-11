@@ -7,6 +7,8 @@ import org.antlr.v4.runtime.Token;
 public class MismatchedTypes extends WaccSemanticError {
 
   private final IDENTIFIER actual, expected;
+  private IDENTIFIER expectedOther;
+  boolean twoTypes = false;
 
 
   public MismatchedTypes(Token token, IDENTIFIER actual, IDENTIFIER expected) {
@@ -15,12 +17,25 @@ public class MismatchedTypes extends WaccSemanticError {
     this.expected = expected;
   }
 
+  public MismatchedTypes(Token token, IDENTIFIER actual, IDENTIFIER expected, IDENTIFIER expectedOther) {
+    super(token);
+    twoTypes = true;
+    this.actual = actual;
+    this.expected = expected;
+    this.expectedOther = expectedOther;
+  }
+
 
   @Override
   public String getErrorMessage() {
+    if (!twoTypes) {
+      return "Expected value of type : " + ((expected == null) ? "null"
+              : expected.toString().toUpperCase()) +
+              ", but got type : " + ((actual == null) ? "null" : actual.toString().toUpperCase());
+    }
     return "Expected value of type : " + ((expected == null) ? "null"
-        : expected.toString().toUpperCase()) +
-        ", but got type : " + ((actual == null) ? "null" : actual.toString().toUpperCase());
+            : expected.toString().toUpperCase()) + "or " + expectedOther.toString().toUpperCase() +
+            ", but got type : " + ((actual == null) ? "null" : actual.toString().toUpperCase());
   }
 
   @Override
