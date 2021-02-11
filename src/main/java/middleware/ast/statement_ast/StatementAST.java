@@ -9,4 +9,5 @@ public abstract class StatementAST extends NodeAST {
   public StatementAST(Token token) {
     super(token);
   }
+
 }

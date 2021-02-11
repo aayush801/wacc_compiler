@@ -24,7 +24,7 @@ public class AssignmentAST extends StatementAST {
   @Override
   public void check() {
     IDENTIFIER variable = ST.lookupAll(varname);
-    exprAST.check();
+    exprAST.check(); // will get type of expr
     if (variable == null) addError(new Undefined(token, varname));
     else if (!(variable instanceof VARIABLE))
       addError(new MismatchedTypes(token, variable, new VARIABLE(new EXPR())));

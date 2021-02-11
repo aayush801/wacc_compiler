@@ -12,7 +12,7 @@ public abstract class NodeAST {
   protected static SymbolTable ST = SymbolTable.TopSymbolTable();
 
   private static List<WaccError> semanticErrors;
-  protected Token token;
+  public Token token;
 
   public NodeAST(Token token){
     this.token = token;

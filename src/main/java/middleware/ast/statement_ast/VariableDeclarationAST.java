@@ -1,5 +1,6 @@
 package middleware.ast.statement_ast;
 
+import errors.semantic_errors.DuplicateIdentifier;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
 import identifier_objects.IDENTIFIER;
@@ -12,7 +13,8 @@ public class VariableDeclarationAST extends StatementAST {
 
   private final String typename;
   private final String varname;
-  VARIABLE varObj;
+
+  public VARIABLE varObj;
 
   public VariableDeclarationAST(Token token, String typename, String varname) {
     super(token);
@@ -26,8 +28,10 @@ public class VariableDeclarationAST extends StatementAST {
     IDENTIFIER variable = ST.lookup(varname);
     if (type == null) addError(new Undefined(token, typename));
     else if (!(type instanceof TYPE)) addError(new MismatchedTypes(token, type, new EXPR()));
-    else if (variable == null) addError(new Undefined(token, varname));
-    else varObj = new VARIABLE((TYPE) type);
-    ST.add(varname, varObj);
+    else if (variable != null) addError(new DuplicateIdentifier(token, varname));
+    else {
+      varObj = new VARIABLE((TYPE) type);
+      ST.add(varname, varObj);
+    }
   }
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import middleware.ast.NodeAST;
 import middleware.ast.statement_ast.StatementAST;
 import org.antlr.v4.runtime.Token;
+import symbol_table.SymbolTable;
 
 public class FunctionDeclarationAST extends NodeAST {
 
@@ -28,22 +29,35 @@ public class FunctionDeclarationAST extends NodeAST {
     this.statementAST = statementAST;
   }
 
-  public TYPE checkFunctionAndGetReturnType(){
+  private void checkFunctionAndGetReturnType(){
     IDENTIFIER type = ST.lookupAll(returnTypeName);
     IDENTIFIER function = ST.lookup(funcname);
     if(type == null) addError(new Undefined(token, returnTypeName));
     else if (!(type instanceof TYPE)) addError(new MismatchedTypes(token, type, new EXPR()));
     else if (function != null) addError(new DuplicateIdentifier(token, funcname));
     else {
-      funcObj = new FUNCTION(type);
-      ST.add(funcname, funcObj);
+     funcObj = new FUNCTION((TYPE) type);
+     ST.add(funcname, funcObj);
     }
+  }
+
+  public void checkStatement(){
+    ST = funcObj.getST();
+    statementAST.check();
+    ST = ST.getEncSymTable();
   }
 
   @Override
   public void check() {
+    checkFunctionAndGetReturnType();
+
+    ST = new SymbolTable(ST);
+
     for(ParamAST paramAST : paramASTList){
       paramAST.check();
+      funcObj.formals.add(paramAST.paramObj);
     }
+
+    ST = ST.getEncSymTable();
   }
 }

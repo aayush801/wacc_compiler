@@ -106,7 +106,8 @@ public abstract class SemanticFunctionParser extends SemanticBaseParser {
     }
 
     // add the function to the parent scope
-    FUNCTION newFunction = new FUNCTION(returnType, paramList, ST);
+    FUNCTION newFunction = new FUNCTION(returnType);
+    newFunction.setST(ST);
 
     ST = ST.getEncSymTable();
 

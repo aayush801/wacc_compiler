@@ -216,7 +216,6 @@ public abstract class SemanticStatementParser extends SemanticAssignmentParser {
     return visitFunctionCall(ctx, PRINT.name, Collections.singletonList(ctx.expr()));
   }
 
-
   @Override
   public TYPE visitFreeCall(WaccParser.FreeCallContext ctx) {
     return visitFunctionCall(ctx, FREE.name, Collections.singletonList(ctx.expr()));

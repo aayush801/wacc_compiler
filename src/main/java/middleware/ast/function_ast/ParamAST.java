@@ -11,7 +11,7 @@ import middleware.ast.NodeAST;
 import org.antlr.v4.runtime.Token;
 
 public class ParamAST extends NodeAST {
-  public PARAM paramObj;
+  PARAM paramObj;
   private String paramType;
   private String paramName;
 
