@@ -1,39 +1,39 @@
 package middleware.ast.statement_ast;
 
 import identifier_objects.*;
-import middleware.ast.AbstractSyntaxTree;
 
 import errors.semantic_errors.DuplicateIdentifier;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
 import identifier_objects.VARIABLE;
-import identifier_objects.basic_types.ARRAY;
 import middleware.ast.arrays_ast.TypeAST;
 import org.antlr.v4.runtime.Token;
 
 public class VariableDeclarationAST extends StatementAST {
 
   private final TypeAST typeAST;
-  private final String varname;
+  private final String varName;
   private final RHSAssignAST RHS;
   public VARIABLE varObj;
 
-  public VariableDeclarationAST(Token token, TypeAST typeAST, String varname, RHSAssignAST RHS) {
+  public VariableDeclarationAST(Token token, TypeAST typeAST, String varName,
+      RHSAssignAST RHS) {
     super(token);
     this.typeAST = typeAST;
-    this.varname = varname;
+    this.varName = varName;
     this.RHS = RHS;
   }
 
   @Override
   public void check() {
     typeAST.check();
+
     if (typeAST.getType() == null) {
       addError(new Undefined(token, typeAST.token.getText()));
       return;
     }
 
-    IDENTIFIER variable = ST.lookup(varname);
+    IDENTIFIER variable = ST.lookup(varName);
 
     if (variable != null && !(variable instanceof FUNCTION)) {
       addError(new DuplicateIdentifier(token));
@@ -41,20 +41,20 @@ public class VariableDeclarationAST extends StatementAST {
     }
 
     RHS.check();
-    if(RHS.getType() == null){
+    if (RHS.getType() == null) {
       addError(new Undefined(RHS.token));
       return;
     }
 
-   // System.out.println(RHS.getType());
+    // System.out.println(RHS.getType());
     //System.out.println(typeAST.getType());
-    if(!isCompatible(typeAST.getType(), RHS.getType())){
+    if (!isCompatible(typeAST.getType(), RHS.getType())) {
       addError(new MismatchedTypes(token, typeAST.getType(), RHS.getType()));
       return;
     }
 
     varObj = new VARIABLE(typeAST.getType());
 
-    ST.add(varname, varObj);
+    ST.add(varName, varObj);
   }
 }

@@ -7,6 +7,7 @@ import middleware.ast.expression_ast.ExpressionAST;
 import org.antlr.v4.runtime.Token;
 
 public class ExitAST extends StatementAST {
+
   private ExpressionAST expressionAST;
 
   public ExitAST(Token token, ExpressionAST expressionAST) {
@@ -17,7 +18,11 @@ public class ExitAST extends StatementAST {
   @Override
   public void check() {
     expressionAST.check();
-    if (!(expressionAST.getType() instanceof INT))
-      addError(new MismatchedTypes(expressionAST.token, expressionAST.getType(), new INT()));
+
+    if (!(expressionAST.getType() instanceof INT)) {
+      addError(new MismatchedTypes(
+          expressionAST.token, expressionAST.getType(), new INT())
+      );
+    }
   }
 }

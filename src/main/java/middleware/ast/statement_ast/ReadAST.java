@@ -19,6 +19,7 @@ public class ReadAST extends StatementAST {
   @Override
   public void check() {
     LHS.check();
+
     IDENTIFIER type = LHS.getType();
     if (type == null) {
       addError(new Undefined(token));

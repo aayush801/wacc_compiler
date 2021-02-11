@@ -11,35 +11,36 @@ import org.antlr.v4.runtime.Token;
 
 public class PairElemAST extends NodeAST {
 
-    TYPE type;
-    private final ExpressionAST expr;
-    int index;
+  TYPE type;
+  private final ExpressionAST expr;
+  int index;
 
-    public PairElemAST(Token token, ExpressionAST expr, int index) {
-        super(token);
-        this.expr = expr;
-        this.index = index;
+  public PairElemAST(Token token, ExpressionAST expr, int index) {
+    super(token);
+    this.expr = expr;
+    this.index = index;
+  }
+
+  public TYPE getType() {
+    return type;
+  }
+
+  @Override
+  public void check() {
+    expr.check();
+
+    IDENTIFIER exprType = expr.getType();
+    if (!(exprType instanceof PAIR)) {
+      addError(new MismatchedTypes(
+          token, exprType, new PAIR(new EXPR(), new EXPR()))
+      );
+    } else {
+      PAIR pair = (PAIR) exprType;
+      if (index == 0) {
+        type = pair.getFirst();
+      } else {
+        type = pair.getSecond();
+      }
     }
-
-    public TYPE getType() {
-        return type;
-    }
-
-    @Override
-    public void check() {
-        expr.check();
-        IDENTIFIER exprtype = expr.getType();
-
-        if (!(exprtype instanceof PAIR)) {
-            addError(new MismatchedTypes(token, exprtype, new PAIR(new EXPR(), new EXPR())));
-        } else {
-            PAIR pair = (PAIR) exprtype;
-            if (index == 0) {
-                type = pair.getFirst();
-            } else {
-                type = pair.getSecond();
-            }
-        }
-
-    }
+  }
 }

@@ -8,11 +8,12 @@ import middleware.ast.pair_ast.PairElemAST;
 import org.antlr.v4.runtime.Token;
 
 public class PairTypeAST extends TypeAST {
-  private PairElemTypeAST pairElemType1;
-  private PairElemTypeAST pairElemType2;
 
+  private PairElemTypeAST pairElemType1, pairElemType2;
   private TYPE type;
-  public PairTypeAST(Token token, PairElemTypeAST pairElemType1, PairElemTypeAST pairElemType2) {
+
+  public PairTypeAST(Token token, PairElemTypeAST pairElemType1,
+      PairElemTypeAST pairElemType2) {
     super(token);
     this.pairElemType1 = pairElemType1;
     this.pairElemType2 = pairElemType2;

@@ -9,18 +9,22 @@ import org.antlr.v4.runtime.Token;
 
 public class FreeAST extends StatementAST {
 
-    private final ExpressionAST expr;
+  private final ExpressionAST expr;
 
-    public FreeAST(Token token, ExpressionAST expr) {
-        super(token);
-        this.expr = expr;
-    }
+  public FreeAST(Token token, ExpressionAST expr) {
+    super(token);
+    this.expr = expr;
+  }
 
-    @Override
-    public void check() {
-        expr.check();
-        IDENTIFIER type = expr.getType();
-        if(type == null) addError(new Undefined(token));
-        else if(!(type instanceof PAIR)) addError(new MismatchedTypes(token, type, new PAIR()));
+  @Override
+  public void check() {
+    expr.check();
+
+    IDENTIFIER type = expr.getType();
+    if (type == null) {
+      addError(new Undefined(token));
+    } else if (!(type instanceof PAIR)) {
+      addError(new MismatchedTypes(token, type, new PAIR()));
     }
+  }
 }

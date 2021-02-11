@@ -7,15 +7,12 @@ import org.antlr.v4.runtime.Token;
 import symbol_table.SymbolTable;
 
 public class IfElseAST extends StatementAST {
-  private ExpressionAST expressionAST;
-  private StatementAST firstStatAST;
-  private StatementAST secondStatAST;
 
-  public IfElseAST(
-      Token token,
-      ExpressionAST expressionAST,
-      StatementAST firstStatAST,
-      StatementAST secondStatAST) {
+  private ExpressionAST expressionAST;
+  private StatementAST firstStatAST, secondStatAST;
+
+  public IfElseAST(Token token, ExpressionAST expressionAST,
+      StatementAST firstStatAST, StatementAST secondStatAST) {
     super(token);
     this.expressionAST = expressionAST;
     this.firstStatAST = firstStatAST;
@@ -25,9 +22,12 @@ public class IfElseAST extends StatementAST {
   @Override
   public void check() {
     expressionAST.check();
-    if (!(expressionAST.getType() instanceof BOOL))
-      addError(new MismatchedTypes(expressionAST.token, expressionAST.getType(), new BOOL()));
-    else{
+
+    if (!(expressionAST.getType() instanceof BOOL)) {
+      addError(new MismatchedTypes(
+          expressionAST.token, expressionAST.getType(), new BOOL())
+      );
+    } else {
       ST = new SymbolTable(ST);
       firstStatAST.check();
       ST = ST.getEncSymTable();

@@ -19,7 +19,8 @@ public class ArrayElemAST extends ExpressionAST {
   private String arrayName;
   private NodeASTList<ExpressionAST> expressionASTS;
 
-  public ArrayElemAST(Token token, String arrayName, NodeASTList<ExpressionAST> expressionASTS) {
+  public ArrayElemAST(Token token, String arrayName,
+      NodeASTList<ExpressionAST> expressionASTS) {
     super(token);
     this.arrayName = arrayName;
     this.expressionASTS = expressionASTS;
@@ -53,7 +54,12 @@ public class ArrayElemAST extends ExpressionAST {
     for (ExpressionAST expressionAST : expressionASTS) {
       expressionAST.check();
       if (!(expressionAST.getType() instanceof INT)) {
-        addError(new MismatchedTypes(expressionAST.token, expressionAST.getType(), new INT()));
+        addError(
+            new MismatchedTypes(
+                expressionAST.token,
+                expressionAST.getType(),
+                new INT())
+        );
       }
     }
 

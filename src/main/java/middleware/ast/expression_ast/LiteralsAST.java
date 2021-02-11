@@ -4,23 +4,24 @@ import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
 import org.antlr.v4.runtime.Token;
 
-public class LiteralsAST extends ExpressionAST{
-    private final TYPE type;
-    private final String value;
+public class LiteralsAST extends ExpressionAST {
 
-    public LiteralsAST(Token token, String value, TYPE type) {
-        super(token);
-        this.type = type;
-        this.value = value;
-    }
+  private final TYPE type;
+  private final String value;
 
-    @Override
-    public IDENTIFIER getType() {
-        return type;
-    }
+  public LiteralsAST(Token token, String value, TYPE type) {
+    super(token);
+    this.type = type;
+    this.value = value;
+  }
 
-    @Override
-    public void check() {
+  @Override
+  public IDENTIFIER getType() {
+    return type;
+  }
 
-    }
+  @Override
+  public void check() {
+
+  }
 }

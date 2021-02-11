@@ -8,6 +8,7 @@ import middleware.ast.expression_ast.ExpressionAST;
 import org.antlr.v4.runtime.Token;
 
 public class ReturnAST extends StatementAST {
+
   public TYPE type;
   private ExpressionAST expressionAST;
 
@@ -19,13 +20,18 @@ public class ReturnAST extends StatementAST {
   @Override
   public void check() {
     expressionAST.check();
-    if (ST.getEncSymTable() == null) addError(new GlobalScope(token));
-    else if (!(expressionAST.getType() instanceof TYPE))
+
+    if (ST.getEncSymTable() == null) {
+      addError(new GlobalScope(token));
+    } else if (!(expressionAST.getType() instanceof TYPE)) {
       addError(new MismatchedTypes(expressionAST.token, expressionAST.getType(), new EXPR()));
-    else if (!(isCompatible(expressionAST.getType(), ST.getScopeReturnType())))
+    } else if (!(isCompatible(expressionAST.getType(), ST.getScopeReturnType()))) {
       addError(
           new MismatchedTypes(
-              expressionAST.token, expressionAST.getType(), ST.getScopeReturnType()));
-    else type = (TYPE) expressionAST.getType();
+              expressionAST.token, expressionAST.getType(), ST.getScopeReturnType())
+      );
+    } else {
+      type = (TYPE) expressionAST.getType();
+    }
   }
 }

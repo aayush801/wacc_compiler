@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import org.antlr.v4.runtime.Token;
 
 public class NodeASTList<T> extends NodeAST implements Iterable<T> {
+
   private List<T> ASTList;
 
   public NodeASTList(Token token, List<T> ASTList) {
@@ -19,15 +20,15 @@ public class NodeASTList<T> extends NodeAST implements Iterable<T> {
     this.ASTList = new ArrayList<T>();
   }
 
-  public boolean isEmpty(){
+  public boolean isEmpty() {
     return ASTList.isEmpty();
   }
 
-  public int size(){
+  public int size() {
     return ASTList.size();
   }
 
-  public T get(int i){
+  public T get(int i) {
     return ASTList.get(i);
   }
 

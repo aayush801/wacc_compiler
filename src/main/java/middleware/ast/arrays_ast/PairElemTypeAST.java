@@ -7,14 +7,15 @@ import middleware.ast.NodeAST;
 import org.antlr.v4.runtime.Token;
 
 public class PairElemTypeAST extends NodeAST {
+
   private BaseTypeAST baseTypeAST;
   private ArrayTypeAST arrayTypeAST;
-  private String pairname;
-
+  private String pairName;
   private TYPE type;
+
   public PairElemTypeAST(Token token, BaseTypeAST baseTypeAST) {
     super(token);
-    this.baseTypeAST= baseTypeAST;
+    this.baseTypeAST = baseTypeAST;
   }
 
   public TYPE getType() {
@@ -29,19 +30,19 @@ public class PairElemTypeAST extends NodeAST {
 
   public PairElemTypeAST(Token token, String pairname) {
     super(token);
-    this.pairname = pairname;
+    this.pairName = pairname;
   }
 
   @Override
   public void check() {
-    if(pairname != null){
+    if (pairName != null) {
       type = new PAIR();
       return;
     }
 
-    if(baseTypeAST != null){
+    if (baseTypeAST != null) {
       baseTypeAST.check();
-      if(baseTypeAST.getType() == null){
+      if (baseTypeAST.getType() == null) {
         addError(new Undefined(token));
         return;
       }
@@ -49,14 +50,13 @@ public class PairElemTypeAST extends NodeAST {
       return;
     }
 
-    if(arrayTypeAST != null){
+    if (arrayTypeAST != null) {
       arrayTypeAST.check();
-      if(arrayTypeAST.getType() == null){
+      if (arrayTypeAST.getType() == null) {
         addError(new Undefined(token));
         return;
       }
       type = arrayTypeAST.getType();
     }
-
   }
 }

@@ -9,7 +9,8 @@ public abstract class TypeAST extends NodeAST {
   public TypeAST(Token token) {
     super(token);
   }
-  public TYPE getType(){
+
+  public TYPE getType() {
     return null;
   }
 }

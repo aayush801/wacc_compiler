@@ -84,7 +84,10 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     NodeASTList<FunctionDeclarationAST> functionDeclASTS =
         new NodeASTList<>(
             ctx.start,
-            ctx.funcDecl().stream().map(this::visitFuncDecl).collect(Collectors.toList()));
+            ctx.funcDecl().stream()
+                .map(this::visitFuncDecl)
+                .collect(Collectors.toList())
+        );
     return new ProgAST(ctx.start, functionDeclASTS, (StatementAST) visit(ctx.stat()));
   }
 
@@ -207,7 +210,10 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   @Override
   public StatementAST visitAssignVars(AssignVarsContext ctx) {
     return new AssignmentAST(
-        ctx.start, visitAssignLHS(ctx.assignLHS()), visitAssignRHS(ctx.assignRHS()));
+        ctx.start,
+        visitAssignLHS(ctx.assignLHS()),
+        visitAssignRHS(ctx.assignRHS())
+    );
   }
 
   @Override
@@ -224,10 +230,12 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   public ArrayTypeAST visitArrayType(ArrayTypeContext ctx) {
     if (ctx.baseType() != null) {
       return new ArrayTypeAST(
-          ctx.start, ctx.OPEN_SQUARE_BRACKET().size(), visitBaseType(ctx.baseType()));
+          ctx.start, ctx.OPEN_SQUARE_BRACKET().size(),
+          visitBaseType(ctx.baseType()));
     } else {
       return new ArrayTypeAST(
-          ctx.start, ctx.OPEN_SQUARE_BRACKET().size(), visitPairType(ctx.pairType()));
+          ctx.start, ctx.OPEN_SQUARE_BRACKET().size(),
+          visitPairType(ctx.pairType()));
     }
   }
 
@@ -273,11 +281,17 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   public ExpressionAST visitExpr(ExprContext ctx) {
     if (ctx.binaryOperator != null) {
       return new BinOpExprAST(
-          ctx.start, visitExpr(ctx.expr(0)), ctx.binaryOperator.getText(), visitExpr(ctx.expr(1)));
+          ctx.start, visitExpr(ctx.expr(0)),
+          ctx.binaryOperator.getText(),
+          visitExpr(ctx.expr(1))
+      );
     }
 
     if (ctx.unaryOperator() != null) {
-      return new UnaryOpExprAST(ctx.start, visitExpr(ctx.expr(0)), ctx.unaryOperator().getText());
+      return new UnaryOpExprAST(ctx.start,
+          visitExpr(ctx.expr(0)),
+          ctx.unaryOperator().getText()
+      );
     }
 
     if (ctx.OPEN_PARENTHESES() != null) {
@@ -308,15 +322,20 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   public ArrayElemAST visitArrayElem(ArrayElemContext ctx) {
     NodeASTList<ExpressionAST> exprs =
         new NodeASTList<>(
-            ctx.start, ctx.expr().stream().map(this::visitExpr).collect(Collectors.toList()));
+            ctx.start, ctx.expr().stream()
+            .map(this::visitExpr)
+            .collect(Collectors.toList())
+        );
     return new ArrayElemAST(ctx.start, ctx.IDENT().getText(), exprs);
   }
 
   @Override
   public ArrayAST visitArray(ArrayContext ctx) {
-    NodeASTList<ExpressionAST> exprs =
-        new NodeASTList<>(
-            ctx.start, ctx.expr().stream().map(this::visitExpr).collect(Collectors.toList()));
+    NodeASTList<ExpressionAST> exprs = new NodeASTList<>(
+        ctx.start, ctx.expr().stream()
+        .map(this::visitExpr)
+        .collect(Collectors.toList())
+    );
     return new ArrayAST(ctx.start, exprs);
   }
 
@@ -339,7 +358,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     }
 
     if (ctx.PAIR_TYPE() != null) {
-      return new PairElemTypeAST(ctx.start,ctx.PAIR_TYPE().getText());
+      return new PairElemTypeAST(ctx.start, ctx.PAIR_TYPE().getText());
     }
 
     return null;
@@ -347,12 +366,14 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public PairElemAST visitPairElem(PairElemContext ctx) {
-    return new PairElemAST(ctx.start, visitExpr(ctx.expr()), ctx.PAIR_FIRST() != null ? 0 : 1);
+    return new PairElemAST(ctx.start, visitExpr(ctx.expr()),
+        ctx.PAIR_FIRST() != null ? 0 : 1);
   }
 
   @Override
   public NewPairAST visitNewPair(NewPairContext ctx) {
-    return new NewPairAST(ctx.start, visitExpr(ctx.expr(0)), visitExpr(ctx.expr(1)));
+    return new NewPairAST(ctx.start, visitExpr(ctx.expr(0)),
+        visitExpr(ctx.expr(1)));
   }
 
   @Override

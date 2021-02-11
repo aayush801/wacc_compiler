@@ -1,6 +1,5 @@
 package middleware.ast.expression_ast;
 
-import middleware.ast.AbstractSyntaxTree;
 
 import identifier_objects.IDENTIFIER;
 import middleware.ast.NodeAST;
@@ -19,6 +18,8 @@ public class ExpressionAST extends NodeAST {
     return type;
   }
 
-  public boolean isIdent() { return false; }
+  public boolean isIdentifier() {
+    return false;
+  }
 
 }

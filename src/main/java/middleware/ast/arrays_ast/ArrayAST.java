@@ -27,19 +27,31 @@ public class ArrayAST extends NodeAST {
   @Override
   public void check() {
     if (expressionASTList.isEmpty()) {
+
       arrayObj = new ARRAY(new EXPR());
+
     } else {
       expressionASTList.get(0).check();
+
       IDENTIFIER curType = expressionASTList.get(0).getType();
       if (!(curType instanceof TYPE)) {
         addError(
             new MismatchedTypes(
-                expressionASTList.get(0).token, expressionASTList.get(0).getType(), new EXPR()));
+                expressionASTList.get(0).token,
+                expressionASTList.get(0).getType(),
+                new EXPR()));
       } else {
+
         for (ExpressionAST expressionAST : expressionASTList) {
           expressionAST.check();
-          if (!(isCompatible(expressionAST.getType(), curType)))
-            addError(new MismatchedTypes(expressionAST.token, expressionAST.getType(), curType));
+          if (!(isCompatible(expressionAST.getType(), curType))) {
+            addError(
+                new MismatchedTypes(
+                    expressionAST.token,
+                    expressionAST.getType(),
+                    curType)
+            );
+          }
         }
         arrayObj = new ARRAY((TYPE) curType);
       }

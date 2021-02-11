@@ -13,7 +13,7 @@ import org.antlr.v4.runtime.Token;
 
 public class LHSAssignAST extends StatementAST {
 
-  private String ident;
+  private String identifier;
   private ArrayElemAST arrayElemAST;
   private PairElemAST pairElemAST;
 
@@ -25,7 +25,7 @@ public class LHSAssignAST extends StatementAST {
 
   public LHSAssignAST(Token token, String ident) {
     super(token);
-    this.ident = ident;
+    this.identifier = ident;
   }
 
   public LHSAssignAST(Token token, ArrayElemAST arrayElemAST) {
@@ -41,20 +41,20 @@ public class LHSAssignAST extends StatementAST {
   //Ident, base arrayElem, pairElem.
   @Override
   public void check() {
-    if (ident != null) {
-      IDENTIFIER obj = ST.lookupAll(ident);
+    if (identifier != null) {
+      IDENTIFIER obj = ST.lookupAll(identifier);
 
       if (obj == null) {
-        addError(new Undefined(token, ident));
+        addError(new Undefined(token, identifier));
         return;
       }
 
-      if(obj instanceof VARIABLE){
+      if (obj instanceof VARIABLE) {
         type = ((VARIABLE) obj).getType();
         return;
       }
 
-      if(obj instanceof PARAM){
+      if (obj instanceof PARAM) {
         type = ((PARAM) obj).getType();
         return;
       }

@@ -10,12 +10,13 @@ import org.antlr.v4.runtime.Token;
 import symbol_table.SymbolTable;
 
 public abstract class NodeAST {
+
   protected static SymbolTable ST = SymbolTable.TopSymbolTable();
 
   private static List<WaccError> semanticErrors;
   public Token token;
 
-  public NodeAST(Token token){
+  public NodeAST(Token token) {
     this.token = token;
   }
 
@@ -23,11 +24,11 @@ public abstract class NodeAST {
     NodeAST.semanticErrors = semanticErrors;
   }
 
-  public static void reset(){
+  public static void reset() {
     ST = SymbolTable.TopSymbolTable();
   }
 
-  public void check(){
+  public void check() {
     throw new Error("need to override this function");
   }
 
