@@ -9,31 +9,32 @@ import identifier_objects.TYPE;
 import identifier_objects.polymorhpic_types.EXPR;
 import middleware.ast.NodeAST;
 import middleware.ast.NodeASTList;
+import middleware.ast.arrays_ast.TypeAST;
 import middleware.ast.statement_ast.StatementAST;
 import org.antlr.v4.runtime.Token;
 import symbol_table.SymbolTable;
 
 public class FunctionDeclarationAST extends NodeAST {
 
-  private final String returnTypeName;
+  private final TypeAST typeAST;
   private final String funcname;
   private final NodeASTList<ParamAST> paramASTList;
   private final StatementAST statementAST;
   public FUNCTION funcObj;
 
-  public FunctionDeclarationAST(Token token, String returnTypeName, String funcname, NodeASTList<ParamAST> paramASTList, StatementAST statementAST) {
+  public FunctionDeclarationAST(Token token, TypeAST typeAST, String funcname, NodeASTList<ParamAST> paramASTList, StatementAST statementAST) {
     super(token);
-    this.returnTypeName = returnTypeName;
+    this.typeAST = typeAST;
     this.funcname = funcname;
     this.paramASTList = paramASTList;
     this.statementAST = statementAST;
   }
 
   private boolean checkFunctionAndGetReturnType(){
-    IDENTIFIER type = ST.lookupAll(returnTypeName);
+    typeAST.check();
+    IDENTIFIER type = typeAST.getType();
     IDENTIFIER function = ST.lookup(funcname);
     if(type == null) addError(new Undefined(token));
-    else if (!(type instanceof TYPE)) addError(new MismatchedTypes(token, type, new EXPR()));
     else if (function != null) addError(new DuplicateIdentifier(token));
     else {
      funcObj = new FUNCTION((TYPE) type);
@@ -55,7 +56,7 @@ public class FunctionDeclarationAST extends NodeAST {
   public void check() {
     if(!checkFunctionAndGetReturnType()) return;
 
-    ST = new SymbolTable(ST);
+    ST = new SymbolTable(ST, typeAST.getType());
     funcObj.setST(ST);
 
     for(ParamAST paramAST : paramASTList){

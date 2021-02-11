@@ -27,10 +27,12 @@ public class IdentifierAST extends ExpressionAST {
     @Override
     public void check() {
         IDENTIFIER obj = ST.lookupAll(identifier);
+
         if (obj == null) {
             addError(new Undefined(token));
             return;
         }
+
 
         if(obj instanceof VARIABLE){
             type = ((VARIABLE) obj).getType();

@@ -93,14 +93,14 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     if (ctx.paramList() != null) {
       return new FunctionDeclarationAST(
           ctx.start,
-          ctx.type().getText(),
+          visitType(ctx.type()),
           ctx.IDENT().getText(),
           visitParamList(ctx.paramList()),
           (StatementAST) visit(ctx.stat()));
     } else {
       return new FunctionDeclarationAST(
           ctx.start,
-          ctx.type().getText(),
+          visitType(ctx.type()),
           ctx.IDENT().getText(),
           new NodeASTList<>(ctx.start),
           (StatementAST) visit(ctx.stat()));
@@ -120,7 +120,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public ParamAST visitParam(ParamContext ctx) {
-    return new ParamAST(ctx.start, ctx.type().getText(), ctx.IDENT().getText());
+    return new ParamAST(ctx.start, visitType(ctx.type()), ctx.IDENT().getText());
   }
 
   @Override

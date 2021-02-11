@@ -5,6 +5,7 @@ import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
 import identifier_objects.FUNCTION;
 import identifier_objects.IDENTIFIER;
+import identifier_objects.VARIABLE;
 import identifier_objects.polymorhpic_types.EXPR;
 import java.util.List;
 import middleware.ast.NodeAST;
