@@ -45,51 +45,49 @@ public class UnaryOpExprAST extends ExpressionAST {
     public void check() {
         right.check();
         IDENTIFIER righttype = right.getType();
-        boolean correctType = righttype.equals(unopsInputType.get(operator));
-        if(!correctType) {
-            addError(new MismatchedTypes(token, righttype, new BOOL()));
-        }
-        //dodgy
-        type = unopsOutputType.get(operator);
 
-//        switch(operator) {
-//            case "!": {
-//                boolean rightBool = righttype instanceof BOOL;
-//                if(!rightBool) {
-//                    addError(new MismatchedTypes(token, righttype, new BOOL()));
-//                }
-//                type = new BOOL();
-//            }
-//            case "-": {
-//                boolean rightInt = righttype instanceof INT;
-//                if(!rightInt) {
-//                    addError(new MismatchedTypes(token, righttype, new INT()));
-//                }
-//                type = new INT();
-//            }
-//            case "len": {
-//                boolean rightArray = righttype instanceof ARRAY;
-//                if(!rightArray) {
-//                    addError(new MismatchedTypes(token, righttype, new ARRAY(new EXPR())));
-//                }
-//                type = new INT();
-//            }
-//            case "chr": {
-//                boolean rightInt = righttype instanceof INT;
-//                if(!rightInt) {
-//                    addError(new MismatchedTypes(token, righttype, new INT()));
-//                }
-//                type = new CHAR();
-//            }
-//            default: {
-//                // must be ord.
-//                boolean rightChar = righttype instanceof CHAR;
-//                if(!rightChar) {
-//                    addError(new MismatchedTypes(token, righttype, new CHAR()));
-//                }
-//                type = new INT();
-//            }
-//        }
+        switch(operator) {
+            case "!": {
+                boolean rightBool = righttype instanceof BOOL;
+                if(!rightBool) {
+                    addError(new MismatchedTypes(token, righttype, new BOOL()));
+                }
+                type = new BOOL();
+                break;
+            }
+            case "-": {
+                boolean rightInt = righttype instanceof INT;
+                if(!rightInt) {
+                    addError(new MismatchedTypes(token, righttype, new INT()));
+                }
+                type = new INT();
+                break;
+            }
+            case "len": {
+                boolean rightArray = righttype instanceof ARRAY;
+                if(!rightArray) {
+                    addError(new MismatchedTypes(token, righttype, new ARRAY(new EXPR())));
+                }
+                type = new INT();
+                break;
+            }
+            case "chr": {
+                boolean rightInt = righttype instanceof INT;
+                if(!rightInt) {
+                    addError(new MismatchedTypes(token, righttype, new INT()));
+                }
+                type = new CHAR();
+                break;
+            }
+            default: {
+                // must be ord.
+                boolean rightChar = righttype instanceof CHAR;
+                if(!rightChar) {
+                    addError(new MismatchedTypes(token, righttype, new CHAR()));
+                }
+                type = new INT();
+            }
+        }
 
     }
 }

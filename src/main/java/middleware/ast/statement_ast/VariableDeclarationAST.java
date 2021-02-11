@@ -44,8 +44,10 @@ public class VariableDeclarationAST extends StatementAST {
       return;
     }
 
-    if(!isCompatible(RHS.getType(), typeAST.getType())){
-      addError(new MismatchedTypes(token, RHS.getType(), typeAST.getType()));
+   // System.out.println(RHS.getType());
+    //System.out.println(typeAST.getType());
+    if(!isCompatible(typeAST.getType(), RHS.getType())){
+      addError(new MismatchedTypes(token, typeAST.getType(), RHS.getType()));
       return;
     }
 
