@@ -19,15 +19,14 @@ public class Arithmetic extends Instruction {
     flags = setConditionCodes;
   }
 
-  public Arithmetic(ArithmeticOpcode Opcode, Register Rd, Register Rn,
-      Operand Operand, boolean flags, ConditionCode code) {
-    super(code);
-    this.Rd = Rd;
-    this.Rn = Rn;
-    this.Operand = Operand;
-    this.Opcode = Opcode;
-    setFlags(flags);
-  }
+//  public Arithmetic(ArithmeticOpcode Opcode, Register Rd, Register Rn,
+//      Operand Operand, boolean flags) {
+//    this.Rd = Rd;
+//    this.Rn = Rn;
+//    this.Operand = Operand;
+//    this.Opcode = Opcode;
+//    setFlags(flags);
+//  }
 
   @Override
   public String toString() {

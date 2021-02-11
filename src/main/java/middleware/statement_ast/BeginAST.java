@@ -34,7 +34,7 @@ public class BeginAST extends StatementAST {
 
     List<Instruction> instructions = statementAST.translate(registers);
 
-    return translateScope(scopeST, instructions);
+    return program.encapsulateScope(scopeST, instructions);
 
   }
 

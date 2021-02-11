@@ -7,6 +7,7 @@ public class Load extends Instruction {
 
   private final Register Rn;
   private final AddressingMode addressingMode;
+
   private final boolean registerByte;
   private final boolean signed;
 
@@ -16,6 +17,7 @@ public class Load extends Instruction {
     this.registerByte = registerByte;
     this.signed = signed;
   }
+
 
   public Load(Register Rn, AddressingMode addressingMode, boolean registerByte) {
     this(Rn, addressingMode, registerByte, false);
@@ -27,6 +29,7 @@ public class Load extends Instruction {
 
   @Override
   public String toString() {
+
     String mnemonic = "LDR";
     if (signed) {
       mnemonic += "S";
@@ -35,5 +38,6 @@ public class Load extends Instruction {
       mnemonic += "B";
     }
     return mnemonic + " " + Rn + ", " + addressingMode;
+
   }
 }

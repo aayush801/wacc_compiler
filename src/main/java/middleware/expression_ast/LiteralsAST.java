@@ -5,9 +5,13 @@ import backend.instructions.Load;
 import backend.instructions.Move;
 import backend.instructions.addr_modes.Address;
 import backend.instructions.addr_modes.ImmediateAddress;
-import backend.labels.DataLabel;
+
 import backend.operands.ImmediateChar;
 import backend.operands.ImmediateNum;
+
+import backend.labels.data.DataLabel;
+
+
 import backend.registers.Register;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.BOOL;

@@ -1,5 +1,6 @@
 package middleware.symbol_table;
 
+import frontend.identifier_objects.FUNCTION;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
@@ -55,11 +56,11 @@ public class SymbolTable {
     BOOL boolType = new BOOL();
 
     // add literals to symbol table
-    st.add(INT.name, intType);
-    st.add(STR.name, strType);
-    st.add(CHAR.name, charType);
-    st.add(PAIR.name, pairType);
-    st.add(BOOL.name, boolType);
+    st.add("int", intType);
+    st.add("string", strType);
+    st.add("char", charType);
+    st.add("pair", pairType);
+    st.add("bool", boolType);
 
     return st;
   }

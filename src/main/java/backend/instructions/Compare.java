@@ -1,18 +1,20 @@
 package backend.instructions;
 
+import backend.operands.Operand;
 import backend.registers.Register;
 
 public class Compare extends Instruction {
 
-  private final Register Rn, Rm;
+  private final Register Rn;
+  private final Operand operand;
 
-  public Compare(Register Rn, Register Rm) {
+  public Compare(Register Rn, Operand operand) {
     super();
     this.Rn = Rn;
-    this.Rm = Rm;
+    this.operand = operand;
   }
 
   public String toString() {
-    return "CMP" + getFLags() + " " + Rn + ", " + Rm;
+    return "CMP" + getFLags() + " " + Rn + ", " + operand;
   }
 }

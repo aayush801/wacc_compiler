@@ -3,11 +3,8 @@ package middleware;
 import backend.instructions.Instruction;
 import backend.instructions.Load;
 import backend.instructions.addr_modes.Address;
-import backend.instructions.stack_instructions.Pop;
-import backend.instructions.stack_instructions.Push;
-import backend.labels.InstructionLabel;
-import backend.registers.LinkRegister;
-import backend.registers.ProgramCounter;
+import backend.labels.code.FunctionLabel;
+import backend.labels.code.InstructionLabel;
 import backend.registers.Register;
 import java.util.List;
 import middleware.function_ast.FunctionDeclarationAST;
@@ -53,17 +50,21 @@ public class ProgAST extends NodeAST {
   @Override
   public List<Instruction> translate(List<Register> registers) {
 
-    // translate statement body
-    List<Instruction> instructions = translateScope(scopeST, statementAST.translate(registers));
+    // translate function declarations
+    for (FunctionDeclarationAST func : functionDeclarationASTS) {
+      func.translate(registers);
+    }
 
-    // boiler plate front
-    instructions.add(0, new Push(new LinkRegister()));
+    // translate statement body
+    List<Instruction> instructions = program
+        .encapsulateScope(scopeST, statementAST.translate(registers));
 
     // boiler plate back
-    instructions.add(new Load(new Register(0), new Address("0")));
-    instructions.add(new Pop(new ProgramCounter()));
+    instructions.add(new Load(program.registers.get(0), new Address("0")));
 
-    program.addMain(new InstructionLabel("main", instructions).setLastFunction());
+    program.encapsulateFunction(instructions);
+
+    program.addCode(new InstructionLabel("main", instructions).setLastFunction());
 
     // need to add support for funcDeclarations
 
