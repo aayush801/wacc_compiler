@@ -10,18 +10,25 @@ public class WaccValidTests {
 
 
   private void files_checker(String base) throws IOException {
+    File[] directoryListing;
+    WaccCompiler compiler;
+    ErrorCode errorCode;
+
     File dir = new File(base);
     if (dir.isDirectory()) {
-      File[] directoryListing = dir.listFiles();
+      directoryListing = dir.listFiles();
       assert directoryListing != null;
+
       for (File child : directoryListing) {
-        if(child.isFile()) {
-          WaccCompiler compiler = new WaccCompiler(new FileInputStream(child));
-          ErrorCode errorCode = compiler.compile();
+        if (child.isFile()) {
+          compiler = new WaccCompiler(new FileInputStream(child));
+          errorCode = compiler.compile();
+
           if (errorCode != ErrorCode.SUCCESS) {
             System.out.println(child.getName());
             System.out.println(compiler.getErrors());
           }
+
           assertThat(errorCode, is(ErrorCode.SUCCESS));
         }
       }
