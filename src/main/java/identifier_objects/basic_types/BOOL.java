@@ -6,8 +6,12 @@ public class BOOL extends TYPE {
 
   public static String name = "bool";
 
-
   public BOOL() {
     super(name);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return o instanceof BOOL;
   }
 }

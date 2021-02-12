@@ -4,7 +4,6 @@ import errors.WaccError;
 import errors.semantic_errors.WaccSemanticError;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
-import identifier_objects.VARIABLE;
 import java.util.List;
 import org.antlr.v4.runtime.Token;
 import symbol_table.SymbolTable;

@@ -1,7 +1,7 @@
 package middleware.ast.types_ast;
 
-import identifier_objects.TYPE;
 import identifier_objects.basic_types.PAIR;
+import identifier_objects.TYPE;
 import org.antlr.v4.runtime.Token;
 
 public class PairTypeAST extends TypeAST {

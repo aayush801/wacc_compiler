@@ -4,7 +4,6 @@ import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
-import identifier_objects.polymorhpic_types.EXPR;
 import org.antlr.v4.runtime.Token;
 
 public class BaseTypeAST extends TypeAST {
@@ -28,7 +27,7 @@ public class BaseTypeAST extends TypeAST {
     if (identifier == null) {
       addError(new Undefined(token));
     } else if (!(identifier instanceof TYPE)) {
-      addError(new MismatchedTypes(token, identifier, new EXPR()));
+      addError(new MismatchedTypes(token, identifier, new TYPE()));
     } else {
       type = (TYPE) identifier;
     }

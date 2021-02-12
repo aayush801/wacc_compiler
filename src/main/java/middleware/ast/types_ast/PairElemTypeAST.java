@@ -1,11 +1,9 @@
 package middleware.ast.types_ast;
 
 import errors.semantic_errors.Undefined;
-import identifier_objects.TYPE;
 import identifier_objects.basic_types.PAIR;
+import identifier_objects.TYPE;
 import middleware.ast.NodeAST;
-import middleware.ast.types_ast.ArrayTypeAST;
-import middleware.ast.types_ast.BaseTypeAST;
 import org.antlr.v4.runtime.Token;
 
 public class PairElemTypeAST extends NodeAST {

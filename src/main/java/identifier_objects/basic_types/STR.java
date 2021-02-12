@@ -9,4 +9,9 @@ public class STR extends TYPE {
   public STR() {
     super(name);
   }
+
+  @Override
+  public boolean equals(Object o) {
+    return o instanceof STR;
+  }
 }

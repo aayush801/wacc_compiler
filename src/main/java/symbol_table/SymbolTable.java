@@ -1,12 +1,12 @@
 package symbol_table;
 
 import identifier_objects.IDENTIFIER;
-import identifier_objects.TYPE;
 import identifier_objects.basic_types.BOOL;
 import identifier_objects.basic_types.CHAR;
 import identifier_objects.basic_types.INT;
 import identifier_objects.basic_types.PAIR;
 import identifier_objects.basic_types.STR;
+import identifier_objects.TYPE;
 import java.util.HashMap;
 import java.util.Map;
 

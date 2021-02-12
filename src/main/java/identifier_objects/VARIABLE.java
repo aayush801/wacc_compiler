@@ -1,5 +1,6 @@
 package identifier_objects;
 
+
 public class VARIABLE extends IDENTIFIER {
 
   TYPE type;

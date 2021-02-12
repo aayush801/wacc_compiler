@@ -16,4 +16,9 @@ public class CHAR extends TYPE {
   public CHAR() {
     this(0, 255);
   }
+
+  @Override
+  public boolean equals(Object o) {
+    return o instanceof CHAR;
+  }
 }

@@ -6,7 +6,6 @@ import errors.semantic_errors.Undefined;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.PARAM;
 import identifier_objects.TYPE;
-import identifier_objects.polymorhpic_types.EXPR;
 import middleware.ast.NodeAST;
 import middleware.ast.types_ast.TypeAST;
 import org.antlr.v4.runtime.Token;
@@ -33,7 +32,7 @@ public class ParamAST extends NodeAST {
     if (type == null) {
       addError(new Undefined(token));
     } else if (!(type instanceof TYPE)) {
-      addError(new MismatchedTypes(token, type, new EXPR()));
+      addError(new MismatchedTypes(token, type, new TYPE()));
     } else if (param != null) {
       addError(new DuplicateIdentifier(token));
     } else {

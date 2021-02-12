@@ -1,7 +1,7 @@
 package middleware.ast.types_ast;
 
-import identifier_objects.TYPE;
 import identifier_objects.basic_types.ARRAY;
+import identifier_objects.TYPE;
 import org.antlr.v4.runtime.Token;
 
 public class ArrayTypeAST extends TypeAST {
@@ -46,5 +46,6 @@ public class ArrayTypeAST extends TypeAST {
     for (int i = 1; i < dimensions; i++) {
       arrayObj = new ARRAY(arrayObj);
     }
+
   }
 }

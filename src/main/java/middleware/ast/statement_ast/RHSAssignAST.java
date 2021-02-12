@@ -3,7 +3,6 @@ package middleware.ast.statement_ast;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
 import identifier_objects.TYPE;
-import identifier_objects.polymorhpic_types.EXPR;
 import middleware.ast.arrays_ast.ArrayAST;
 import middleware.ast.expression_ast.ExpressionAST;
 import middleware.ast.function_ast.FunctionCallAST;
@@ -55,7 +54,7 @@ public class RHSAssignAST extends StatementAST {
     if (expr != null) {
       expr.check();
       if (!(expr.getType() instanceof TYPE)) {
-        addError(new MismatchedTypes(token, expr.getType(), new EXPR()));
+        addError(new MismatchedTypes(token, expr.getType(), new TYPE()));
       } else {
         type = (TYPE) expr.getType();
       }

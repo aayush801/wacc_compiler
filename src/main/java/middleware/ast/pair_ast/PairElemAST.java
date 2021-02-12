@@ -2,9 +2,8 @@ package middleware.ast.pair_ast;
 
 import errors.semantic_errors.MismatchedTypes;
 import identifier_objects.IDENTIFIER;
-import identifier_objects.TYPE;
 import identifier_objects.basic_types.PAIR;
-import identifier_objects.polymorhpic_types.EXPR;
+import identifier_objects.TYPE;
 import middleware.ast.NodeAST;
 import middleware.ast.expression_ast.ExpressionAST;
 import org.antlr.v4.runtime.Token;
@@ -32,7 +31,7 @@ public class PairElemAST extends NodeAST {
     IDENTIFIER exprType = expr.getType();
     if (!(exprType instanceof PAIR)) {
       addError(new MismatchedTypes(
-          token, exprType, new PAIR(new EXPR(), new EXPR()))
+          token, exprType, new PAIR(new TYPE(), new TYPE()))
       );
     } else {
       PAIR pair = (PAIR) exprType;

@@ -1,5 +1,6 @@
 package identifier_objects;
 
+
 public class PARAM extends IDENTIFIER {
 
   private final TYPE type;
