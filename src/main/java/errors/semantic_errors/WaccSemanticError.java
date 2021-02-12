@@ -21,6 +21,6 @@ public abstract class WaccSemanticError extends WaccError {
 
   @Override
   public String toString() {
-    return "Semantic Error " + super.toString();
+    return "Semantic Error" + super.toString();
   }
 }

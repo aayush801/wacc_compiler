@@ -6,7 +6,7 @@ import errors.semantic_errors.DuplicateIdentifier;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
 import identifier_objects.VARIABLE;
-import middleware.ast.arrays_ast.TypeAST;
+import middleware.ast.types_ast.TypeAST;
 import org.antlr.v4.runtime.Token;
 
 public class VariableDeclarationAST extends StatementAST {

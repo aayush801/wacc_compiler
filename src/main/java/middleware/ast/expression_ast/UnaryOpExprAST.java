@@ -1,92 +1,118 @@
 package middleware.ast.expression_ast;
 
 import errors.semantic_errors.MismatchedTypes;
+import errors.semantic_errors.NotAFunction;
 import identifier_objects.IDENTIFIER;
-import identifier_objects.TYPE;
-import identifier_objects.basic_types.ARRAY;
-import identifier_objects.basic_types.BOOL;
-import identifier_objects.basic_types.CHAR;
-import identifier_objects.basic_types.INT;
+import identifier_objects.basic_types.*;
 import identifier_objects.polymorhpic_types.EXPR;
 import org.antlr.v4.runtime.Token;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class UnaryOpExprAST extends ExpressionAST {
 
-  private final ExpressionAST right;
+  private final ExpressionAST expr;
   private final String operator;
 
-  protected final Map<String, TYPE> unopsInputType = new HashMap<>() {{
-    put("-", new INT());
-    put("!", new BOOL());
-    put("ord", new CHAR());
-    put("chr", new INT());
-    put("len", new ARRAY(new EXPR()));
-  }};
-
-  protected final Map<String, TYPE> unopsOutputType = new HashMap<>() {{
-    put("-", new INT());
-    put("!", new BOOL());
-    put("ord", new INT());
-    put("chr", new CHAR());
-    put("len", new INT());
-  }};
-
-  public UnaryOpExprAST(Token token, ExpressionAST right, String operator) {
+  public UnaryOpExprAST(Token token, ExpressionAST expr, String operator) {
     super(token);
-    this.right = right;
+    this.expr = expr;
     this.operator = operator;
   }
 
+  /* ================== OPERATION PARAMETER TYPING CHECKS ================== */
+
+  private void checkNotParam(IDENTIFIER exprType) {
+
+    if (!(exprType instanceof BOOL)) {
+
+      addError(new MismatchedTypes(token, exprType, new BOOL()));
+
+    }
+
+    type = new BOOL();
+  }
+
+  private void checkNegateParam(IDENTIFIER exprType) {
+
+    if (!(exprType instanceof INT)) {
+
+      addError(new MismatchedTypes(token, exprType, new INT()));
+
+    }
+
+    type = new INT();
+  }
+
+  private void checkLengthParam(IDENTIFIER exprType) {
+
+    if (!(exprType instanceof ARRAY)) {
+
+      addError(new MismatchedTypes(token, exprType, new ARRAY(new EXPR())));
+
+    }
+
+    type = new INT();
+  }
+
+  private void checkChrParam(IDENTIFIER exprType) {
+
+    if (!(exprType instanceof INT)) {
+
+      addError(new MismatchedTypes(token, exprType, new INT()));
+
+    }
+
+    type = new CHAR();
+  }
+
+  private void checkOrdParam(IDENTIFIER exprType) {
+
+    if (!(exprType instanceof CHAR)) {
+
+      addError(new MismatchedTypes(token, exprType, new CHAR()));
+
+    }
+
+    type = new INT();
+  }
+
+  /* ========================================================================= */
+
+
   @Override
   public void check() {
-    right.check();
-    IDENTIFIER rightType = right.getType();
+
+    expr.check();
+    IDENTIFIER exprType = expr.getType();
 
     switch (operator) {
-      case "!": {
-        boolean rightBool = rightType instanceof BOOL;
-        if (!rightBool) {
-          addError(new MismatchedTypes(token, rightType, new BOOL()));
-        }
-        type = new BOOL();
+      // NOT Operator
+      case "!":
+        checkNotParam(exprType);
         break;
-      }
-      case "-": {
-        boolean rightInt = rightType instanceof INT;
-        if (!rightInt) {
-          addError(new MismatchedTypes(token, rightType, new INT()));
-        }
-        type = new INT();
+      // NEGATE Operator
+      case "-":
+        checkNegateParam(exprType);
         break;
-      }
-      case "len": {
-        boolean rightArray = rightType instanceof ARRAY;
-        if (!rightArray) {
-          addError(new MismatchedTypes(token, rightType, new ARRAY(new EXPR())));
-        }
-        type = new INT();
+      // LENGTH Operator
+      case "len":
+        checkLengthParam(exprType);
         break;
-      }
-      case "chr": {
-        boolean rightInt = rightType instanceof INT;
-        if (!rightInt) {
-          addError(new MismatchedTypes(token, rightType, new INT()));
-        }
-        type = new CHAR();
+      // CHR Operator
+      case "chr":
+        checkChrParam(exprType);
         break;
-      }
-      default: {
-        // must be ord.
-        boolean rightChar = rightType instanceof CHAR;
-        if (!rightChar) {
-          addError(new MismatchedTypes(token, rightType, new CHAR()));
-        }
-        type = new INT();
-      }
+      // ORD Operator
+      case "ord":
+        checkOrdParam(exprType);
+        break;
+      // Unrecognized Operator
+      default:
+        addError(new NotAFunction(token));
+        break;
     }
 
   }
+
 }
+
+

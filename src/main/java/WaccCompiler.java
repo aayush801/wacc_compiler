@@ -15,7 +15,6 @@ import middleware.ast.WaccASTParser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import semantic_parser.SemanticParser;
 import syntactic_parser.SyntacticParser;
 import syntactic_parser.SyntaxErrorListener;
 

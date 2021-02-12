@@ -1,4 +1,4 @@
-package middleware.ast.arrays_ast;
+package middleware.ast.types_ast;
 
 import identifier_objects.TYPE;
 import middleware.ast.NodeAST;

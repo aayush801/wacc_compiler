@@ -41,7 +41,7 @@ public abstract class WaccError extends BaseErrorListener {
 
   @Override
   public String toString() {
-    return " : " + code + " found at line " + lineNo + ":" + lineCol + " " + getErrorMessage();
+    return ": " + code + " found at line " + lineNo + ":" + lineCol + " " + getErrorMessage();
   }
 
   @Override

@@ -1,4 +1,4 @@
-package middleware.ast.arrays_ast;
+package middleware.ast.types_ast;
 
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;

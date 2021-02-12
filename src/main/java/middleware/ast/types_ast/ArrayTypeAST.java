@@ -1,8 +1,7 @@
-package middleware.ast.arrays_ast;
+package middleware.ast.types_ast;
 
 import identifier_objects.TYPE;
 import identifier_objects.basic_types.ARRAY;
-import middleware.ast.NodeAST;
 import org.antlr.v4.runtime.Token;
 
 public class ArrayTypeAST extends TypeAST {

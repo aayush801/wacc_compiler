@@ -25,6 +25,7 @@ public class IdentifierAST extends ExpressionAST {
 
   @Override
   public void check() {
+    // find the object corresponding to the identifier in the lookup table
     IDENTIFIER obj = ST.lookupAll(identifier);
 
     if (obj == null) {

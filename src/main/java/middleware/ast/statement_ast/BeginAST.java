@@ -5,7 +5,7 @@ import symbol_table.SymbolTable;
 
 public class BeginAST extends StatementAST {
 
-  private StatementAST statementAST;
+  private final StatementAST statementAST;
 
   public BeginAST(Token token, StatementAST statementAST) {
     super(token);

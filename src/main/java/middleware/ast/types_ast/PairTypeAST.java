@@ -1,10 +1,7 @@
-package middleware.ast.arrays_ast;
+package middleware.ast.types_ast;
 
 import identifier_objects.TYPE;
 import identifier_objects.basic_types.PAIR;
-import middleware.ast.NodeAST;
-import middleware.ast.expression_ast.ExpressionAST;
-import middleware.ast.pair_ast.PairElemAST;
 import org.antlr.v4.runtime.Token;
 
 public class PairTypeAST extends TypeAST {

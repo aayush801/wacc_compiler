@@ -8,7 +8,7 @@ import identifier_objects.PARAM;
 import identifier_objects.TYPE;
 import identifier_objects.polymorhpic_types.EXPR;
 import middleware.ast.NodeAST;
-import middleware.ast.arrays_ast.TypeAST;
+import middleware.ast.types_ast.TypeAST;
 import org.antlr.v4.runtime.Token;
 
 public class ParamAST extends NodeAST {

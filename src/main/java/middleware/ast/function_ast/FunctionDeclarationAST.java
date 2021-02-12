@@ -8,7 +8,7 @@ import errors.semantic_errors.Undefined;
 import identifier_objects.IDENTIFIER;
 import middleware.ast.NodeAST;
 import middleware.ast.NodeASTList;
-import middleware.ast.arrays_ast.TypeAST;
+import middleware.ast.types_ast.TypeAST;
 import middleware.ast.statement_ast.StatementAST;
 import org.antlr.v4.runtime.Token;
 import symbol_table.SymbolTable;
