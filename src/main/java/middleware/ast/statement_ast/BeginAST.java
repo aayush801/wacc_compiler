@@ -14,8 +14,14 @@ public class BeginAST extends StatementAST {
 
   @Override
   public void check() {
+
+    // Create new symbol table(scope) for the statement.
     ST = new SymbolTable(ST);
+
+    // Check that the statement inside the begin block is valid.
     statementAST.check();
+
+    // Reset the symbol table (i.e. return to the old scope).
     ST = ST.getEncSymTable();
   }
 }

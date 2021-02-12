@@ -4,13 +4,16 @@ import errors.WaccError;
 import errors.semantic_errors.WaccSemanticError;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
-import identifier_objects.VARIABLE;
 import java.util.List;
 import org.antlr.v4.runtime.Token;
 import symbol_table.SymbolTable;
 
 public abstract class NodeAST {
 
+  // A general Node of the AST.
+
+  // One symbol table reference, updated throughout when required.
+  // Initially this is set to the top level symbol table.
   protected static SymbolTable ST = SymbolTable.TopSymbolTable();
 
   private static List<WaccError> semanticErrors;

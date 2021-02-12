@@ -8,7 +8,11 @@ import org.antlr.v4.runtime.Token;
 
 public class NodeASTList<T> extends NodeAST implements Iterable<T> {
 
-  private List<T> ASTList;
+  private final List<T> ASTList;
+
+  // wrapper for AST nodes that need a list of AST nodes.
+  // contains basic functions that process the list.
+  // used for function parameter checking, among others.
 
   public NodeASTList(Token token, List<T> ASTList) {
     super(token);

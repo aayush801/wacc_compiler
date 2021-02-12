@@ -26,33 +26,42 @@ public class VariableDeclarationAST extends StatementAST {
 
   @Override
   public void check() {
+    // check the type of the declaration.
     typeAST.check();
 
+    // verify that the type is valid.
     if (typeAST.getType() == null) {
       addError(new Undefined(token, typeAST.token.getText()));
       return;
     }
 
+    // lookup name in current symbol table.
     IDENTIFIER variable = ST.lookup(varName);
 
+    // if variable already present in current symbol table and is not a
+    // function, this is not valid as it is a duplicate identifier.
     if (variable != null && !(variable instanceof FUNCTION)) {
       addError(new DuplicateIdentifier(token));
       return;
     }
 
+    // check the RHS now.
     RHS.check();
+
+    // verify that the RHS is not null.
     if (RHS.getType() == null) {
       addError(new Undefined(RHS.token));
       return;
     }
 
-    // System.out.println(RHS.getType());
-    //System.out.println(typeAST.getType());
+    // Verify that LHS and RHS are type compatible.
     if (!isCompatible(typeAST.getType(), RHS.getType())) {
       addError(new MismatchedTypes(token, typeAST.getType(), RHS.getType()));
       return;
     }
 
+    // If all checks pass, create new VARIABLE object with the type of the
+    // typeAST node, and add this to the current symbol table.
     varObj = new VARIABLE(typeAST.getType());
 
     ST.add(varName, varObj);

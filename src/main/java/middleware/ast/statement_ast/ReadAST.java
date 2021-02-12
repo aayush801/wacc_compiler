@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.Token;
 
 public class ReadAST extends StatementAST {
 
-  private LHSAssignAST LHS;
+  private final LHSAssignAST LHS;
 
   public ReadAST(Token token, LHSAssignAST LHS) {
     super(token);
@@ -18,8 +18,11 @@ public class ReadAST extends StatementAST {
 
   @Override
   public void check() {
+
+    // Verify that the LHS is a valid assignLHS.
     LHS.check();
 
+    // Verify that type is an INT or CHAR.
     IDENTIFIER type = LHS.getType();
     if (type == null) {
       addError(new Undefined(token));
