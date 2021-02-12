@@ -1,7 +1,8 @@
 package middleware.ast.statement_ast;
 
-import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
+import errors.semantic_errors.expressionNotFound;
+
 import identifier_objects.IDENTIFIER;
 import identifier_objects.PARAM;
 import identifier_objects.TYPE;
@@ -60,7 +61,7 @@ public class LHSAssignAST extends StatementAST {
       }
 
       if (!(obj instanceof TYPE)) {
-        addError(new MismatchedTypes(token, obj, new EXPR()));
+        addError(new expressionNotFound(token, obj));
         return;
       }
 

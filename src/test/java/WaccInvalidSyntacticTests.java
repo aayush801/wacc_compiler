@@ -8,14 +8,22 @@ import org.junit.Test;
 public class WaccInvalidSyntacticTests {
 
   private void file_checker(String base, String[] files) throws IOException {
+    String file_path;
+    FileInputStream inputStream;
+    WaccCompiler compiler;
+    ErrorCode errorCode;
+
     for (String file : files) {
-      String file_path = base + file;
-      WaccCompiler compiler = new WaccCompiler(new FileInputStream(file_path));
-      ErrorCode errorCode = compiler.compile();
+      file_path = base + file;
+      inputStream = new FileInputStream(file_path);
+      compiler = new WaccCompiler(inputStream);
+      errorCode = compiler.compile();
+
       if (errorCode != ErrorCode.SYNTAX_ERROR) {
         System.out.println(file);
         System.out.println(compiler.getErrors());
       }
+
       assertThat(errorCode, is(ErrorCode.SYNTAX_ERROR));
     }
   }
@@ -30,9 +38,9 @@ public class WaccInvalidSyntacticTests {
   @Test
   public void syntax_invalid_examples_basic() throws IOException {
     String base = "test_data/invalid/syntaxErr/basic/";
-    String[] files = {"badComment.wacc", "badComment2.wacc", "badEscape.wacc", "beginNoend.wacc",
-        "bgnErr.wacc",
-        "multipleBegins.wacc", "noBody.wacc", "skpErr.wacc", "unescapedChar.wacc"};
+    String[] files = {"badComment.wacc", "badComment2.wacc", "badEscape.wacc",
+        "beginNoend.wacc", "bgnErr.wacc", "multipleBegins.wacc", "noBody.wacc",
+        "skpErr.wacc", "unescapedChar.wacc"};
 
     file_checker(base, files);
   }
@@ -41,7 +49,8 @@ public class WaccInvalidSyntacticTests {
   @Test
   public void syntax_invalid_examples_expressions() throws IOException {
     String base = "test_data/invalid/syntaxErr/expressions/";
-    String[] files = {"missingOperand1.wacc", "missingOperand2.wacc", "printlnConcat.wacc"};
+    String[] files = {"missingOperand1.wacc", "missingOperand2.wacc",
+        "printlnConcat.wacc"};
 
     file_checker(base, files);
   }
@@ -50,12 +59,13 @@ public class WaccInvalidSyntacticTests {
   public void syntax_invalid_examples_functions() throws IOException {
     String base = "test_data/invalid/syntaxErr/function/";
     String[] files = {"badlyPlaced.wacc", "funcExpr.wacc", "funcExpr2.wacc",
-        "functionConditionalNoReturn.wacc",
-        "functionJunkAfterReturn.wacc", "functionLateDefine.wacc", "functionMissingCall.wacc",
-        "functionMissingParam.wacc", "functionMissingPType.wacc", "functionMissingType.wacc",
-        "functionNoReturn.wacc",
-        "functionReturnInLoop.wacc", "functionScopeDef.wacc", "mutualRecursionNoReturn.wacc",
-        "noBodyAfterFuncs.wacc", "thisIsNotC.wacc"};
+        "functionConditionalNoReturn.wacc", "functionJunkAfterReturn.wacc",
+        "functionLateDefine.wacc", "functionMissingCall.wacc",
+        "functionMissingParam.wacc", "functionMissingPType.wacc",
+        "functionMissingType.wacc", "functionNoReturn.wacc",
+        "functionReturnInLoop.wacc", "functionScopeDef.wacc",
+        "mutualRecursionNoReturn.wacc", "noBodyAfterFuncs.wacc",
+        "thisIsNotC.wacc"};
 
     file_checker(base, files);
   }
@@ -73,8 +83,7 @@ public class WaccInvalidSyntacticTests {
   public void syntax_invalid_examples_variables() throws IOException {
     String base = "test_data//invalid/syntaxErr/variables/";
     String[] files = {"badintAssignments.wacc", "badintAssignments1.wacc",
-        "badintAssignments2.wacc",
-        "bigIntAssignment.wacc", "varNoName.wacc"};
+        "badintAssignments2.wacc", "bigIntAssignment.wacc", "varNoName.wacc"};
 
     file_checker(base, files);
   }
@@ -98,8 +107,8 @@ public class WaccInvalidSyntacticTests {
   @Test
   public void syntax_invalid_examples_sequence() throws IOException {
     String base = "test_data/invalid/syntaxErr/sequence/";
-    String[] files = {"doubleSeq.wacc", "emptySeq.wacc", "endSeq.wacc", "extraSeq.wacc",
-        "missingSeq.wacc"};
+    String[] files = {"doubleSeq.wacc", "emptySeq.wacc", "endSeq.wacc",
+        "extraSeq.wacc", "missingSeq.wacc"};
 
     file_checker(base, files);
   }

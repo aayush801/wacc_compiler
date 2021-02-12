@@ -1,3 +1,4 @@
+
 package middleware.ast.expression_ast;
 
 
@@ -23,3 +24,4 @@ public class ExpressionAST extends NodeAST {
   }
 
 }
+

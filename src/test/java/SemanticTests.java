@@ -11,7 +11,10 @@ public class SemanticTests {
 
   @Test
   public void testUndefined() throws IOException {
-    String instruction = "begin int c = 1 + c end";
+    String instruction =
+        "begin " +
+            "int c = 1 + c " +
+            "end";
     WaccCompiler compiler = new WaccCompiler(instruction);
     ErrorCode errorCode = compiler.compile();
     System.out.println(compiler.getErrors());
@@ -21,10 +24,10 @@ public class SemanticTests {
   @Test
   public void testArrayElem() throws IOException {
     String instruction =
-        "begin \n"
-            + "bool[] array = [true, false] ; \n"
-            + "array[5] = true\n"
-            + "end";
+        "begin \n" +
+            "bool[] array = [true, false] ; \n" +
+            "array[5] = true\n" +
+            "end";
     WaccCompiler compiler = new WaccCompiler(instruction);
     ErrorCode errorCode = compiler.compile();
     System.out.println(compiler.getErrors());
@@ -33,10 +36,11 @@ public class SemanticTests {
 
   @Test
   public void testPolymorphicFunction() throws IOException {
-    String instruction = "begin \n"
-        + "bool b = 2 > '2' ;\n"
-        + "bool x = 'a' > 'b' \n"
-        + "end";
+    String instruction =
+        "begin \n" +
+            "bool b = 2 > '2' ;\n" +
+            "bool x = 'a' > 'b' \n" +
+            "end";
     WaccCompiler compiler = new WaccCompiler(instruction);
     ErrorCode errorCode = compiler.compile();
     System.out.println(compiler.getErrors());
@@ -64,19 +68,18 @@ public class SemanticTests {
   @Test
   public void testExitStatementIsStrictlyTyped() throws IOException {
     String instruction =
-        "# tries to exit using a character\n"
-            + "\n"
-            + "# Output:\n"
-            + "# #semantic_error#\n"
-            + "\n"
-            + "# Exit:\n"
-            + "# 200\n"
-            + "\n"
-            + "# Program:\n"
-            + "\n"
-            + "begin\n"
-            + "  exit 'a'\n"
-            + "end\n";
+        "# tries to exit using a character\n\n" +
+            "# Output:\n" +
+            "# #semantic_error#\n" +
+            "\n" +
+            "# Exit:\n" +
+            "# 200\n\n" +
+            "# Program:\n" +
+            "\n" +
+            "begin\n" +
+            "  exit 'a'\n" +
+            "end\n";
+
     WaccCompiler compiler = new WaccCompiler(instruction);
     ErrorCode errorCode = compiler.compile();
     System.out.println(compiler.getErrors());
