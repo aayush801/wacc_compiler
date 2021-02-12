@@ -6,6 +6,8 @@ import org.antlr.v4.runtime.Token;
 public class PrintAST extends StatementAST {
 
   private final ExpressionAST expr;
+
+  // Used to differentiate between print and println.
   private final int newLine;
 
   public PrintAST(Token token, ExpressionAST expr, int newLine) {
@@ -17,5 +19,11 @@ public class PrintAST extends StatementAST {
   @Override
   public void check() {
     expr.check();
+  }
+
+  // If newLine is 1, it means we want to print on a newLine
+  // To be used during code generation.
+  public boolean newLine() {
+    return newLine == 1;
   }
 }

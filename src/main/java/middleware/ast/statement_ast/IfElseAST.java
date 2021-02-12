@@ -8,8 +8,9 @@ import symbol_table.SymbolTable;
 
 public class IfElseAST extends StatementAST {
 
-  private ExpressionAST expressionAST;
-  private StatementAST firstStatAST, secondStatAST;
+  private final ExpressionAST expressionAST;
+  private final StatementAST firstStatAST;
+  private final StatementAST secondStatAST;
 
   public IfElseAST(Token token, ExpressionAST expressionAST,
       StatementAST firstStatAST, StatementAST secondStatAST) {
@@ -21,19 +22,34 @@ public class IfElseAST extends StatementAST {
 
   @Override
   public void check() {
+
+    // Verify that the condition expression is a valid expression.
     expressionAST.check();
 
+    // verify that the condition is a boolean.
     if (!(expressionAST.getType() instanceof BOOL)) {
       addError(new MismatchedTypes(
           expressionAST.token, expressionAST.getType(), new BOOL())
       );
     } else {
+
+      // Create new symbol table(scope) for the 'then' statement.
       ST = new SymbolTable(ST);
+
+      // Verify the 'then' statement.
       firstStatAST.check();
+
+      // Reset symbol table.
       ST = ST.getEncSymTable();
 
+
+      // Create new symbol table(scope) for the 'else' statement.
       ST = new SymbolTable(ST);
+
+      // Verify the 'else' statement.
       secondStatAST.check();
+
+      // Reset symbol table.
       ST = ST.getEncSymTable();
     }
   }

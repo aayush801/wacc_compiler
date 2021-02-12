@@ -23,14 +23,20 @@ public class AssignmentAST extends StatementAST {
     LHS.check();
     RHS.check();
 
+    // LHS is an IDENTIFIER because it could be an Identifier(Ident).
     IDENTIFIER leftType = LHS.getType();
+
+    // RHS must be a TYPE from the parser rules.
     TYPE rightType = RHS.getType();
 
     if (leftType == null) {
+      // Type of LHS is undefined.
       addError(new Undefined(LHS.token));
     } else if (rightType == null) {
+      // Type of RHS is undefined.
       addError(new Undefined(RHS.token));
     } else if (!isCompatible(leftType, rightType)) {
+      // LHS and RHS not type compatible.
       addError(new MismatchedTypes(token, rightType, leftType));
     }
   }
