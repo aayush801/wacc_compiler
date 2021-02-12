@@ -25,11 +25,11 @@ public class BaseTypeAST extends TypeAST {
   @Override
   public void check() {
     IDENTIFIER identifier = ST.lookupAll(typeName);
-    if(identifier == null){
+    if (identifier == null) {
       addError(new Undefined(token));
-    }else if(!(identifier instanceof TYPE)){
+    } else if (!(identifier instanceof TYPE)) {
       addError(new MismatchedTypes(token, identifier, new EXPR()));
-    }else{
+    } else {
       type = (TYPE) identifier;
     }
   }
