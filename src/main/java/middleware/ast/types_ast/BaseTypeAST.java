@@ -10,8 +10,8 @@ import org.antlr.v4.runtime.Token;
 
 public class BaseTypeAST extends TypeAST {
 
-  private TYPE type;
   String typeName;
+  private TYPE type;
 
   public BaseTypeAST(Token token, String typename) {
     super(token);

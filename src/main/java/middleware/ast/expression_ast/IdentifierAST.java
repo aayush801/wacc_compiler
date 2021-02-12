@@ -6,12 +6,10 @@ import identifier_objects.PARAM;
 import identifier_objects.VARIABLE;
 import org.antlr.v4.runtime.Token;
 
-import javax.swing.text.StyledEditorKit;
-
 public class IdentifierAST extends ExpressionAST {
 
-  private IDENTIFIER type;
   private final String identifier;
+  private IDENTIFIER type;
 
   public IdentifierAST(Token token, String identifier) {
     super(token);

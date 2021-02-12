@@ -4,19 +4,19 @@ import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.PARAM;
+import identifier_objects.TYPE;
 import identifier_objects.VARIABLE;
 import identifier_objects.basic_types.ARRAY;
 import identifier_objects.basic_types.INT;
-import identifier_objects.TYPE;
 import middleware.ast.NodeASTList;
 import middleware.ast.expression_ast.ExpressionAST;
 import org.antlr.v4.runtime.Token;
 
 public class ArrayElemAST extends ExpressionAST {
 
-  public TYPE type;
   private final String arrayName;
   private final NodeASTList<ExpressionAST> expressionASTS;
+  public TYPE type;
 
   public ArrayElemAST(Token token, String arrayName,
       NodeASTList<ExpressionAST> expressionASTS) {

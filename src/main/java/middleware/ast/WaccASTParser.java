@@ -46,11 +46,6 @@ import identifier_objects.basic_types.STR;
 import java.util.stream.Collectors;
 import middleware.ast.arrays_ast.ArrayAST;
 import middleware.ast.arrays_ast.ArrayElemAST;
-import middleware.ast.types_ast.ArrayTypeAST;
-import middleware.ast.types_ast.BaseTypeAST;
-import middleware.ast.types_ast.PairElemTypeAST;
-import middleware.ast.types_ast.PairTypeAST;
-import middleware.ast.types_ast.TypeAST;
 import middleware.ast.expression_ast.BinOpExprAST;
 import middleware.ast.expression_ast.ExpressionAST;
 import middleware.ast.expression_ast.IdentifierAST;
@@ -76,6 +71,11 @@ import middleware.ast.statement_ast.SkipAST;
 import middleware.ast.statement_ast.StatementAST;
 import middleware.ast.statement_ast.VariableDeclarationAST;
 import middleware.ast.statement_ast.WhileAST;
+import middleware.ast.types_ast.ArrayTypeAST;
+import middleware.ast.types_ast.BaseTypeAST;
+import middleware.ast.types_ast.PairElemTypeAST;
+import middleware.ast.types_ast.PairTypeAST;
+import middleware.ast.types_ast.TypeAST;
 
 public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
@@ -440,31 +440,31 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
         visitExpr(ctx.expr(1)));
   }
 
- // ================= visiting Literals and Identifier ==========================
+  // ================= visiting Literals and Identifier ==========================
 
   @Override
   public NodeAST visitIntLiter(IntLiterContext ctx) {
-    return new LiteralsAST(ctx.start, ctx.getText(), new INT());
+    return new LiteralsAST(ctx.start, new INT());
   }
 
   @Override
   public NodeAST visitBoolLiter(BoolLiterContext ctx) {
-    return new LiteralsAST(ctx.start, ctx.getText(), new BOOL());
+    return new LiteralsAST(ctx.start, new BOOL());
   }
 
   @Override
   public NodeAST visitPairLiter(PairLiterContext ctx) {
-    return new LiteralsAST(ctx.start, ctx.getText(), new PAIR());
+    return new LiteralsAST(ctx.start, new PAIR());
   }
 
   @Override
   public NodeAST visitStrLiter(StrLiterContext ctx) {
-    return new LiteralsAST(ctx.start, ctx.getText(), new STR());
+    return new LiteralsAST(ctx.start, new STR());
   }
 
   @Override
   public NodeAST visitCharLiter(CharLiterContext ctx) {
-    return new LiteralsAST(ctx.start, ctx.getText(), new CHAR());
+    return new LiteralsAST(ctx.start, new CHAR());
   }
 
   @Override

@@ -1,14 +1,14 @@
 package middleware.ast.function_ast;
 
-import identifier_objects.FUNCTION;
 import errors.semantic_errors.DuplicateIdentifier;
 import errors.semantic_errors.Undefined;
+import identifier_objects.FUNCTION;
 import identifier_objects.IDENTIFIER;
 import identifier_objects.TYPE;
 import middleware.ast.NodeAST;
 import middleware.ast.NodeASTList;
-import middleware.ast.types_ast.TypeAST;
 import middleware.ast.statement_ast.StatementAST;
+import middleware.ast.types_ast.TypeAST;
 import org.antlr.v4.runtime.Token;
 import symbol_table.SymbolTable;
 

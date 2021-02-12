@@ -1,10 +1,10 @@
 package middleware.ast.statement_ast;
 
-import identifier_objects.*;
-
 import errors.semantic_errors.DuplicateIdentifier;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
+import identifier_objects.FUNCTION;
+import identifier_objects.IDENTIFIER;
 import identifier_objects.VARIABLE;
 import middleware.ast.types_ast.TypeAST;
 import org.antlr.v4.runtime.Token;
@@ -55,7 +55,7 @@ public class VariableDeclarationAST extends StatementAST {
     }
 
     // Verify that LHS and RHS are type compatible.
-    if (!isCompatible(typeAST.getType() ,RHS.getType() )) {
+    if (!isCompatible(typeAST.getType(), RHS.getType())) {
 
       addError(new MismatchedTypes(token, RHS.getType(), typeAST.getType()));
       return;

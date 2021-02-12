@@ -4,11 +4,10 @@ import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.NotAFunction;
 import errors.semantic_errors.expressionNotFound;
 import identifier_objects.IDENTIFIER;
+import identifier_objects.TYPE;
 import identifier_objects.basic_types.BOOL;
 import identifier_objects.basic_types.CHAR;
 import identifier_objects.basic_types.INT;
-import identifier_objects.TYPE;
-
 import org.antlr.v4.runtime.Token;
 
 public class BinOpExprAST extends ExpressionAST {
@@ -86,7 +85,7 @@ public class BinOpExprAST extends ExpressionAST {
   }
 
   // Check that leftType and rightType are BOOLs.
-  private void checkBoolLogicParams(IDENTIFIER leftType, IDENTIFIER rightType){
+  private void checkBoolLogicParams(IDENTIFIER leftType, IDENTIFIER rightType) {
     boolean leftIsBool = leftType instanceof BOOL;
     boolean rightIsBool = rightType instanceof BOOL;
 
@@ -120,62 +119,61 @@ public class BinOpExprAST extends ExpressionAST {
   /* ========================================================================= */
 
 
-    @Override
+  @Override
   public void check() {
-      leftExprAST.check();
-      rightExprAST.check();
-      IDENTIFIER leftType = leftExprAST.getType();
-      IDENTIFIER rightType = rightExprAST.getType();
+    leftExprAST.check();
+    rightExprAST.check();
+    IDENTIFIER leftType = leftExprAST.getType();
+    IDENTIFIER rightType = rightExprAST.getType();
 
-      boolean leftIsType = leftType instanceof TYPE;
-      boolean rightIsType = rightType instanceof TYPE;
+    boolean leftIsType = leftType instanceof TYPE;
+    boolean rightIsType = rightType instanceof TYPE;
 
-      if (!leftIsType) {
+    if (!leftIsType) {
 
-        addError(new expressionNotFound(leftExprAST.token, leftType));
-
-      }
-
-      if (!rightIsType) {
-
-        addError(new expressionNotFound(rightExprAST.token, rightType));
-
-      }
-
-      switch (operator) {
-        // ARITHMETIC Operators
-        case "+":
-        case "-":
-        case "*":
-        case "%":
-        case "/":
-          checkArithmeticParams(leftType, rightType);
-          break;
-        // EQUATABLE Operators
-        case "==":
-        case "!=":
-          checkEquatableParams(leftType, rightType);
-          break;
-        // COMPARABLE Operators
-        case ">":
-        case "<":
-        case ">=":
-        case "<=":
-          checkComparableParams(leftType, rightType);
-          break;
-        // BOOLEAN Operators
-        case "&&":
-        case "||":
-          checkBoolLogicParams(leftType, rightType);
-          break;
-        // Unrecognized Operator
-        default:
-          addError(new NotAFunction(token));
-          break;
-      }
-
-
+      addError(new expressionNotFound(leftExprAST.token, leftType));
 
     }
+
+    if (!rightIsType) {
+
+      addError(new expressionNotFound(rightExprAST.token, rightType));
+
+    }
+
+    switch (operator) {
+      // ARITHMETIC Operators
+      case "+":
+      case "-":
+      case "*":
+      case "%":
+      case "/":
+        checkArithmeticParams(leftType, rightType);
+        break;
+      // EQUATABLE Operators
+      case "==":
+      case "!=":
+        checkEquatableParams(leftType, rightType);
+        break;
+      // COMPARABLE Operators
+      case ">":
+      case "<":
+      case ">=":
+      case "<=":
+        checkComparableParams(leftType, rightType);
+        break;
+      // BOOLEAN Operators
+      case "&&":
+      case "||":
+        checkBoolLogicParams(leftType, rightType);
+        break;
+      // Unrecognized Operator
+      default:
+        addError(new NotAFunction(token));
+        break;
+    }
+
+
+  }
 
 }

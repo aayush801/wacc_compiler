@@ -12,9 +12,9 @@ import org.antlr.v4.runtime.Token;
 
 public class ParamAST extends NodeAST {
 
+  private final TypeAST typeAST;
+  private final String paramName;
   PARAM paramObj;
-  private TypeAST typeAST;
-  private String paramName;
 
   public ParamAST(Token token, TypeAST typeAST, String paramName) {
     super(token);

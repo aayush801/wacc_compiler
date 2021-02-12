@@ -7,12 +7,10 @@ import org.antlr.v4.runtime.Token;
 public class LiteralsAST extends ExpressionAST {
 
   private final TYPE type;
-  private final String value;
 
-  public LiteralsAST(Token token, String value, TYPE type) {
+  public LiteralsAST(Token token, TYPE type) {
     super(token);
     this.type = type;
-    this.value = value;
   }
 
   @Override

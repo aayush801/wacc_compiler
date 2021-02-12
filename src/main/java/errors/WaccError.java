@@ -5,8 +5,8 @@ import org.antlr.v4.runtime.Token;
 
 public abstract class WaccError extends BaseErrorListener {
 
-  private String code;
   private final int lineNo, lineCol;
+  private String code;
 
 
   public WaccError(int line, int charPositionInLine, String code) {

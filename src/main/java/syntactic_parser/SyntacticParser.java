@@ -42,7 +42,9 @@ public class SyntacticParser extends WaccParserBaseVisitor<Boolean> {
   }
 
   @Override
-  public Boolean visitWhileDo(WaccParser.WhileDoContext ctx) { return visit(ctx.stat()); }
+  public Boolean visitWhileDo(WaccParser.WhileDoContext ctx) {
+    return visit(ctx.stat());
+  }
 
 
   @Override

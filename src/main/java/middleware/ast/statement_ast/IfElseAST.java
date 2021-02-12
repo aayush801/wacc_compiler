@@ -42,7 +42,6 @@ public class IfElseAST extends StatementAST {
       // Reset symbol table.
       ST = ST.getEncSymTable();
 
-
       // Create new symbol table(scope) for the 'else' statement.
       ST = new SymbolTable(ST);
 

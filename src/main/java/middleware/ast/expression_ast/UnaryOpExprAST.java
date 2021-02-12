@@ -2,11 +2,13 @@ package middleware.ast.expression_ast;
 
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.NotAFunction;
-
 import errors.semantic_errors.expressionNotFound;
 import identifier_objects.IDENTIFIER;
-import identifier_objects.basic_types.*;
 import identifier_objects.TYPE;
+import identifier_objects.basic_types.ARRAY;
+import identifier_objects.basic_types.BOOL;
+import identifier_objects.basic_types.CHAR;
+import identifier_objects.basic_types.INT;
 import org.antlr.v4.runtime.Token;
 
 public class UnaryOpExprAST extends ExpressionAST {
@@ -86,9 +88,9 @@ public class UnaryOpExprAST extends ExpressionAST {
     expr.check();
     IDENTIFIER exprType = expr.getType();
 
-    if(!(exprType instanceof TYPE)){
+    if (!(exprType instanceof TYPE)) {
       addError(new expressionNotFound(token, exprType));
-      return ;
+      return;
     }
 
     switch (operator) {

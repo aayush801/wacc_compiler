@@ -1,8 +1,8 @@
 package middleware.ast.types_ast;
 
 import errors.semantic_errors.Undefined;
-import identifier_objects.basic_types.PAIR;
 import identifier_objects.TYPE;
+import identifier_objects.basic_types.PAIR;
 import middleware.ast.NodeAST;
 import org.antlr.v4.runtime.Token;
 
@@ -21,19 +21,18 @@ public class PairElemTypeAST extends NodeAST {
     this.baseTypeAST = baseTypeAST;
   }
 
-  public TYPE getType() {
-    return type;
-  }
-
   public PairElemTypeAST(Token token, ArrayTypeAST arrayTypeAST) {
     super(token);
     this.arrayTypeAST = arrayTypeAST;
   }
 
-
   public PairElemTypeAST(Token token, String pairname) {
     super(token);
     this.pairName = pairname;
+  }
+
+  public TYPE getType() {
+    return type;
   }
 
   @Override

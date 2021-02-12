@@ -1,7 +1,7 @@
 package middleware.ast.types_ast;
 
-import identifier_objects.basic_types.ARRAY;
 import identifier_objects.TYPE;
+import identifier_objects.basic_types.ARRAY;
 import org.antlr.v4.runtime.Token;
 
 // Class that contains the actual type of an ArrayType.
@@ -9,10 +9,10 @@ import org.antlr.v4.runtime.Token;
 
 public class ArrayTypeAST extends TypeAST {
 
-  private BaseTypeAST baseTypeAST;
-  private PairTypeAST pairTypeAST;
   private final int dimensions;
   public ARRAY arrayObj;
+  private BaseTypeAST baseTypeAST;
+  private PairTypeAST pairTypeAST;
 
   public ArrayTypeAST(Token token, int dimensions, PairTypeAST pairTypeAST) {
     super(token);

@@ -8,8 +8,8 @@ import org.antlr.v4.runtime.Token;
 
 public class ReturnAST extends StatementAST {
 
-  private TYPE type;
   private final ExpressionAST expressionAST;
+  private TYPE type;
 
   public ReturnAST(Token token, ExpressionAST expressionAST) {
     super(token);

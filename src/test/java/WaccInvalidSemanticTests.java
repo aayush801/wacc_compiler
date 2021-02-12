@@ -12,7 +12,7 @@ public class WaccInvalidSemanticTests {
     WaccCompiler compiler;
     ErrorCode errorCode;
     String file_path;
-    
+
     for (String file : files) {
       file_path = base + file;
       compiler = new WaccCompiler(new FileInputStream(file_path));

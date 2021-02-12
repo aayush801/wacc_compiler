@@ -1,12 +1,12 @@
 package symbol_table;
 
 import identifier_objects.IDENTIFIER;
+import identifier_objects.TYPE;
 import identifier_objects.basic_types.BOOL;
 import identifier_objects.basic_types.CHAR;
 import identifier_objects.basic_types.INT;
 import identifier_objects.basic_types.PAIR;
 import identifier_objects.basic_types.STR;
-import identifier_objects.TYPE;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +15,23 @@ public class SymbolTable {
   private final SymbolTable encSymTable;
   private final Map<String, IDENTIFIER> dict;
   protected TYPE scopeReturnType = null;
+
+  public SymbolTable() {
+    this(null);
+  }
+
+  public SymbolTable(SymbolTable st, TYPE scopeReturnType) {
+    this(st);
+    this.scopeReturnType = scopeReturnType;
+  }
+
+  public SymbolTable(SymbolTable st) {
+    encSymTable = st;
+    if (st != null) {
+      scopeReturnType = st.getScopeReturnType();
+    }
+    dict = new HashMap<>();
+  }
 
   // generate top symbol table
   static public SymbolTable TopSymbolTable() {
@@ -37,28 +54,11 @@ public class SymbolTable {
     return st;
   }
 
-  public SymbolTable() {
-    this(null);
-  }
-
-  public SymbolTable(SymbolTable st, TYPE scopeReturnType){
-    this(st);
-    this.scopeReturnType = scopeReturnType;
-  }
-
-  public SymbolTable(SymbolTable st) {
-    encSymTable = st;
-    if(st != null) {
-      scopeReturnType = st.getScopeReturnType();
-    }
-    dict = new HashMap<>();
-  }
-
   public SymbolTable getEncSymTable() {
     return encSymTable;
   }
 
-  public TYPE getScopeReturnType(){
+  public TYPE getScopeReturnType() {
     return scopeReturnType;
   }
 

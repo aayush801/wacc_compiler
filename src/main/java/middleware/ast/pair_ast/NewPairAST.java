@@ -41,7 +41,7 @@ public class NewPairAST extends NodeAST {
 
     if (!(sndExpr.getType() instanceof TYPE)) {
       addError(new MismatchedTypes(sndExpr.token, sndExpr.getType(), new TYPE()));
-        error = true;
+      error = true;
     }
 
     if (!error) {
