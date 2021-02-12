@@ -26,18 +26,30 @@ public class NewPairAST extends NodeAST {
 
   @Override
   public void check() {
+
+    // check both expressions.
     fstExpr.check();
     sndExpr.check();
 
+    boolean error = false;
+
+    // check that boh expressions are of type TYPE.
+    // If not, they are a function identifier, which is invalid.
     if (!(fstExpr.getType() instanceof TYPE)) {
       addError(new MismatchedTypes(fstExpr.token,
-          fstExpr.getType(), new EXPR()));
+              fstExpr.getType(), new EXPR()));
+      error = true;
+    }
 
-    } else if (!(sndExpr.getType() instanceof TYPE)) {
+    if (!(sndExpr.getType() instanceof TYPE)) {
       addError(new MismatchedTypes(sndExpr.token,
-          sndExpr.getType(), new EXPR()));
+              sndExpr.getType(), new EXPR()));
+      error = true;
 
-    } else {
+    }
+
+    if (!error) {
+      // If both types valid, make a new pair.
       pair = new PAIR((TYPE) fstExpr.getType(), (TYPE) sndExpr.getType());
     }
   }

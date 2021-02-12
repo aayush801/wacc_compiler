@@ -27,20 +27,26 @@ public class PairElemAST extends NodeAST {
 
   @Override
   public void check() {
+    // check the expression.
     expr.check();
 
+    // ensure that the expressions is a PAIR.
     IDENTIFIER exprType = expr.getType();
     if (!(exprType instanceof PAIR)) {
       addError(new MismatchedTypes(
-          token, exprType, new PAIR(new EXPR(), new EXPR()))
+              token, exprType, new PAIR(new EXPR(), new EXPR()))
       );
+      return;
+    }
+
+    // If e got exprType must be a PAIR.
+    PAIR pair = (PAIR) exprType;
+
+    // call getFirst or getSecond based on the index.
+    if (index == 0) {
+      type = pair.getFirst();
     } else {
-      PAIR pair = (PAIR) exprType;
-      if (index == 0) {
-        type = pair.getFirst();
-      } else {
-        type = pair.getSecond();
-      }
+      type = pair.getSecond();
     }
   }
 }

@@ -428,6 +428,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   @Override
   public PairElemAST visitPairElem(PairElemContext ctx) {
     // return a new PairElemAST.
+    // If operation is a first, pass index of 0, otherwise 1.
     return new PairElemAST(ctx.start, visitExpr(ctx.expr()),
         ctx.PAIR_FIRST() != null ? 0 : 1);
   }
