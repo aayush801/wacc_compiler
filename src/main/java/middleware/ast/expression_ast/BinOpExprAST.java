@@ -28,6 +28,8 @@ public class BinOpExprAST extends ExpressionAST {
   /* ================== OPERATION PARAMETER TYPING CHECKS ================== */
   /* ==================== PS: these are helper functions =================== */
 
+
+  // Check that leftType and rightType are INTs.
   private void checkArithmeticParams(IDENTIFIER leftType, IDENTIFIER rightType) {
     boolean leftIsInt = leftType instanceof INT;
     boolean rightIsInt = rightType instanceof INT;
@@ -47,31 +49,39 @@ public class BinOpExprAST extends ExpressionAST {
     type = new INT();
   }
 
+  // Check that leftType and rightType are both either INTs or CHARS.
+  // If this holds, then check that the types match.
   private void checkComparableParams(IDENTIFIER leftType, IDENTIFIER rightType) {
+
     boolean leftIntOrChar = leftType instanceof INT || leftType instanceof CHAR;
     boolean rightIntOrChar = rightType instanceof INT || rightType instanceof CHAR;
+
+    boolean error = false;
 
     if (!leftIntOrChar) {
 
       addError(new MismatchedTypes(leftExprAST.token, leftType, new INT(), new CHAR()));
+      error = true;
 
     }
 
     if (!rightIntOrChar) {
 
       addError(new MismatchedTypes(rightExprAST.token, rightType, new INT(), new CHAR()));
+      error = true;
 
     }
 
-    if (leftIntOrChar && rightIntOrChar && !isCompatible(leftType, rightType)) {
-
-      addError(new MismatchedTypes(token, rightType, leftType));
-
+    if (!error) {
+      if (!isCompatible(leftType, rightType)) {
+        addError(new MismatchedTypes(token, rightType, leftType));
+      }
     }
 
     type = new BOOL();
   }
 
+  // Check that leftType and rightType are BOOLs.
   private void checkBoolLogicParams(IDENTIFIER leftType, IDENTIFIER rightType){
     boolean leftIsBool = leftType instanceof BOOL;
     boolean rightIsBool = rightType instanceof BOOL;
@@ -88,15 +98,10 @@ public class BinOpExprAST extends ExpressionAST {
 
     }
 
-    if (leftIsBool && rightIsBool && !isCompatible(leftType, rightType)) {
-
-      addError(new MismatchedTypes(token, rightType, leftType));
-
-    }
-
     type = new BOOL();
   }
 
+  // Check that leftype and righttype are type compatible.
   private void checkEquatableParams(IDENTIFIER leftType, IDENTIFIER rightType) {
 
     if (!isCompatible(leftType, rightType)) {

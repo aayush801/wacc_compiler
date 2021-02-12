@@ -13,7 +13,7 @@ import org.antlr.v4.runtime.Token;
 public class ArrayAST extends NodeAST {
 
   private ARRAY arrayObj;
-  private NodeASTList<ExpressionAST> expressionASTList;
+  private final NodeASTList<ExpressionAST> expressionASTList;
 
   public ArrayAST(Token token, NodeASTList<ExpressionAST> expressionASTList) {
     super(token);
@@ -26,13 +26,19 @@ public class ArrayAST extends NodeAST {
 
   @Override
   public void check() {
+
+    // Case where an empty array is created.
     if (expressionASTList.isEmpty()) {
 
       arrayObj = new ARRAY(new EXPR());
 
     } else {
+      // Array has >0 elements.
+
+      // check the first element.
       expressionASTList.get(0).check();
 
+      // Verify that the first element's type is a TYPE.
       IDENTIFIER curType = expressionASTList.get(0).getType();
       if (!(curType instanceof TYPE)) {
         addError(
@@ -42,17 +48,23 @@ public class ArrayAST extends NodeAST {
                 new EXPR()));
       } else {
 
-        for (ExpressionAST expressionAST : expressionASTList) {
+        // Check that all other elements of the array have the same type as
+        // the first element.
+        int arraySize = expressionASTList.size();
+        for (int i = 1; i < arraySize; i++) {
+          ExpressionAST expressionAST = expressionASTList.get(i);
           expressionAST.check();
           if (!(isCompatible(expressionAST.getType(), curType))) {
             addError(
-                new MismatchedTypes(
-                    expressionAST.token,
-                    expressionAST.getType(),
-                    curType)
+                    new MismatchedTypes(
+                            expressionAST.token,
+                            expressionAST.getType(),
+                            curType)
             );
           }
         }
+
+        // create a new ARRAY object and store it.
         arrayObj = new ARRAY((TYPE) curType);
       }
     }

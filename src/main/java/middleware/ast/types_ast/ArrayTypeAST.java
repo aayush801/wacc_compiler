@@ -4,6 +4,9 @@ import identifier_objects.TYPE;
 import identifier_objects.basic_types.ARRAY;
 import org.antlr.v4.runtime.Token;
 
+// Class that contains the actual type of an ArrayType.
+// Could be a baseType or a pairType, hence the 2 constructors.
+
 public class ArrayTypeAST extends TypeAST {
 
   private BaseTypeAST baseTypeAST;
@@ -30,6 +33,8 @@ public class ArrayTypeAST extends TypeAST {
 
   @Override
   public void check() {
+
+    // Check whether ArrayType is a baseType or a pairType and set type.
     TYPE type = null;
     if (baseTypeAST != null) {
       baseTypeAST.check();

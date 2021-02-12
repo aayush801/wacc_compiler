@@ -4,9 +4,12 @@ import identifier_objects.TYPE;
 import identifier_objects.basic_types.PAIR;
 import org.antlr.v4.runtime.Token;
 
+// A Pair Type has 2 PairElemTypes.
+
 public class PairTypeAST extends TypeAST {
 
-  private PairElemTypeAST pairElemType1, pairElemType2;
+  private final PairElemTypeAST pairElemType1;
+  private final PairElemTypeAST pairElemType2;
   private TYPE type;
 
   public PairTypeAST(Token token, PairElemTypeAST pairElemType1,
@@ -18,8 +21,11 @@ public class PairTypeAST extends TypeAST {
 
   @Override
   public void check() {
+    // check both pairElemTypes.
     pairElemType1.check();
     pairElemType2.check();
+
+    // Make a new Pair.
     type = new PAIR(pairElemType1.getType(), pairElemType2.getType());
   }
 

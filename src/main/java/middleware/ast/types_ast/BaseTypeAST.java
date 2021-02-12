@@ -7,6 +7,8 @@ import identifier_objects.TYPE;
 import identifier_objects.polymorhpic_types.EXPR;
 import org.antlr.v4.runtime.Token;
 
+// A basic type, which just has the type and the name of the identifier.
+
 public class BaseTypeAST extends TypeAST {
 
   private TYPE type;
@@ -24,7 +26,10 @@ public class BaseTypeAST extends TypeAST {
 
   @Override
   public void check() {
+    // look the typeName up in the current ST.
     IDENTIFIER identifier = ST.lookupAll(typeName);
+
+    // verify that identifier is not null and is of type TYPE.
     if (identifier == null) {
       addError(new Undefined(token));
     } else if (!(identifier instanceof TYPE)) {

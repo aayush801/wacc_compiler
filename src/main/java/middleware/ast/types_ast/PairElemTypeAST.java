@@ -4,9 +4,10 @@ import errors.semantic_errors.Undefined;
 import identifier_objects.TYPE;
 import identifier_objects.basic_types.PAIR;
 import middleware.ast.NodeAST;
-import middleware.ast.types_ast.ArrayTypeAST;
-import middleware.ast.types_ast.BaseTypeAST;
 import org.antlr.v4.runtime.Token;
+
+// PairElemType could be a baseType, an arrayType, or an identifier.
+// 3 constructors handle each case.
 
 public class PairElemTypeAST extends NodeAST {
 
@@ -37,6 +38,8 @@ public class PairElemTypeAST extends NodeAST {
 
   @Override
   public void check() {
+    // Check what this PairElemType actually is, and set type accordingly.
+
     if (pairName != null) {
       type = new PAIR();
       return;
