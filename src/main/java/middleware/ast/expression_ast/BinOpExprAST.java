@@ -162,6 +162,7 @@ public class BinOpExprAST extends ExpressionAST {
             addError(new NotAFunction(token));
             break;
         }
+
       }
 
     }
