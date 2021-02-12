@@ -5,9 +5,8 @@ import errors.semantic_errors.NotAFunction;
 
 import errors.semantic_errors.expressionNotFound;
 import identifier_objects.IDENTIFIER;
-import identifier_objects.TYPE;
 import identifier_objects.basic_types.*;
-import identifier_objects.polymorhpic_types.EXPR;
+import identifier_objects.TYPE;
 import org.antlr.v4.runtime.Token;
 
 public class UnaryOpExprAST extends ExpressionAST {
@@ -49,7 +48,7 @@ public class UnaryOpExprAST extends ExpressionAST {
 
     if (!(exprType instanceof ARRAY)) {
 
-      addError(new MismatchedTypes(token, exprType, new ARRAY(new EXPR())));
+      addError(new MismatchedTypes(token, exprType, new ARRAY(new TYPE())));
 
     }
 

@@ -55,9 +55,11 @@ public class VariableDeclarationAST extends StatementAST {
     }
 
     // Verify that LHS and RHS are type compatible.
-    if (!isCompatible(typeAST.getType(), RHS.getType())) {
-      addError(new MismatchedTypes(token, typeAST.getType(), RHS.getType()));
+    if (!isCompatible(typeAST.getType() ,RHS.getType() )) {
+
+      addError(new MismatchedTypes(token, RHS.getType(), typeAST.getType()));
       return;
+
     }
 
     // If all checks pass, create new VARIABLE object with the type of the

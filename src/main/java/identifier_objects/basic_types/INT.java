@@ -26,4 +26,9 @@ public class INT extends TYPE {
     }
   }
 
+  @Override
+  public boolean equals(Object o) {
+    return o instanceof INT;
+  }
+
 }

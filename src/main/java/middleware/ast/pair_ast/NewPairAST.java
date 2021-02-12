@@ -3,7 +3,6 @@ package middleware.ast.pair_ast;
 import errors.semantic_errors.MismatchedTypes;
 import identifier_objects.TYPE;
 import identifier_objects.basic_types.PAIR;
-import identifier_objects.polymorhpic_types.EXPR;
 import middleware.ast.NodeAST;
 import middleware.ast.expression_ast.ExpressionAST;
 import org.antlr.v4.runtime.Token;
@@ -36,16 +35,13 @@ public class NewPairAST extends NodeAST {
     // check that boh expressions are of type TYPE.
     // If not, they are a function identifier, which is invalid.
     if (!(fstExpr.getType() instanceof TYPE)) {
-      addError(new MismatchedTypes(fstExpr.token,
-              fstExpr.getType(), new EXPR()));
+      addError(new MismatchedTypes(fstExpr.token, fstExpr.getType(), new TYPE()));
       error = true;
     }
 
     if (!(sndExpr.getType() instanceof TYPE)) {
-      addError(new MismatchedTypes(sndExpr.token,
-              sndExpr.getType(), new EXPR()));
-      error = true;
-
+      addError(new MismatchedTypes(sndExpr.token, sndExpr.getType(), new TYPE()));
+        error = true;
     }
 
     if (!error) {

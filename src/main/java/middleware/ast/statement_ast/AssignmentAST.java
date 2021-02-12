@@ -1,9 +1,9 @@
 package middleware.ast.statement_ast;
 
-import identifier_objects.TYPE;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
 import identifier_objects.IDENTIFIER;
+import identifier_objects.TYPE;
 import org.antlr.v4.runtime.Token;
 
 

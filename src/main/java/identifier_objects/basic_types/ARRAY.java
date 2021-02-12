@@ -19,7 +19,7 @@ public class ARRAY extends TYPE {
 
   @Override
   public String toString() {
-    return elementType + "[]";
+    return elementType.toString() + "[]";
   }
 
   @Override

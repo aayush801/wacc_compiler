@@ -5,7 +5,7 @@ import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
 import identifier_objects.FUNCTION;
 import identifier_objects.IDENTIFIER;
-import identifier_objects.polymorhpic_types.EXPR;
+import identifier_objects.TYPE;
 import middleware.ast.NodeAST;
 import middleware.ast.NodeASTList;
 import middleware.ast.expression_ast.ExpressionAST;
@@ -41,7 +41,7 @@ public class FunctionCallAST extends NodeAST {
     } else if (!(function instanceof FUNCTION)) {
 
       // if the funcName deos NOT actually refer to a function
-      addError(new MismatchedTypes(token, function, new FUNCTION(new EXPR())));
+      addError(new MismatchedTypes(token, function, new FUNCTION(new TYPE())));
 
     } else if (actuals.size() != ((FUNCTION) function).formals.size()) {
 

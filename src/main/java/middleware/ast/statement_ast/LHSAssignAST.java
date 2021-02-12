@@ -5,9 +5,8 @@ import errors.semantic_errors.expressionNotFound;
 
 import identifier_objects.IDENTIFIER;
 import identifier_objects.PARAM;
-import identifier_objects.TYPE;
 import identifier_objects.VARIABLE;
-import identifier_objects.polymorhpic_types.EXPR;
+import identifier_objects.TYPE;
 import middleware.ast.arrays_ast.ArrayElemAST;
 import middleware.ast.pair_ast.PairElemAST;
 import org.antlr.v4.runtime.Token;

@@ -2,9 +2,8 @@ package middleware.ast.arrays_ast;
 
 import errors.semantic_errors.MismatchedTypes;
 import identifier_objects.IDENTIFIER;
-import identifier_objects.TYPE;
 import identifier_objects.basic_types.ARRAY;
-import identifier_objects.polymorhpic_types.EXPR;
+import identifier_objects.TYPE;
 import middleware.ast.NodeAST;
 import middleware.ast.NodeASTList;
 import middleware.ast.expression_ast.ExpressionAST;
@@ -30,7 +29,7 @@ public class ArrayAST extends NodeAST {
     // Case where an empty array is created.
     if (expressionASTList.isEmpty()) {
 
-      arrayObj = new ARRAY(new EXPR());
+      arrayObj = new ARRAY(new TYPE());
 
     } else {
       // Array has >0 elements.
@@ -40,12 +39,10 @@ public class ArrayAST extends NodeAST {
 
       // Verify that the first element's type is a TYPE.
       IDENTIFIER curType = expressionASTList.get(0).getType();
+
       if (!(curType instanceof TYPE)) {
-        addError(
-            new MismatchedTypes(
-                expressionASTList.get(0).token,
-                expressionASTList.get(0).getType(),
-                new EXPR()));
+        addError(new MismatchedTypes(expressionASTList.get(0).token, curType, new TYPE()));
+
       } else {
 
         // Check that all other elements of the array have the same type as

@@ -1,8 +1,8 @@
 package middleware.ast.types_ast;
 
 import errors.semantic_errors.Undefined;
-import identifier_objects.TYPE;
 import identifier_objects.basic_types.PAIR;
+import identifier_objects.TYPE;
 import middleware.ast.NodeAST;
 import org.antlr.v4.runtime.Token;
 

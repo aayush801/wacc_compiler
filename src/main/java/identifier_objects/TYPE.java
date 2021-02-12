@@ -1,12 +1,22 @@
 package identifier_objects;
 
-public abstract class TYPE extends IDENTIFIER {
+public class TYPE extends IDENTIFIER {
 
   public TYPE(String name) {
     super(name);
   }
 
-  public TYPE getType(){
-    return this;
+  public TYPE() {
+    super(null);
+  }
+
+  @Override
+  public String toString() {
+    return name == null ? "EXPR" : name;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return o instanceof TYPE;
   }
 }
