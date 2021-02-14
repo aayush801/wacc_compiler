@@ -106,7 +106,7 @@ public class ProgramGenerator {
     StringBuilder builder = new StringBuilder();
 
     // TODO: Remove the hardcoding.
-    this.addPrimitive(PrintFunctions.printString(this));
+//    this.addPrimitive(PrintFunctions.printString(this));
 
     // add .data section (if there is one)
     if (!dataSection.isEmpty()) {
@@ -130,7 +130,7 @@ public class ProgramGenerator {
     primitives.forEach(builder::append);
 
     // TODO: Remove the hardcoding.
-    builder.append(RuntimeError.printRuntimeErrorCheck(this));
+//    builder.append(RuntimeError.printRuntimeErrorCheck(this));
 
     return builder.toString();
   }
