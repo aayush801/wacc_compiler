@@ -159,7 +159,7 @@ public class UnaryOpExprAST extends ExpressionAST {
         Instruction negate = new Arithmetic(ArithmeticOpcode.RSB, destination, destination,
             new ImmediateNum(0), true);
         instructions.add(negate);
-        instructions.add(new Branch(ConditionCode.VS, "p_throw_overflow_error", true));
+//        instructions.add(new Branch(ConditionCode.VS, "p_throw_overflow_error", true));
         break;
       // LENGTH Operator
       case "len":
