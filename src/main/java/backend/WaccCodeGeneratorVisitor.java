@@ -1012,7 +1012,7 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
   @Override
   public List<Instruction> visit(SkipAST skip) {
-    return null;
+    return new ArrayList<>();
   }
 
   @Override
