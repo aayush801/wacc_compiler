@@ -22,6 +22,10 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class ReadAST extends StatementAST {
 
+  public LHSAssignAST getLHS() {
+    return LHS;
+  }
+
   private final LHSAssignAST LHS;
 
   public ReadAST(ParserRuleContext ctx, LHSAssignAST LHS) {

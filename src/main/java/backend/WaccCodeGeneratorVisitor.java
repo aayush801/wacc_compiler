@@ -36,11 +36,9 @@ import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.STACK_OBJECT;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
-import frontend.identifier_objects.basic_types.BOOL;
-import frontend.identifier_objects.basic_types.CHAR;
-import frontend.identifier_objects.basic_types.INT;
-import frontend.identifier_objects.basic_types.PAIR;
-import frontend.identifier_objects.basic_types.STR;
+import frontend.identifier_objects.basic_types.*;
+import backend.primitive_functions.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import middleware.ExpressionAST;
@@ -691,12 +689,36 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
   @Override
   public List<Instruction> visit(ExitAST exit) {
-    return null;
+
+    List<Instruction> instructions = exit.getExpr().accept(this);
+    Register intReg = program.registers.get(0);
+
+    if (intReg.getNumber() != 0) {
+      instructions.add(new Move(Register.R0, intReg));
+    }
+
+    instructions.add(new Branch("exit", true));
+
+    return instructions;
   }
 
   @Override
   public List<Instruction> visit(FreeAST free) {
-    return null;
+
+    Register target = program.registers.get(0);
+
+    // Translate expression.
+    List<Instruction> ret = new ArrayList<>(free.getExpr().accept(this));
+
+    // Load result into R0
+    ret.add(new Move(new Register(0), target));
+
+    // Add branch to p_free_pair
+    ret.add(new Branch("p_free_pair", true));
+
+    program.addPrimitive(FreeFunction.printPairFree(program));
+
+    return ret;
   }
 
   @Override
@@ -706,17 +728,119 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
   @Override
   public List<Instruction> visit(PrintAST print) {
-    return null;
+
+     TYPE type= print.getType();
+
+
+    Register dest = program.registers.get(0);
+    // translate expression
+    List<Instruction> instructions = print.getExpr().accept(this);
+
+    // move result of expression to register 0
+    instructions.add(new Move(new Register(0), dest));
+
+    PrimitiveLabel primitiveLabel = null;
+    if (type instanceof INT) {
+
+      primitiveLabel = PrintFunctions.printInt(program);
+
+    } else if (type instanceof CHAR) {
+
+      instructions.add(new Branch("putchar", true));
+
+    } else if (type instanceof BOOL) {
+
+      primitiveLabel = PrintFunctions.printBool(program);
+
+    } else if (type instanceof ARRAY || type instanceof PAIR) {
+
+      if (type instanceof ARRAY) {
+
+        TYPE arrayType = ((ARRAY) type).getType();
+
+        if (arrayType instanceof CHAR) {
+
+          // print array of chars as a string
+          primitiveLabel = PrintFunctions.printString(program);
+
+        }
+
+      }
+
+      // if NOT printing a char array, then print by reference
+      if (primitiveLabel == null) {
+
+        primitiveLabel = PrintFunctions.printReference(program);
+
+      }
+
+    } else if (type instanceof STR) {
+
+      primitiveLabel = PrintFunctions.printString(program);
+
+    }
+
+    if (primitiveLabel != null) {
+      instructions.add(new Branch(primitiveLabel.getLabelName(), true));
+      program.addPrimitive(primitiveLabel);
+    }
+
+    if (print.isNewLine()) {
+      primitiveLabel = PrintFunctions.printLine(program);
+      instructions.add(new Branch(primitiveLabel.getLabelName(), true));
+      program.addPrimitive(primitiveLabel);
+    }
+
+    return instructions;
+
+
   }
 
   @Override
   public List<Instruction> visit(ReadAST read) {
-    return null;
+      // read x is probably the only case right. Well, it could also be x[1], or fst(x).
+      // So, let's say evaluate x (via the LHS.translate right), and this could be arbitrarily complex.
+      // Then, we use getChar or something cuz it can only be int or char, which we have verified.
+
+      Register target = program.registers.get(0);
+       LHSAssignAST LHS = read.getLHS();
+
+      List<Instruction> ret = new ArrayList<>();
+
+      List<Instruction> temp = LHS.accept(this);
+
+      // Translate the LHS we want to read into.
+      if (LHS.getIdentifier() != null) {
+          int offset = LHS.getOffset();
+          ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, new StackPointer(), new ImmediateNum(offset), false));
+      } else {
+          ret.addAll(temp);
+      }
+
+      ret.add(new Move(new Register(0), target));
+
+      if (LHS.getIsChar()) {
+          ret.add(new Branch("p_read_char", true));
+          program.addPrimitive(ReadFunctions.readCharFunction(program));
+      } else {
+          ret.add(new Branch("p_read_int", true));
+          program.addPrimitive(ReadFunctions.readIntFunction(program));
+      }
+
+      return ret;
+
   }
 
   @Override
   public List<Instruction> visit(ReturnAST returnStatement) {
-    return null;
+      Register dest = program.registers.get(0);
+      List<Instruction> instructions = returnStatement.getExpr().accept(this);
+      instructions.add(new Move(new Register(0), dest));
+
+      instructions.addAll(program.deallocateStackSpace(funcScope));
+      instructions.add(new Pop(program.PC));
+
+      return instructions;
   }
 
   @Override
