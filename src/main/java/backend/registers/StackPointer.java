@@ -1,6 +1,6 @@
 package backend.registers;
 
-public class StackPointer extends Register{
+public class StackPointer extends Register {
 
   public StackPointer() {
     super(13);

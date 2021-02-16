@@ -104,7 +104,7 @@ public class BinOpExprAST extends ExpressionAST {
     type = new BOOL();
   }
 
-  // Check that leftype and righttype are type compatible.
+  // Check that lef type and right type are type compatible.
   private void checkEquatableParams(IDENTIFIER leftType, IDENTIFIER rightType) {
 
     if (!isCompatible(leftType, rightType)) {

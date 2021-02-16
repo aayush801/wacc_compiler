@@ -7,8 +7,7 @@ import org.antlr.v4.runtime.Token;
 
 public class ChainedStatementAST extends StatementAST {
 
-  private final StatementAST statementAST1;
-  private final StatementAST statementAST2;
+  private final StatementAST statementAST1, statementAST2;
 
   public ChainedStatementAST(Token token, StatementAST statementAST1,
       StatementAST statementAST2) {
@@ -19,7 +18,6 @@ public class ChainedStatementAST extends StatementAST {
 
   @Override
   public void check() {
-
     // Verify that both statements are valid.
     statementAST1.check();
     statementAST2.check();

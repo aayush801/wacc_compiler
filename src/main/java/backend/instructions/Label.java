@@ -17,7 +17,7 @@ public class Label extends Instruction {
   public String toString() {
     StringBuilder builder = new StringBuilder(name);
     builder.append(": \n");
-    instructions.forEach(i-> builder.append("\t").append(i).append("\n"));
+    instructions.forEach(i -> builder.append("\t").append(i).append("\n"));
     return builder.toString();
   }
 }

@@ -1,6 +1,6 @@
 package backend.registers;
 
-public class ProgramCounter extends Register{
+public class ProgramCounter extends Register {
 
   public ProgramCounter() {
     super(15);

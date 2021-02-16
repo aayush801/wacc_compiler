@@ -1,20 +1,20 @@
 package backend.instructions;
 
-import backend.instructions.amodes.AddressingMode;
+import backend.instructions.addr_modes.AddressingMode;
 import backend.registers.Register;
 
 public class Load extends Instruction {
 
   private final Register Rn;
-  private final AddressingMode addrMode;
+  private final AddressingMode addressingMode;
 
-  public Load(Register Rn, AddressingMode addrMode) {
+  public Load(Register Rn, AddressingMode addressingMode) {
     this.Rn = Rn;
-    this.addrMode = addrMode;
+    this.addressingMode = addressingMode;
   }
 
   @Override
   public String toString() {
-    return "LDR" + " " + Rn + ", " + addrMode;
+    return "LDR" + " " + Rn + ", " + addressingMode;
   }
 }

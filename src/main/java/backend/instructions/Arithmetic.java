@@ -31,8 +31,7 @@ enum Opcode {
 
 public class Arithmetic extends Instruction {
 
-  private final Register Rd;
-  private final Register Rn;
+  private final Register Rd, Rn;
   private final Operand Operand;
 
   private final Opcode Opcode;

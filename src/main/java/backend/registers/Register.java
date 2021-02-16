@@ -2,7 +2,7 @@ package backend.registers;
 
 import backend.operands.Operand;
 
-enum RegType{
+enum RegType {
   ADDRESS,
   IMMEDIATE;
 }
@@ -16,8 +16,8 @@ public class Register extends Operand {
   public Register(Integer number) {
     this.number = number;
   }
-  
-  public void setValue(Integer value, RegType type ) {
+
+  public void setValue(Integer value, RegType type) {
     this.value = value;
     this.type = type;
   }
@@ -26,11 +26,11 @@ public class Register extends Operand {
     return number;
   }
 
-  public Integer getValue(){
+  public Integer getValue() {
     return value;
   }
 
-  public RegType getType(){
+  public RegType getType() {
     return type;
   }
 
