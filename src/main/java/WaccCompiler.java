@@ -3,20 +3,28 @@
 import antlr.WaccLexer;
 import antlr.WaccParser;
 import antlr.WaccParser.ProgContext;
+import backend.instructions.Instruction;
+import backend.instructions.Label;
+import backend.registers.LinkRegister;
+import backend.registers.ProgramCounter;
+import backend.registers.Register;
+import backend.registers.StackPointer;
 import errors.WaccError;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import middleware.ast.NodeAST;
-import middleware.ast.WaccASTParser;
+import middleware.NodeAST;
+import middleware.WaccASTParser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import syntactic_parser.SyntacticParser;
-import syntactic_parser.SyntaxErrorListener;
+import frontend.syntactic_parser.SyntacticParser;
+import frontend.syntactic_parser.SyntaxErrorListener;
 
 enum ErrorCode {
   SUCCESS,
@@ -110,10 +118,24 @@ public class WaccCompiler {
 
   }
 
-  public void parseSemantics(ProgContext AST) {
+  public NodeAST parseSemantics(ProgContext AST) {
     NodeAST.reset();
     NodeAST tree = semanticParser.visit(AST);
     tree.check();
+    return tree;
+  }
+
+  public void translateCode(NodeAST tree){
+    List<Register> registers = new ArrayList<>();
+    for (int i = 0; i <= 12; i++) {
+      registers.add(new Register(i));
+    }
+    registers.add(new ProgramCounter());
+    registers.add(new LinkRegister());
+    registers.add(new StackPointer());
+
+    List<Instruction> mainInstructs = tree.translate(registers);
+    mainInstructs.forEach(System.out::println);
   }
 
   public List<WaccError> getErrors() {
