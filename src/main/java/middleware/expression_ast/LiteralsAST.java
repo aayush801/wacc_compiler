@@ -1,14 +1,10 @@
 package middleware.expression_ast;
 
 import backend.instructions.Instruction;
-import backend.instructions.Label;
-import backend.instructions.Load;
-import backend.instructions.amodes.Address;
 import backend.registers.Register;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.STR;
-import java.util.Collections;
 import java.util.List;
 import org.antlr.v4.runtime.Token;
 

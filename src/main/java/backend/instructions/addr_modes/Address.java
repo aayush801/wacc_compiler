@@ -1,4 +1,4 @@
-package backend.instructions.amodes;
+package backend.instructions.addr_modes;
 
 public class Address extends AddressingMode {
 

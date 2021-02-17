@@ -1,10 +1,10 @@
-package backend.instructions.amodes;
+package backend.instructions.addr_modes;
 
 import backend.registers.Register;
 
-public class RegisterOffset extends AddressingMode{
-  private final Register Rn;
-  private final Register Rm;
+public class RegisterOffset extends AddressingMode {
+
+  private final Register Rn, Rm;
   private final boolean sign;
 
   public RegisterOffset(Register Rn, Register Rm, boolean sign) {
@@ -13,7 +13,7 @@ public class RegisterOffset extends AddressingMode{
     this.sign = sign;
   }
 
-  public String getSign(){
+  public String getSign() {
     return sign ? "+" : "-";
   }
 

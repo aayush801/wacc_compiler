@@ -1,4 +1,4 @@
-package backend.instructions.amodes;
+package backend.instructions.addr_modes;
 
 import backend.operands.Immediate;
 import backend.registers.Register;

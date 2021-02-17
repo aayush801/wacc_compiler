@@ -2,7 +2,7 @@ package backend.instructions.stack_instructions;
 
 import backend.registers.Register;
 
-public class Push extends StackInstruction{
+public class Push extends StackInstruction {
 
   public Push(Register rn) {
     super(rn);

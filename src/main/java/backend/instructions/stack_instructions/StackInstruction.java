@@ -5,6 +5,7 @@ import backend.registers.Register;
 
 
 public abstract class StackInstruction extends Instruction {
+
   private final Register Rn;
 
   public StackInstruction(Register rn) {

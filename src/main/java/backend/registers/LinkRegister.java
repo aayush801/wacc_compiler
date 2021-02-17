@@ -1,6 +1,6 @@
 package backend.registers;
 
-public class LinkRegister extends Register{
+public class LinkRegister extends Register {
 
   public LinkRegister() {
     super(14);
