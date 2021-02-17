@@ -39,11 +39,5 @@ public abstract class WaccError extends BaseErrorListener {
     return ": " + code + " found at line " + lineNo + ":" + lineCol + " " + getErrorMessage();
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (o instanceof WaccError) {
-      return toString().equals(o.toString());
-    }
-    return false;
-  }
+
 }

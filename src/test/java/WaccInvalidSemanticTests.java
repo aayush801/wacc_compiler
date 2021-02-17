@@ -17,7 +17,7 @@ public class WaccInvalidSemanticTests {
       file_path = base + file;
       compiler = new WaccCompiler(new FileInputStream(file_path));
       errorCode = compiler.compile();
-      if (errorCode != ErrorCode.SEMANTIC_ERROR) {
+      if (errorCode == ErrorCode.SEMANTIC_ERROR) {
         System.out.println(file);
         System.out.println(compiler.getErrors());
       }

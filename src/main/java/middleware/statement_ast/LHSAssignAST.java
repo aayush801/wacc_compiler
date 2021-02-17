@@ -84,6 +84,7 @@ public class LHSAssignAST extends StatementAST {
       type = (TYPE) obj;
 
       return;
+
     }
 
     if (arrayElemAST != null) {
@@ -92,15 +93,14 @@ public class LHSAssignAST extends StatementAST {
       // Verify that the arrayElem is valid.
       arrayElemAST.check();
 
-      if (arrayElemAST.getType() == null) {
-        // arrayElem is of invalid type.
-        addError(new Undefined(token, arrayElemAST.token.getText()));
-      } else {
+      if (arrayElemAST.getType() != null) {
         // arrayElem is of a valid type, sp get the type of the arrayElem,
         // and set the type.
         type = arrayElemAST.getType();
       }
+
       return;
+
     }
 
     if (pairElemAST != null) {
@@ -109,15 +109,14 @@ public class LHSAssignAST extends StatementAST {
       // Verify that the pairElem is valid.
       pairElemAST.check();
 
-      if (pairElemAST.getType() == null) {
-        // pairElem is of invalid type.
-        addError(new Undefined(token, pairElemAST.token.getText()));
-      } else {
+      if (pairElemAST.getType() != null) {
         // pairElem is of a valid type, sp get the type of the pairElem,
         // and set the type.
         type = pairElemAST.getType();
       }
+
     }
+
   }
 
   @Override

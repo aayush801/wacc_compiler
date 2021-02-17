@@ -5,6 +5,8 @@ import backend.instructions.Instruction;
 import backend.instructions.Move;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
+import frontend.identifier_objects.IDENTIFIER;
+import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.INT;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,13 +28,18 @@ public class ExitAST extends StatementAST {
 
     // Verify that the expr passed to exit is a valid expression.
     expressionAST.check();
+    IDENTIFIER type = expressionAST.getType();
+    if(type == null){
+      return;
+    }
 
     // Verify that the expression is an INT.
-    if (!(expressionAST.getType() instanceof INT)) {
+    if (!(type instanceof INT)) {
       addError(new MismatchedTypes(
           expressionAST.token, expressionAST.getType(), new INT())
       );
     }
+
   }
 
   @Override

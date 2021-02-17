@@ -4,6 +4,7 @@ import backend.instructions.Instruction;
 import backend.registers.Register;
 import errors.semantic_errors.GlobalScope;
 import errors.semantic_errors.MismatchedTypes;
+import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import java.util.List;
 import middleware.expression_ast.ExpressionAST;
@@ -29,30 +30,43 @@ public class ReturnAST extends StatementAST {
     // Verify that the provided expression is a valid expression
     expressionAST.check();
 
+    IDENTIFIER type = expressionAST.getType();
+
     if (ST.getEncSymTable() == null) {
 
       // Trying to return from the main/global scope.
       addError(new GlobalScope(token));
+      return;
 
-    } else if (!(expressionAST.getType() instanceof TYPE)) {
+    }
 
-      addError(new MismatchedTypes(expressionAST.token, expressionAST.getType(), new TYPE()));
+    if (type == null) {
+      // error has occurred elsewhere
+      return;
+    }
 
-    } else if (!(isCompatible(expressionAST.getType(), ST.getScopeReturnType()))) {
+    if (!(type instanceof TYPE)) {
+
+      addError(new MismatchedTypes(expressionAST.token, type, new TYPE()));
+      return;
+    }
+
+    if (!(isCompatible(type, ST.getScopeReturnType()))) {
 
       // Provided return type and
       // expected return type(of the function that return is in) do not match.
       addError(
           new MismatchedTypes(
-              expressionAST.token, expressionAST.getType(), ST.getScopeReturnType())
+              expressionAST.token, type, ST.getScopeReturnType())
       );
 
-    } else {
-
-      // Valid type, so set the type of this AST node.
-      type = (TYPE) expressionAST.getType();
+      return;
 
     }
+
+    // Valid type, so set the type of this AST node.
+    this.type = (TYPE) type;
+
   }
 
   @Override

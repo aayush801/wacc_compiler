@@ -28,14 +28,15 @@ public class MismatchedTypes extends WaccSemanticError {
 
   @Override
   public String getErrorMessage() {
+    String expectedMsg = (expected == null) ? "null"
+        : expected.toString().toUpperCase();
+    String actualMsg = (actual == null) ? "null" : actual.toString().toUpperCase();
     if (!twoTypes) {
-      return "Expected value of type : " + ((expected == null) ? "null"
-          : expected.toString().toUpperCase()) +
-          ", but got type : " + ((actual == null) ? "null" : actual.toString().toUpperCase());
+      return "Expected value of type : " + expectedMsg +
+          ", but got type : " + actualMsg;
     }
-    return "Expected value of type : " + ((expected == null) ? "null"
-        : expected.toString().toUpperCase()) + "or " + expectedOther.toString().toUpperCase() +
-        ", but got type : " + ((actual == null) ? "null" : actual.toString().toUpperCase());
+    return "Expected value of type : " + expectedMsg + " or " + expectedOther.toString().toUpperCase() +
+        ", but got type : " + actualMsg;
   }
 
   @Override

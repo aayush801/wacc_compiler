@@ -3,11 +3,12 @@ package middleware.statement_ast;
 import backend.instructions.Instruction;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
+import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.basic_types.BOOL;
 import java.util.List;
 import middleware.expression_ast.ExpressionAST;
-import org.antlr.v4.runtime.Token;
 import middleware.symbol_table.SymbolTable;
+import org.antlr.v4.runtime.Token;
 
 public class WhileAST extends StatementAST {
 
@@ -25,19 +26,31 @@ public class WhileAST extends StatementAST {
   public void check() {
     // check the expression
     expressionAST.check();
+    IDENTIFIER type = expressionAST.getType();
+
+    if (type == null) {
+      // error has occurred elsewhere
+      return;
+    }
 
     // verify that the condition expression is a boolean.
     if (!(expressionAST.getType() instanceof BOOL)) {
+
       addError(new MismatchedTypes(
           expressionAST.token, expressionAST.getType(), new BOOL())
       );
-    } else {
-      // expression valid, now check the statement inside the body.
-      // create a new scope(symbol table) for the statement.
-      ST = new SymbolTable(ST);
-      statementAST.check();
-      ST = ST.getEncSymTable();
+
+      return;
+
     }
+
+
+    // expression valid, now check the statement inside the body.
+    // create a new scope(symbol table) for the statement.
+    ST = new SymbolTable(ST);
+    statementAST.check();
+    ST = ST.getEncSymTable();
+
   }
 
   @Override

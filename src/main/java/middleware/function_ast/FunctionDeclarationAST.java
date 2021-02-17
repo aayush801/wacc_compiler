@@ -34,14 +34,14 @@ public class FunctionDeclarationAST extends NodeAST {
 
   private boolean checkFunctionAndGetReturnType() {
     typeAST.check();
-    IDENTIFIER type = typeAST.getType();
+    TYPE type = typeAST.getType();
     IDENTIFIER function = ST.lookup(funcName);
     if (type == null) {
       addError(new Undefined(token));
     } else if (function != null) {
       addError(new DuplicateIdentifier(token));
     } else {
-      funcObj = new FUNCTION((TYPE) type);
+      funcObj = new FUNCTION(type);
       ST.add(funcName, funcObj);
       return true;
     }

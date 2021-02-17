@@ -29,19 +29,18 @@ public class ParamAST extends NodeAST {
   public void check() {
     typeAST.check();
 
-    IDENTIFIER type = typeAST.getType();
+    TYPE type = typeAST.getType();
     IDENTIFIER param = ST.lookup(paramName);
 
-    if (type == null) {
-      addError(new Undefined(token));
-    } else if (!(type instanceof TYPE)) {
-      addError(new MismatchedTypes(token, type, new TYPE()));
-    } else if (param != null) {
-      addError(new DuplicateIdentifier(token));
-    } else {
-      paramObj = new PARAM((TYPE) type);
-      ST.add(paramName, paramObj);
+    if (type != null) {
+      if (param != null) {
+        addError(new DuplicateIdentifier(token));
+      } else {
+        paramObj = new PARAM(type);
+        ST.add(paramName, paramObj);
+      }
     }
+
   }
 
   @Override

@@ -27,11 +27,17 @@ public class ReadAST extends StatementAST {
 
     // Verify that type is an INT or CHAR.
     IDENTIFIER type = LHS.getType();
-    if (type == null) {
-      addError(new Undefined(token));
-    } else if (!(type instanceof INT || type instanceof CHAR)) {
-      addError(new MismatchedTypes(token, type, new INT(), new CHAR()));
+
+    if (type != null) {
+
+     if (!(type instanceof INT || type instanceof CHAR)) {
+
+       addError(new MismatchedTypes(token, type, new INT(), new CHAR()));
+
+     }
+
     }
+
   }
 
   @Override

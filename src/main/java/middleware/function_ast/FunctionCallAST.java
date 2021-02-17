@@ -39,7 +39,7 @@ public class FunctionCallAST extends NodeAST {
     if (function == null) {
 
       // if the function is undefined within the current scope
-      addError(new Undefined(token));
+      addError(new Undefined(token, funcName));
 
     } else if (!(function instanceof FUNCTION)) {
 

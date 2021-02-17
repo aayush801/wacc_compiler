@@ -4,6 +4,7 @@ import backend.instructions.Instruction;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
+import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import java.util.List;
 import middleware.arrays_ast.ArrayAST;
@@ -15,42 +16,42 @@ import org.antlr.v4.runtime.Token;
 
 public class RHSAssignAST extends StatementAST {
 
-  private ExpressionAST expr;
-  private ArrayAST array;
-  private NewPairAST newPair;
-  private PairElemAST pairElem;
-  private FunctionCallAST funcCall;
+  private ExpressionAST expressionAST;
+  private ArrayAST arrayAST;
+  private NewPairAST newPairAST;
+  private PairElemAST pairElemAST;
+  private FunctionCallAST functionCallAST;
 
   private TYPE type;
 
   // RHS Assign is an expression.
-  public RHSAssignAST(Token token, ExpressionAST expr) {
+  public RHSAssignAST(Token token, ExpressionAST expressionAST) {
     super(token);
-    this.expr = expr;
+    this.expressionAST = expressionAST;
   }
 
   // RHS Assign is an array.
-  public RHSAssignAST(Token token, ArrayAST array) {
+  public RHSAssignAST(Token token, ArrayAST arrayAST) {
     super(token);
-    this.array = array;
+    this.arrayAST = arrayAST;
   }
 
   // RHS Assign is a newpair.
-  public RHSAssignAST(Token token, NewPairAST newPair) {
+  public RHSAssignAST(Token token, NewPairAST newPairAST) {
     super(token);
-    this.newPair = newPair;
+    this.newPairAST = newPairAST;
   }
 
   // RHS Assign is a pairElem.
-  public RHSAssignAST(Token token, PairElemAST pairElem) {
+  public RHSAssignAST(Token token, PairElemAST pairElemAST) {
     super(token);
-    this.pairElem = pairElem;
+    this.pairElemAST = pairElemAST;
   }
 
   // RHS Assign is a function call.
-  public RHSAssignAST(Token token, FunctionCallAST funcCall) {
+  public RHSAssignAST(Token token, FunctionCallAST functionCallAST) {
     super(token);
-    this.funcCall = funcCall;
+    this.functionCallAST = functionCallAST;
   }
 
   public TYPE getType() {
@@ -59,81 +60,97 @@ public class RHSAssignAST extends StatementAST {
 
   @Override
   public void check() {
-    if (expr != null) {
+    if (expressionAST != null) {
       // case when assign RHS is an expression.
 
       // check the expression.
-      expr.check();
+      expressionAST.check();
+
+      if(expressionAST.getType() == null){
+        // error has occurred elsewhere
+        return;
+      }
 
       // Verify that the expressions is a TYPE i.e. not a function name.
       // If it is a TYPE, then set type.
-      if (!(expr.getType() instanceof TYPE)) {
-        addError(new MismatchedTypes(token, expr.getType(), new TYPE()));
-      } else {
-        type = (TYPE) expr.getType();
+      if (!(expressionAST.getType() instanceof TYPE)) {
+        addError(new MismatchedTypes(token, expressionAST.getType(), new TYPE()));
+        return;
       }
+
+      type = (TYPE) expressionAST.getType();
+
       return;
+
     }
 
-    if (array != null) {
+    if (arrayAST != null) {
       // case when assign RHS is an array.
 
       // check the array.
-      array.check();
+      arrayAST.check();
 
       // Verify that the array is not null. If it is present, set the type.
-      if (array.getArrayObj() == null) {
-        addError(new Undefined(token, array.token.getText()));
-      } else {
-        type = array.getArrayObj();
+      if(arrayAST.getArrayObj() == null){
+        // error has occurred elsewhere
+        return;
       }
+
+      type = arrayAST.getArrayObj();
+
       return;
+
     }
 
-    if (newPair != null) {
+    if (newPairAST != null) {
       // case when assign RHS is a newpair.
 
       // check the newpair.
-      newPair.check();
+      newPairAST.check();
 
       // verify that the newpair is not null. If it is present, set the type.
-      if (newPair.getPair() == null) {
-        addError(new Undefined(token, newPair.token.getText()));
-      } else {
-        type = newPair.getPair();
+      if (newPairAST.getPair() == null) {
+        return;
       }
+
+      type = newPairAST.getPair();
+
       return;
+
     }
 
-    if (pairElem != null) {
+    if (pairElemAST != null) {
       // case when assign RHS is a pairElem.
 
       // check the pairelem.
-      pairElem.check();
+      pairElemAST.check();
 
       // verify that the pairelem is not null. If it is present, set the type.
-      if (pairElem.getType() == null) {
-        addError(new Undefined(token, pairElem.token.getText()));
-      } else {
-        type = pairElem.getType();
+      if (pairElemAST.getType() == null) {
+        return;
       }
+
+      type = pairElemAST.getType();
+
       return;
     }
 
-    if (funcCall != null) {
+    if (functionCallAST != null) {
       // case when assign RHS is a function call.
 
       // check the function call.
-      funcCall.check();
+      functionCallAST.check();
 
       // verify that the function object is not null. If the function is
       // present, set type to the function's return type.
-      if (funcCall.getFuncObj() == null) {
-        addError(new Undefined(token, funcCall.token.getText()));
-      } else {
-        type = funcCall.getFuncObj().getReturnType();
+      if (functionCallAST.getFuncObj() == null) {
+        return;
       }
+
+      type = functionCallAST.getFuncObj().getReturnType();
+
     }
+
   }
 
   @Override

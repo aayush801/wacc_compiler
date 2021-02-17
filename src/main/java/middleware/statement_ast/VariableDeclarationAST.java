@@ -35,7 +35,6 @@ public class VariableDeclarationAST extends StatementAST {
 
     // verify that the type is valid.
     if (typeAST.getType() == null) {
-      addError(new Undefined(token, typeAST.token.getText()));
       return;
     }
 
@@ -54,7 +53,6 @@ public class VariableDeclarationAST extends StatementAST {
 
     // verify that the RHS is not null.
     if (RHS.getType() == null) {
-      addError(new Undefined(RHS.token));
       return;
     }
 
