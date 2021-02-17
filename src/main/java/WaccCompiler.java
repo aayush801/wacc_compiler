@@ -55,7 +55,7 @@ public class WaccCompiler {
   private final List<WaccError> errors = new ArrayList<>();
   private final SyntaxErrorListener syntaxErrorListener = new SyntaxErrorListener();
 
-  private final WaccASTParser semanticParser = new WaccASTParser();//new SemanticParser();
+  private final WaccASTParser semanticParser = new WaccASTParser();
   private final SyntacticParser syntacticParser = new SyntacticParser(syntaxErrorListener);
 
   public WaccCompiler(String inputString) throws IOException {
@@ -75,6 +75,7 @@ public class WaccCompiler {
     parser.removeErrorListeners();
     parser.addErrorListener(syntaxErrorListener);
 
+    SyntaxErrorListener.setSyntacticErrors(errors);
     NodeAST.setSemanticErrors(errors);
 
     inputStream.close();
@@ -82,24 +83,31 @@ public class WaccCompiler {
 
   public ErrorCode compile() {
 
-    ProgContext AST = parseSyntactics();
+    ProgContext ASTtree = parseSyntactics();
 
-    if (syntaxErrorListener.hasErrors()) {
-      // we dont do semantic analysis if syntax fails
+    if (hasErrors()) {
+      // we don't do semantic analysis if syntax fails
       return ErrorCode.SYNTAX_ERROR;
 
     }
 
-    parseSemantics(AST);
+    NodeAST IRtree = parseSemantics(ASTtree);
 
-    if (!errors.isEmpty()) {
-
+    if (hasErrors()) {
+      // don't do code generation if semantic analysis fails
       return ErrorCode.SEMANTIC_ERROR;
 
     }
 
-    return ErrorCode.SUCCESS;
+    translateCode(IRtree);
 
+    if(hasErrors()) {
+
+      return ErrorCode.FAIL;
+
+    }
+
+    return ErrorCode.SUCCESS;
 
   }
 
@@ -112,24 +120,28 @@ public class WaccCompiler {
       syntacticParser.visit(AST);
     }
 
-    errors.addAll(syntaxErrorListener.getErrors());
-
     return AST;
 
   }
 
   public NodeAST parseSemantics(ProgContext AST) {
+
     NodeAST.reset();
     NodeAST tree = semanticParser.visit(AST);
+
     tree.check();
+
     return tree;
+
   }
 
   public void translateCode(NodeAST tree){
     List<Register> registers = new ArrayList<>();
+
     for (int i = 0; i <= 12; i++) {
       registers.add(new Register(i));
     }
+
     registers.add(new ProgramCounter());
     registers.add(new LinkRegister());
     registers.add(new StackPointer());
@@ -147,5 +159,7 @@ public class WaccCompiler {
     return !errors.isEmpty();
 
   }
+
+
 
 }

@@ -9,16 +9,19 @@ import org.junit.Test;
 
 public class SemanticTests {
 
+  public void check(String instruction, boolean b) throws IOException {
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.parseSemantics(compiler.parseSyntactics());
+    assertThat(compiler.hasErrors(), is(b));
+  }
+
   @Test
   public void testUndefined() throws IOException {
     String instruction =
         "begin " +
             "int c = 1 + c " +
             "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    ErrorCode errorCode = compiler.compile();
-    System.out.println(compiler.getErrors());
-    assertThat(errorCode, is(ErrorCode.SEMANTIC_ERROR));
+    check(instruction, true);
   }
 
   @Test
@@ -28,10 +31,7 @@ public class SemanticTests {
             "bool[] array = [true, false] ; \n" +
             "array[5] = true\n" +
             "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    ErrorCode errorCode = compiler.compile();
-    System.out.println(compiler.getErrors());
-    assertThat(errorCode, is(ErrorCode.SUCCESS));
+    check(instruction, false);
   }
 
   @Test
@@ -41,28 +41,19 @@ public class SemanticTests {
             "bool b = 2 > '2' ;\n" +
             "bool x = 'a' > 'b' \n" +
             "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    ErrorCode errorCode = compiler.compile();
-    System.out.println(compiler.getErrors());
-    assertThat(errorCode, is(ErrorCode.SEMANTIC_ERROR));
+    check(instruction, true);
   }
 
   @Test
   public void testPrecedence() throws IOException {
     String instruction = "begin bool b = true || (false && true) end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    ErrorCode errorCode = compiler.compile();
-    System.out.println(compiler.getErrors());
-    assertThat(errorCode, is(ErrorCode.SUCCESS));
+    check(instruction, false);
   }
 
   @Test
   public void testMismatchedAssignmentTypes() throws IOException {
     String instruction = "begin bool a = true; int x = a + 2 end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    ErrorCode errorCode = compiler.compile();
-    System.out.println(compiler.getErrors());
-    assertThat(errorCode, is(ErrorCode.SEMANTIC_ERROR));
+    check(instruction, true);
   }
 
   @Test
@@ -79,10 +70,6 @@ public class SemanticTests {
             "begin\n" +
             "  exit 'a'\n" +
             "end\n";
-
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    ErrorCode errorCode = compiler.compile();
-    System.out.println(compiler.getErrors());
-    assertThat(errorCode, is(ErrorCode.SEMANTIC_ERROR));
+    check(instruction, true);
   }
 }

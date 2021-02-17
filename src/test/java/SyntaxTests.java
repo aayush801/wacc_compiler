@@ -34,9 +34,7 @@ public class SyntaxTests {
         "# random comment \n" +
         "int x = 2\n" +
         "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.compile();
-    assertThat(compiler.hasErrors(), is(false));
+    check(instruction, false);
   }
 
 
@@ -67,7 +65,7 @@ public class SyntaxTests {
 
   private void check(String instruction, boolean b) throws IOException {
     WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.compile();
+    compiler.parseSyntactics();
     assertThat(compiler.hasErrors(), is(b));
   }
 

@@ -129,16 +129,21 @@ public class BinOpExprAST extends ExpressionAST {
     boolean leftIsType = leftType instanceof TYPE;
     boolean rightIsType = rightType instanceof TYPE;
 
-    if (!leftIsType) {
+    if (leftType != null && !leftIsType) {
 
       addError(new expressionNotFound(leftExprAST.token, leftType));
 
     }
 
-    if (!rightIsType) {
+    if (rightType != null && !rightIsType) {
 
       addError(new expressionNotFound(rightExprAST.token, rightType));
 
+    }
+
+    if(leftType == null || rightType == null){
+      // error has occurred elsewhere
+      return;
     }
 
     switch (operator) {

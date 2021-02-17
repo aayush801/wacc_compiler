@@ -88,6 +88,11 @@ public class UnaryOpExprAST extends ExpressionAST {
     expr.check();
     IDENTIFIER exprType = expr.getType();
 
+    if(exprType == null){
+      // error occurred elsewhere
+      return;
+    }
+
     if (!(exprType instanceof TYPE)) {
       addError(new expressionNotFound(token, exprType));
       return;

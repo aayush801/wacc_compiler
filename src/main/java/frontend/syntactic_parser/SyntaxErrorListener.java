@@ -11,7 +11,11 @@ import org.antlr.v4.runtime.misc.Utils;
 
 public class SyntaxErrorListener extends BaseErrorListener {
 
-  private final List<WaccError> errors = new ArrayList<>();
+  private static List<WaccError> errors;
+
+  public static void setSyntacticErrors(List<WaccError> errors) {
+    SyntaxErrorListener.errors = errors;
+  }
 
   @Override
   public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,

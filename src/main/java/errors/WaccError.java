@@ -28,7 +28,7 @@ public abstract class WaccError extends BaseErrorListener {
 
   private void highlightOffendingSymbol(String offendingSymbol) {
     int position = code.indexOf(offendingSymbol);
-    code = code.substring(0, position) + " ->" + code.substring(position);
+    code = code.substring(0, position) + "->" + code.substring(position);
   }
 
 

@@ -4,7 +4,6 @@ import backend.instructions.Instruction;
 import backend.registers.Register;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
-import frontend.identifier_objects.basic_types.STR;
 import java.util.List;
 import org.antlr.v4.runtime.Token;
 
@@ -24,9 +23,7 @@ public class LiteralsAST extends ExpressionAST {
 
   @Override
   public void check() {
-    if(type instanceof STR){
-      // DataSection.add(new Label("msg_"))
-    }
+
   }
 
   @Override
