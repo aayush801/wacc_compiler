@@ -78,10 +78,5 @@ public class FunctionCallAST extends NodeAST {
 
   }
 
-  @Override
-  public List<Instruction> translate(List<Register> registers) {
-    return null;
-  }
-
 }
 

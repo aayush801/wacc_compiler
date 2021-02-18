@@ -73,8 +73,4 @@ public class FunctionDeclarationAST extends NodeAST {
     ST = ST.getEncSymTable();
   }
 
-  @Override
-  public List<Instruction> translate(List<Register> registers) {
-    return null;
-  }
 }

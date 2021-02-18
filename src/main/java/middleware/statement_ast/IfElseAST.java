@@ -63,8 +63,4 @@ public class IfElseAST extends StatementAST {
 
   }
 
-  @Override
-  public List<Instruction> translate(List<Register> registers) {
-    return null;
-  }
 }

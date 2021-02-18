@@ -28,8 +28,4 @@ public class BeginAST extends StatementAST {
     ST = ST.getEncSymTable();
   }
 
-  @Override
-  public List<Instruction> translate(List<Register> registers) {
-    return null;
-  }
 }

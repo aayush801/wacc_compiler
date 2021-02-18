@@ -35,13 +35,6 @@ public class ReadAST extends StatementAST {
        addError(new MismatchedTypes(token, type, new INT(), new CHAR()));
 
      }
-
     }
-
-  }
-
-  @Override
-  public List<Instruction> translate(List<Register> registers) {
-    return null;
   }
 }

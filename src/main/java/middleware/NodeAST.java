@@ -47,10 +47,11 @@ public abstract class NodeAST implements NodeASTInterface {
   public abstract void check();
 
   @Override
-  public abstract List<Instruction> translate(List<Register> registers);
+  public List<Instruction> translate(List<Register> registers) {
+    return new ArrayList<>();
+  }
 
   protected boolean isCompatible(IDENTIFIER t1, IDENTIFIER t2) {
     return t1 instanceof TYPE && t2 instanceof TYPE && t2.equals(t1);
   }
-
 }

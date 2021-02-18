@@ -23,8 +23,4 @@ public class ChainedStatementAST extends StatementAST {
     statementAST2.check();
   }
 
-  @Override
-  public List<Instruction> translate(List<Register> registers) {
-    return null;
-  }
 }

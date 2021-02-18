@@ -17,8 +17,4 @@ public class SkipAST extends StatementAST {
   public void check() {
   }
 
-  @Override
-  public List<Instruction> translate(List<Register> registers) {
-    return null;
-  }
 }

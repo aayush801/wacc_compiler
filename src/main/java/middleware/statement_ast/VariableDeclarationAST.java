@@ -71,8 +71,4 @@ public class VariableDeclarationAST extends StatementAST {
     NodeAST.ST.add(varName, varObj);
   }
 
-  @Override
-  public List<Instruction> translate(List<Register> registers) {
-    return null;
-  }
 }
