@@ -34,7 +34,7 @@ public abstract class NodeAST implements NodeASTInterface {
     program = new ProgramGenerator();
   }
 
-  public String translate(){
+  public String translate() {
     translate(program.registers);
     return program.toString();
   }
@@ -62,8 +62,9 @@ public abstract class NodeAST implements NodeASTInterface {
     return t1 instanceof TYPE && t2 instanceof TYPE && t2.equals(t1);
   }
 
-  public List<Instruction> translateScope(SymbolTable scopeST, List<Instruction> instructions){
-    int sizeOfVariablesDeclaredInScope = scopeST.allocatedMemory;
+  public List<Instruction> translateScope(SymbolTable scopeST,
+      List<Instruction> instructions) {
+    int sizeOfVariablesDeclaredInScope = scopeST.getAllocatedStackMemory();
     Instruction decrementStack =
         new Arithmetic(ArithmeticOpcode.SUB, program.SP, program.SP,
             new Immediate(sizeOfVariablesDeclaredInScope));
