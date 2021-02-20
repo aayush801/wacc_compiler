@@ -25,8 +25,8 @@ public class VariableDeclarationAST extends StatementAST {
 
   private SymbolTable scopeST;
 
-  public VariableDeclarationAST(ParserRuleContext ctx, TypeAST typeAST, String varName,
-      RHSAssignAST rhsAssignAST) {
+  public VariableDeclarationAST(ParserRuleContext ctx, TypeAST typeAST,
+      String varName, RHSAssignAST rhsAssignAST) {
     super(ctx);
     this.typeAST = typeAST;
     this.varName = varName;
@@ -64,30 +64,35 @@ public class VariableDeclarationAST extends StatementAST {
     // Verify that LHS and RHS are type compatible.
     if (!isCompatible(typeAST.getType(), rhsAssignAST.getType())) {
 
-      addError(new MismatchedTypes(ctx, rhsAssignAST.getType(), typeAST.getType()));
+      addError(new MismatchedTypes(ctx, rhsAssignAST.getType(),
+          typeAST.getType()));
       return;
 
     }
 
     // If all checks pass, create new VARIABLE object with the type of the
     // typeAST node, and add this to the current symbol table.
-    ST.index += typeAST.getType().getSize();
+
     scopeST = ST;
     varObj = new VARIABLE(typeAST.getType());
-    varObj.setStackAddress(ST.index);
+    // Allocates memory required to store variable of required type
+    // The total memory allocated is the offset of the variable
+    // from the start of this scope
+    varObj.setOffset(ST.allocate(typeAST.getType().getSize()));
 
     NodeAST.ST.add(varName, varObj);
   }
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    int sizeStack = scopeST.sizeOfVariablesDeclaredInScope();
-    int offset = scopeST.index - varObj.getStackAddress();
+    Register destination = registers.get(0);
+    List<Instruction> instructions = rhsAssignAST.translate(registers);
 
-    List<Instruction> instructions =  rhsAssignAST.translate(registers);
-    Register source = registers.get(0);
+    // Amount of bytes to add to the stack pointer to get address of variable
+    int increment = scopeST.getAllocatedStackMemory() - varObj.getOffset();
 
-    instructions.add(new Store(source, new ImmediateOffset(program.SP, new Immediate(offset))));
+    instructions.add(new Store(destination,
+        new ImmediateOffset(program.SP, new Immediate(increment))));
 
     return instructions;
   }

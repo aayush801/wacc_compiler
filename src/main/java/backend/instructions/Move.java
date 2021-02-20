@@ -9,14 +9,18 @@ public class Move extends Instruction {
   private final Operand Operand;
 
   public Move(Register Rd, Operand Operand) {
+    super();
     this.Rd = Rd;
     this.Operand = Operand;
   }
 
-  public Move(Register Rd, Operand Operand, boolean flags) {
-    this(Rd, Operand);
+  public Move(ConditionCode code, Register Rd, Operand Operand, boolean flags) {
+    super(code);
+    this.Rd = Rd;
+    this.Operand = Operand;
     setFlags(flags);
   }
+
 
   @Override
   public String toString() {

@@ -17,7 +17,7 @@ public class SymbolTable {
   private final SymbolTable encSymTable;
   private final Map<String, IDENTIFIER> dict;
   protected TYPE scopeReturnType = null;
-  public int index = 0;
+  private int allocatedStackMemory = 0;
 
   public SymbolTable() {
     this(null);
@@ -85,16 +85,12 @@ public class SymbolTable {
     return obj;
   }
 
-
-  public int sizeOfVariablesDeclaredInScope() {
-    AtomicInteger count = new AtomicInteger();
-    dict.values().forEach(v -> {
-      if (v instanceof VARIABLE) {
-        TYPE varType = ((VARIABLE) v).getType();
-        count.addAndGet(varType.getSize());
-      }
-    });
-    return count.get();
+  public int getAllocatedStackMemory() {
+    return allocatedStackMemory;
   }
 
+  public int allocate(int bytes) {
+    allocatedStackMemory += bytes;
+    return allocatedStackMemory;
+  }
 }

@@ -6,6 +6,7 @@ import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.basic_types.CHAR;
 import frontend.identifier_objects.basic_types.INT;
+import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -40,6 +41,6 @@ public class ReadAST extends StatementAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return null;
+    return new ArrayList<>();
   }
 }

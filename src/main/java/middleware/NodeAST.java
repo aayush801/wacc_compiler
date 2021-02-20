@@ -63,7 +63,7 @@ public abstract class NodeAST implements NodeASTInterface {
   }
 
   public List<Instruction> translateScope(SymbolTable scopeST, List<Instruction> instructions){
-    int sizeOfVariablesDeclaredInScope = scopeST.sizeOfVariablesDeclaredInScope();
+    int sizeOfVariablesDeclaredInScope = scopeST.allocatedMemory;
     Instruction decrementStack =
         new Arithmetic(ArithmeticOpcode.SUB, program.SP, program.SP,
             new Immediate(sizeOfVariablesDeclaredInScope));

@@ -1,5 +1,13 @@
 package middleware.expression_ast;
 
+import backend.instructions.Compare;
+import backend.instructions.ConditionCode;
+import backend.instructions.Instruction;
+import backend.instructions.Move;
+import backend.instructions.arithmetic.Arithmetic;
+import backend.instructions.arithmetic.ArithmeticOpcode;
+import backend.operands.Immediate;
+import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.NotAFunction;
 import errors.semantic_errors.expressionNotFound;
@@ -8,13 +16,14 @@ import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.BOOL;
 import frontend.identifier_objects.basic_types.CHAR;
 import frontend.identifier_objects.basic_types.INT;
+import java.util.ArrayList;
+import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class BinOpExprAST extends ExpressionAST {
 
-  private final ExpressionAST leftExprAST;
-  private final ExpressionAST rightExprAST;
+  private final ExpressionAST leftExprAST, rightExprAST;
   private final String operator;
 
   public BinOpExprAST(ParserRuleContext ctx, ExpressionAST leftExprAST, String operator,
@@ -124,6 +133,7 @@ public class BinOpExprAST extends ExpressionAST {
   public void check() {
     leftExprAST.check();
     rightExprAST.check();
+
     IDENTIFIER leftType = leftExprAST.getType();
     IDENTIFIER rightType = rightExprAST.getType();
 
@@ -142,7 +152,7 @@ public class BinOpExprAST extends ExpressionAST {
 
     }
 
-    if(leftType == null || rightType == null){
+    if (leftType == null || rightType == null) {
       // error has occurred elsewhere
       return;
     }
@@ -178,8 +188,59 @@ public class BinOpExprAST extends ExpressionAST {
         addError(new NotAFunction(ctx));
         break;
     }
-
-
   }
 
+  public List<Instruction> translate(List<Register> registers) {
+    Register Rn = registers.get(0);
+    List<Instruction> instructions = leftExprAST.translate(registers);
+
+    List<Register> remaining = new ArrayList<>(registers);
+    remaining.remove(0);
+
+    Register Rm = remaining.get(0);
+    instructions.addAll(rightExprAST.translate(remaining));
+
+    switch (operator) {
+      // ARITHMETIC Operators
+      case "+":
+        instructions.add(new Arithmetic(ArithmeticOpcode.ADD, Rn, Rn, Rm));
+        break;
+      case "-":
+        instructions.add(new Arithmetic(ArithmeticOpcode.SUB, Rn, Rn, Rm));
+        break;
+      case "*":
+        instructions.add(new Arithmetic(ArithmeticOpcode.MUL, Rn, Rn, Rm));
+        break;
+      case "%":
+        break;
+      case "/":
+        break;
+      // EQUATABLE Operators
+      case "==":
+        instructions.add(new Compare(Rn, Rm));
+        instructions.add(new Move(Rn, new Immediate(0)));
+        instructions.add(new Move(ConditionCode.EQ, Rn,
+            new Immediate(1), false));
+        break;
+      case "!=":
+        break;
+      // COMPARABLE Operators
+      case ">":
+      case "<":
+      case ">=":
+      case "<=":
+        break;
+      // BOOLEAN Operators
+      case "&&":
+        instructions.add(new Arithmetic(ArithmeticOpcode.AND, Rn, Rn, Rm));
+        break;
+      case "||":
+        instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, Rm));
+        break;
+      // Unrecognized Operator
+      default:
+        break;
+    }
+    return instructions;
+  }
 }

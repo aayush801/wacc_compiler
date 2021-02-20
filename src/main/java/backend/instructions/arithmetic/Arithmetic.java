@@ -1,5 +1,6 @@
 package backend.instructions.arithmetic;
 
+import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
 import backend.operands.Operand;
 import backend.registers.Register;
@@ -8,18 +9,23 @@ public class Arithmetic extends Instruction {
 
   private final Register Rd, Rn;
   private final backend.operands.Operand Operand;
-
   private final ArithmeticOpcode Opcode;
 
-  public Arithmetic(ArithmeticOpcode Opcode, Register Rd, Register Rn, Operand Operand) {
+  public Arithmetic(ArithmeticOpcode Opcode, Register Rd, Register Rn,
+      Operand Operand) {
     this.Rd = Rd;
     this.Rn = Rn;
     this.Operand = Operand;
     this.Opcode = Opcode;
   }
 
-  public Arithmetic(ArithmeticOpcode Opcode, Register Rd, Register Rn, Operand Operand, boolean flags) {
-    this(Opcode, Rd, Rn, Operand);
+  public Arithmetic(ArithmeticOpcode Opcode, Register Rd, Register Rn,
+      Operand Operand, boolean flags, ConditionCode code) {
+    super(code);
+    this.Rd = Rd;
+    this.Rn = Rn;
+    this.Operand = Operand;
+    this.Opcode = Opcode;
     setFlags(flags);
   }
 

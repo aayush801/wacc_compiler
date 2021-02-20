@@ -16,7 +16,7 @@ public class BOOL extends TYPE {
   }
 
   @Override
-  public int getSize(){
+  public int getSize() {
     return 1;
   }
 }

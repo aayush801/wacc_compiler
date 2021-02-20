@@ -8,6 +8,7 @@ import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
+import java.util.ArrayList;
 import java.util.List;
 import middleware.NodeAST;
 import middleware.arrays_ast.ArrayElemAST;
@@ -122,7 +123,7 @@ public class LHSAssignAST extends StatementAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return null;
+    return new ArrayList<>();
   }
 
 }

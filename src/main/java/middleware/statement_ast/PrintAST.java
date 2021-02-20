@@ -2,7 +2,6 @@ package middleware.statement_ast;
 
 import backend.instructions.Branch;
 import backend.instructions.Instruction;
-import backend.labels.DataLabel;
 import backend.registers.Register;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.ARRAY;
@@ -11,7 +10,6 @@ import frontend.identifier_objects.basic_types.CHAR;
 import frontend.identifier_objects.basic_types.INT;
 import frontend.identifier_objects.basic_types.PAIR;
 import frontend.identifier_objects.basic_types.STR;
-import java.util.ArrayList;
 import java.util.List;
 import middleware.expression_ast.ExpressionAST;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -64,9 +62,7 @@ public class PrintAST extends StatementAST {
     }
 
     if (newLine) {
-
       instructions.add(new Branch("p_print_ln", true));
-
     }
 
     return instructions;

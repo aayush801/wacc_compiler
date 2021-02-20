@@ -6,10 +6,10 @@ import errors.semantic_errors.GlobalScope;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
+import java.util.ArrayList;
 import java.util.List;
 import middleware.expression_ast.ExpressionAST;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 public class ReturnAST extends StatementAST {
 
@@ -72,7 +72,7 @@ public class ReturnAST extends StatementAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return null;
+    return new ArrayList<>();
   }
 
 }

@@ -5,6 +5,7 @@ import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.basic_types.PAIR;
+import java.util.ArrayList;
 import java.util.List;
 import middleware.expression_ast.ExpressionAST;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -41,6 +42,6 @@ public class FreeAST extends StatementAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return null;
+    return new ArrayList<>();
   }
 }
