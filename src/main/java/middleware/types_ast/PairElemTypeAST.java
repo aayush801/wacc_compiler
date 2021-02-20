@@ -7,6 +7,7 @@ import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.PAIR;
 import java.util.List;
 import middleware.NodeAST;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 // PairElemType could be a baseType, an arrayType, or an identifier.
@@ -19,18 +20,18 @@ public class PairElemTypeAST extends NodeAST {
   private String pairName;
   private TYPE type;
 
-  public PairElemTypeAST(Token token, BaseTypeAST baseTypeAST) {
-    super(token);
+  public PairElemTypeAST(ParserRuleContext ctx, BaseTypeAST baseTypeAST) {
+    super(ctx);
     this.baseTypeAST = baseTypeAST;
   }
 
-  public PairElemTypeAST(Token token, ArrayTypeAST arrayTypeAST) {
-    super(token);
+  public PairElemTypeAST(ParserRuleContext ctx, ArrayTypeAST arrayTypeAST) {
+    super(ctx);
     this.arrayTypeAST = arrayTypeAST;
   }
 
-  public PairElemTypeAST(Token token, String pairname) {
-    super(token);
+  public PairElemTypeAST(ParserRuleContext ctx, String pairname) {
+    super(ctx);
     this.pairName = pairname;
   }
 
@@ -50,7 +51,7 @@ public class PairElemTypeAST extends NodeAST {
     if (baseTypeAST != null) {
       baseTypeAST.check();
       if (baseTypeAST.getType() == null) {
-        addError(new Undefined(token));
+        addError(new Undefined(ctx));
         return;
       }
       type = baseTypeAST.getType();
@@ -60,7 +61,7 @@ public class PairElemTypeAST extends NodeAST {
     if (arrayTypeAST != null) {
       arrayTypeAST.check();
       if (arrayTypeAST.getType() == null) {
-        addError(new Undefined(token));
+        addError(new Undefined(ctx));
         return;
       }
       type = arrayTypeAST.getType();

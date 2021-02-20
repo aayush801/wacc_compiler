@@ -5,6 +5,7 @@ import backend.registers.Register;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.PAIR;
 import java.util.List;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 // A Pair Type has 2 PairElemTypes.
@@ -15,9 +16,9 @@ public class PairTypeAST extends TypeAST {
   private final PairElemTypeAST pairElemType2;
   private TYPE type;
 
-  public PairTypeAST(Token token, PairElemTypeAST pairElemType1,
+  public PairTypeAST(ParserRuleContext ctx, PairElemTypeAST pairElemType1,
       PairElemTypeAST pairElemType2) {
-    super(token);
+    super(ctx);
     this.pairElemType1 = pairElemType1;
     this.pairElemType2 = pairElemType2;
   }

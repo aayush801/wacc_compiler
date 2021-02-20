@@ -31,4 +31,9 @@ public class INT extends TYPE {
     return o instanceof INT;
   }
 
+  @Override
+  public int getSize(){
+    return 4;
+  }
+
 }

@@ -16,6 +16,6 @@ public class ImmediateOffset extends AddressingMode {
   @Override
   public String toString() {
     return (offset.getValue() == 0) ? new ZeroOffset(Rn).toString()
-        : "[ " + Rn + ", " + offset + " ]";
+        : "[" + Rn + ", " + offset + "]";
   }
 }

@@ -10,7 +10,7 @@ public class ImmediateAddress extends AddressingMode {
 
   @Override
   public String toString() {
-    return "=" + Integer.toHexString(address);
+    return "=" + address;
   }
 
 }

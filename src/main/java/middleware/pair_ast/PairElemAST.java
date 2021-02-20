@@ -9,6 +9,7 @@ import frontend.identifier_objects.basic_types.PAIR;
 import java.util.List;
 import middleware.NodeAST;
 import middleware.expression_ast.ExpressionAST;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class PairElemAST extends NodeAST {
@@ -17,8 +18,8 @@ public class PairElemAST extends NodeAST {
   TYPE type;
   int index;
 
-  public PairElemAST(Token token, ExpressionAST expr, int index) {
-    super(token);
+  public PairElemAST(ParserRuleContext ctx, ExpressionAST expr, int index) {
+    super(ctx);
     this.expr = expr;
     this.index = index;
   }
@@ -37,7 +38,7 @@ public class PairElemAST extends NodeAST {
 
     if (!(exprType instanceof PAIR)) {
 
-      addError(new MismatchedTypes(token, exprType, new PAIR(new TYPE(), new TYPE())));
+      addError(new MismatchedTypes(ctx, exprType, new PAIR(new TYPE(), new TYPE())));
 
       return;
 
@@ -52,6 +53,11 @@ public class PairElemAST extends NodeAST {
     } else {
       type = pair.getSecond();
     }
+  }
+
+  @Override
+  public List<Instruction> translate(List<Register> registers) {
+    return null;
   }
 
 }

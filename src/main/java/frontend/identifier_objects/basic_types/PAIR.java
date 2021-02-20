@@ -44,4 +44,9 @@ public class PAIR extends TYPE {
     }
     return false;
   }
+
+  @Override
+  public int getSize(){
+    return 4;
+  }
 }

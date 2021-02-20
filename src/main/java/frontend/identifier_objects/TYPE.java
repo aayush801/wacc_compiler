@@ -19,4 +19,8 @@ public class TYPE extends IDENTIFIER {
   public boolean equals(Object o) {
     return o instanceof TYPE;
   }
+
+  public int getSize(){
+    throw new Error("ovveride method in TYPE");
+  }
 }

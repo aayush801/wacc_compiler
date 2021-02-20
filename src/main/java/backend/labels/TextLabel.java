@@ -1,14 +1,14 @@
-package backend.instructions;
+package backend.labels;
 
-import java.util.Arrays;
+import backend.instructions.Instruction;
 import java.util.List;
 
-public class Label extends Instruction {
+public class TextLabel extends Instruction {
 
   private final String name;
   private final List<Instruction> instructions;
 
-  public Label(String name, List<Instruction> instructions) {
+  public TextLabel(String name, List<Instruction> instructions) {
     this.name = name;
     this.instructions = instructions;
   }

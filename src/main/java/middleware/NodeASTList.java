@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class NodeASTList<T> extends NodeAST implements Iterable<T> {
@@ -16,13 +17,13 @@ public class NodeASTList<T> extends NodeAST implements Iterable<T> {
   // contains basic functions that process the list.
   // used for function parameter checking, among others.
 
-  public NodeASTList(Token token, List<T> ASTList) {
-    super(token);
+  public NodeASTList(ParserRuleContext ctx, List<T> ASTList) {
+    super(ctx);
     this.ASTList = ASTList;
   }
 
-  public NodeASTList(Token token) {
-    super(token);
+  public NodeASTList(ParserRuleContext ctx) {
+    super(ctx);
     this.ASTList = new ArrayList<T>();
   }
 

@@ -5,6 +5,7 @@ import backend.registers.Register;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.ARRAY;
 import java.util.List;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 // Class that contains the actual type of an ArrayType.
@@ -17,14 +18,14 @@ public class ArrayTypeAST extends TypeAST {
   private BaseTypeAST baseTypeAST;
   private PairTypeAST pairTypeAST;
 
-  public ArrayTypeAST(Token token, int dimensions, PairTypeAST pairTypeAST) {
-    super(token);
+  public ArrayTypeAST(ParserRuleContext ctx, int dimensions, PairTypeAST pairTypeAST) {
+    super(ctx);
     this.dimensions = dimensions;
     this.pairTypeAST = pairTypeAST;
   }
 
-  public ArrayTypeAST(Token token, int dimensions, BaseTypeAST baseTypeAST) {
-    super(token);
+  public ArrayTypeAST(ParserRuleContext ctx, int dimensions, BaseTypeAST baseTypeAST) {
+    super(ctx);
     this.dimensions = dimensions;
     this.baseTypeAST = baseTypeAST;
   }

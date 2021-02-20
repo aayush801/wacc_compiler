@@ -3,19 +3,19 @@ package middleware.statement_ast;
 import backend.instructions.Instruction;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
-import errors.semantic_errors.Undefined;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.basic_types.CHAR;
 import frontend.identifier_objects.basic_types.INT;
 import java.util.List;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class ReadAST extends StatementAST {
 
   private final LHSAssignAST LHS;
 
-  public ReadAST(Token token, LHSAssignAST LHS) {
-    super(token);
+  public ReadAST(ParserRuleContext ctx, LHSAssignAST LHS) {
+    super(ctx);
     this.LHS = LHS;
   }
 
@@ -32,9 +32,14 @@ public class ReadAST extends StatementAST {
 
      if (!(type instanceof INT || type instanceof CHAR)) {
 
-       addError(new MismatchedTypes(token, type, new INT(), new CHAR()));
+       addError(new MismatchedTypes(ctx, type, new INT(), new CHAR()));
 
      }
     }
+  }
+
+  @Override
+  public List<Instruction> translate(List<Register> registers) {
+    return null;
   }
 }

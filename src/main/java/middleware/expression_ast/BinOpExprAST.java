@@ -8,6 +8,7 @@ import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.BOOL;
 import frontend.identifier_objects.basic_types.CHAR;
 import frontend.identifier_objects.basic_types.INT;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class BinOpExprAST extends ExpressionAST {
@@ -16,9 +17,9 @@ public class BinOpExprAST extends ExpressionAST {
   private final ExpressionAST rightExprAST;
   private final String operator;
 
-  public BinOpExprAST(Token token, ExpressionAST leftExprAST, String operator,
+  public BinOpExprAST(ParserRuleContext ctx, ExpressionAST leftExprAST, String operator,
       ExpressionAST rightExprAST) {
-    super(token);
+    super(ctx);
     this.leftExprAST = leftExprAST;
     this.rightExprAST = rightExprAST;
     this.operator = operator;
@@ -35,13 +36,13 @@ public class BinOpExprAST extends ExpressionAST {
 
     if (!leftIsInt) {
 
-      addError(new MismatchedTypes(leftExprAST.token, leftType, new INT()));
+      addError(new MismatchedTypes(leftExprAST.ctx, leftType, new INT()));
 
     }
 
     if (!rightIsInt) {
 
-      addError(new MismatchedTypes(rightExprAST.token, rightType, new INT()));
+      addError(new MismatchedTypes(rightExprAST.ctx, rightType, new INT()));
 
     }
 
@@ -59,14 +60,14 @@ public class BinOpExprAST extends ExpressionAST {
 
     if (!leftIntOrChar) {
 
-      addError(new MismatchedTypes(leftExprAST.token, leftType, new INT(), new CHAR()));
+      addError(new MismatchedTypes(leftExprAST.ctx, leftType, new INT(), new CHAR()));
       error = true;
 
     }
 
     if (!rightIntOrChar) {
 
-      addError(new MismatchedTypes(rightExprAST.token, rightType, new INT(), new CHAR()));
+      addError(new MismatchedTypes(rightExprAST.ctx, rightType, new INT(), new CHAR()));
       error = true;
 
     }
@@ -75,7 +76,7 @@ public class BinOpExprAST extends ExpressionAST {
 
       if (!isCompatible(leftType, rightType)) {
 
-        addError(new MismatchedTypes(token, rightType, leftType));
+        addError(new MismatchedTypes(ctx, rightType, leftType));
 
       }
 
@@ -91,13 +92,13 @@ public class BinOpExprAST extends ExpressionAST {
 
     if (!leftIsBool) {
 
-      addError(new MismatchedTypes(leftExprAST.token, new BOOL(), leftType));
+      addError(new MismatchedTypes(leftExprAST.ctx, new BOOL(), leftType));
 
     }
 
     if (!rightIsBool) {
 
-      addError(new MismatchedTypes(rightExprAST.token, new BOOL(), rightType));
+      addError(new MismatchedTypes(rightExprAST.ctx, new BOOL(), rightType));
 
     }
 
@@ -109,7 +110,7 @@ public class BinOpExprAST extends ExpressionAST {
 
     if (!isCompatible(leftType, rightType)) {
 
-      addError(new MismatchedTypes(token, rightType, leftType));
+      addError(new MismatchedTypes(ctx, rightType, leftType));
 
     }
 
@@ -131,13 +132,13 @@ public class BinOpExprAST extends ExpressionAST {
 
     if (leftType != null && !leftIsType) {
 
-      addError(new expressionNotFound(leftExprAST.token, leftType));
+      addError(new expressionNotFound(leftExprAST.ctx, leftType));
 
     }
 
     if (rightType != null && !rightIsType) {
 
-      addError(new expressionNotFound(rightExprAST.token, rightType));
+      addError(new expressionNotFound(rightExprAST.ctx, rightType));
 
     }
 
@@ -174,7 +175,7 @@ public class BinOpExprAST extends ExpressionAST {
         break;
       // Unrecognized Operator
       default:
-        addError(new NotAFunction(token));
+        addError(new NotAFunction(ctx));
         break;
     }
 

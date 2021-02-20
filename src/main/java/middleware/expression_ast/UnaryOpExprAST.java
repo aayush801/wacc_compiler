@@ -9,6 +9,7 @@ import frontend.identifier_objects.basic_types.ARRAY;
 import frontend.identifier_objects.basic_types.BOOL;
 import frontend.identifier_objects.basic_types.CHAR;
 import frontend.identifier_objects.basic_types.INT;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class UnaryOpExprAST extends ExpressionAST {
@@ -16,8 +17,8 @@ public class UnaryOpExprAST extends ExpressionAST {
   private final ExpressionAST expr;
   private final String operator;
 
-  public UnaryOpExprAST(Token token, ExpressionAST expr, String operator) {
-    super(token);
+  public UnaryOpExprAST(ParserRuleContext ctx, ExpressionAST expr, String operator) {
+    super(ctx);
     this.expr = expr;
     this.operator = operator;
   }
@@ -28,7 +29,7 @@ public class UnaryOpExprAST extends ExpressionAST {
 
     if (!(exprType instanceof BOOL)) {
 
-      addError(new MismatchedTypes(token, exprType, new BOOL()));
+      addError(new MismatchedTypes(ctx, exprType, new BOOL()));
 
     }
 
@@ -39,7 +40,7 @@ public class UnaryOpExprAST extends ExpressionAST {
 
     if (!(exprType instanceof INT)) {
 
-      addError(new MismatchedTypes(token, exprType, new INT()));
+      addError(new MismatchedTypes(ctx, exprType, new INT()));
 
     }
 
@@ -50,7 +51,7 @@ public class UnaryOpExprAST extends ExpressionAST {
 
     if (!(exprType instanceof ARRAY)) {
 
-      addError(new MismatchedTypes(token, exprType, new ARRAY(new TYPE())));
+      addError(new MismatchedTypes(ctx, exprType, new ARRAY(new TYPE())));
 
     }
 
@@ -61,7 +62,7 @@ public class UnaryOpExprAST extends ExpressionAST {
 
     if (!(exprType instanceof INT)) {
 
-      addError(new MismatchedTypes(token, exprType, new INT()));
+      addError(new MismatchedTypes(ctx, exprType, new INT()));
 
     }
 
@@ -72,7 +73,7 @@ public class UnaryOpExprAST extends ExpressionAST {
 
     if (!(exprType instanceof CHAR)) {
 
-      addError(new MismatchedTypes(token, exprType, new CHAR()));
+      addError(new MismatchedTypes(ctx, exprType, new CHAR()));
 
     }
 
@@ -94,7 +95,7 @@ public class UnaryOpExprAST extends ExpressionAST {
     }
 
     if (!(exprType instanceof TYPE)) {
-      addError(new expressionNotFound(token, exprType));
+      addError(new expressionNotFound(ctx, exprType));
       return;
     }
 
@@ -121,7 +122,7 @@ public class UnaryOpExprAST extends ExpressionAST {
         break;
       // Unrecognized Operator
       default:
-        addError(new NotAFunction(token));
+        addError(new NotAFunction(ctx));
         break;
     }
 

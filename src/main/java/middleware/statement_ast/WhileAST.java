@@ -8,6 +8,7 @@ import frontend.identifier_objects.basic_types.BOOL;
 import java.util.List;
 import middleware.expression_ast.ExpressionAST;
 import middleware.symbol_table.SymbolTable;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class WhileAST extends StatementAST {
@@ -15,9 +16,9 @@ public class WhileAST extends StatementAST {
   private final ExpressionAST expressionAST;
   private final StatementAST statementAST;
 
-  public WhileAST(Token token, ExpressionAST expressionAST,
+  public WhileAST(ParserRuleContext ctx, ExpressionAST expressionAST,
       StatementAST statementAST) {
-    super(token);
+    super(ctx);
     this.expressionAST = expressionAST;
     this.statementAST = statementAST;
   }
@@ -37,7 +38,7 @@ public class WhileAST extends StatementAST {
     if (!(expressionAST.getType() instanceof BOOL)) {
 
       addError(new MismatchedTypes(
-          expressionAST.token, expressionAST.getType(), new BOOL())
+          expressionAST.ctx, expressionAST.getType(), new BOOL())
       );
 
       return;
@@ -51,6 +52,11 @@ public class WhileAST extends StatementAST {
     statementAST.check();
     ST = ST.getEncSymTable();
 
+  }
+
+  @Override
+  public List<Instruction> translate(List<Register> registers) {
+    return null;
   }
 
 }

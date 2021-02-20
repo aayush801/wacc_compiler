@@ -30,4 +30,9 @@ public class ARRAY extends TYPE {
     }
     return false;
   }
+
+  @Override
+  public int getSize(){
+    return 4;
+  }
 }

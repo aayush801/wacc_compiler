@@ -1,6 +1,7 @@
 package errors.semantic_errors;
 
 import frontend.identifier_objects.IDENTIFIER;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class MismatchedTypes extends WaccSemanticError {
@@ -10,15 +11,15 @@ public class MismatchedTypes extends WaccSemanticError {
   private IDENTIFIER expectedOther;
 
 
-  public MismatchedTypes(Token token, IDENTIFIER actual, IDENTIFIER expected) {
-    super(token);
+  public MismatchedTypes(ParserRuleContext ctx, IDENTIFIER actual, IDENTIFIER expected) {
+    super(ctx);
     this.actual = actual;
     this.expected = expected;
   }
 
-  public MismatchedTypes(Token token, IDENTIFIER actual, IDENTIFIER expected,
+  public MismatchedTypes(ParserRuleContext ctx, IDENTIFIER actual, IDENTIFIER expected,
       IDENTIFIER expectedOther) {
-    super(token);
+    super(ctx);
     twoTypes = true;
     this.actual = actual;
     this.expected = expected;

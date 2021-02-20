@@ -1,5 +1,6 @@
 package errors.semantic_errors;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class InvalidArguments extends WaccSemanticError {
@@ -7,8 +8,8 @@ public class InvalidArguments extends WaccSemanticError {
   protected String func;
   protected int required, given;
 
-  public InvalidArguments(Token token, String func, int required, int given) {
-    super(token);
+  public InvalidArguments(ParserRuleContext ctx, String func, int required, int given) {
+    super(ctx);
     this.func = func;
     this.required = required;
     this.given = given;

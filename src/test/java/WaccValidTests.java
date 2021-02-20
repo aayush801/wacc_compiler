@@ -1,5 +1,6 @@
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,9 +19,10 @@ public class WaccValidTests {
     if (dir.isDirectory()) {
       directoryListing = dir.listFiles();
       assert directoryListing != null;
-
       for (File child : directoryListing) {
         if (child.isFile()) {
+          System.out.println("==============================================");
+          System.out.println(child.getName());
           compiler = new WaccCompiler(new FileInputStream(child));
           errorCode = compiler.compile();
 
@@ -30,6 +32,9 @@ public class WaccValidTests {
           }
 
           assertThat(errorCode, is(ErrorCode.SUCCESS));
+          System.out.println("==============================================");
+        }else{
+          fail();
         }
       }
     }
@@ -49,14 +54,27 @@ public class WaccValidTests {
   }
 
   @Test
-  public void basic_tests() throws IOException {
-    String base = "test_data/valid/basic/";
+  public void basic_tests_exit() throws IOException {
+    String base = "test_data/valid/basic/exit/";
+    files_checker(base);
+  }
+
+  @Test
+  public void basic_tests_skip() throws IOException {
+    String base = "test_data/valid/basic/skip/";
+    files_checker(base);
+  }
+
+
+  @Test
+  public void function_test_nested() throws IOException {
+    String base = "test_data/valid/function/nested_functions/";
     files_checker(base);
   }
 
   @Test
   public void function_tests() throws IOException {
-    String base = "test_data/valid/function/";
+    String base = "test_data/valid/function/simple_functions/";
     files_checker(base);
   }
 
@@ -93,8 +111,23 @@ public class WaccValidTests {
   }
 
   @Test
-  public void runtimeErrTests() throws IOException {
-    String base = "test_data/valid/runtimeErr/";
+  public void runtimeErrTestsArrayOOB() throws IOException {
+    String base = "test_data/valid/runtimeErr/arrayOutOfBounds";
+    files_checker(base);
+  }
+  @Test
+  public void runtimeErrTestsDivideByZero() throws IOException {
+    String base = "test_data/valid/runtimeErr/divideByZero";
+    files_checker(base);
+  }
+  @Test
+  public void runtimeErrTestsIntegerOverflow() throws IOException {
+    String base = "test_data/valid/runtimeErr/integerOverflow";
+    files_checker(base);
+  }
+  @Test
+  public void runtimeErrTestsNullDereference() throws IOException {
+    String base = "test_data/valid/runtimeErr/nullDereference";
     files_checker(base);
   }
 

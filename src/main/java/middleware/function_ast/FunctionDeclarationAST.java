@@ -12,6 +12,7 @@ import middleware.NodeAST;
 import middleware.NodeASTList;
 import middleware.statement_ast.StatementAST;
 import middleware.types_ast.TypeAST;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import middleware.symbol_table.SymbolTable;
 
@@ -23,9 +24,9 @@ public class FunctionDeclarationAST extends NodeAST {
   private final StatementAST statementAST;
   public FUNCTION funcObj;
 
-  public FunctionDeclarationAST(Token token, TypeAST typeAST, String funcName,
+  public FunctionDeclarationAST(ParserRuleContext ctx, TypeAST typeAST, String funcName,
       NodeASTList<ParamAST> paramASTList, StatementAST statementAST) {
-    super(token);
+    super(ctx);
     this.typeAST = typeAST;
     this.funcName = funcName;
     this.paramASTList = paramASTList;
@@ -37,9 +38,9 @@ public class FunctionDeclarationAST extends NodeAST {
     TYPE type = typeAST.getType();
     IDENTIFIER function = ST.lookup(funcName);
     if (type == null) {
-      addError(new Undefined(token));
+      addError(new Undefined(ctx));
     } else if (function != null) {
-      addError(new DuplicateIdentifier(token));
+      addError(new DuplicateIdentifier(ctx));
     } else {
       funcObj = new FUNCTION(type);
       ST.add(funcName, funcObj);
@@ -71,6 +72,11 @@ public class FunctionDeclarationAST extends NodeAST {
     }
 
     ST = ST.getEncSymTable();
+  }
+
+  @Override
+  public List<Instruction> translate(List<Register> registers) {
+    return null;
   }
 
 }

@@ -21,4 +21,9 @@ public class CHAR extends TYPE {
   public boolean equals(Object o) {
     return o instanceof CHAR;
   }
+
+  @Override
+  public int getSize(){
+    return 1;
+  }
 }

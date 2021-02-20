@@ -8,6 +8,7 @@ import frontend.identifier_objects.basic_types.BOOL;
 import java.util.List;
 import middleware.expression_ast.ExpressionAST;
 import middleware.symbol_table.SymbolTable;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class IfElseAST extends StatementAST {
@@ -16,9 +17,9 @@ public class IfElseAST extends StatementAST {
   private final StatementAST firstStatAST;
   private final StatementAST secondStatAST;
 
-  public IfElseAST(Token token, ExpressionAST expressionAST,
+  public IfElseAST(ParserRuleContext ctx, ExpressionAST expressionAST,
       StatementAST firstStatAST, StatementAST secondStatAST) {
-    super(token);
+    super(ctx);
     this.expressionAST = expressionAST;
     this.firstStatAST = firstStatAST;
     this.secondStatAST = secondStatAST;
@@ -38,7 +39,7 @@ public class IfElseAST extends StatementAST {
     // verify that the condition is a boolean.
     if (!(type instanceof BOOL)) {
       addError(new MismatchedTypes(
-          expressionAST.token, expressionAST.getType(), new BOOL())
+          expressionAST.ctx, expressionAST.getType(), new BOOL())
       );
       return;
     }
@@ -61,6 +62,11 @@ public class IfElseAST extends StatementAST {
     // Reset symbol table.
     ST = ST.getEncSymTable();
 
+  }
+
+  @Override
+  public List<Instruction> translate(List<Register> registers) {
+    return null;
   }
 
 }

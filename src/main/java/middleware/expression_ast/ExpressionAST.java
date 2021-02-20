@@ -4,17 +4,19 @@ package middleware.expression_ast;
 import backend.instructions.Instruction;
 import backend.registers.Register;
 import frontend.identifier_objects.IDENTIFIER;
+import frontend.identifier_objects.TYPE;
 import java.util.List;
 import middleware.NodeAST;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 
 public class ExpressionAST extends NodeAST {
 
-  protected IDENTIFIER type;
+  protected TYPE type;
 
-  public ExpressionAST(Token token) {
-    super(token);
+  public ExpressionAST(ParserRuleContext ctx) {
+    super(ctx);
   }
 
   @Override
@@ -24,10 +26,11 @@ public class ExpressionAST extends NodeAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
+
     return null;
   }
 
-  public IDENTIFIER getType() {
+  public TYPE getType() {
     return type;
   }
 

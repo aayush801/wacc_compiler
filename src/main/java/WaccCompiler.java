@@ -4,7 +4,6 @@ import antlr.WaccLexer;
 import antlr.WaccParser;
 import antlr.WaccParser.ProgContext;
 import backend.instructions.Instruction;
-import backend.instructions.Label;
 import backend.registers.LinkRegister;
 import backend.registers.ProgramCounter;
 import backend.registers.Register;
@@ -15,8 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import middleware.NodeAST;
 import middleware.WaccASTParser;
@@ -136,18 +133,9 @@ public class WaccCompiler {
   }
 
   public void translateCode(NodeAST tree){
-    List<Register> registers = new ArrayList<>();
 
-    for (int i = 0; i <= 12; i++) {
-      registers.add(new Register(i));
-    }
+   System.out.println(tree.translate());
 
-    registers.add(new ProgramCounter());
-    registers.add(new LinkRegister());
-    registers.add(new StackPointer());
-
-    List<Instruction> mainInstructs = tree.translate(registers);
-    mainInstructs.forEach(System.out::println);
   }
 
   public List<WaccError> getErrors() {

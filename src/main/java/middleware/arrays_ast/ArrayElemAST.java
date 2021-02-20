@@ -11,6 +11,7 @@ import frontend.identifier_objects.basic_types.INT;
 import middleware.NodeAST;
 import middleware.NodeASTList;
 import middleware.expression_ast.ExpressionAST;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class ArrayElemAST extends ExpressionAST {
@@ -19,9 +20,9 @@ public class ArrayElemAST extends ExpressionAST {
   private final NodeASTList<ExpressionAST> expressionASTS;
   public TYPE type;
 
-  public ArrayElemAST(Token token, String arrayName,
+  public ArrayElemAST(ParserRuleContext ctx, String arrayName,
       NodeASTList<ExpressionAST> expressionASTS) {
-    super(token);
+    super(ctx);
     this.arrayName = arrayName;
     this.expressionASTS = expressionASTS;
   }
@@ -38,7 +39,7 @@ public class ArrayElemAST extends ExpressionAST {
 
     // Verify that array name is found.
     if (array == null) {
-      addError(new Undefined(token, arrayName));
+      addError(new Undefined(ctx, arrayName));
       return;
     }
 
@@ -54,7 +55,7 @@ public class ArrayElemAST extends ExpressionAST {
 
     // Verify that array is an ARRAY at this point.
     if (!(array instanceof ARRAY)) {
-      addError(new MismatchedTypes(token, array, new ARRAY(new TYPE())));
+      addError(new MismatchedTypes(ctx, array, new ARRAY(new TYPE())));
       return;
     }
 
@@ -64,7 +65,7 @@ public class ArrayElemAST extends ExpressionAST {
       if (!(expressionAST.getType() instanceof INT)) {
         addError(
             new MismatchedTypes(
-                expressionAST.token,
+                expressionAST.ctx,
                 expressionAST.getType(),
                 new INT())
         );

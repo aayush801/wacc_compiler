@@ -2,6 +2,7 @@ package middleware.symbol_table;
 
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
+import frontend.identifier_objects.VARIABLE;
 import frontend.identifier_objects.basic_types.BOOL;
 import frontend.identifier_objects.basic_types.CHAR;
 import frontend.identifier_objects.basic_types.INT;
@@ -9,12 +10,14 @@ import frontend.identifier_objects.basic_types.PAIR;
 import frontend.identifier_objects.basic_types.STR;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SymbolTable {
 
   private final SymbolTable encSymTable;
   private final Map<String, IDENTIFIER> dict;
   protected TYPE scopeReturnType = null;
+  public int index = 0;
 
   public SymbolTable() {
     this(null);
@@ -62,9 +65,6 @@ public class SymbolTable {
     return scopeReturnType;
   }
 
-  public int size() {
-    return dict.size();
-  }
 
   public void add(String name, IDENTIFIER obj) {
     dict.put(name, obj);
@@ -83,6 +83,18 @@ public class SymbolTable {
       obj = st.lookup(name);
     }
     return obj;
+  }
+
+
+  public int sizeOfVariablesDeclaredInScope() {
+    AtomicInteger count = new AtomicInteger();
+    dict.values().forEach(v -> {
+      if (v instanceof VARIABLE) {
+        TYPE varType = ((VARIABLE) v).getType();
+        count.addAndGet(varType.getSize());
+      }
+    });
+    return count.get();
   }
 
 }

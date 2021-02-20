@@ -6,20 +6,18 @@ import backend.instructions.Move;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
-import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.INT;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import middleware.expression_ast.ExpressionAST;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class ExitAST extends StatementAST {
 
   private final ExpressionAST expressionAST;
 
-  public ExitAST(Token token, ExpressionAST expressionAST) {
-    super(token);
+  public ExitAST(ParserRuleContext ctx, ExpressionAST expressionAST) {
+    super(ctx);
     this.expressionAST = expressionAST;
   }
 
@@ -36,7 +34,7 @@ public class ExitAST extends StatementAST {
     // Verify that the expression is an INT.
     if (!(type instanceof INT)) {
       addError(new MismatchedTypes(
-          expressionAST.token, expressionAST.getType(), new INT())
+          expressionAST.ctx, expressionAST.getType(), new INT())
       );
     }
 
@@ -44,7 +42,7 @@ public class ExitAST extends StatementAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    List<Instruction> instructions = new ArrayList<>();//expressionAST.translate(registers);
+    List<Instruction> instructions = expressionAST.translate(registers);
     Register intReg = registers.get(0);
 
     if(intReg.getNumber() != 0) instructions.add(new Move(new Register(0), intReg));

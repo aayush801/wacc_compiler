@@ -1,19 +1,19 @@
 package middleware;
 
 import backend.instructions.Instruction;
-import backend.instructions.Label;
 import backend.instructions.Load;
+import backend.instructions.addr_modes.Address;
 import backend.instructions.stack_instructions.Pop;
 import backend.instructions.stack_instructions.Push;
-import backend.instructions.addr_modes.Address;
+import backend.labels.InstructionLabel;
 import backend.registers.LinkRegister;
 import backend.registers.ProgramCounter;
 import backend.registers.Register;
-import java.util.Collections;
 import java.util.List;
 import middleware.function_ast.FunctionDeclarationAST;
 import middleware.statement_ast.StatementAST;
-import org.antlr.v4.runtime.Token;
+import middleware.symbol_table.SymbolTable;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 // AST Node for the entire program.
 
@@ -21,18 +21,19 @@ public class ProgAST extends NodeAST {
 
   private final NodeASTList<FunctionDeclarationAST> functionDeclarationASTS;
   private final StatementAST statementAST;
+  private SymbolTable scopeST;
 
-  public ProgAST(Token token,
+  public ProgAST(ParserRuleContext ctx,
       NodeASTList<FunctionDeclarationAST> functionDeclarationASTS,
       StatementAST statementAST) {
-    super(token);
+    super(ctx);
     this.functionDeclarationASTS = functionDeclarationASTS;
     this.statementAST = statementAST;
   }
 
   @Override
   public void check() {
-
+    scopeST = ST;
     // Go through any functions declared, and record them in the top symbol table.
     // This is done in a separate pass because a function body may call other functions
     // declared later on.
@@ -51,22 +52,22 @@ public class ProgAST extends NodeAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
+
     // translate statement body
-    List<Instruction> instructions = statementAST.translate(registers);
+    List<Instruction> instructions = translateScope(scopeST, statementAST.translate(registers));
 
     // boiler plate front
     instructions.add(0, new Push(new LinkRegister()));
-
 
     // boiler plate back
     instructions.add(new Load(new Register(0), new Address("0")));
     instructions.add(new Pop(new ProgramCounter()));
 
-    //instructions.add(new Label(".ltorg", new ArrayList<>()));
+    program.addMain(new InstructionLabel("main", instructions).setLastFunction());
 
     // need to add support for funcDeclarations
 
     // enclose statement body instructions in the main section
-    return Collections.singletonList(new Label("main", instructions));
+    return null;
   }
 }

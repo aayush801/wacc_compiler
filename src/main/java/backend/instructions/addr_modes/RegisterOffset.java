@@ -19,6 +19,6 @@ public class RegisterOffset extends AddressingMode {
 
   @Override
   public String toString() {
-    return "[ " + Rn + ", " + getSign() + Rm + " ]";
+    return "[" + Rn + ", " + getSign() + Rm + "]";
   }
 }

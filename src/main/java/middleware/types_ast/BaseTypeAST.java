@@ -8,6 +8,7 @@ import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import java.util.List;
 import middleware.NodeAST;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 // A basic type, which just has the type and the name of the identifier.
@@ -17,8 +18,8 @@ public class BaseTypeAST extends TypeAST {
   String typeName;
   private TYPE type;
 
-  public BaseTypeAST(Token token, String typename) {
-    super(token);
+  public BaseTypeAST(ParserRuleContext ctx, String typename) {
+    super(ctx);
     this.typeName = typename;
   }
 
@@ -34,9 +35,9 @@ public class BaseTypeAST extends TypeAST {
 
     // verify that identifier is not null and is of type TYPE.
     if (identifier == null) {
-      addError(new Undefined(token));
+      addError(new Undefined(ctx));
     } else if (!(identifier instanceof TYPE)) {
-      addError(new MismatchedTypes(token, identifier, new TYPE()));
+      addError(new MismatchedTypes(ctx, identifier, new TYPE()));
     } else {
       type = (TYPE) identifier;
     }

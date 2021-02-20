@@ -14,4 +14,9 @@ public class STR extends TYPE {
   public boolean equals(Object o) {
     return o instanceof STR;
   }
+
+  @Override
+  public int getSize(){
+    return 4;
+  }
 }

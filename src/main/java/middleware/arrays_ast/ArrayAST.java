@@ -10,6 +10,7 @@ import java.util.List;
 import middleware.NodeAST;
 import middleware.NodeASTList;
 import middleware.expression_ast.ExpressionAST;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class ArrayAST extends NodeAST {
@@ -17,8 +18,8 @@ public class ArrayAST extends NodeAST {
   private final NodeASTList<ExpressionAST> expressionASTList;
   private ARRAY arrayObj;
 
-  public ArrayAST(Token token, NodeASTList<ExpressionAST> expressionASTList) {
-    super(token);
+  public ArrayAST(ParserRuleContext ctx, NodeASTList<ExpressionAST> expressionASTList) {
+    super(ctx);
     this.expressionASTList = expressionASTList;
   }
 
@@ -44,7 +45,7 @@ public class ArrayAST extends NodeAST {
       IDENTIFIER curType = expressionASTList.get(0).getType();
 
       if (!(curType instanceof TYPE)) {
-        addError(new MismatchedTypes(expressionASTList.get(0).token, curType, new TYPE()));
+        addError(new MismatchedTypes(expressionASTList.get(0).ctx, curType, new TYPE()));
 
       } else {
 
@@ -57,7 +58,7 @@ public class ArrayAST extends NodeAST {
           if (!(isCompatible(expressionAST.getType(), curType))) {
             addError(
                 new MismatchedTypes(
-                    expressionAST.token,
+                    expressionAST.ctx,
                     expressionAST.getType(),
                     curType)
             );

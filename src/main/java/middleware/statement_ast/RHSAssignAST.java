@@ -2,9 +2,6 @@ package middleware.statement_ast;
 
 import backend.instructions.Instruction;
 import backend.registers.Register;
-import errors.semantic_errors.MismatchedTypes;
-import errors.semantic_errors.Undefined;
-import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import java.util.List;
 import middleware.arrays_ast.ArrayAST;
@@ -12,7 +9,7 @@ import middleware.expression_ast.ExpressionAST;
 import middleware.function_ast.FunctionCallAST;
 import middleware.pair_ast.NewPairAST;
 import middleware.pair_ast.PairElemAST;
-import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 public class RHSAssignAST extends StatementAST {
 
@@ -25,32 +22,32 @@ public class RHSAssignAST extends StatementAST {
   private TYPE type;
 
   // RHS Assign is an expression.
-  public RHSAssignAST(Token token, ExpressionAST expressionAST) {
-    super(token);
+  public RHSAssignAST(ParserRuleContext ctx, ExpressionAST expressionAST) {
+    super(ctx);
     this.expressionAST = expressionAST;
   }
 
   // RHS Assign is an array.
-  public RHSAssignAST(Token token, ArrayAST arrayAST) {
-    super(token);
+  public RHSAssignAST(ParserRuleContext ctx, ArrayAST arrayAST) {
+    super(ctx);
     this.arrayAST = arrayAST;
   }
 
   // RHS Assign is a newpair.
-  public RHSAssignAST(Token token, NewPairAST newPairAST) {
-    super(token);
+  public RHSAssignAST(ParserRuleContext ctx, NewPairAST newPairAST) {
+    super(ctx);
     this.newPairAST = newPairAST;
   }
 
   // RHS Assign is a pairElem.
-  public RHSAssignAST(Token token, PairElemAST pairElemAST) {
-    super(token);
+  public RHSAssignAST(ParserRuleContext ctx, PairElemAST pairElemAST) {
+    super(ctx);
     this.pairElemAST = pairElemAST;
   }
 
   // RHS Assign is a function call.
-  public RHSAssignAST(Token token, FunctionCallAST functionCallAST) {
-    super(token);
+  public RHSAssignAST(ParserRuleContext ctx, FunctionCallAST functionCallAST) {
+    super(ctx);
     this.functionCallAST = functionCallAST;
   }
 
@@ -66,19 +63,12 @@ public class RHSAssignAST extends StatementAST {
       // check the expression.
       expressionAST.check();
 
-      if(expressionAST.getType() == null){
+      if (expressionAST.getType() == null) {
         // error has occurred elsewhere
         return;
       }
 
-      // Verify that the expressions is a TYPE i.e. not a function name.
-      // If it is a TYPE, then set type.
-      if (!(expressionAST.getType() instanceof TYPE)) {
-        addError(new MismatchedTypes(token, expressionAST.getType(), new TYPE()));
-        return;
-      }
-
-      type = (TYPE) expressionAST.getType();
+      type = expressionAST.getType();
 
       return;
 
@@ -91,7 +81,7 @@ public class RHSAssignAST extends StatementAST {
       arrayAST.check();
 
       // Verify that the array is not null. If it is present, set the type.
-      if(arrayAST.getArrayObj() == null){
+      if (arrayAST.getArrayObj() == null) {
         // error has occurred elsewhere
         return;
       }
@@ -151,6 +141,41 @@ public class RHSAssignAST extends StatementAST {
 
     }
 
+  }
+
+  @Override
+  public List<Instruction> translate(List<Register> registers) {
+    if (expressionAST != null) {
+
+      return expressionAST.translate(registers);
+
+    }
+
+    if (arrayAST != null) {
+
+      return arrayAST.translate(registers);
+
+    }
+
+    if (newPairAST != null) {
+
+      return newPairAST.translate(registers);
+
+    }
+
+    if (pairElemAST != null) {
+
+      return pairElemAST.translate(registers);
+
+    }
+
+    if (functionCallAST != null) {
+
+      return functionCallAST.translate(registers);
+
+    }
+
+    return null;
   }
 }
 

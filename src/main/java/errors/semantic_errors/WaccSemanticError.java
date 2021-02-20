@@ -1,16 +1,17 @@
 package errors.semantic_errors;
 
 import errors.WaccError;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public abstract class WaccSemanticError extends WaccError {
 
-  public WaccSemanticError(Token token) {
-    super(token);
+  public WaccSemanticError(ParserRuleContext ctx) {
+    super(ctx);
   }
 
-  public WaccSemanticError(Token token, String offendingSymbol) {
-    super(token, offendingSymbol);
+  public WaccSemanticError(ParserRuleContext ctx, String offendingSymbol) {
+    super(ctx, offendingSymbol);
   }
 
   @Override

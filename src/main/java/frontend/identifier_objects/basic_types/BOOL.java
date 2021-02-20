@@ -14,4 +14,9 @@ public class BOOL extends TYPE {
   public boolean equals(Object o) {
     return o instanceof BOOL;
   }
+
+  @Override
+  public int getSize(){
+    return 1;
+  }
 }

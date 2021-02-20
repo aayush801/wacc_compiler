@@ -8,6 +8,7 @@ import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import java.util.List;
 import middleware.expression_ast.ExpressionAST;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class ReturnAST extends StatementAST {
@@ -15,8 +16,8 @@ public class ReturnAST extends StatementAST {
   private final ExpressionAST expressionAST;
   private TYPE type;
 
-  public ReturnAST(Token token, ExpressionAST expressionAST) {
-    super(token);
+  public ReturnAST(ParserRuleContext ctx, ExpressionAST expressionAST) {
+    super(ctx);
     this.expressionAST = expressionAST;
   }
 
@@ -35,7 +36,7 @@ public class ReturnAST extends StatementAST {
     if (ST.getEncSymTable() == null) {
 
       // Trying to return from the main/global scope.
-      addError(new GlobalScope(token));
+      addError(new GlobalScope(ctx));
       return;
 
     }
@@ -47,7 +48,7 @@ public class ReturnAST extends StatementAST {
 
     if (!(type instanceof TYPE)) {
 
-      addError(new MismatchedTypes(expressionAST.token, type, new TYPE()));
+      addError(new MismatchedTypes(expressionAST.ctx, type, new TYPE()));
       return;
     }
 
@@ -57,7 +58,7 @@ public class ReturnAST extends StatementAST {
       // expected return type(of the function that return is in) do not match.
       addError(
           new MismatchedTypes(
-              expressionAST.token, type, ST.getScopeReturnType())
+              expressionAST.ctx, type, ST.getScopeReturnType())
       );
 
       return;
@@ -67,6 +68,11 @@ public class ReturnAST extends StatementAST {
     // Valid type, so set the type of this AST node.
     this.type = (TYPE) type;
 
+  }
+
+  @Override
+  public List<Instruction> translate(List<Register> registers) {
+    return null;
   }
 
 }

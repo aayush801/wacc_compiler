@@ -1,6 +1,7 @@
 package errors;
 
 import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public abstract class WaccError extends BaseErrorListener {
@@ -15,14 +16,14 @@ public abstract class WaccError extends BaseErrorListener {
     this.code = code;
   }
 
-  public WaccError(Token token) {
-    this.code = token.getText();
-    this.lineNo = token.getLine();
-    this.lineCol = token.getCharPositionInLine();
+  public WaccError(ParserRuleContext ctx) {
+    this.code = ctx.getText();
+    this.lineNo = ctx.getStart().getLine();
+    this.lineCol = ctx.getStart().getCharPositionInLine();
   }
 
-  public WaccError(Token token, String offendingSymbol) {
-    this(token);
+  public WaccError(ParserRuleContext ctx, String offendingSymbol) {
+    this(ctx);
     highlightOffendingSymbol(offendingSymbol);
   }
 

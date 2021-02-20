@@ -6,6 +6,7 @@ import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import java.util.List;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 
@@ -14,8 +15,8 @@ public class AssignmentAST extends StatementAST {
   private final LHSAssignAST LHS;
   private final RHSAssignAST RHS;
 
-  public AssignmentAST(Token token, LHSAssignAST LHS, RHSAssignAST RHS) {
-    super(token);
+  public AssignmentAST(ParserRuleContext ctx, LHSAssignAST LHS, RHSAssignAST RHS) {
+    super(ctx);
     this.LHS = LHS;
     this.RHS = RHS;
   }
@@ -35,10 +36,15 @@ public class AssignmentAST extends StatementAST {
 
       if (!isCompatible(leftType, rightType)) {
         // LHS and RHS not type compatible.
-        addError(new MismatchedTypes(token, rightType, leftType));
+        addError(new MismatchedTypes(ctx, rightType, leftType));
       }
 
     }
 
+  }
+
+  @Override
+  public List<Instruction> translate(List<Register> registers) {
+    return null;
   }
 }

@@ -12,6 +12,7 @@ import java.util.List;
 import middleware.NodeAST;
 import middleware.arrays_ast.ArrayElemAST;
 import middleware.pair_ast.PairElemAST;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
 public class LHSAssignAST extends StatementAST {
@@ -23,20 +24,20 @@ public class LHSAssignAST extends StatementAST {
   private TYPE type;
 
   // For when LHSAssign is an IDENT.
-  public LHSAssignAST(Token token, String ident) {
-    super(token);
+  public LHSAssignAST(ParserRuleContext ctx, String ident) {
+    super(ctx);
     this.identifier = ident;
   }
 
   // For when LHSAssign is an arrayElem.
-  public LHSAssignAST(Token token, ArrayElemAST arrayElemAST) {
-    super(token);
+  public LHSAssignAST(ParserRuleContext ctx, ArrayElemAST arrayElemAST) {
+    super(ctx);
     this.arrayElemAST = arrayElemAST;
   }
 
   // For when LHSAssign is a pairElem.
-  public LHSAssignAST(Token token, PairElemAST pairElemAST) {
-    super(token);
+  public LHSAssignAST(ParserRuleContext ctx, PairElemAST pairElemAST) {
+    super(ctx);
     this.pairElemAST = pairElemAST;
   }
 
@@ -55,7 +56,7 @@ public class LHSAssignAST extends StatementAST {
 
       // Verify that the identifier is defined.
       if (obj == null) {
-        addError(new Undefined(token, identifier));
+        addError(new Undefined(ctx, identifier));
         return;
       }
 
@@ -76,7 +77,7 @@ public class LHSAssignAST extends StatementAST {
       // If not stored as a TYPE (e.g. a function is stored as an IDENTIFIER),
       // this is a mismatched type error.
       if (!(obj instanceof TYPE)) {
-        addError(new expressionNotFound(token, obj));
+        addError(new expressionNotFound(ctx, obj));
         return;
       }
 
@@ -117,6 +118,11 @@ public class LHSAssignAST extends StatementAST {
 
     }
 
+  }
+
+  @Override
+  public List<Instruction> translate(List<Register> registers) {
+    return null;
   }
 
 }
