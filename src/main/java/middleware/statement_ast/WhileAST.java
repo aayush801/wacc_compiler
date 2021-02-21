@@ -10,7 +10,6 @@ import java.util.List;
 import middleware.expression_ast.ExpressionAST;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 public class WhileAST extends StatementAST {
 
@@ -48,7 +47,9 @@ public class WhileAST extends StatementAST {
 
     // expression valid, now check the statement inside the body.
     // create a new scope(symbol table) for the statement.
-    ST = new SymbolTable(ST);
+    int offset = ST.getAllocatedStackMemory();
+
+    ST = new SymbolTable(ST, offset);
     statementAST.check();
     ST = ST.getEncSymTable();
 

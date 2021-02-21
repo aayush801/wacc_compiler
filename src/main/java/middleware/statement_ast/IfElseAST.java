@@ -46,7 +46,8 @@ public class IfElseAST extends StatementAST {
     }
 
     // Create new symbol table(scope) for the 'then' statement.
-    ST = new SymbolTable(ST);
+    int offset = ST.getAllocatedStackMemory();
+    ST = new SymbolTable(ST, offset);
 
     // Verify the 'then' statement.
     firstStatAST.check();
@@ -55,7 +56,7 @@ public class IfElseAST extends StatementAST {
     ST = ST.getEncSymTable();
 
     // Create new symbol table(scope) for the 'else' statement.
-    ST = new SymbolTable(ST);
+    ST = new SymbolTable(ST, offset);
 
     // Verify the 'else' statement.
     secondStatAST.check();

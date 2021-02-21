@@ -38,12 +38,25 @@ public class CodeGenerationTests {
   }
 
   @Test
-  public void test() throws IOException {
+  public void testVarDeclaration() throws IOException {
     String instruction =
         "begin\n"
             + "  int x = 0;"
             + "  int y = 2"
           + "end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
+
+  @Test
+  public void testVarDeclarationDifferentScopes() throws IOException {
+    String instruction = "begin\n" +
+            " int x = 0 ;\n" +
+            " begin\n" +
+            "    int z = 3\n" +
+            " end ;\n" +
+            " int k = 2\n" +
+            "end";
     WaccCompiler compiler = new WaccCompiler(instruction);
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
   }

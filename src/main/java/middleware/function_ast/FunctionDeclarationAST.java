@@ -63,7 +63,8 @@ public class FunctionDeclarationAST extends NodeAST {
       return;
     }
 
-    ST = new SymbolTable(ST, typeAST.getType());
+    // TODO: Fix the 0 at the end of this Symbol Table Call.
+    ST = new SymbolTable(ST, typeAST.getType(), 0);
     funcObj.setST(ST);
 
     for (ParamAST paramAST : paramASTList) {

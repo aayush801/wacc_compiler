@@ -23,7 +23,8 @@ public class BeginAST extends StatementAST {
   public void check() {
 
     // Create new symbol table(scope) for the statement.
-    scopeST = ST = new SymbolTable(ST);
+    int offset = ST.getAllocatedStackMemory();
+    scopeST = ST = new SymbolTable(ST, offset);
 
     // Check that the statement inside the begin block is valid.
     statementAST.check();

@@ -17,23 +17,30 @@ public class SymbolTable {
   private final SymbolTable encSymTable;
   private final Map<String, IDENTIFIER> dict;
   protected TYPE scopeReturnType = null;
+
+  // total allocatedStackMemory
   private int allocatedStackMemory = 0;
 
+  // amount allocated in this scope
+  private int allocatedInThisScope = 0;
+
   public SymbolTable() {
-    this(null);
+    this(null, 0);
   }
 
-  public SymbolTable(SymbolTable st, TYPE scopeReturnType) {
-    this(st);
+  public SymbolTable(SymbolTable st, TYPE scopeReturnType, int offset) {
+    this(st, offset);
     this.scopeReturnType = scopeReturnType;
   }
 
-  public SymbolTable(SymbolTable st) {
+  public SymbolTable(SymbolTable st, int offset) {
     encSymTable = st;
     if (st != null) {
       scopeReturnType = st.getScopeReturnType();
     }
     dict = new HashMap<>();
+    allocatedStackMemory = offset;
+
   }
 
   // generate top symbol table
@@ -89,8 +96,13 @@ public class SymbolTable {
     return allocatedStackMemory;
   }
 
+  public int getAllocatedInThisScope() {
+    return allocatedInThisScope;
+  }
+
   public int allocate(int bytes) {
     allocatedStackMemory += bytes;
+    allocatedInThisScope += bytes;
     return allocatedStackMemory;
   }
 }
