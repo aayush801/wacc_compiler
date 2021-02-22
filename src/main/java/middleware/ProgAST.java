@@ -3,6 +3,7 @@ package middleware;
 import backend.instructions.Instruction;
 import backend.instructions.Load;
 import backend.instructions.addr_modes.Address;
+import backend.labels.code.FunctionLabel;
 import backend.labels.code.InstructionLabel;
 import backend.registers.Register;
 import java.util.List;
@@ -51,7 +52,6 @@ public class ProgAST extends NodeAST {
 
     // translate function declarations
     for (FunctionDeclarationAST func : functionDeclarationASTS) {
-      /*@TODO need to sort out way of adding parameters to the stack in order*/
       func.translate(registers);
     }
 

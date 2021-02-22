@@ -7,6 +7,7 @@ import errors.semantic_errors.DuplicateIdentifier;
 import errors.semantic_errors.Undefined;
 import frontend.identifier_objects.FUNCTION;
 import frontend.identifier_objects.IDENTIFIER;
+import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.TYPE;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,9 @@ public class FunctionDeclarationAST extends NodeAST {
     for (ParamAST paramAST : paramASTList) {
       paramAST.check();
       funcObj.formals.add(paramAST.paramObj);
+
+      // calculate and store stack offset
+      paramAST.paramObj.setOffset(ST.allocate(typeAST.getType().getSize()));
     }
 
     ST = ST.getEncSymTable();
@@ -79,7 +83,9 @@ public class FunctionDeclarationAST extends NodeAST {
   @Override
   public List<Instruction> translate(List<Register> registers) {
 
-    return statementAST.translate(registers);
+    program.addCode(new FunctionLabel(funcName, statementAST.translate(registers)));
+
+    return null;
 
   }
 
