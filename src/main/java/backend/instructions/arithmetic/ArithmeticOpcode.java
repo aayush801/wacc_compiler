@@ -8,7 +8,8 @@ public enum ArithmeticOpcode {
   MUL,
   SUB,
   AND,
-  OR;
+  OR,
+  RSB;
 
   @Override
   public String toString() {
@@ -23,6 +24,8 @@ public enum ArithmeticOpcode {
         return "AND";
       case OR:
         return "OR";
+      case RSB:
+        return "RSB";
       default:
         return "";
     }

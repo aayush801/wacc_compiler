@@ -208,13 +208,13 @@ public class BinOpExprAST extends ExpressionAST {
     switch (operator) {
       // ARITHMETIC Operators
       case "+":
-        instructions.add(new Arithmetic(ArithmeticOpcode.ADD, Rn, Rn, Rm));
+        instructions.add(new Arithmetic(ArithmeticOpcode.ADD, Rn, Rn, Rm, true));
         break;
       case "-":
-        instructions.add(new Arithmetic(ArithmeticOpcode.SUB, Rn, Rn, Rm));
+        instructions.add(new Arithmetic(ArithmeticOpcode.SUB, Rn, Rn, Rm, true));
         break;
       case "*":
-        instructions.add(new Arithmetic(ArithmeticOpcode.MUL, Rn, Rn, Rm));
+        instructions.add(new Arithmetic(ArithmeticOpcode.MUL, Rn, Rn, Rm, true));
         break;
       case "%":
         instructions.add(new Move(new Register(0), Rn));
@@ -259,10 +259,10 @@ public class BinOpExprAST extends ExpressionAST {
         break;
       // BOOLEAN Operators
       case "&&":
-        instructions.add(new Arithmetic(ArithmeticOpcode.AND, Rn, Rn, Rm));
+        instructions.add(new Arithmetic(ArithmeticOpcode.AND, Rn, Rn, Rm, true));
         break;
       case "||":
-        instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, Rm));
+        instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, Rm, true));
         break;
       // Unrecognized Operator
       default:

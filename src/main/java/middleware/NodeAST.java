@@ -72,13 +72,13 @@ public abstract class NodeAST implements NodeASTInterface {
     }
     Instruction decrementStack =
         new Arithmetic(ArithmeticOpcode.SUB, program.SP, program.SP,
-            new Immediate(sizeOfVariablesDeclaredInScope));
+            new Immediate(sizeOfVariablesDeclaredInScope), false);
 
     instructions.add(0, decrementStack);
 
     Instruction incrementStack =
         new Arithmetic(ArithmeticOpcode.ADD, program.SP, program.SP,
-            new Immediate(sizeOfVariablesDeclaredInScope));
+            new Immediate(sizeOfVariablesDeclaredInScope), false);
 
     instructions.add(incrementStack);
     return instructions;

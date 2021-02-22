@@ -5,7 +5,7 @@ import backend.registers.Register;
 
 public abstract class Instruction {
 
-  private boolean flags = false;
+  protected boolean flags = false;
   private final ConditionCode code;
 
   protected Instruction(ConditionCode code) {

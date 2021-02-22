@@ -10,13 +10,13 @@ public class Arithmetic extends Instruction {
   private final Register Rd, Rn;
   private final backend.operands.Operand Operand;
   private final ArithmeticOpcode Opcode;
-
   public Arithmetic(ArithmeticOpcode Opcode, Register Rd, Register Rn,
-      Operand Operand) {
+      Operand Operand, boolean setConditionCodes) {
     this.Rd = Rd;
     this.Rn = Rn;
     this.Operand = Operand;
     this.Opcode = Opcode;
+    flags = setConditionCodes;
   }
 
   public Arithmetic(ArithmeticOpcode Opcode, Register Rd, Register Rn,
@@ -31,6 +31,6 @@ public class Arithmetic extends Instruction {
 
   @Override
   public String toString() {
-    return Opcode + getFLags() + " " + Rd + ", " + Rn + ", " + Operand;
+    return Opcode + (flags ? "S" : "") + " " + Rd + ", " + Rn + ", " + Operand;
   }
 }

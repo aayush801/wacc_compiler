@@ -1,6 +1,9 @@
 package middleware.expression_ast;
 
 import backend.instructions.Instruction;
+import backend.instructions.arithmetic.Arithmetic;
+import backend.instructions.arithmetic.ArithmeticOpcode;
+import backend.operands.Immediate;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.NotAFunction;
@@ -136,12 +139,16 @@ public class UnaryOpExprAST extends ExpressionAST {
     // evaluate expression.
     Register destination = registers.get(0);
     List<Instruction> instructions = expr.translate(registers);
+
+
     switch (operator) {
       // NOT Operator
       case "!":
         break;
       // NEGATE Operator
       case "-":
+        Instruction negate = new Arithmetic(ArithmeticOpcode.RSB, destination, destination, new Immediate(0), true);
+        instructions.add(negate);
         break;
       // LENGTH Operator
       case "len":
