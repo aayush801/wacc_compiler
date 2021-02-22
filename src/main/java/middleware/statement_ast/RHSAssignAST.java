@@ -1,14 +1,26 @@
 package middleware.statement_ast;
 
 import backend.instructions.Instruction;
+import backend.instructions.Load;
+import backend.instructions.addr_modes.ImmediateOffset;
+import backend.operands.Immediate;
 import backend.registers.Register;
+import backend.registers.StackPointer;
+import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import frontend.identifier_objects.VARIABLE;
 import middleware.arrays_ast.ArrayAST;
 import middleware.expression_ast.ExpressionAST;
+import middleware.expression_ast.IdentifierAST;
 import middleware.function_ast.FunctionCallAST;
 import middleware.pair_ast.NewPairAST;
 import middleware.pair_ast.PairElemAST;
+import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class RHSAssignAST extends StatementAST {
@@ -18,6 +30,7 @@ public class RHSAssignAST extends StatementAST {
   private NewPairAST newPairAST;
   private PairElemAST pairElemAST;
   private FunctionCallAST functionCallAST;
+  private SymbolTable scopeST;
 
   private TYPE type;
 
@@ -57,6 +70,9 @@ public class RHSAssignAST extends StatementAST {
 
   @Override
   public void check() {
+
+    scopeST = ST;
+
     if (expressionAST != null) {
       // case when assign RHS is an expression.
 
@@ -147,8 +163,24 @@ public class RHSAssignAST extends StatementAST {
   public List<Instruction> translate(List<Register> registers) {
     if (expressionAST != null) {
 
-      return expressionAST.translate(registers);
+      // Explicitly verify that expression is NOT an identifier.
+      if (!expressionAST.isIdentifier()) {
+        return expressionAST.translate(registers);
+      }
 
+      Register target = registers.get(0);
+
+      // Retrieving the variable object stored in the sumbol table.
+      IdentifierAST ident = (IdentifierAST) expressionAST;
+      VARIABLE varObj = (VARIABLE) scopeST.lookup(ident.getIdentifier());
+
+      // calculate offset
+      int offset = scopeST.getAllocatedStackMemory() - varObj.getOffset();
+
+      // To evaluate this RHS, we simply need to load the immediate into a register.
+      List<Instruction> ret = new ArrayList<>();
+      ret.add(new Load(target, new ImmediateOffset(new StackPointer(), new Immediate(offset))));
+      return ret;
     }
 
     if (arrayAST != null) {

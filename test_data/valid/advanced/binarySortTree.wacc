@@ -1,17 +1,17 @@
-# The program reads n (number of integers), then n integers. After each input, 
-# it insert the integer into a binary search tree. At the end, it prints out 
-# the content in the binary search tree so that we have a sorted list of 
+# The program reads n (number of integers), then n integers. After each input,
+# it insert the integer into a binary search tree. At the end, it prints out
+# the content in the binary search tree so that we have a sorted list of
 # integer.
-# 
-# We represent a node in the binary search tree using two pair elements. The 
-# first element has a type <int, pair>, the int is the integer stored in the 
-# node, the pair is the pointer to the second pair element. The second pair 
-# element has a type <pair, pair> which is the pointer to the two children 
+#
+# We represent a node in the binary search tree using two pair elements. The
+# first element has a type <int, pair>, the int is the integer stored in the
+# node, the pair is the pointer to the second pair element. The second pair
+# element has a type <pair, pair> which is the pointer to the two children
 # nodes in the binary search tree.
 
 begin
 
-  # Create a new node of a binary search tree having the given integer value 
+  # Create a new node of a binary search tree having the given integer value
   # and points to the two given pairs.
   pair(int, pair) createNewNode(int value, pair(int, pair) left, pair(int, pair) right) is
     pair(pair, pair) p = newpair(left, right) ;
@@ -19,7 +19,7 @@ begin
     return q
   end
 
-  # Given a root of a binary search tree and an integer to insert, the function 
+  # Given a root of a binary search tree and an integer to insert, the function
   # inserts the integer into the tree and returns the new root of the tree.
   pair(int, pair) insert(pair(int, pair) root, int n) is
     if root == null then
@@ -31,10 +31,10 @@ begin
       if n < current then
       	q = fst p ;
         fst p = call insert(q, n)
-      else 
+      else
       	q = snd p ;
         snd p = call insert(q, n)
-      fi 
+      fi
     fi ;
     return root
   end
@@ -42,12 +42,12 @@ begin
   # Print the integers in the binary search tree in the increasing order.
   int printTree(pair(int, pair) root) is
     if root == null then
-      return 0 
+      return 0
     else
       pair(pair, pair) body = snd root ;
       pair(int, pair) p = fst body ;
       int temp = call printTree(p) ;
-      temp = fst root ; 
+      temp = fst root ;
       print temp ;
       print ' ' ;
       p = snd body ;
@@ -67,7 +67,7 @@ begin
   pair(int, pair) root = null ;
   while i < n do
     int x = 0 ;
-    print "Please enter the number at position " ; 
+    print "Please enter the number at position " ;
     print i + 1 ;
     print " : " ;
     read x ;
