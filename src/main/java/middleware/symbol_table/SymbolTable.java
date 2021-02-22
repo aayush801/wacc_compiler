@@ -25,21 +25,21 @@ public class SymbolTable {
   private int allocatedInThisScope = 0;
 
   public SymbolTable() {
-    this(null, 0);
+    this(null);
   }
 
-  public SymbolTable(SymbolTable st, TYPE scopeReturnType, int offset) {
-    this(st, offset);
+  public SymbolTable(SymbolTable st, TYPE scopeReturnType) {
+    this(st);
     this.scopeReturnType = scopeReturnType;
   }
 
-  public SymbolTable(SymbolTable st, int offset) {
+  public SymbolTable(SymbolTable st) {
     encSymTable = st;
     if (st != null) {
       scopeReturnType = st.getScopeReturnType();
+      allocatedStackMemory = st.getAllocatedStackMemory();
     }
     dict = new HashMap<>();
-    allocatedStackMemory = offset;
 
   }
 

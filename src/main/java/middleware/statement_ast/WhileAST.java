@@ -47,9 +47,7 @@ public class WhileAST extends StatementAST {
 
     // expression valid, now check the statement inside the body.
     // create a new scope(symbol table) for the statement.
-    int offset = ST.getAllocatedStackMemory();
-
-    ST = new SymbolTable(ST, offset);
+    ST = new SymbolTable(ST);
     statementAST.check();
     ST = ST.getEncSymTable();
 
