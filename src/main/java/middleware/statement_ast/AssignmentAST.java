@@ -23,7 +23,8 @@ public class AssignmentAST extends StatementAST {
   private final RHSAssignAST RHS;
   private SymbolTable scopeST;
 
-  public AssignmentAST(ParserRuleContext ctx, LHSAssignAST LHS, RHSAssignAST RHS) {
+  public AssignmentAST(ParserRuleContext ctx, LHSAssignAST LHS,
+      RHSAssignAST RHS) {
     super(ctx);
     this.LHS = LHS;
     this.RHS = RHS;
@@ -60,15 +61,16 @@ public class AssignmentAST extends StatementAST {
     Register target = registers.get(0);
 
     // evaluate RHS first.
-    List<Instruction> ret = RHS.translate(registers);
+    List<Instruction> instructions = RHS.translate(registers);
 
     // Case when LHS is an identifier
     if (LHS.getIdentifier() != null) {
-       VARIABLE varObj = (VARIABLE) scopeST.lookupAll(LHS.getIdentifier());
-       int offset = scopeST.getAllocatedStackMemory() - varObj.getOffset();
-       ret.add(new Store(target, new ImmediateOffset(new StackPointer(), new Immediate(offset))));
+      VARIABLE varObj = (VARIABLE) scopeST.lookupAll(LHS.getIdentifier());
+      int offset = scopeST.getAllocatedStackMemory() - varObj.getOffset();
+      instructions.add(new Store(target,
+          new ImmediateOffset(new StackPointer(), new Immediate(offset))));
     }
 
-    return ret;
+    return instructions;
   }
 }

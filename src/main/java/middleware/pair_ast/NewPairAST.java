@@ -5,6 +5,7 @@ import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.PAIR;
+import java.util.ArrayList;
 import java.util.List;
 import middleware.NodeAST;
 import middleware.expression_ast.ExpressionAST;
@@ -56,7 +57,7 @@ public class NewPairAST extends NodeAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return null;
+    return new ArrayList<>();
   }
 
 }
