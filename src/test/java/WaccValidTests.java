@@ -85,8 +85,14 @@ public class WaccValidTests {
   }
 
   @Test
-  public void IoBasicTests() throws IOException {
-    String base = "test_data/valid/IO/";
+  public void IoBasicTestsLoop() throws IOException {
+    String base = "test_data/valid/IO/IOLoop.wacc";
+    files_checker(base);
+  }
+
+  @Test
+  public void IoBasicTestsSequence() throws IOException {
+    String base = "test_data/valid/IO/IOSequence.wacc";
     files_checker(base);
   }
 
