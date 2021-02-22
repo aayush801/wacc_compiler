@@ -1,21 +1,25 @@
 package middleware.expression_ast;
 
 import backend.instructions.Instruction;
+import backend.instructions.Load;
+import backend.instructions.addr_modes.ImmediateOffset;
 import backend.instructions.arithmetic.Arithmetic;
 import backend.instructions.arithmetic.ArithmeticOpcode;
-import backend.operands.Immediate;
+import backend.operands.ImmediateNum;
 import backend.registers.Register;
+import backend.registers.StackPointer;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.NotAFunction;
 import errors.semantic_errors.expressionNotFound;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
+import frontend.identifier_objects.VARIABLE;
 import frontend.identifier_objects.basic_types.ARRAY;
 import frontend.identifier_objects.basic_types.BOOL;
 import frontend.identifier_objects.basic_types.CHAR;
 import frontend.identifier_objects.basic_types.INT;
+import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +28,7 @@ public class UnaryOpExprAST extends ExpressionAST {
 
   private final ExpressionAST expr;
   private final String operator;
+  private SymbolTable scopeST;
 
   public UnaryOpExprAST(ParserRuleContext ctx, ExpressionAST expr, String operator) {
     super(ctx);
@@ -94,6 +99,7 @@ public class UnaryOpExprAST extends ExpressionAST {
   @Override
   public void check() {
 
+    scopeST = ST;
     expr.check();
     IDENTIFIER exprType = expr.getType();
 
@@ -140,16 +146,15 @@ public class UnaryOpExprAST extends ExpressionAST {
     Register destination = registers.get(0);
     List<Instruction> instructions = expr.translate(registers);
 
-
     switch (operator) {
       // NOT Operator
       case "!":
-        Instruction not = new Arithmetic(ArithmeticOpcode.EOR, destination, destination, new Immediate(1), false);
+        Instruction not = new Arithmetic(ArithmeticOpcode.EOR, destination, destination, new ImmediateNum(1), false);
         instructions.add(not);
         break;
       // NEGATE Operator
       case "-":
-        Instruction negate = new Arithmetic(ArithmeticOpcode.RSB, destination, destination, new Immediate(0), true);
+        Instruction negate = new Arithmetic(ArithmeticOpcode.RSB, destination, destination, new ImmediateNum(0), true);
         instructions.add(negate);
         break;
       // LENGTH Operator
@@ -160,6 +165,17 @@ public class UnaryOpExprAST extends ExpressionAST {
         break;
       // ORD Operator
       case "ord":
+        if (expr.isIdentifier()) {
+          IdentifierAST ident = (IdentifierAST) expr;
+          VARIABLE varObj = (VARIABLE) scopeST.lookupAll(ident.getIdentifier());
+
+          // calculate offset
+          int offset = scopeST.getAllocatedStackMemory() - varObj.getOffset();
+
+          List<Instruction> ret = new ArrayList<>();
+          ret.add(new Load(destination, new ImmediateOffset(new StackPointer(), new ImmediateNum(offset)), true, true));
+          return ret;
+        }
         break;
       // Unrecognized Operator
       default:

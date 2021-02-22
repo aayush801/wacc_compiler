@@ -115,4 +115,15 @@ public class CodeGenerationTests {
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
   }
 
+  @Test
+  public void testVarDeclarationOrd() throws IOException {
+    String instruction = "begin\n" +
+            "    char x = 'x' ;\n" +
+            "    int z = ord 'c';\n" +
+            "    int y = ord x\n" +
+            "end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
+
 }

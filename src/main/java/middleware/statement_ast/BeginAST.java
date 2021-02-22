@@ -1,9 +1,6 @@
 package middleware.statement_ast;
 
 import backend.instructions.Instruction;
-import backend.instructions.arithmetic.Arithmetic;
-import backend.instructions.arithmetic.ArithmeticOpcode;
-import backend.operands.Immediate;
 import backend.registers.Register;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;

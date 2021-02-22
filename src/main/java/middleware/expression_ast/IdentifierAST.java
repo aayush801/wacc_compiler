@@ -3,7 +3,7 @@ package middleware.expression_ast;
 import backend.instructions.Instruction;
 import backend.instructions.Load;
 import backend.instructions.addr_modes.ImmediateOffset;
-import backend.operands.Immediate;
+import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import backend.registers.StackPointer;
 import errors.semantic_errors.Undefined;
@@ -17,7 +17,6 @@ import java.util.List;
 
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 public class IdentifierAST extends ExpressionAST {
 
@@ -80,7 +79,7 @@ public class IdentifierAST extends ExpressionAST {
 
     // Simply load the identifier into the first register in the list.
     List<Instruction> ret = new ArrayList<>();
-    ret.add(new Load(target, new ImmediateOffset(new StackPointer(), new Immediate(offset))));
+    ret.add(new Load(target, new ImmediateOffset(new StackPointer(), new ImmediateNum(offset))));
     return ret;
   }
 }

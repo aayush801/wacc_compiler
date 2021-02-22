@@ -6,7 +6,8 @@ import backend.instructions.Move;
 import backend.instructions.addr_modes.Address;
 import backend.instructions.addr_modes.ImmediateAddress;
 import backend.labels.DataLabel;
-import backend.operands.Immediate;
+import backend.operands.ImmediateChar;
+import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.BOOL;
@@ -49,12 +50,12 @@ public class LiteralsAST extends ExpressionAST {
       if (ctx.getText().equals("true")) {
         n = 1;
       }
-      instruction = new Move(destination, new Immediate(n));
+      instruction = new Move(destination, new ImmediateNum(n));
 
     } else if (type instanceof CHAR) {
-      char c = ctx.getText().charAt(0);
-      int n = (int) c;
-      instruction = new Move(destination, new Immediate(n));
+      // TODO: Reference compiler uses the 'B' flag for STR operations with characters. CHECK THIS!!
+      char c = ctx.getText().charAt(1);
+      instruction = new Move(destination, new ImmediateChar(c));
 
     } else if (type instanceof STR) {
       // add string to data section

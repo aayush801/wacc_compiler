@@ -1,14 +1,14 @@
 package backend.instructions.addr_modes;
 
-import backend.operands.Immediate;
+import backend.operands.ImmediateNum;
 import backend.registers.Register;
 
 public class ImmediateOffset extends AddressingMode {
 
   private final Register Rn;
-  private final Immediate offset;
+  private final ImmediateNum offset;
 
-  public ImmediateOffset(Register Rn, Immediate offset) {
+  public ImmediateOffset(Register Rn, ImmediateNum offset) {
     this.Rn = Rn;
     this.offset = offset;
   }

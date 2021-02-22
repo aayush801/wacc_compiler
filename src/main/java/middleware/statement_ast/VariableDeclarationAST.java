@@ -3,7 +3,7 @@ package middleware.statement_ast;
 import backend.instructions.Instruction;
 import backend.instructions.Store;
 import backend.instructions.addr_modes.ImmediateOffset;
-import backend.operands.Immediate;
+import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import errors.semantic_errors.DuplicateIdentifier;
 import errors.semantic_errors.MismatchedTypes;
@@ -92,7 +92,7 @@ public class VariableDeclarationAST extends StatementAST {
     int increment = scopeST.getAllocatedStackMemory() - varObj.getOffset();
 
     instructions.add(new Store(destination,
-        new ImmediateOffset(program.SP, new Immediate(increment))));
+        new ImmediateOffset(program.SP, new ImmediateNum(increment))));
 
     return instructions;
   }

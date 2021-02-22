@@ -1,22 +1,13 @@
 package middleware.statement_ast;
 
 import backend.instructions.Instruction;
-import backend.instructions.Load;
-import backend.instructions.addr_modes.ImmediateOffset;
-import backend.operands.Immediate;
 import backend.registers.Register;
-import backend.registers.StackPointer;
-import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import frontend.identifier_objects.VARIABLE;
 import middleware.arrays_ast.ArrayAST;
 import middleware.expression_ast.ExpressionAST;
-import middleware.expression_ast.IdentifierAST;
 import middleware.function_ast.FunctionCallAST;
 import middleware.pair_ast.NewPairAST;
 import middleware.pair_ast.PairElemAST;

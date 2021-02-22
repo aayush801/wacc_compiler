@@ -5,10 +5,9 @@ import backend.instructions.Compare;
 import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
 import backend.instructions.Move;
-import backend.instructions.addr_modes.AddressingMode;
 import backend.instructions.arithmetic.Arithmetic;
 import backend.instructions.arithmetic.ArithmeticOpcode;
-import backend.operands.Immediate;
+import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.NotAFunction;
@@ -21,7 +20,6 @@ import frontend.identifier_objects.basic_types.INT;
 import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 public class BinOpExprAST extends ExpressionAST {
 
@@ -202,8 +200,8 @@ public class BinOpExprAST extends ExpressionAST {
     Register Rm = remaining.get(0);
     instructions.addAll(rightExprAST.translate(remaining));
 
-    Immediate TRUE = Immediate.ONE;
-    Immediate FALSE = Immediate.ZERO;
+    ImmediateNum TRUE = ImmediateNum.ONE;
+    ImmediateNum FALSE = ImmediateNum.ZERO;
 
     switch (operator) {
       // ARITHMETIC Operators

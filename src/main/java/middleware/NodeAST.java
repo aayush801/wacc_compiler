@@ -4,7 +4,7 @@ import backend.ProgramGenerator;
 import backend.instructions.Instruction;
 import backend.instructions.arithmetic.Arithmetic;
 import backend.instructions.arithmetic.ArithmeticOpcode;
-import backend.operands.Immediate;
+import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import errors.WaccError;
 import errors.semantic_errors.WaccSemanticError;
@@ -72,13 +72,13 @@ public abstract class NodeAST implements NodeASTInterface {
     }
     Instruction decrementStack =
         new Arithmetic(ArithmeticOpcode.SUB, program.SP, program.SP,
-            new Immediate(sizeOfVariablesDeclaredInScope), false);
+            new ImmediateNum(sizeOfVariablesDeclaredInScope), false);
 
     instructions.add(0, decrementStack);
 
     Instruction incrementStack =
         new Arithmetic(ArithmeticOpcode.ADD, program.SP, program.SP,
-            new Immediate(sizeOfVariablesDeclaredInScope), false);
+            new ImmediateNum(sizeOfVariablesDeclaredInScope), false);
 
     instructions.add(incrementStack);
     return instructions;

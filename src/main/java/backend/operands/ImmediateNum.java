@@ -1,13 +1,13 @@
 package backend.operands;
 
-public class Immediate extends Operand {
+public class ImmediateNum extends Operand {
 
   private Integer value;
 
-  public static final Immediate ONE = new Immediate(1);
-  public static final Immediate ZERO = new Immediate(0);
+  public static final ImmediateNum ONE = new ImmediateNum(1);
+  public static final ImmediateNum ZERO = new ImmediateNum(0);
 
-  public Immediate(Integer value) {
+  public ImmediateNum(Integer value) {
     this.value = value;
   }
 

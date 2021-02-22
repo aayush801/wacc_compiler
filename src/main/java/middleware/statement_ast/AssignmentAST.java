@@ -3,7 +3,7 @@ package middleware.statement_ast;
 import backend.instructions.Instruction;
 import backend.instructions.Store;
 import backend.instructions.addr_modes.ImmediateOffset;
-import backend.operands.Immediate;
+import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import backend.registers.StackPointer;
 import errors.semantic_errors.MismatchedTypes;
@@ -14,7 +14,6 @@ import java.util.List;
 import frontend.identifier_objects.VARIABLE;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 
 public class AssignmentAST extends StatementAST {
@@ -68,7 +67,7 @@ public class AssignmentAST extends StatementAST {
       VARIABLE varObj = (VARIABLE) scopeST.lookupAll(LHS.getIdentifier());
       int offset = scopeST.getAllocatedStackMemory() - varObj.getOffset();
       instructions.add(new Store(target,
-          new ImmediateOffset(new StackPointer(), new Immediate(offset))));
+          new ImmediateOffset(new StackPointer(), new ImmediateNum(offset))));
     }
 
     return instructions;
