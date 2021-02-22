@@ -1,9 +1,11 @@
 package middleware.expression_ast;
 
+import backend.instructions.Branch;
 import backend.instructions.Compare;
 import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
 import backend.instructions.Move;
+import backend.instructions.addr_modes.AddressingMode;
 import backend.instructions.arithmetic.Arithmetic;
 import backend.instructions.arithmetic.ArithmeticOpcode;
 import backend.operands.Immediate;
@@ -200,6 +202,9 @@ public class BinOpExprAST extends ExpressionAST {
     Register Rm = remaining.get(0);
     instructions.addAll(rightExprAST.translate(remaining));
 
+    Immediate TRUE = new Immediate(1);
+    Immediate FALSE = new Immediate(1);
+
     switch (operator) {
       // ARITHMETIC Operators
       case "+":
@@ -212,23 +217,45 @@ public class BinOpExprAST extends ExpressionAST {
         instructions.add(new Arithmetic(ArithmeticOpcode.MUL, Rn, Rn, Rm));
         break;
       case "%":
+        instructions.add(new Move(new Register(0), Rn));
+        instructions.add(new Move(new Register(0), Rm));
+        instructions.add(new Branch("__aeabi_idivmod", true));
+        instructions.add(new Move(Rn, Register.R1));
         break;
       case "/":
+        instructions.add(new Move(new Register(0), Rn));
+        instructions.add(new Move(new Register(0), Rm));
+        instructions.add(new Branch("__aeabi_idiv", true));
+        instructions.add(new Move(Rn, Register.R0));
         break;
       // EQUATABLE Operators
       case "==":
         instructions.add(new Compare(Rn, Rm));
-        instructions.add(new Move(Rn, new Immediate(0)));
-        instructions.add(new Move(ConditionCode.EQ, Rn,
-            new Immediate(1), false));
+        instructions.add(new Move(ConditionCode.EQ, Rn, TRUE, false));
+        instructions.add(new Move(ConditionCode.NE, Rn, FALSE, false));
         break;
       case "!=":
+        instructions.add(new Compare(Rn, Rm));
+        instructions.add(new Move(ConditionCode.NE, Rn, TRUE, false));
+        instructions.add(new Move(ConditionCode.EQ, Rn, FALSE, false));
         break;
       // COMPARABLE Operators
       case ">":
+        instructions.add(new Compare(Rn, Rm));
+        instructions.add(new Move(ConditionCode.GT, Rn, TRUE, false));
+        instructions.add(new Move(ConditionCode.LE, Rn, FALSE, false));
       case "<":
+        instructions.add(new Compare(Rn, Rm));
+        instructions.add(new Move(ConditionCode.LT, Rn, TRUE, false));
+        instructions.add(new Move(ConditionCode.GE, Rn, FALSE, false));
       case ">=":
+        instructions.add(new Compare(Rn, Rm));
+        instructions.add(new Move(ConditionCode.GE, Rn, TRUE, false));
+        instructions.add(new Move(ConditionCode.LT, Rn, FALSE, false));
       case "<=":
+        instructions.add(new Compare(Rn, Rm));
+        instructions.add(new Move(ConditionCode.LE, Rn, TRUE, false));
+        instructions.add(new Move(ConditionCode.GT, Rn, FALSE, false));
         break;
       // BOOLEAN Operators
       case "&&":

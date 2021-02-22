@@ -14,8 +14,14 @@ public class Branch extends Instruction {
     this.isLinkFlagSet = isLinkFlagSet;
   }
 
+  public Branch(ConditionCode code, String label, boolean isLinkFlagSet) {
+    super(code);
+    this.label = label;
+    this.isLinkFlagSet = isLinkFlagSet;
+  }
+
   @Override
   public String toString() {
-    return "B" + (isLinkFlagSet ? "L" : "") + " " + label;
+    return "B" + (isLinkFlagSet ? "L" : "") + getFLags() + " " + label;
   }
 }

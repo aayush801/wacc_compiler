@@ -7,21 +7,30 @@ public class Store extends Instruction {
 
   private final Register Rs;
   private final AddressingMode addressingMode;
+  private final boolean registerByte;
 
   public Store(Register Rs, AddressingMode addressingMode) {
-    super();
-    this.Rs = Rs;
-    this.addressingMode = addressingMode;
+    this(ConditionCode.NONE, Rs, addressingMode, false);
   }
 
   public Store(ConditionCode code, Register Rs, AddressingMode addressingMode) {
+    this(code, Rs, addressingMode, false);
+  }
+
+  public Store(ConditionCode code, Register Rs, AddressingMode addressingMode,
+      boolean registerByte) {
     super(code);
     this.Rs = Rs;
     this.addressingMode = addressingMode;
+    this.registerByte = registerByte;
   }
 
   @Override
   public String toString() {
-    return "STR" + getFLags() + " " + Rs + ", " + addressingMode;
+    String mnemonic = "STR";
+    if (registerByte) {
+      mnemonic += "B";
+    }
+    return mnemonic + " " + Rs + ", " + addressingMode;
   }
 }

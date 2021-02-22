@@ -94,7 +94,7 @@ public class UnaryOpExprAST extends ExpressionAST {
     expr.check();
     IDENTIFIER exprType = expr.getType();
 
-    if(exprType == null){
+    if (exprType == null) {
       // error occurred elsewhere
       return;
     }
@@ -134,9 +134,30 @@ public class UnaryOpExprAST extends ExpressionAST {
 
   public List<Instruction> translate(List<Register> registers) {
     // evaluate expression.
-    List<Instruction> ret = expr.translate(registers);
-    // TODO: ADD CODE TO TRANSLATE ALL OF THESE THINGIES.
-    return ret;
+    Register destination = registers.get(0);
+    List<Instruction> instructions = expr.translate(registers);
+    switch (operator) {
+      // NOT Operator
+      case "!":
+        break;
+      // NEGATE Operator
+      case "-":
+        break;
+      // LENGTH Operator
+      case "len":
+        break;
+      // CHR Operator
+      case "chr":
+        break;
+      // ORD Operator
+      case "ord":
+        break;
+      // Unrecognized Operator
+      default:
+        addError(new NotAFunction(ctx));
+        break;
+    }
+    return instructions;
   }
 }
 

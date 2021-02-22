@@ -13,6 +13,9 @@ public class Register extends Operand {
   private Integer value;
   private RegType type;
 
+  public static final Register R0 = new Register(0);
+  public static final Register R1 = new Register(1);
+
   public Register(Integer number) {
     this.number = number;
   }
