@@ -1,5 +1,6 @@
 package middleware.statement_ast;
 
+import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
 import backend.instructions.Store;
 import backend.instructions.addr_modes.ImmediateOffset;
@@ -11,6 +12,8 @@ import frontend.identifier_objects.FUNCTION;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.VARIABLE;
 import java.util.List;
+
+import frontend.identifier_objects.basic_types.CHAR;
 import middleware.NodeAST;
 import middleware.symbol_table.SymbolTable;
 import middleware.types_ast.TypeAST;
@@ -91,8 +94,13 @@ public class VariableDeclarationAST extends StatementAST {
     // Amount of bytes to add to the stack pointer to get address of variable
     int increment = scopeST.getAllocatedStackMemory() - varObj.getOffset();
 
-    instructions.add(new Store(destination,
-        new ImmediateOffset(program.SP, new ImmediateNum(increment))));
+    if (typeAST.getType() instanceof CHAR) {
+      instructions.add(new Store(ConditionCode.NONE, destination,
+              new ImmediateOffset(program.SP, new ImmediateNum(increment)), true));
+    } else {
+      instructions.add(new Store(ConditionCode.NONE, destination,
+              new ImmediateOffset(program.SP, new ImmediateNum(increment)), false));
+    }
 
     return instructions;
   }

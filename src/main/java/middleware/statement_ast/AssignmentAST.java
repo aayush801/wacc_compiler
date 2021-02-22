@@ -1,5 +1,6 @@
 package middleware.statement_ast;
 
+import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
 import backend.instructions.Store;
 import backend.instructions.addr_modes.ImmediateOffset;
@@ -12,6 +13,7 @@ import frontend.identifier_objects.TYPE;
 import java.util.List;
 
 import frontend.identifier_objects.VARIABLE;
+import frontend.identifier_objects.basic_types.CHAR;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -62,12 +64,19 @@ public class AssignmentAST extends StatementAST {
     // evaluate RHS first.
     List<Instruction> instructions = RHS.translate(registers);
 
+    // TODO: DO THE CHAR CHECK FOR ALL 3 CASES!!!!!!!!!!!!!!!!!
     // Case when LHS is an identifier
     if (LHS.getIdentifier() != null) {
       VARIABLE varObj = (VARIABLE) scopeST.lookupAll(LHS.getIdentifier());
       int offset = scopeST.getAllocatedStackMemory() - varObj.getOffset();
-      instructions.add(new Store(target,
-          new ImmediateOffset(new StackPointer(), new ImmediateNum(offset))));
+
+      if (varObj.getType() instanceof CHAR) {
+        instructions.add(new Store(ConditionCode.NONE, target,
+                new ImmediateOffset(program.SP, new ImmediateNum(offset)), true));
+      } else {
+        instructions.add(new Store(ConditionCode.NONE, target,
+                new ImmediateOffset(program.SP, new ImmediateNum(offset)), false));
+      }
     }
 
     return instructions;

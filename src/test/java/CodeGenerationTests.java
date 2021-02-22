@@ -120,7 +120,20 @@ public class CodeGenerationTests {
     String instruction = "begin\n" +
             "    char x = 'x' ;\n" +
             "    int z = ord 'c';\n" +
-            "    int y = ord x\n" +
+            "    int y = ord x;\n" +
+            "    y = ord 'a'\n" +
+            "end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
+
+  @Test
+  public void testVarDeclarationChr() throws IOException {
+    String instruction = "begin\n" +
+            "    int x = 3 ;\n" +
+            "    char z = chr x;\n" +
+            "    char y = chr 3;\n" +
+            "    y = chr 4\n" +
             "end";
     WaccCompiler compiler = new WaccCompiler(instruction);
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
