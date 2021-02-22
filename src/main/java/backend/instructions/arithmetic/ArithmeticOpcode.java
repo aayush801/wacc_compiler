@@ -1,14 +1,12 @@
 package backend.instructions.arithmetic;
 
-import backend.operands.Operand;
-import backend.registers.Register;
-
 public enum ArithmeticOpcode {
   ADD,
   MUL,
   SUB,
   AND,
   OR,
+  EOR,
   RSB;
 
   @Override
@@ -26,6 +24,8 @@ public enum ArithmeticOpcode {
         return "OR";
       case RSB:
         return "RSB";
+      case EOR:
+        return "EOR";
       default:
         return "";
     }

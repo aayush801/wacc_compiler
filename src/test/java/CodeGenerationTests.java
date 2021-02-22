@@ -83,8 +83,20 @@ public class CodeGenerationTests {
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
   }
 
+
   @Test
-  public void testVarDeclarationWithUnOpRHS() throws IOException {
+  public void testVarAssignment() throws IOException {
+    String instruction = "begin\n" +
+            "    int x = 0 ;\n " +
+            "    int z = x ;\n" +
+            "    x = 2\n" +
+            "end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
+
+  @Test
+  public void testVarDeclarationWithNegateRHS() throws IOException {
     String instruction = "begin\n" +
             "    int x = 0 ;\n" +
             "    int z = -x\n" +
@@ -94,11 +106,10 @@ public class CodeGenerationTests {
   }
 
   @Test
-  public void testVarAssignment() throws IOException {
+  public void testVarDeclarationWithNotRHS() throws IOException {
     String instruction = "begin\n" +
-            "    int x = 0 ;\n " +
-            "    int z = x ;\n" +
-            "    x = 2\n" +
+            "    int x = 0 ;\n" +
+            "    bool z = !true\n" +
             "end";
     WaccCompiler compiler = new WaccCompiler(instruction);
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));

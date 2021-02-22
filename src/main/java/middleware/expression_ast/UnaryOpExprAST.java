@@ -144,6 +144,8 @@ public class UnaryOpExprAST extends ExpressionAST {
     switch (operator) {
       // NOT Operator
       case "!":
+        Instruction not = new Arithmetic(ArithmeticOpcode.EOR, destination, destination, new Immediate(1), false);
+        instructions.add(not);
         break;
       // NEGATE Operator
       case "-":
