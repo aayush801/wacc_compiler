@@ -8,6 +8,7 @@ import errors.semantic_errors.Undefined;
 import frontend.identifier_objects.FUNCTION;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
+import java.util.ArrayList;
 import java.util.List;
 import middleware.NodeAST;
 import middleware.NodeASTList;
@@ -81,7 +82,7 @@ public class FunctionCallAST extends NodeAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return null;
+    return new ArrayList<>();
   }
 
 }

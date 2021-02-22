@@ -6,6 +6,7 @@ import errors.semantic_errors.DuplicateIdentifier;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.TYPE;
+import java.util.ArrayList;
 import java.util.List;
 import middleware.NodeAST;
 import middleware.types_ast.TypeAST;
@@ -44,7 +45,7 @@ public class ParamAST extends NodeAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return null;
+    return new ArrayList<>();
   }
 
 }
