@@ -10,9 +10,11 @@ import errors.semantic_errors.DuplicateIdentifier;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.FUNCTION;
 import frontend.identifier_objects.IDENTIFIER;
+import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
 import java.util.List;
 
+import frontend.identifier_objects.basic_types.BOOL;
 import frontend.identifier_objects.basic_types.CHAR;
 import middleware.NodeAST;
 import middleware.symbol_table.SymbolTable;
@@ -94,7 +96,8 @@ public class VariableDeclarationAST extends StatementAST {
     // Amount of bytes to add to the stack pointer to get address of variable
     int increment = scopeST.getAllocatedStackMemory() - varObj.getOffset();
 
-    if (typeAST.getType() instanceof CHAR) {
+    TYPE type = typeAST.getType();
+    if (type instanceof CHAR || type instanceof BOOL) {
       instructions.add(new Store(ConditionCode.NONE, destination,
               new ImmediateOffset(program.SP, new ImmediateNum(increment)), true));
     } else {

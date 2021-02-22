@@ -13,6 +13,7 @@ import frontend.identifier_objects.TYPE;
 import java.util.List;
 
 import frontend.identifier_objects.VARIABLE;
+import frontend.identifier_objects.basic_types.BOOL;
 import frontend.identifier_objects.basic_types.CHAR;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -70,7 +71,8 @@ public class AssignmentAST extends StatementAST {
       VARIABLE varObj = (VARIABLE) scopeST.lookupAll(LHS.getIdentifier());
       int offset = scopeST.getAllocatedStackMemory() - varObj.getOffset();
 
-      if (varObj.getType() instanceof CHAR) {
+      TYPE type = varObj.getType();
+      if (type instanceof CHAR || type instanceof BOOL) {
         instructions.add(new Store(ConditionCode.NONE, target,
                 new ImmediateOffset(program.SP, new ImmediateNum(offset)), true));
       } else {

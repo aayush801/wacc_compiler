@@ -242,14 +242,17 @@ public class BinOpExprAST extends ExpressionAST {
         instructions.add(new Compare(Rn, Rm));
         instructions.add(new Move(ConditionCode.GT, Rn, TRUE, false));
         instructions.add(new Move(ConditionCode.LE, Rn, FALSE, false));
+        break;
       case "<":
         instructions.add(new Compare(Rn, Rm));
         instructions.add(new Move(ConditionCode.LT, Rn, TRUE, false));
         instructions.add(new Move(ConditionCode.GE, Rn, FALSE, false));
+        break;
       case ">=":
         instructions.add(new Compare(Rn, Rm));
         instructions.add(new Move(ConditionCode.GE, Rn, TRUE, false));
         instructions.add(new Move(ConditionCode.LT, Rn, FALSE, false));
+        break;
       case "<=":
         instructions.add(new Compare(Rn, Rm));
         instructions.add(new Move(ConditionCode.LE, Rn, TRUE, false));

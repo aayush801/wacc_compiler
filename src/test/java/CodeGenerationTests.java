@@ -149,4 +149,14 @@ public class CodeGenerationTests {
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
   }
 
+  @Test
+  public void testVarDeclarationBinOpEq() throws IOException {
+    String instruction = "begin\n" +
+            "  bool x = 2 != 3\n" +
+            "end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
+
+
 }
