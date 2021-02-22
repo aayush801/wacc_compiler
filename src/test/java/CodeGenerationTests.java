@@ -139,4 +139,14 @@ public class CodeGenerationTests {
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
   }
 
+  @Test
+  public void testVarDeclarationLen() throws IOException {
+    String instruction = "begin\n" +
+            "  int[] x = [2, 3] ;\n" +
+            "  int y = len x\n" +
+            "end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
+
 }

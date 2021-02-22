@@ -159,6 +159,8 @@ public class UnaryOpExprAST extends ExpressionAST {
         break;
       // LENGTH Operator
       case "len":
+        Instruction loadVal = new Load(destination, new ImmediateOffset(destination, new ImmediateNum(0)));
+        instructions.add(loadVal);
         break;
       // CHR Operator
       case "chr":
