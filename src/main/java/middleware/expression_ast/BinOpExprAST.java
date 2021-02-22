@@ -202,8 +202,8 @@ public class BinOpExprAST extends ExpressionAST {
     Register Rm = remaining.get(0);
     instructions.addAll(rightExprAST.translate(remaining));
 
-    Immediate TRUE = new Immediate(1);
-    Immediate FALSE = new Immediate(1);
+    Immediate TRUE = Immediate.ONE;
+    Immediate FALSE = Immediate.ZERO;
 
     switch (operator) {
       // ARITHMETIC Operators
