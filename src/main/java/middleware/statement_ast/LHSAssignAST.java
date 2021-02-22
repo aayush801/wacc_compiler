@@ -121,6 +121,10 @@ public class LHSAssignAST extends StatementAST {
 
   }
 
+  public String getIdentifier() {
+    return identifier;
+  }
+
   @Override
   public List<Instruction> translate(List<Register> registers) {
     return new ArrayList<>();

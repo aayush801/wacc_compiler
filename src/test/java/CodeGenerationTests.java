@@ -93,4 +93,15 @@ public class CodeGenerationTests {
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
   }
 
+  @Test
+  public void testVarAssignment() throws IOException {
+    String instruction = "begin\n" +
+            "    int x = 0 ;\n " +
+            "    int z = x ;\n" +
+            "    x = 2\n" +
+            "end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
+
 }

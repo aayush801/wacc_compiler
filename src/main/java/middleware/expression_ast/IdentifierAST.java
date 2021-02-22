@@ -90,10 +90,6 @@ public class IdentifierAST extends ExpressionAST {
 *
 * TODO Now:
 *  I think the code should be in the translate thing tbh, and we juts restrict where we call it from no?
-* When evaluating an expression - i.e. in binOp or in UnOp, or in println, etc. this is a lot tbh :(
-*   I would say this needs special handling i.e. when translating a binOp or UnOp, we need to evaluate the
-*   subexpressions, so we should load it here instead by treating it specially
-* when we declare a variable e.g. int x = 0 - do not need to change anything here
 * assign-lhs (as an expression) - x = 2 needs a bit of thought tbh.
 *
 * TODO later:
