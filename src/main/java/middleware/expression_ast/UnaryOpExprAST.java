@@ -1,5 +1,7 @@
 package middleware.expression_ast;
 
+import backend.instructions.Instruction;
+import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.NotAFunction;
 import errors.semantic_errors.expressionNotFound;
@@ -11,6 +13,9 @@ import frontend.identifier_objects.basic_types.CHAR;
 import frontend.identifier_objects.basic_types.INT;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UnaryOpExprAST extends ExpressionAST {
 
@@ -125,9 +130,14 @@ public class UnaryOpExprAST extends ExpressionAST {
         addError(new NotAFunction(ctx));
         break;
     }
-
   }
 
+  public List<Instruction> translate(List<Register> registers) {
+    // evaluate expression.
+    List<Instruction> ret = expr.translate(registers);
+    // TODO: ADD CODE TO TRANSLATE ALL OF THESE THINGIES.
+    return ret;
+  }
 }
 
 
