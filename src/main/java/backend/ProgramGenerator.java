@@ -1,20 +1,29 @@
 package backend;
 
-import backend.labels.DataLabel;
-import backend.labels.InstructionLabel;
-import backend.labels.TextLabel;
+import backend.instructions.Instruction;
+import backend.instructions.arithmetic.Arithmetic;
+import backend.instructions.arithmetic.ArithmeticOpcode;
+import backend.instructions.stack_instructions.Pop;
+import backend.instructions.stack_instructions.Push;
+import backend.labels.data.DataLabel;
+import backend.labels.code.InstructionLabel;
+import backend.labels.text.TextLabel;
+import backend.operands.Immediate;
 import backend.registers.LinkRegister;
 import backend.registers.ProgramCounter;
 import backend.registers.Register;
 import backend.registers.StackPointer;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import middleware.symbol_table.SymbolTable;
 
 public class ProgramGenerator {
 
-  private final List<DataLabel> dataSection = new ArrayList<>();
-  private final List<TextLabel> textSection = new ArrayList<>();
-  private final List<InstructionLabel> mainSection = new ArrayList<>();
+  private final Set<DataLabel> dataSection = new HashSet<>();
+  private final Set<TextLabel> textSection = new HashSet<>();
+  private final Set<InstructionLabel> codeSection = new HashSet<>();
 
   public final List<Register> registers = new ArrayList<>();
   public final Register PC = new ProgramCounter();
@@ -32,16 +41,57 @@ public class ProgramGenerator {
   }
 
   public void addData(DataLabel label) {
+
     dataSection.add(label);
+
   }
 
   public void addText(TextLabel label) {
+
     textSection.add(label);
+
   }
 
-  public void addMain(InstructionLabel label) {
-    mainSection.add(label);
+  public void addCode(InstructionLabel label) {
+
+    codeSection.add(label);
+
   }
+
+  public List<Instruction> encapsulateFunction(List<Instruction> instructions){
+
+    //    PUSH {lr}
+    instructions.add(0, new Push(LR));
+
+    // instruction body unchanged
+
+    //		POP {pc}
+    instructions.add(new Pop(PC));
+
+    return instructions;
+  }
+
+  public List<Instruction> encapsulateScope(SymbolTable scopeST, List<Instruction> instructions) {
+    int sizeOfVariablesDeclaredInScope = scopeST.getAllocatedInThisScope();
+
+    // no variables declared in this scope, so just return.
+    if (sizeOfVariablesDeclaredInScope == 0) {
+      return instructions;
+    }
+    Instruction decrementStack =
+        new Arithmetic(ArithmeticOpcode.SUB, SP, SP,
+            new Immediate(sizeOfVariablesDeclaredInScope));
+
+    instructions.add(0, decrementStack);
+
+    Instruction incrementStack =
+        new Arithmetic(ArithmeticOpcode.ADD, SP, SP,
+            new Immediate(sizeOfVariablesDeclaredInScope));
+
+    instructions.add(incrementStack);
+    return instructions;
+  }
+
 
   @Override
   public String toString() {
@@ -62,7 +112,7 @@ public class ProgramGenerator {
     builder.append("\n");
 
     builder.append(".global main \n");
-    mainSection.forEach(builder::append);
+    codeSection.forEach(builder::append);
 
     return builder.toString();
   }

@@ -5,7 +5,7 @@ import backend.instructions.Load;
 import backend.instructions.Move;
 import backend.instructions.addr_modes.Address;
 import backend.instructions.addr_modes.ImmediateAddress;
-import backend.labels.DataLabel;
+import backend.labels.data.DataLabel;
 import backend.operands.Immediate;
 import backend.registers.Register;
 import frontend.identifier_objects.TYPE;

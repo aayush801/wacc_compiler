@@ -1,16 +1,22 @@
-package backend.labels;
+package backend.labels.code;
 
 import backend.instructions.Instruction;
+import backend.labels.Label;
 import java.util.List;
 
-public class TextLabel extends Instruction {
+public class InstructionLabel extends Label {
 
-  private final String name;
   private final List<Instruction> instructions;
+  private boolean isLastFunction = false;
 
-  public TextLabel(String name, List<Instruction> instructions) {
-    this.name = name;
+  public InstructionLabel(String name, List<Instruction> instructions) {
+    super(name);
     this.instructions = instructions;
+  }
+
+  public InstructionLabel setLastFunction(){
+    isLastFunction = true;
+    return this;
   }
 
   @Override
@@ -18,6 +24,7 @@ public class TextLabel extends Instruction {
     StringBuilder builder = new StringBuilder(name);
     builder.append(": \n");
     instructions.forEach(i -> builder.append("\t").append(i).append("\n"));
+    if(isLastFunction) builder.append("\t .ltorg\n");
     return builder.toString();
   }
 }

@@ -20,8 +20,7 @@ public class Arithmetic extends Instruction {
   }
 
   public Arithmetic(ArithmeticOpcode Opcode, Register Rd, Register Rn,
-      Operand Operand, boolean flags, ConditionCode code) {
-    super(code);
+      Operand Operand, boolean flags) {
     this.Rd = Rd;
     this.Rn = Rn;
     this.Operand = Operand;

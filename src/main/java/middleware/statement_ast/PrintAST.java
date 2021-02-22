@@ -1,5 +1,6 @@
 package middleware.statement_ast;
 
+import backend.functions.PrintFunctions;
 import backend.instructions.Branch;
 import backend.instructions.Instruction;
 import backend.registers.Register;
@@ -37,7 +38,6 @@ public class PrintAST extends StatementAST {
   @Override
   public List<Instruction> translate(List<Register> registers) {
     List<Instruction> instructions = expr.translate(registers);
-    Register destination = registers.get(0);
 
     if (type instanceof INT) {
 
@@ -58,6 +58,7 @@ public class PrintAST extends StatementAST {
     } else if (type instanceof STR) {
 
       instructions.add(new Branch("p_print_string", true));
+      program.addCode(PrintFunctions.printString(program));
 
     }
 

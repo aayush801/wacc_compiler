@@ -104,4 +104,28 @@ public class CodeGenerationTests {
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
   }
 
+  @Test
+  public void testPrintTriangle() throws IOException {
+    String instruction = "\n"
+        + "begin\n"
+        + "  int f(int x) is\n"
+        + "    if x == 0 then\n"
+        + "      skip\n"
+        + "    else\n"
+        + "      int i = x ;\n"
+        + "      while i > 0 do \n"
+        + "        print \"-\" ;\n"
+        + "        i = i - 1\n"
+        + "      done ;\n"
+        + "      println \"\" ;\n"
+        + "      int s = call f(x - 1)\n"
+        + "    fi ;\n"
+        + "    return 0\n"
+        + "  end\n"
+        + "\n"
+        + "  int s = call f(8) \n"
+        + "end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
 }

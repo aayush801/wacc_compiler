@@ -1,25 +1,21 @@
-package backend.labels;
+package backend.labels.data;
 
 import backend.instructions.Instruction;
+import backend.labels.Label;
 import java.util.Arrays;
 import java.util.List;
 
-public class DataLabel extends Instruction {
+public class DataLabel extends Label {
 
   private static int INDEX = 0;
   private final String data;
-  private final int index;
 
   private static final List<Character> escapedChars = Arrays
       .asList('0', 'n', 'b', 't', 'r', 'f', '\'', '\"', '\\', 'n');
 
   public DataLabel(String data) {
+    super("msg_" + INDEX++);
     this.data = data;
-    index = INDEX++;
-  }
-
-  public String getLabelName() {
-    return "msg_" + index;
   }
 
   public int getWordLength() {
@@ -37,10 +33,8 @@ public class DataLabel extends Instruction {
 
   @Override
   public String toString() {
-    StringBuilder builder = new StringBuilder().append(getLabelName()).append(": \n");
-    builder.append("\t .word ").append(getWordLength()).append("\n");
-    builder.append("\t .ascii ").append(data).append("\n");
-
-    return builder.toString();
+    return name + ": \n"
+        + "\t .word " + getWordLength() + "\n"
+        + "\t .ascii " + data + "\n";
   }
 }

@@ -1,6 +1,7 @@
 package middleware.function_ast;
 
 import backend.instructions.Instruction;
+import backend.labels.code.FunctionLabel;
 import backend.registers.Register;
 import errors.semantic_errors.DuplicateIdentifier;
 import errors.semantic_errors.Undefined;
@@ -77,7 +78,9 @@ public class FunctionDeclarationAST extends NodeAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return new ArrayList<>();
+
+    return statementAST.translate(registers);
+
   }
 
 }
