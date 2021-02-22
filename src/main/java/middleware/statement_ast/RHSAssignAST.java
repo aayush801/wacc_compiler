@@ -163,24 +163,8 @@ public class RHSAssignAST extends StatementAST {
   public List<Instruction> translate(List<Register> registers) {
     if (expressionAST != null) {
 
-      // Explicitly verify that expression is NOT an identifier.
-      if (!expressionAST.isIdentifier()) {
-        return expressionAST.translate(registers);
-      }
+      return expressionAST.translate(registers);
 
-      Register target = registers.get(0);
-
-      // Retrieving the variable object stored in the sumbol table.
-      IdentifierAST ident = (IdentifierAST) expressionAST;
-      VARIABLE varObj = (VARIABLE) scopeST.lookup(ident.getIdentifier());
-
-      // calculate offset
-      int offset = scopeST.getAllocatedStackMemory() - varObj.getOffset();
-
-      // To evaluate this RHS, we simply need to load the immediate into a register.
-      List<Instruction> ret = new ArrayList<>();
-      ret.add(new Load(target, new ImmediateOffset(new StackPointer(), new Immediate(offset))));
-      return ret;
     }
 
     if (arrayAST != null) {

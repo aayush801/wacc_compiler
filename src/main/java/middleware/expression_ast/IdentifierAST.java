@@ -1,13 +1,21 @@
 package middleware.expression_ast;
 
 import backend.instructions.Instruction;
+import backend.instructions.Load;
+import backend.instructions.addr_modes.ImmediateOffset;
+import backend.operands.Immediate;
 import backend.registers.Register;
+import backend.registers.StackPointer;
 import errors.semantic_errors.Undefined;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
@@ -15,6 +23,7 @@ public class IdentifierAST extends ExpressionAST {
 
   private final String identifier;
   private TYPE type;
+  private SymbolTable scopeST;
 
   public IdentifierAST(ParserRuleContext ctx, String identifier) {
     super(ctx);
@@ -34,6 +43,7 @@ public class IdentifierAST extends ExpressionAST {
   public void check() {
     // find the object corresponding to the identifier in the lookup table
     IDENTIFIER obj = ST.lookupAll(identifier);
+    scopeST = ST;
 
     if (obj == null) {
       addError(new Undefined(ctx));
@@ -60,17 +70,26 @@ public class IdentifierAST extends ExpressionAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return super.translate(registers);
+    Register target = registers.get(0);
+
+    // lookup varObj in current and higher scopes to find the variable.
+    VARIABLE varObj = (VARIABLE) scopeST.lookupAll(identifier);
+
+    // calculate offset
+    int offset = scopeST.getAllocatedStackMemory() - varObj.getOffset();
+
+    // Simply load the identifier into the first register in the list.
+    List<Instruction> ret = new ArrayList<>();
+    ret.add(new Load(target, new ImmediateOffset(new StackPointer(), new Immediate(offset))));
+    return ret;
   }
 }
 
 /*
 * Where could this node be visited from?
 *
-* assign-rhs - Load the identifier into the first free register inside the assignRHSAST class.
-*   e.g. int x = y. We know that there are type compatible.
-*
 * TODO Now:
+*  I think the code should be in the translate thing tbh, and we juts restrict where we call it from no?
 * When evaluating an expression - i.e. in binOp or in UnOp, or in println, etc. this is a lot tbh :(
 *   I would say this needs special handling i.e. when translating a binOp or UnOp, we need to evaluate the
 *   subexpressions, so we should load it here instead by treating it specially

@@ -72,4 +72,15 @@ public class CodeGenerationTests {
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
   }
 
+  @Test
+  public void testVarDeclarationWithSumOfOtherIdents() throws IOException {
+    String instruction = "begin\n" +
+            "    int x = 0 ;\n" +
+            "    int z = 1 ;\n" +
+            "    int y = x + z\n" +
+            "end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
+
 }
