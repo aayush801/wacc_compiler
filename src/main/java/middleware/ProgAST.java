@@ -6,6 +6,8 @@ import backend.instructions.addr_modes.Address;
 import backend.labels.code.FunctionLabel;
 import backend.labels.code.InstructionLabel;
 import backend.registers.Register;
+
+import java.util.ArrayList;
 import java.util.List;
 import middleware.function_ast.FunctionDeclarationAST;
 import middleware.statement_ast.StatementAST;
@@ -55,9 +57,14 @@ public class ProgAST extends NodeAST {
       func.translate(registers);
     }
 
+    List<Register> temp = new ArrayList<>(registers);
+    temp.remove(0);
+    temp.remove(0);
+    temp.remove(0);
+    temp.remove(0);
     // translate statement body
     List<Instruction> instructions = program
-        .encapsulateScope(scopeST, statementAST.translate(registers));
+        .encapsulateScope(scopeST, statementAST.translate(temp));
 
     // boiler plate back
     instructions.add(new Load(program.registers.get(0), new Address("0")));

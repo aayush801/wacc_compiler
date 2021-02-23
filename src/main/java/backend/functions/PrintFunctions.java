@@ -74,10 +74,10 @@ public class PrintFunctions {
     program.addData(falseLabel);
 
     //		LDRNE r0, =msg_3
-    instructions.add(new Load(program.registers.get(0), new Address(trueLabel.getLabelName())));
+    instructions.add(new Load(ConditionCode.NE, program.registers.get(0), new Address(trueLabel.getLabelName()), false, false));
 
     //		LDREQ r0, =msg_4
-    instructions.add(new Load(program.registers.get(0), new Address(falseLabel.getLabelName())));
+    instructions.add(new Load(ConditionCode.EQ, program.registers.get(0), new Address(falseLabel.getLabelName()), false, false));
 
     //		ADD r0, r0, #4
     instructions.add(new Arithmetic(ArithmeticOpcode.ADD, program.registers.get(0), program.registers.get(0), new ImmediateNum(4),false));

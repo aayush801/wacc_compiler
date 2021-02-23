@@ -72,15 +72,20 @@ public class IdentifierAST extends ExpressionAST {
     Register target = registers.get(0);
 
     // lookup varObj in current and higher scopes to find the variable.
-    VARIABLE varObj = (VARIABLE) scopeST.lookupAll(identifier);
+    IDENTIFIER varObj = scopeST.lookupAll(identifier);
 
-    // calculate offset
-    int offset = scopeST.getAllocatedStackMemory() - varObj.getOffset();
+    if (varObj instanceof VARIABLE) {
+      VARIABLE varObjVariable = (VARIABLE) varObj;
+      // calculate offset
+      int offset = scopeST.getAllocatedStackMemory() - varObjVariable.getOffset();
 
-    // Simply load the identifier into the first register in the list.
-    List<Instruction> ret = new ArrayList<>();
-    ret.add(new Load(target, new ImmediateOffset(new StackPointer(), new ImmediateNum(offset))));
-    return ret;
+      // Simply load the identifier into the first register in the list.
+      List<Instruction> ret = new ArrayList<>();
+      ret.add(new Load(target, new ImmediateOffset(new StackPointer(), new ImmediateNum(offset))));
+      return ret;
+    }
+
+    return new ArrayList<>();
   }
 }
 

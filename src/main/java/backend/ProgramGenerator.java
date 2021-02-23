@@ -13,17 +13,16 @@ import backend.registers.LinkRegister;
 import backend.registers.ProgramCounter;
 import backend.registers.Register;
 import backend.registers.StackPointer;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
+
 import middleware.symbol_table.SymbolTable;
 
 public class ProgramGenerator {
 
-  private final Set<DataLabel> dataSection = new HashSet<>();
-  private final Set<TextLabel> textSection = new HashSet<>();
-  private final Set<InstructionLabel> codeSection = new HashSet<>();
+  private final Set<DataLabel> dataSection = new LinkedHashSet<>();
+  private final Set<TextLabel> textSection = new LinkedHashSet<>();
+  private final Set<InstructionLabel> codeSection = new LinkedHashSet<>();
 
   public final List<Register> registers = new ArrayList<>();
   public final Register PC = new ProgramCounter();
@@ -112,9 +111,19 @@ public class ProgramGenerator {
     builder.append("\n");
 
     builder.append(".global main \n");
-    codeSection.forEach(builder::append);
+
+    printSection(codeSection, builder);
+    //codeSection.forEach(builder::append);
 
     return builder.toString();
+  }
+
+
+  private void printSection(Set<InstructionLabel> section, StringBuilder builder) {
+    ArrayList<InstructionLabel> setAsList = new ArrayList<>(section);
+    for (int i = setAsList.size() - 1; i >= 0; i--) {
+      builder.append(setAsList.get(i));
+    }
   }
 
   public Set<InstructionLabel> getCodeSection() {
