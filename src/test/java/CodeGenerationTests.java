@@ -232,4 +232,15 @@ public class CodeGenerationTests {
     WaccCompiler compiler = new WaccCompiler(instruction);
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
   }
+
+  @Test
+  public void testIntArrayAssignment() throws IOException {
+    String instruction = "begin  " +
+            "int[] x = [1, 3] ;\n" +
+            "  int a = x[1] ;" +
+            "  x[0] = x[1]" +
+            "end\n";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
 }

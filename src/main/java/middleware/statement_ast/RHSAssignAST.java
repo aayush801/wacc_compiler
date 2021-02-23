@@ -1,12 +1,15 @@
 package middleware.statement_ast;
 
 import backend.instructions.Instruction;
+import backend.instructions.Load;
+import backend.instructions.addr_modes.ZeroOffset;
 import backend.registers.Register;
 import frontend.identifier_objects.TYPE;
 
 import java.util.List;
 
 import middleware.arrays_ast.ArrayAST;
+import middleware.arrays_ast.ArrayElemAST;
 import middleware.expression_ast.ExpressionAST;
 import middleware.function_ast.FunctionCallAST;
 import middleware.pair_ast.NewPairAST;
@@ -153,8 +156,14 @@ public class RHSAssignAST extends StatementAST {
   @Override
   public List<Instruction> translate(List<Register> registers) {
     if (expressionAST != null) {
+      Register target = registers.get(0);
+      List<Instruction> ret = expressionAST.translate(registers);
+      
+      if (expressionAST instanceof ArrayElemAST) {
+        ret.add(new Load(target, new ZeroOffset(target)));
+      }
 
-      return expressionAST.translate(registers);
+      return ret;
 
     }
 
