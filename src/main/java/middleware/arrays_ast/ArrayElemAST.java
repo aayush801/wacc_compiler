@@ -1,5 +1,7 @@
 package middleware.arrays_ast;
 
+import backend.instructions.Instruction;
+import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
 import frontend.identifier_objects.IDENTIFIER;
@@ -13,6 +15,9 @@ import middleware.NodeASTList;
 import middleware.expression_ast.ExpressionAST;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArrayElemAST extends ExpressionAST {
 
@@ -75,5 +80,10 @@ public class ArrayElemAST extends ExpressionAST {
     // Finally, update the type.
     type = ((ARRAY) array).getType();
 
+  }
+
+  @Override
+  public List<Instruction> translate(List<Register> registers) {
+    return new ArrayList<>();
   }
 }

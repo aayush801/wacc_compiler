@@ -1,6 +1,11 @@
 package middleware.arrays_ast;
 
-import backend.instructions.Instruction;
+import backend.instructions.*;
+import backend.instructions.addr_modes.ImmediateAddress;
+import backend.instructions.addr_modes.ImmediateOffset;
+import backend.instructions.addr_modes.RegisterOffset;
+import backend.instructions.addr_modes.ZeroOffset;
+import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
@@ -8,6 +13,9 @@ import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.ARRAY;
 import java.util.ArrayList;
 import java.util.List;
+
+import frontend.identifier_objects.basic_types.BOOL;
+import frontend.identifier_objects.basic_types.CHAR;
 import middleware.NodeAST;
 import middleware.NodeASTList;
 import middleware.expression_ast.ExpressionAST;
@@ -58,10 +66,10 @@ public class ArrayAST extends NodeAST {
           expressionAST.check();
           if (!(isCompatible(expressionAST.getType(), curType))) {
             addError(
-                new MismatchedTypes(
-                    expressionAST.ctx,
-                    expressionAST.getType(),
-                    curType)
+                    new MismatchedTypes(
+                            expressionAST.ctx,
+                            expressionAST.getType(),
+                            curType)
             );
           }
         }
@@ -75,6 +83,40 @@ public class ArrayAST extends NodeAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return new ArrayList<>();
+    Register destination = registers.get(0);
+    List<Instruction> ret = new ArrayList<>();
+
+    // Calculate size of heap space required.
+    int elements = expressionASTList.size();
+    int size = elements*arrayObj.getType().getSize() + arrayObj.getSize();
+    Instruction malloc_size = new Load(new Register(0), new ImmediateAddress(size));
+    ret.add(malloc_size);
+
+    // Add malloc instruction.
+    ret.add(new Branch("malloc", true));
+
+    // Store result from malloc in destination.
+    ret.add(new Move(destination, new Register(0)));
+
+    int soFar = 4;
+    List<Register> remainingRegs = new ArrayList<>(registers);
+    remainingRegs.remove(0);
+    Register target = remainingRegs.get(0);
+
+    boolean charOrBool = arrayObj.getType() instanceof CHAR
+            || arrayObj.getType() instanceof BOOL;
+
+    // Store parameters on the heap
+    for (ExpressionAST e : expressionASTList) {
+      ret.addAll(e.translate(remainingRegs));
+      ret.add(new Store(ConditionCode.NONE, target, new ImmediateOffset(destination, new ImmediateNum(soFar)), charOrBool));
+      soFar += arrayObj.getType().getSize();
+    }
+
+    // Store size of array on the starting address of the heap entry.
+    ret.add(new Load(target, new ImmediateAddress(elements)));
+    ret.add(new Store(target, new ZeroOffset(destination)));
+
+    return ret;
   }
 }

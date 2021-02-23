@@ -182,4 +182,22 @@ public class CodeGenerationTests {
     WaccCompiler compiler = new WaccCompiler(instruction);
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
   }
+
+  @Test
+  public void testVarIntArrayDeclaration() throws IOException {
+    String instruction = "begin " +
+            "   int[] x = [1, 3]" +
+            "end\n";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
+
+  @Test
+  public void testVarCharArrayDeclaration() throws IOException {
+    String instruction = "begin " +
+            "   char[] x = ['c', 'a', 't']\n" +
+            "end\n";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
 }
