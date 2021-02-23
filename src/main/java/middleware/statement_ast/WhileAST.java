@@ -1,6 +1,11 @@
 package middleware.statement_ast;
 
+import backend.instructions.Branch;
+import backend.instructions.Compare;
+import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
+import backend.instructions.stack_instructions.LabelledInstruction;
+import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
@@ -55,7 +60,34 @@ public class WhileAST extends StatementAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return new ArrayList<>();
+    Register destination = registers.get(0);
+    List<Instruction> instructions = new ArrayList<>();
+
+    int labelNumber = program.getCodeSection().size();
+
+    instructions.add(new Branch("L" + labelNumber));
+
+    List<Instruction> statement = statementAST.translate(registers);
+    Instruction start = null;
+    if (statement.size() > 0) {
+      start = statement.get(0);
+      statement.remove(0);
+    }
+    instructions.add(new LabelledInstruction("L" + (labelNumber + 1), start));
+    instructions.addAll(statement);
+
+    List<Instruction> condition = expressionAST.translate(registers);
+    if (condition.size() > 0) {
+      start = condition.get(0);
+      condition.remove(0);
+    }
+    instructions.add(new LabelledInstruction("L" + labelNumber, start));
+    instructions.addAll(condition);
+    instructions.add(new Compare(destination, ImmediateNum.ONE));
+    instructions.add(new Branch(ConditionCode.EQ, "L" + (labelNumber + 1),
+        false));
+
+    return instructions;
   }
 
 }

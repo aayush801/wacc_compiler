@@ -65,7 +65,6 @@ public class ProgAST extends NodeAST {
     program.encapsulateFunction(instructions);
 
     program.addCode(new InstructionLabel("main", instructions).setLastFunction());
-
     // need to add support for funcDeclarations
 
     // enclose statement body instructions in the main section

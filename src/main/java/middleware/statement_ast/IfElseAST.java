@@ -1,6 +1,13 @@
 package middleware.statement_ast;
 
+import backend.instructions.Branch;
+import backend.instructions.Compare;
+import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
+import backend.instructions.stack_instructions.LabelledInstruction;
+import backend.labels.Label;
+import backend.labels.code.InstructionLabel;
+import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
@@ -67,7 +74,31 @@ public class IfElseAST extends StatementAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return new ArrayList<>();
+    Register destination = registers.get(0);
+
+    List<Instruction> instructions = expressionAST.translate(registers);
+
+    instructions.add(new Compare(destination, ImmediateNum.ZERO));
+
+    int labelNumber = program.getCodeSection().size();
+
+    instructions.add(new Branch(ConditionCode.EQ,
+        "L" + labelNumber, false));
+
+    instructions.addAll(firstStatAST.translate(registers));
+    instructions.add(new Branch("L" + (labelNumber + 1)));
+
+    List<Instruction> second = secondStatAST.translate(registers);
+    Instruction start = null;
+    if (second.size() > 0) {
+      start = second.get(0);
+      second.remove(0);
+    }
+    instructions.add(new LabelledInstruction("L" + labelNumber, start));
+    instructions.addAll(second);
+    instructions.add(new LabelledInstruction("L" + (labelNumber + 1), null));
+
+    return instructions;
   }
 
 }

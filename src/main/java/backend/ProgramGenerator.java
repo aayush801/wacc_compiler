@@ -116,4 +116,8 @@ public class ProgramGenerator {
 
     return builder.toString();
   }
+
+  public Set<InstructionLabel> getCodeSection() {
+    return codeSection;
+  }
 }
