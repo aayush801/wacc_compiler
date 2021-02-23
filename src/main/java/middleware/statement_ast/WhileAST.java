@@ -63,7 +63,8 @@ public class WhileAST extends StatementAST {
     Register destination = registers.get(0);
     List<Instruction> instructions = new ArrayList<>();
 
-    int labelNumber = program.getCodeSection().size();
+    int labelNumber = program.nextLabelNumber();
+    program.nextLabelNumber();
 
     instructions.add(new Branch("L" + labelNumber));
 

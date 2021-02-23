@@ -23,7 +23,7 @@ public class ProgramGenerator {
   private final Set<DataLabel> dataSection = new LinkedHashSet<>();
   private final Set<TextLabel> textSection = new LinkedHashSet<>();
   private final Set<InstructionLabel> codeSection = new LinkedHashSet<>();
-
+  private int labelsUsed = 0;
   public final List<Register> registers = new ArrayList<>();
   public final Register PC = new ProgramCounter();
   public final LinkRegister LR = new LinkRegister();
@@ -128,5 +128,9 @@ public class ProgramGenerator {
 
   public Set<InstructionLabel> getCodeSection() {
     return codeSection;
+  }
+
+  public int nextLabelNumber() {
+    return labelsUsed++;
   }
 }

@@ -80,8 +80,8 @@ public class IfElseAST extends StatementAST {
 
     instructions.add(new Compare(destination, ImmediateNum.ZERO));
 
-    int labelNumber = program.getCodeSection().size();
-
+    int labelNumber = program.nextLabelNumber();
+    program.nextLabelNumber();
     instructions.add(new Branch(ConditionCode.EQ,
         "L" + labelNumber, false));
 
