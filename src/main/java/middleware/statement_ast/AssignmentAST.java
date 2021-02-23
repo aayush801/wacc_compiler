@@ -4,12 +4,15 @@ import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
 import backend.instructions.Store;
 import backend.instructions.addr_modes.ImmediateOffset;
+import backend.instructions.addr_modes.ZeroOffset;
 import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import backend.registers.StackPointer;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import frontend.identifier_objects.VARIABLE;
@@ -62,6 +65,9 @@ public class AssignmentAST extends StatementAST {
     // Result of evaluating RHS will be stored here.
     Register target = registers.get(0);
 
+    List<Register> remainingRegs = new ArrayList<>(registers);
+    remainingRegs.remove(0);
+
     // evaluate RHS first.
     List<Instruction> instructions = RHS.translate(registers);
 
@@ -79,6 +85,11 @@ public class AssignmentAST extends StatementAST {
         instructions.add(new Store(ConditionCode.NONE, target,
                 new ImmediateOffset(program.SP, new ImmediateNum(offset)), false));
       }
+    }
+
+    if (LHS.getArrayElemAST() != null) {
+      instructions.addAll(LHS.getArrayElemAST().translate(remainingRegs));
+      instructions.add(new Store(target, new ZeroOffset(remainingRegs.get(0))));
     }
 
     return instructions;

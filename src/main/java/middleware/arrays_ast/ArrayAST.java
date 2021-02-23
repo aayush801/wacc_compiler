@@ -76,7 +76,6 @@ public class ArrayAST extends NodeAST {
 
         // create a new ARRAY object and store it.
         arrayObj = new ARRAY((TYPE) curType);
-
       }
     }
   }

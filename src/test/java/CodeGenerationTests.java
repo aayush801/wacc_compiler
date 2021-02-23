@@ -200,4 +200,36 @@ public class CodeGenerationTests {
     WaccCompiler compiler = new WaccCompiler(instruction);
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
   }
+
+  @Test
+  public void testArrayAssignment() throws IOException {
+    String instruction = "begin " +
+            "   int[] x = [1, 3] ;\n" +
+            "  int[] y = x ;\n" +
+            "  x = [7, 3]\n" +
+            "end\n";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
+
+  @Test
+  public void testintArrayElemAssignment() throws IOException {
+    String instruction = "begin  " +
+            "int[] x = [1, 3] ;\n" +
+            "int z = 3 ;\n" +
+            "  x[0+2] = 3" +
+            "end\n";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
+
+  @Test
+  public void testCharArrayElemAssignment() throws IOException {
+    String instruction = "begin  " +
+            "char[] x = ['c', 'a', 't'] ;\n" +
+            "  x[0+2] = 'g'" +
+            "end\n";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
 }

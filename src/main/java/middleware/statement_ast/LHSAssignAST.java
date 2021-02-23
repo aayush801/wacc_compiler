@@ -125,6 +125,10 @@ public class LHSAssignAST extends StatementAST {
     return identifier;
   }
 
+  public ArrayElemAST getArrayElemAST() {
+    return arrayElemAST;
+  }
+
   @Override
   public List<Instruction> translate(List<Register> registers) {
     return new ArrayList<>();
