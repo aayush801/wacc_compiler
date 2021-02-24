@@ -11,10 +11,9 @@ import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
-
 import java.util.ArrayList;
 import java.util.List;
-
+import middleware.ExpressionAST;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -90,14 +89,14 @@ public class IdentifierAST extends ExpressionAST {
 }
 
 /*
-* Where could this node be visited from?
-*
-* TODO Now:
-*  I think the code should be in the translate thing tbh, and we juts restrict where we call it from no?
-* assign-lhs (as an expression) - x = 2 needs a bit of thought tbh.
-*
-* TODO later:
-* calling fst or snd on an ident that is a pair - to be done later
-* array operations on an array name - to be done later
-* in function stuff, i.e. parameters, arguments, etc. - to be done later
-* */
+ * Where could this node be visited from?
+ *
+ * TODO Now:
+ *  I think the code should be in the translate thing tbh, and we juts restrict where we call it from no?
+ * assign-lhs (as an expression) - x = 2 needs a bit of thought tbh.
+ *
+ * TODO later:
+ * calling fst or snd on an ident that is a pair - to be done later
+ * array operations on an array name - to be done later
+ * in function stuff, i.e. parameters, arguments, etc. - to be done later
+ * */

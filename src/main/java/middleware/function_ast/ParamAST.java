@@ -9,9 +9,8 @@ import frontend.identifier_objects.TYPE;
 import java.util.ArrayList;
 import java.util.List;
 import middleware.NodeAST;
-import middleware.types_ast.TypeAST;
+import middleware.TypeAST;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 public class ParamAST extends NodeAST {
 

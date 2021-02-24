@@ -1,6 +1,5 @@
-package middleware.statement_ast;
+package middleware;
 
-import middleware.NodeAST;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 /* Superclass of all statement AST classes.

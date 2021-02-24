@@ -1,9 +1,7 @@
-package middleware.types_ast;
+package middleware;
 
 import frontend.identifier_objects.TYPE;
-import middleware.NodeAST;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 // TypeAST abstract class;
 

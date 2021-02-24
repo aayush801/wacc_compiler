@@ -46,7 +46,7 @@ public class PAIR extends TYPE {
   }
 
   @Override
-  public int getSize(){
+  public int getSize() {
     return 4;
   }
 }

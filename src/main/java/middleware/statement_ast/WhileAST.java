@@ -12,7 +12,8 @@ import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.basic_types.BOOL;
 import java.util.ArrayList;
 import java.util.List;
-import middleware.expression_ast.ExpressionAST;
+import middleware.ExpressionAST;
+import middleware.StatementAST;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 

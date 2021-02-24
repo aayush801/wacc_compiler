@@ -4,17 +4,16 @@ import backend.operands.Operand;
 
 enum RegType {
   ADDRESS,
-  IMMEDIATE;
+  IMMEDIATE
 }
 
 public class Register extends Operand {
 
+  public static final Register R0 = new Register(0);
+  public static final Register R1 = new Register(1);
   private final Integer number;
   private Integer value;
   private RegType type;
-
-  public static final Register R0 = new Register(0);
-  public static final Register R1 = new Register(1);
 
   public Register(Integer number) {
     this.number = number;

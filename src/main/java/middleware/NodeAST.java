@@ -2,9 +2,6 @@ package middleware;
 
 import backend.ProgramGenerator;
 import backend.instructions.Instruction;
-import backend.instructions.arithmetic.Arithmetic;
-import backend.instructions.arithmetic.ArithmeticOpcode;
-import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import errors.WaccError;
 import errors.semantic_errors.WaccSemanticError;
@@ -24,6 +21,11 @@ public abstract class NodeAST implements NodeASTInterface {
   protected static SymbolTable ST = SymbolTable.TopSymbolTable();
   protected static ProgramGenerator program = new ProgramGenerator();
   private static List<WaccError> semanticErrors;
+  public ParserRuleContext ctx;
+
+  public NodeAST(ParserRuleContext ctx) {
+    this.ctx = ctx;
+  }
 
   public static void setSemanticErrors(List<WaccError> semanticErrors) {
     NodeAST.semanticErrors = semanticErrors;
@@ -32,13 +34,6 @@ public abstract class NodeAST implements NodeASTInterface {
   public String translate() {
     translate(program.registers);
     return program.toString();
-  }
-
-
-  public ParserRuleContext ctx;
-
-  public NodeAST(ParserRuleContext ctx) {
-    this.ctx = ctx;
   }
 
   protected void addError(WaccSemanticError error) {

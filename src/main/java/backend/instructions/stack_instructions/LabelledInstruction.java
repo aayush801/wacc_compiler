@@ -14,8 +14,9 @@ public class LabelledInstruction extends Instruction {
 
   public String toString() {
     String str = "\b" + label + ":";
-    if (instruction != null)
+    if (instruction != null) {
       str += "\n\t" + instruction;
+    }
     return str;
   }
 

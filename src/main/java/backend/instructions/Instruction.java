@@ -1,12 +1,9 @@
 package backend.instructions;
 
-import backend.instructions.addr_modes.AddressingMode;
-import backend.registers.Register;
-
 public abstract class Instruction {
 
-  protected boolean flags = false;
   protected final ConditionCode code;
+  protected boolean flags = false;
 
   protected Instruction(ConditionCode code) {
     this.code = code;

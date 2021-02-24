@@ -22,14 +22,13 @@ import frontend.identifier_objects.basic_types.ARRAY;
 import frontend.identifier_objects.basic_types.BOOL;
 import frontend.identifier_objects.basic_types.CHAR;
 import frontend.identifier_objects.basic_types.INT;
-import middleware.NodeAST;
-import middleware.NodeASTList;
-import middleware.expression_ast.ExpressionAST;
-import middleware.symbol_table.SymbolTable;
-import org.antlr.v4.runtime.ParserRuleContext;
-
 import java.util.ArrayList;
 import java.util.List;
+import middleware.ExpressionAST;
+import middleware.NodeAST;
+import middleware.NodeASTList;
+import middleware.symbol_table.SymbolTable;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 public class ArrayElemAST extends ExpressionAST {
 
@@ -106,7 +105,9 @@ public class ArrayElemAST extends ExpressionAST {
     // setting target to point to the array we want to index.
     VARIABLE varObj = (VARIABLE) scopeST.lookupAll(arrayName);
     int offset = program.SP.calculateOffset(varObj.getStackAddress());
-    ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, new StackPointer(), new ImmediateNum(offset), false));
+    ret.add(
+        new Arithmetic(ArithmeticOpcode.ADD, target, new StackPointer(), new ImmediateNum(offset),
+            false));
 
     List<Register> remainingRegs = new ArrayList<>(registers);
     remainingRegs.remove(0);
@@ -130,9 +131,10 @@ public class ArrayElemAST extends ExpressionAST {
     if (type instanceof CHAR || type instanceof BOOL) {
       ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target, index, false));
     } else {
-      ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target, new ImmediateNumLSL(index, 2), false));
+      ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target, new ImmediateNumLSL(index, 2),
+          false));
     }
-    
+
     PrintArrayBoundsChecks.printArrayNegativeIndexMessage(program);
     PrintArrayBoundsChecks.printArrayTooLargeIndexMessage(program);
 

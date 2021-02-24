@@ -2,7 +2,6 @@ package frontend.syntactic_parser;
 
 import errors.WaccError;
 import errors.syntax_errors.WaccSyntaxError;
-import java.util.ArrayList;
 import java.util.List;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;

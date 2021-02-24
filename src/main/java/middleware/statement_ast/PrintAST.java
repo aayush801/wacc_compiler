@@ -14,16 +14,16 @@ import frontend.identifier_objects.basic_types.INT;
 import frontend.identifier_objects.basic_types.PAIR;
 import frontend.identifier_objects.basic_types.STR;
 import java.util.List;
-import middleware.expression_ast.ExpressionAST;
+import middleware.ExpressionAST;
+import middleware.StatementAST;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class PrintAST extends StatementAST {
 
   private final ExpressionAST expr;
-  private TYPE type;
-
   // Used to differentiate between print and println.
   private final boolean newLine;
+  private TYPE type;
 
   public PrintAST(ParserRuleContext ctx, ExpressionAST expr, boolean newLine) {
     super(ctx);
@@ -46,7 +46,6 @@ public class PrintAST extends StatementAST {
     // move result of expression to register 0
     instructions.add(new Move(new Register(0), dest));
 
-
     PrimitiveLabel label = null;
 
     if (type instanceof INT) {
@@ -68,13 +67,12 @@ public class PrintAST extends StatementAST {
 
       label = PrintFunctions.printString(program);
 
-    } else {
-      System.out.println("A print function has not been defined for this type");
     }
 
-    instructions.add(new Branch(label.getLabelName(), true));
-    program.addCode(label);
-
+    if (label != null) {
+      instructions.add(new Branch(label.getLabelName(), true));
+      program.addCode(label);
+    }
 
     if (newLine) {
       label = PrintFunctions.printLine(program);

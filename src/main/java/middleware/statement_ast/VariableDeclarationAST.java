@@ -16,8 +16,9 @@ import frontend.identifier_objects.basic_types.BOOL;
 import frontend.identifier_objects.basic_types.CHAR;
 import java.util.List;
 import middleware.NodeAST;
+import middleware.StatementAST;
+import middleware.TypeAST;
 import middleware.symbol_table.SymbolTable;
-import middleware.types_ast.TypeAST;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class VariableDeclarationAST extends StatementAST {
@@ -89,7 +90,8 @@ public class VariableDeclarationAST extends StatementAST {
     List<Instruction> instructions = rhsAssignAST.translate(registers);
     // Amount of bytes to add to the stack pointer to get address of variable
     int stackAddress = program.SP.push(varObj); //pushes varObj onto stack
-    int offset = program.SP.calculateOffset(stackAddress); // gets address of var in respect to the current stack pointer
+    int offset = program.SP.calculateOffset(
+        stackAddress); // gets address of var in respect to the current stack pointer
 
     TYPE type = typeAST.getType();
     instructions.add(new Store(ConditionCode.NONE, destination,

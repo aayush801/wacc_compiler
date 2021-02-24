@@ -8,7 +8,6 @@ import frontend.identifier_objects.basic_types.PAIR;
 import java.util.List;
 import middleware.NodeAST;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 // PairElemType could be a baseType, an arrayType, or an identifier.
 // 3 constructors handle each case.

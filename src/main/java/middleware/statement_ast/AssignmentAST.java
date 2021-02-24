@@ -10,13 +10,12 @@ import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import frontend.identifier_objects.VARIABLE;
 import frontend.identifier_objects.basic_types.BOOL;
 import frontend.identifier_objects.basic_types.CHAR;
+import java.util.ArrayList;
+import java.util.List;
+import middleware.StatementAST;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -79,10 +78,10 @@ public class AssignmentAST extends StatementAST {
       TYPE type = varObj.getType();
       if (type instanceof CHAR || type instanceof BOOL) {
         instructions.add(new Store(ConditionCode.NONE, target,
-                new ImmediateOffset(program.SP, new ImmediateNum(offset)), true));
+            new ImmediateOffset(program.SP, new ImmediateNum(offset)), true));
       } else {
         instructions.add(new Store(ConditionCode.NONE, target,
-                new ImmediateOffset(program.SP, new ImmediateNum(offset)), false));
+            new ImmediateOffset(program.SP, new ImmediateNum(offset)), false));
       }
     }
 

@@ -11,12 +11,12 @@ public class VARIABLE extends IDENTIFIER {
     this.type = type;
   }
 
-  public void setStackAddress(int stackAddress) {
-    this.stackAddress = stackAddress;
-  }
-
   public Integer getStackAddress() {
     return stackAddress;
+  }
+
+  public void setStackAddress(int stackAddress) {
+    this.stackAddress = stackAddress;
   }
 
   public TYPE getType() {

@@ -1,17 +1,15 @@
 package backend.labels.data;
 
-import backend.instructions.Instruction;
 import backend.labels.Label;
 import java.util.Arrays;
 import java.util.List;
 
 public class DataLabel extends Label {
 
-  private static int INDEX = 0;
-  private final String data;
-
   private static final List<Character> escapedChars = Arrays
       .asList('0', 'n', 'b', 't', 'r', 'f', '\'', '\"', '\\', 'n');
+  private static int INDEX = 0;
+  private final String data;
 
   public DataLabel(String data) {
     super("msg_" + INDEX++);

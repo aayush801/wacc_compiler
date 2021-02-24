@@ -2,8 +2,8 @@ package middleware.statement_ast;
 
 import backend.instructions.Instruction;
 import backend.registers.Register;
-
 import java.util.List;
+import middleware.StatementAST;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class ChainedStatementAST extends StatementAST {

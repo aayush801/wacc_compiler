@@ -8,9 +8,9 @@ import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.basic_types.INT;
 import java.util.List;
-import middleware.expression_ast.ExpressionAST;
+import middleware.ExpressionAST;
+import middleware.StatementAST;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 public class ExitAST extends StatementAST {
 
@@ -27,7 +27,7 @@ public class ExitAST extends StatementAST {
     // Verify that the expr passed to exit is a valid expression.
     expressionAST.check();
     IDENTIFIER type = expressionAST.getType();
-    if(type == null){
+    if (type == null) {
       return;
     }
 
@@ -45,7 +45,9 @@ public class ExitAST extends StatementAST {
     List<Instruction> instructions = expressionAST.translate(registers);
     Register intReg = registers.get(0);
 
-    if(intReg.getNumber() != 0) instructions.add(new Move(new Register(0), intReg));
+    if (intReg.getNumber() != 0) {
+      instructions.add(new Move(new Register(0), intReg));
+    }
 
     instructions.add(new Branch("exit", true));
 

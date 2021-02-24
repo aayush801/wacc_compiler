@@ -2,7 +2,6 @@ package errors.semantic_errors;
 
 import frontend.identifier_objects.IDENTIFIER;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 public class expressionNotFound extends WaccSemanticError {
 

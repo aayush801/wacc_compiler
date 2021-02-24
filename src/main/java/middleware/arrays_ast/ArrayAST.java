@@ -1,26 +1,27 @@
 package middleware.arrays_ast;
 
-import backend.instructions.*;
+import backend.instructions.Branch;
+import backend.instructions.ConditionCode;
+import backend.instructions.Instruction;
+import backend.instructions.Load;
+import backend.instructions.Move;
+import backend.instructions.Store;
 import backend.instructions.addr_modes.ImmediateAddress;
 import backend.instructions.addr_modes.ImmediateOffset;
-import backend.instructions.addr_modes.RegisterOffset;
 import backend.instructions.addr_modes.ZeroOffset;
 import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
-import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.ARRAY;
-import java.util.ArrayList;
-import java.util.List;
-
 import frontend.identifier_objects.basic_types.BOOL;
 import frontend.identifier_objects.basic_types.CHAR;
+import java.util.ArrayList;
+import java.util.List;
+import middleware.ExpressionAST;
 import middleware.NodeAST;
 import middleware.NodeASTList;
-import middleware.expression_ast.ExpressionAST;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 public class ArrayAST extends NodeAST {
 
@@ -51,9 +52,9 @@ public class ArrayAST extends NodeAST {
       expressionASTList.get(0).check();
 
       // Verify that the first element's type is a TYPE.
-      IDENTIFIER curType = expressionASTList.get(0).getType();
+      TYPE curType = expressionASTList.get(0).getType();
 
-      if (!(curType instanceof TYPE)) {
+      if (curType == null) {
         addError(new MismatchedTypes(expressionASTList.get(0).ctx, curType, new TYPE()));
 
       } else {
@@ -66,16 +67,16 @@ public class ArrayAST extends NodeAST {
           expressionAST.check();
           if (!(isCompatible(expressionAST.getType(), curType))) {
             addError(
-                    new MismatchedTypes(
-                            expressionAST.ctx,
-                            expressionAST.getType(),
-                            curType)
+                new MismatchedTypes(
+                    expressionAST.ctx,
+                    expressionAST.getType(),
+                    curType)
             );
           }
         }
 
         // create a new ARRAY object and store it.
-        arrayObj = new ARRAY((TYPE) curType);
+        arrayObj = new ARRAY(curType);
       }
     }
   }
@@ -86,8 +87,9 @@ public class ArrayAST extends NodeAST {
     List<Instruction> ret = new ArrayList<>();
 
     // Calculate size of heap space required.
-    int elements = expressionASTList.size();
-    int size = elements*arrayObj.getType().getSize() + arrayObj.getSize();
+    int numElems = expressionASTList.size();
+    int size = numElems * arrayObj.getType().getSize() + arrayObj.getSize();
+
     Instruction malloc_size = new Load(new Register(0), new ImmediateAddress(size));
     ret.add(malloc_size);
 
@@ -103,17 +105,18 @@ public class ArrayAST extends NodeAST {
     Register target = remainingRegs.get(0);
 
     boolean charOrBool = arrayObj.getType() instanceof CHAR
-            || arrayObj.getType() instanceof BOOL;
+        || arrayObj.getType() instanceof BOOL;
 
     // Store parameters on the heap
     for (ExpressionAST e : expressionASTList) {
       ret.addAll(e.translate(remainingRegs));
-      ret.add(new Store(ConditionCode.NONE, target, new ImmediateOffset(destination, new ImmediateNum(soFar)), charOrBool));
+      ret.add(new Store(ConditionCode.NONE, target,
+          new ImmediateOffset(destination, new ImmediateNum(soFar)), charOrBool));
       soFar += arrayObj.getType().getSize();
     }
 
     // Store size of array on the starting address of the heap entry.
-    ret.add(new Load(target, new ImmediateAddress(elements)));
+    ret.add(new Load(target, new ImmediateAddress(numElems)));
     ret.add(new Store(target, new ZeroOffset(destination)));
 
     return ret;

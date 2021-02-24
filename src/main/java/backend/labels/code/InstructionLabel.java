@@ -1,6 +1,5 @@
 package backend.labels.code;
 
-import backend.instructions.EOC;
 import backend.instructions.Instruction;
 import backend.instructions.stack_instructions.Pop;
 import backend.instructions.stack_instructions.Push;
@@ -20,7 +19,7 @@ public class InstructionLabel extends Label {
 
   }
 
-  private void encapsulateFunction(List<Instruction> instructions){
+  private void encapsulateFunction(List<Instruction> instructions) {
     //    PUSH {lr}
     instructions.add(0, new Push(new LinkRegister()));
 

@@ -11,12 +11,12 @@ public class PARAM extends IDENTIFIER {
     this.type = type;
   }
 
-  public void setOffset(int offset) {
-    this.offset = offset;
-  }
-
   public Integer getOffset() {
     return offset;
+  }
+
+  public void setOffset(int offset) {
+    this.offset = offset;
   }
 
   public TYPE getType() {

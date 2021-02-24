@@ -11,13 +11,11 @@ import frontend.identifier_objects.FUNCTION;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import middleware.ExpressionAST;
 import middleware.NodeAST;
 import middleware.NodeASTList;
-import middleware.expression_ast.ExpressionAST;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 public class FunctionCallAST extends NodeAST {
 
@@ -25,7 +23,8 @@ public class FunctionCallAST extends NodeAST {
   private final NodeASTList<ExpressionAST> actuals;
   private FUNCTION funcObj;
 
-  public FunctionCallAST(ParserRuleContext ctx, String funcName, NodeASTList<ExpressionAST> actuals) {
+  public FunctionCallAST(ParserRuleContext ctx, String funcName,
+      NodeASTList<ExpressionAST> actuals) {
     super(ctx);
     this.funcName = funcName;
     this.actuals = actuals;
@@ -87,13 +86,13 @@ public class FunctionCallAST extends NodeAST {
   public List<Instruction> translate(List<Register> registers) {
     Register dest = registers.get(0);
     List<Instruction> instructions = new ArrayList<>();
-    for(ExpressionAST expr : actuals){
-     List<Instruction> exprInstructions =  expr.translate(registers);
-     instructions.addAll(exprInstructions);
+    for (ExpressionAST expr : actuals) {
+      List<Instruction> exprInstructions = expr.translate(registers);
+      instructions.addAll(exprInstructions);
 
     }
     // branch to the function label
-    instructions.add(new Branch(funcObj.getLabel().getLabelName(), true));
+    instructions.add(new Branch("f_" + funcName, true));
 
     // store the result in the destination register
     instructions.add(new Move(dest, new Register(0)));

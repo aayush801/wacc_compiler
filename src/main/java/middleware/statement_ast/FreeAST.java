@@ -7,9 +7,9 @@ import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.basic_types.PAIR;
 import java.util.ArrayList;
 import java.util.List;
-import middleware.expression_ast.ExpressionAST;
+import middleware.ExpressionAST;
+import middleware.StatementAST;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 public class FreeAST extends StatementAST {
 

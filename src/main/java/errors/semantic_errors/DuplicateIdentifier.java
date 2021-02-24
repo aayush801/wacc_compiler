@@ -1,7 +1,6 @@
 package errors.semantic_errors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 public class DuplicateIdentifier extends WaccSemanticError {
 

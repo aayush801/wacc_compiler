@@ -5,8 +5,8 @@ import backend.registers.Register;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.ARRAY;
 import java.util.List;
+import middleware.TypeAST;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 // Class that contains the actual type of an ArrayType.
 // Could be a baseType or a pairType, hence the 2 constructors.

@@ -6,11 +6,10 @@ import backend.instructions.stack_instructions.Pop;
 import backend.registers.Register;
 import errors.semantic_errors.GlobalScope;
 import errors.semantic_errors.MismatchedTypes;
-import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
-import java.util.ArrayList;
 import java.util.List;
-import middleware.expression_ast.ExpressionAST;
+import middleware.ExpressionAST;
+import middleware.StatementAST;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class ReturnAST extends StatementAST {
@@ -68,7 +67,7 @@ public class ReturnAST extends StatementAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    Register dest =  registers.get(0);
+    Register dest = registers.get(0);
     List<Instruction> instructions = expressionAST.translate(registers);
     instructions.add(new Move(new Register(0), dest));
     instructions.add(new Pop(program.PC));

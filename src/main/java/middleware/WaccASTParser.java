@@ -47,7 +47,6 @@ import java.util.stream.Collectors;
 import middleware.arrays_ast.ArrayAST;
 import middleware.arrays_ast.ArrayElemAST;
 import middleware.expression_ast.BinOpExprAST;
-import middleware.expression_ast.ExpressionAST;
 import middleware.expression_ast.IdentifierAST;
 import middleware.expression_ast.LiteralsAST;
 import middleware.expression_ast.UnaryOpExprAST;
@@ -68,14 +67,12 @@ import middleware.statement_ast.RHSAssignAST;
 import middleware.statement_ast.ReadAST;
 import middleware.statement_ast.ReturnAST;
 import middleware.statement_ast.SkipAST;
-import middleware.statement_ast.StatementAST;
 import middleware.statement_ast.VariableDeclarationAST;
 import middleware.statement_ast.WhileAST;
 import middleware.types_ast.ArrayTypeAST;
 import middleware.types_ast.BaseTypeAST;
 import middleware.types_ast.PairElemTypeAST;
 import middleware.types_ast.PairTypeAST;
-import middleware.types_ast.TypeAST;
 
 public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 

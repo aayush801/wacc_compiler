@@ -4,14 +4,10 @@ import backend.ProgramGenerator;
 import backend.instructions.Instruction;
 import backend.instructions.Load;
 import backend.instructions.addr_modes.Address;
-import backend.labels.code.FunctionLabel;
 import backend.labels.code.InstructionLabel;
 import backend.registers.Register;
-
-import java.util.ArrayList;
 import java.util.List;
 import middleware.function_ast.FunctionDeclarationAST;
-import middleware.statement_ast.StatementAST;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -58,7 +54,6 @@ public class ProgAST extends NodeAST {
     for (FunctionDeclarationAST func : functionDeclarationASTS) {
       func.translate(registers);
     }
-
 
     // translate statement body (encapsulates the statement in a new scope)
     List<Instruction> statementInstructions = program.allocateStackSpace(scopeST);

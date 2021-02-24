@@ -16,7 +16,8 @@ public class Load extends Instruction {
   }
 
 
-  public Load(ConditionCode conditionCode, Register Rn, AddressingMode addressingMode, boolean registerByte, boolean signed) {
+  public Load(ConditionCode conditionCode, Register Rn, AddressingMode addressingMode,
+      boolean registerByte, boolean signed) {
     super(conditionCode);
     this.Rn = Rn;
     this.addressingMode = addressingMode;

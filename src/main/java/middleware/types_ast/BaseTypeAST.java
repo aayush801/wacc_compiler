@@ -8,8 +8,8 @@ import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import java.util.List;
 import middleware.NodeAST;
+import middleware.TypeAST;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 // A basic type, which just has the type and the name of the identifier.
 

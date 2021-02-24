@@ -1,8 +1,6 @@
 package backend;
 
 import backend.instructions.Instruction;
-import backend.instructions.stack_instructions.Pop;
-import backend.instructions.stack_instructions.Push;
 import backend.labels.code.InstructionLabel;
 import backend.labels.data.DataLabel;
 import backend.labels.text.TextLabel;
@@ -14,19 +12,18 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
 import middleware.symbol_table.SymbolTable;
 
 public class ProgramGenerator {
 
-  private final Set<DataLabel> dataSection = new LinkedHashSet<>();
-  private final Set<TextLabel> textSection = new LinkedHashSet<>();
-  private final Set<InstructionLabel> codeSection = new LinkedHashSet<>();
-  private int labelsUsed = 0;
   public final List<Register> registers = new ArrayList<>();
   public final Register PC = new ProgramCounter();
   public final LinkRegister LR = new LinkRegister();
   public final StackPointer SP = new StackPointer();
+  private final Set<DataLabel> dataSection = new LinkedHashSet<>();
+  private final Set<TextLabel> textSection = new LinkedHashSet<>();
+  private final Set<InstructionLabel> codeSection = new LinkedHashSet<>();
+  private int labelsUsed = 0;
 
   public ProgramGenerator() {
     // only use registers from 4 onwards

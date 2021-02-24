@@ -1,5 +1,6 @@
 package middleware.statement_ast;
 
+import middleware.StatementAST;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 /*

@@ -8,8 +8,8 @@ import frontend.identifier_objects.basic_types.CHAR;
 import frontend.identifier_objects.basic_types.INT;
 import java.util.ArrayList;
 import java.util.List;
+import middleware.StatementAST;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 public class ReadAST extends StatementAST {
 
@@ -31,11 +31,11 @@ public class ReadAST extends StatementAST {
 
     if (type != null) {
 
-     if (!(type instanceof INT || type instanceof CHAR)) {
+      if (!(type instanceof INT || type instanceof CHAR)) {
 
-       addError(new MismatchedTypes(ctx, type, new INT(), new CHAR()));
+        addError(new MismatchedTypes(ctx, type, new INT(), new CHAR()));
 
-     }
+      }
     }
   }
 

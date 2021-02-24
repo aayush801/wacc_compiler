@@ -5,7 +5,8 @@ import java.util.Objects;
 public abstract class Label {
 
   protected String name;
-  public Label(String name){
+
+  public Label(String name) {
     this.name = name;
   }
 

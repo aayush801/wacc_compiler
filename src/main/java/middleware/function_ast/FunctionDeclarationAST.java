@@ -11,9 +11,9 @@ import frontend.identifier_objects.TYPE;
 import java.util.List;
 import middleware.NodeAST;
 import middleware.NodeASTList;
-import middleware.statement_ast.StatementAST;
+import middleware.StatementAST;
+import middleware.TypeAST;
 import middleware.symbol_table.SymbolTable;
-import middleware.types_ast.TypeAST;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class FunctionDeclarationAST extends NodeAST {
@@ -84,7 +84,6 @@ public class FunctionDeclarationAST extends NodeAST {
 
     FunctionLabel label = new FunctionLabel(funcName, instructions);
     program.addCode(label);
-    funcObj.setLabel(label);
     return null;
 
   }

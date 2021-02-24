@@ -7,10 +7,9 @@ import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.PAIR;
 import java.util.ArrayList;
 import java.util.List;
+import middleware.ExpressionAST;
 import middleware.NodeAST;
-import middleware.expression_ast.ExpressionAST;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 public class NewPairAST extends NodeAST {
 
@@ -51,7 +50,7 @@ public class NewPairAST extends NodeAST {
 
     if (!error) {
       // If both types valid, make a new pair.
-      pair = new PAIR((TYPE) fstExpr.getType(), (TYPE) sndExpr.getType());
+      pair = new PAIR(fstExpr.getType(), sndExpr.getType());
     }
   }
 

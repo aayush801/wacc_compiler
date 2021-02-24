@@ -20,7 +20,7 @@ public class TYPE extends IDENTIFIER {
     return o instanceof TYPE;
   }
 
-  public int getSize(){
-    throw new Error("ovveride method in TYPE");
+  public int getSize() {
+    return 0;
   }
 }

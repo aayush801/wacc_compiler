@@ -1,15 +1,11 @@
-package middleware.expression_ast;
+package middleware;
 
 
-import backend.instructions.Instruction;
-import backend.registers.Register;
 import frontend.identifier_objects.TYPE;
-import java.util.List;
-import middleware.NodeAST;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 
-public class ExpressionAST extends NodeAST {
+public abstract class ExpressionAST extends NodeAST {
 
   protected TYPE type;
 

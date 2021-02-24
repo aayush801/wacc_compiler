@@ -32,7 +32,7 @@ public class ARRAY extends TYPE {
   }
 
   @Override
-  public int getSize(){
+  public int getSize() {
     return 4;
   }
 }

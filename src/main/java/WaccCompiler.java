@@ -3,12 +3,9 @@
 import antlr.WaccLexer;
 import antlr.WaccParser;
 import antlr.WaccParser.ProgContext;
-import backend.instructions.Instruction;
-import backend.registers.LinkRegister;
-import backend.registers.ProgramCounter;
-import backend.registers.Register;
-import backend.registers.StackPointer;
 import errors.WaccError;
+import frontend.syntactic_parser.SyntacticParser;
+import frontend.syntactic_parser.SyntaxErrorListener;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,8 +17,6 @@ import middleware.WaccASTParser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import frontend.syntactic_parser.SyntacticParser;
-import frontend.syntactic_parser.SyntaxErrorListener;
 
 enum ErrorCode {
   SUCCESS,
@@ -98,7 +93,7 @@ public class WaccCompiler {
 
     translateCode(IRtree);
 
-    if(hasErrors()) {
+    if (hasErrors()) {
 
       return ErrorCode.FAIL;
 
@@ -131,9 +126,9 @@ public class WaccCompiler {
 
   }
 
-  public void translateCode(NodeAST tree){
+  public void translateCode(NodeAST tree) {
 
-   System.out.println(tree.translate());
+    System.out.println(tree.translate());
 
   }
 
@@ -146,7 +141,6 @@ public class WaccCompiler {
     return !errors.isEmpty();
 
   }
-
 
 
 }

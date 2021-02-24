@@ -5,19 +5,16 @@ import backend.instructions.Compare;
 import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
 import backend.instructions.stack_instructions.LabelledInstruction;
-import backend.labels.Label;
-import backend.labels.code.InstructionLabel;
 import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.basic_types.BOOL;
-import java.util.ArrayList;
 import java.util.List;
-import middleware.expression_ast.ExpressionAST;
+import middleware.ExpressionAST;
+import middleware.StatementAST;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 public class IfElseAST extends StatementAST {
 
