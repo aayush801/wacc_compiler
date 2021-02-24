@@ -28,6 +28,24 @@ public class CodeGenerationTests {
   }
 
   @Test
+  public void testFuncDeclaration() throws IOException {
+    String instruction =
+        "begin\n"
+            + "  int f(int n) is\n"
+            + "    int i = 0;\n"
+            + "    while i < n do\n"
+            + "      i = i + 1\n"
+            + "    done;\n"
+            + "    return i \n"
+            + "  end\n"
+            + "  int x = call f(10) ;\n"
+            + "  println x \n"
+            + "end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
+
+  @Test
   public void testPrint() throws IOException {
     String instruction =
         "begin\n"
@@ -41,8 +59,9 @@ public class CodeGenerationTests {
   public void testVarDeclaration() throws IOException {
     String instruction =
         "begin\n"
-            + "  int x = 0;"
-            + "  int y = 2"
+            + "  int x = 1 ; \n"
+            + "  int y = 2 ; \n"
+            + "  int z = x + y \n"
           + "end";
     WaccCompiler compiler = new WaccCompiler(instruction);
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));

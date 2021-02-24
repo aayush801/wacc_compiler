@@ -1,6 +1,8 @@
 package middleware.statement_ast;
 
 import backend.instructions.Instruction;
+import backend.instructions.Move;
+import backend.instructions.stack_instructions.Pop;
 import backend.registers.Register;
 import errors.semantic_errors.GlobalScope;
 import errors.semantic_errors.MismatchedTypes;
@@ -31,7 +33,7 @@ public class ReturnAST extends StatementAST {
     // Verify that the provided expression is a valid expression
     expressionAST.check();
 
-    IDENTIFIER type = expressionAST.getType();
+    TYPE type = expressionAST.getType();
 
     if (ST.getEncSymTable() == null) {
 
@@ -43,12 +45,6 @@ public class ReturnAST extends StatementAST {
 
     if (type == null) {
       // error has occurred elsewhere
-      return;
-    }
-
-    if (!(type instanceof TYPE)) {
-
-      addError(new MismatchedTypes(expressionAST.ctx, type, new TYPE()));
       return;
     }
 
@@ -66,13 +62,18 @@ public class ReturnAST extends StatementAST {
     }
 
     // Valid type, so set the type of this AST node.
-    this.type = (TYPE) type;
+    this.type = type;
 
   }
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return new ArrayList<>();
+    Register dest =  registers.get(0);
+    List<Instruction> instructions = expressionAST.translate(registers);
+    instructions.add(new Move(new Register(0), dest));
+    instructions.add(new Pop(program.PC));
+
+    return instructions;
   }
 
 }

@@ -2,8 +2,6 @@ package middleware.arrays_ast;
 
 import backend.instructions.Instruction;
 import backend.instructions.Load;
-import backend.instructions.addr_modes.ImmediateAddress;
-import backend.instructions.addr_modes.ImmediateOffset;
 import backend.instructions.addr_modes.ZeroOffset;
 import backend.instructions.arithmetic.Arithmetic;
 import backend.instructions.arithmetic.ArithmeticOpcode;
@@ -24,10 +22,8 @@ import frontend.identifier_objects.basic_types.INT;
 import middleware.NodeAST;
 import middleware.NodeASTList;
 import middleware.expression_ast.ExpressionAST;
-import middleware.expression_ast.LiteralsAST;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +102,7 @@ public class ArrayElemAST extends ExpressionAST {
 
     // setting target to point to the array we want to index.
     VARIABLE varObj = (VARIABLE) scopeST.lookupAll(arrayName);
-    int offset = scopeST.getAllocatedStackMemory() - varObj.getOffset();
+    int offset = program.SP.calculateOffset(varObj.getStackAddress());
     ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, new StackPointer(), new ImmediateNum(offset), false));
 
     List<Register> remainingRegs = new ArrayList<>(registers);

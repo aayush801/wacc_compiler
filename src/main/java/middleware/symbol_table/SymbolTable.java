@@ -1,6 +1,5 @@
 package middleware.symbol_table;
 
-import frontend.identifier_objects.FUNCTION;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
@@ -11,19 +10,12 @@ import frontend.identifier_objects.basic_types.PAIR;
 import frontend.identifier_objects.basic_types.STR;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class SymbolTable {
 
   private final SymbolTable encSymTable;
   private final Map<String, IDENTIFIER> dict;
   protected TYPE scopeReturnType = null;
-
-  // total allocatedStackMemory
-  private int allocatedStackMemory = 0;
-
-  // amount allocated in this scope
-  private int allocatedInThisScope = 0;
 
   public SymbolTable() {
     this(null);
@@ -38,7 +30,6 @@ public class SymbolTable {
     encSymTable = st;
     if (st != null) {
       scopeReturnType = st.getScopeReturnType();
-      allocatedStackMemory = st.getAllocatedStackMemory();
     }
     dict = new HashMap<>();
 
@@ -93,17 +84,10 @@ public class SymbolTable {
     return obj;
   }
 
-  public int getAllocatedStackMemory() {
-    return allocatedStackMemory;
+  // total estimated size of local variables
+  public int calculateScopeSize() {
+    return dict.values().stream()
+        .mapToInt(e -> (e instanceof VARIABLE) ? ((VARIABLE) e).getType().getSize() : 0).sum();
   }
 
-  public int getAllocatedInThisScope() {
-    return allocatedInThisScope;
-  }
-
-  public int allocate(int bytes) {
-    allocatedStackMemory += bytes;
-    allocatedInThisScope += bytes;
-    return allocatedStackMemory;
-  }
 }

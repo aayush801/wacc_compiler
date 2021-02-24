@@ -4,9 +4,6 @@ public class ImmediateNum extends Operand {
 
   private Integer value;
 
-  public static final ImmediateNum ONE = new ImmediateNum(1);
-  public static final ImmediateNum ZERO = new ImmediateNum(0);
-
   public ImmediateNum(Integer value) {
     this.value = value;
   }

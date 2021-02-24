@@ -1,5 +1,6 @@
 package middleware;
 
+import backend.ProgramGenerator;
 import backend.instructions.Instruction;
 import backend.instructions.Load;
 import backend.instructions.addr_modes.Address;
@@ -30,7 +31,7 @@ public class ProgAST extends NodeAST {
 
   @Override
   public void check() {
-    scopeST = ST;
+    scopeST = ST = SymbolTable.TopSymbolTable();
     // Go through any functions declared, and record them in the top symbol table.
     // This is done in a separate pass because a function body may call other functions
     // declared later on.
@@ -49,26 +50,23 @@ public class ProgAST extends NodeAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
+    program = new ProgramGenerator();
 
     // translate function declarations
     for (FunctionDeclarationAST func : functionDeclarationASTS) {
       func.translate(registers);
     }
 
-    // translate statement body
-    List<Instruction> instructions = program
-        .encapsulateScope(scopeST, statementAST.translate(registers));
+    // translate statement body (encapsulates the statement in a new scope)
+    List<Instruction> statementInstructions = program.allocateStackSpace(scopeST);
+    statementInstructions.addAll(statementAST.translate(registers));
+    statementInstructions.addAll(program.deallocateStackSpace(scopeST));
 
-    // boiler plate back
-    instructions.add(new Load(program.registers.get(0), new Address("0")));
+    // add exit code 0 on successful exit
+    statementInstructions.add(new Load(new Register(0), new Address("0")));
 
-    program.encapsulateFunction(instructions);
+    program.addCode(new InstructionLabel("main", statementInstructions));
 
-    program.addCode(new InstructionLabel("main", instructions).setLastFunction());
-
-    // need to add support for funcDeclarations
-
-    // enclose statement body instructions in the main section
     return null;
   }
 }

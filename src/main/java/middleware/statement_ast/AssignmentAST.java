@@ -7,7 +7,6 @@ import backend.instructions.addr_modes.ImmediateOffset;
 import backend.instructions.addr_modes.ZeroOffset;
 import backend.operands.ImmediateNum;
 import backend.registers.Register;
-import backend.registers.StackPointer;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
@@ -75,7 +74,7 @@ public class AssignmentAST extends StatementAST {
     // Case when LHS is an identifier
     if (LHS.getIdentifier() != null) {
       VARIABLE varObj = (VARIABLE) scopeST.lookupAll(LHS.getIdentifier());
-      int offset = scopeST.getAllocatedStackMemory() - varObj.getOffset();
+      int offset = program.SP.calculateOffset(varObj.getStackAddress());
 
       TYPE type = varObj.getType();
       if (type instanceof CHAR || type instanceof BOOL) {

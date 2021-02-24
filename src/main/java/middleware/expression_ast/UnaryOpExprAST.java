@@ -172,10 +172,10 @@ public class UnaryOpExprAST extends ExpressionAST {
           VARIABLE varObj = (VARIABLE) scopeST.lookupAll(ident.getIdentifier());
 
           // calculate offset
-          int offset = scopeST.getAllocatedStackMemory() - varObj.getOffset();
+          int offset = program.SP.calculateOffset(varObj.getStackAddress());
 
           List<Instruction> ret = new ArrayList<>();
-          ret.add(new Load(destination, new ImmediateOffset(new StackPointer(), new ImmediateNum(offset)), true, true));
+          ret.add(new Load(destination, new ImmediateOffset(program.SP, new ImmediateNum(offset)), true, true));
           return ret;
         }
         break;

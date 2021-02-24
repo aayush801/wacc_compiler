@@ -1,5 +1,6 @@
 package frontend.identifier_objects;
 
+import backend.labels.code.InstructionLabel;
 import java.util.ArrayList;
 import java.util.List;
 import middleware.symbol_table.SymbolTable;
@@ -9,10 +10,20 @@ public class FUNCTION extends IDENTIFIER {
   public final TYPE returnType;
   public final List<PARAM> formals = new ArrayList<>();
   private SymbolTable ST;
+  private InstructionLabel label;
+
 
   public FUNCTION(TYPE returnType) {
     super("function");
     this.returnType = returnType;
+  }
+
+  public void setLabel(InstructionLabel label) {
+    this.label = label;
+  }
+
+  public InstructionLabel getLabel() {
+    return label;
   }
 
   public SymbolTable getST() {

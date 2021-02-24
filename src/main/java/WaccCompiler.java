@@ -123,7 +123,6 @@ public class WaccCompiler {
 
   public NodeAST parseSemantics(ProgContext AST) {
 
-    NodeAST.reset();
     NodeAST tree = semanticParser.visit(AST);
 
     tree.check();

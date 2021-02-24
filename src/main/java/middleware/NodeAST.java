@@ -29,11 +29,6 @@ public abstract class NodeAST implements NodeASTInterface {
     NodeAST.semanticErrors = semanticErrors;
   }
 
-  public static void reset() {
-    ST = SymbolTable.TopSymbolTable();
-    program = new ProgramGenerator();
-  }
-
   public String translate() {
     translate(program.registers);
     return program.toString();
@@ -62,25 +57,4 @@ public abstract class NodeAST implements NodeASTInterface {
     return t1 instanceof TYPE && t2 instanceof TYPE && t2.equals(t1);
   }
 
-  public List<Instruction> translateScope(SymbolTable scopeST,
-      List<Instruction> instructions) {
-    int sizeOfVariablesDeclaredInScope = scopeST.getAllocatedInThisScope();
-
-    // no variables declared in this scope, so just return.
-    if (sizeOfVariablesDeclaredInScope == 0) {
-      return instructions;
-    }
-    Instruction decrementStack =
-        new Arithmetic(ArithmeticOpcode.SUB, program.SP, program.SP,
-            new ImmediateNum(sizeOfVariablesDeclaredInScope), false);
-
-    instructions.add(0, decrementStack);
-
-    Instruction incrementStack =
-        new Arithmetic(ArithmeticOpcode.ADD, program.SP, program.SP,
-            new ImmediateNum(sizeOfVariablesDeclaredInScope), false);
-
-    instructions.add(incrementStack);
-    return instructions;
-  }
 }

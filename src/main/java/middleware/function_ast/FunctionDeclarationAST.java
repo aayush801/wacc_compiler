@@ -7,17 +7,14 @@ import errors.semantic_errors.DuplicateIdentifier;
 import errors.semantic_errors.Undefined;
 import frontend.identifier_objects.FUNCTION;
 import frontend.identifier_objects.IDENTIFIER;
-import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.TYPE;
-import java.util.ArrayList;
 import java.util.List;
 import middleware.NodeAST;
 import middleware.NodeASTList;
 import middleware.statement_ast.StatementAST;
+import middleware.symbol_table.SymbolTable;
 import middleware.types_ast.TypeAST;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
-import middleware.symbol_table.SymbolTable;
 
 public class FunctionDeclarationAST extends NodeAST {
 
@@ -72,9 +69,6 @@ public class FunctionDeclarationAST extends NodeAST {
     for (ParamAST paramAST : paramASTList) {
       paramAST.check();
       funcObj.formals.add(paramAST.paramObj);
-
-      // calculate and store stack offset
-      paramAST.paramObj.setOffset(ST.allocate(typeAST.getType().getSize()));
     }
 
     ST = ST.getEncSymTable();
@@ -82,9 +76,9 @@ public class FunctionDeclarationAST extends NodeAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-
-    program.addCode(new FunctionLabel(funcName, statementAST.translate(registers)));
-
+    FunctionLabel label = new FunctionLabel(funcName, statementAST.translate(registers));
+    program.addCode(label);
+    funcObj.setLabel(label);
     return null;
 
   }

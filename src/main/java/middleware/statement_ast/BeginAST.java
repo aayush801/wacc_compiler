@@ -31,10 +31,16 @@ public class BeginAST extends StatementAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
+    List<Instruction> openScope = program.allocateStackSpace(scopeST);
 
     List<Instruction> instructions = statementAST.translate(registers);
 
-    return program.encapsulateScope(scopeST, instructions);
+    List<Instruction> closeScope = program.deallocateStackSpace(scopeST);
+
+    openScope.addAll(instructions);
+    openScope.addAll(closeScope);
+
+    return openScope;
 
   }
 

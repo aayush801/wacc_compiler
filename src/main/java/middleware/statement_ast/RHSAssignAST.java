@@ -158,7 +158,7 @@ public class RHSAssignAST extends StatementAST {
     if (expressionAST != null) {
       Register target = registers.get(0);
       List<Instruction> ret = expressionAST.translate(registers);
-      
+
       if (expressionAST instanceof ArrayElemAST) {
         ret.add(new Load(target, new ZeroOffset(target)));
       }

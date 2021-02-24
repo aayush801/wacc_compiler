@@ -3,6 +3,8 @@ package middleware.statement_ast;
 import backend.functions.PrintFunctions;
 import backend.instructions.Branch;
 import backend.instructions.Instruction;
+import backend.instructions.Move;
+import backend.labels.code.PrimitiveLabel;
 import backend.registers.Register;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.ARRAY;
@@ -37,11 +39,18 @@ public class PrintAST extends StatementAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
+    Register dest = registers.get(0);
+    // translate expression
     List<Instruction> instructions = expr.translate(registers);
 
-    if (type instanceof INT) {
+    // move result of expression to register 0
+    instructions.add(new Move(new Register(0), dest));
 
-      instructions.add(new Branch("p_print_int", true));
+
+    PrimitiveLabel label = null;
+
+    if (type instanceof INT) {
+      label = PrintFunctions.printInt(program);
 
     } else if (type instanceof CHAR) {
 
@@ -49,7 +58,7 @@ public class PrintAST extends StatementAST {
 
     } else if (type instanceof BOOL) {
 
-      instructions.add(new Branch("p_print_bool", true));
+      label = PrintFunctions.printBool(program);
 
     } else if (type instanceof ARRAY || type instanceof PAIR) {
 
@@ -57,13 +66,20 @@ public class PrintAST extends StatementAST {
 
     } else if (type instanceof STR) {
 
-      instructions.add(new Branch("p_print_string", true));
-      program.addCode(PrintFunctions.printString(program));
+      label = PrintFunctions.printString(program);
 
+    } else {
+      System.out.println("A print function has not been defined for this type");
     }
 
+    instructions.add(new Branch(label.getLabelName(), true));
+    program.addCode(label);
+
+
     if (newLine) {
-      instructions.add(new Branch("p_print_ln", true));
+      label = PrintFunctions.printLine(program);
+      instructions.add(new Branch(label.getLabelName(), true));
+      program.addCode(label);
     }
 
     return instructions;

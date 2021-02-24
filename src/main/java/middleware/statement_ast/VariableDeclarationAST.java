@@ -12,10 +12,9 @@ import frontend.identifier_objects.FUNCTION;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
-import java.util.List;
-
 import frontend.identifier_objects.basic_types.BOOL;
 import frontend.identifier_objects.basic_types.CHAR;
+import java.util.List;
 import middleware.NodeAST;
 import middleware.symbol_table.SymbolTable;
 import middleware.types_ast.TypeAST;
@@ -80,10 +79,6 @@ public class VariableDeclarationAST extends StatementAST {
 
     scopeST = ST;
     varObj = new VARIABLE(typeAST.getType());
-    // Allocates memory required to store variable of required type
-    // The total memory allocated is the offset of the variable
-    // from the start of this scope
-    varObj.setOffset(ST.allocate(typeAST.getType().getSize()));
 
     NodeAST.ST.add(varName, varObj);
   }
@@ -92,18 +87,14 @@ public class VariableDeclarationAST extends StatementAST {
   public List<Instruction> translate(List<Register> registers) {
     Register destination = registers.get(0);
     List<Instruction> instructions = rhsAssignAST.translate(registers);
-
     // Amount of bytes to add to the stack pointer to get address of variable
-    int increment = scopeST.getAllocatedStackMemory() - varObj.getOffset();
+    int stackAddress = program.SP.push(varObj); //pushes varObj onto stack
+    int offset = program.SP.calculateOffset(stackAddress); // gets address of var in respect to the current stack pointer
 
     TYPE type = typeAST.getType();
-    if (type instanceof CHAR || type instanceof BOOL) {
-      instructions.add(new Store(ConditionCode.NONE, destination,
-              new ImmediateOffset(program.SP, new ImmediateNum(increment)), true));
-    } else {
-      instructions.add(new Store(ConditionCode.NONE, destination,
-              new ImmediateOffset(program.SP, new ImmediateNum(increment)), false));
-    }
+    instructions.add(new Store(ConditionCode.NONE, destination,
+        new ImmediateOffset(program.SP, new ImmediateNum(offset)),
+        (type instanceof CHAR || type instanceof BOOL)));
 
     return instructions;
   }

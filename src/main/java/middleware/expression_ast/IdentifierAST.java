@@ -75,7 +75,7 @@ public class IdentifierAST extends ExpressionAST {
     VARIABLE varObj = (VARIABLE) scopeST.lookupAll(identifier);
 
     // calculate offset
-    int offset = scopeST.getAllocatedStackMemory() - varObj.getOffset();
+    int offset = program.SP.calculateOffset(varObj.getStackAddress());
 
     // Simply load the identifier into the first register in the list.
     List<Instruction> ret = new ArrayList<>();

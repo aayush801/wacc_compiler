@@ -1,6 +1,8 @@
 package middleware.function_ast;
 
+import backend.instructions.Branch;
 import backend.instructions.Instruction;
+import backend.instructions.Move;
 import backend.registers.Register;
 import errors.semantic_errors.InvalidArguments;
 import errors.semantic_errors.MismatchedTypes;
@@ -9,6 +11,7 @@ import frontend.identifier_objects.FUNCTION;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import middleware.NodeAST;
 import middleware.NodeASTList;
@@ -82,7 +85,20 @@ public class FunctionCallAST extends NodeAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return new ArrayList<>();
+    Register dest = registers.get(0);
+    List<Instruction> instructions = new ArrayList<>();
+    for(ExpressionAST expr : actuals){
+     List<Instruction> exprInstructions =  expr.translate(registers);
+     instructions.addAll(exprInstructions);
+
+    }
+    // branch to the function label
+    instructions.add(new Branch(funcObj.getLabel().getLabelName(), true));
+
+    // store the result in the destination register
+    instructions.add(new Move(dest, new Register(0)));
+
+    return instructions;
   }
 
 }

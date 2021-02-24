@@ -133,24 +133,8 @@ public class BinOpExprAST extends ExpressionAST {
   public void check() {
     leftExprAST.check();
     rightExprAST.check();
-
     IDENTIFIER leftType = leftExprAST.getType();
     IDENTIFIER rightType = rightExprAST.getType();
-
-    boolean leftIsType = leftType instanceof TYPE;
-    boolean rightIsType = rightType instanceof TYPE;
-
-    if (leftType != null && !leftIsType) {
-
-      addError(new expressionNotFound(leftExprAST.ctx, leftType));
-
-    }
-
-    if (rightType != null && !rightIsType) {
-
-      addError(new expressionNotFound(rightExprAST.ctx, rightType));
-
-    }
 
     if (leftType == null || rightType == null) {
       // error has occurred elsewhere
@@ -200,8 +184,8 @@ public class BinOpExprAST extends ExpressionAST {
     Register Rm = remaining.get(0);
     instructions.addAll(rightExprAST.translate(remaining));
 
-    ImmediateNum TRUE = ImmediateNum.ONE;
-    ImmediateNum FALSE = ImmediateNum.ZERO;
+    ImmediateNum TRUE = new ImmediateNum(1);
+    ImmediateNum FALSE = new ImmediateNum(0);
 
     switch (operator) {
       // ARITHMETIC Operators

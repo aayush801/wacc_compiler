@@ -1,19 +1,17 @@
 package backend;
 
 import backend.instructions.Instruction;
-import backend.instructions.arithmetic.Arithmetic;
-import backend.instructions.arithmetic.ArithmeticOpcode;
 import backend.instructions.stack_instructions.Pop;
 import backend.instructions.stack_instructions.Push;
-import backend.labels.data.DataLabel;
 import backend.labels.code.InstructionLabel;
+import backend.labels.data.DataLabel;
 import backend.labels.text.TextLabel;
-import backend.operands.ImmediateNum;
 import backend.registers.LinkRegister;
 import backend.registers.ProgramCounter;
 import backend.registers.Register;
 import backend.registers.StackPointer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,8 +29,8 @@ public class ProgramGenerator {
   public final StackPointer SP = new StackPointer();
 
   public ProgramGenerator() {
-
-    for (int i = 0; i <= 12; i++) {
+    // only use registers from 4 onwards
+    for (int i = 4; i <= 12; i++) {
 
       registers.add(new Register(i));
 
@@ -58,38 +56,35 @@ public class ProgramGenerator {
 
   }
 
-  public List<Instruction> encapsulateFunction(List<Instruction> instructions){
+  // allocate space on the stack for local variables
+  public List<Instruction> allocateStackSpace(SymbolTable ST) {
+    List<Instruction> stackInstructions = new ArrayList<>();
+    int estimatedStackSize = ST.calculateScopeSize();
 
-    //    PUSH {lr}
-    instructions.add(0, new Push(LR));
+    // no variables declared in this scope, so just return empty list.
+    if (estimatedStackSize == 0) {
+      return stackInstructions;
+    }
 
-    // instruction body unchanged
+    // decrement virtual stack and generate stack instruction
+    stackInstructions.add(SP.decrement(estimatedStackSize));
 
-    //		POP {pc}
-    instructions.add(new Pop(PC));
-
-    return instructions;
+    return stackInstructions;
   }
 
-  public List<Instruction> encapsulateScope(SymbolTable scopeST, List<Instruction> instructions) {
-    int sizeOfVariablesDeclaredInScope = scopeST.getAllocatedInThisScope();
+  public List<Instruction> deallocateStackSpace(SymbolTable ST) {
+    List<Instruction> stackInstructions = new ArrayList<>();
+    int estimatedStackSize = ST.calculateScopeSize();
 
-    // no variables declared in this scope, so just return.
-    if (sizeOfVariablesDeclaredInScope == 0) {
-      return instructions;
+    // no variables declared in this scope, so just return empty list.
+    if (estimatedStackSize == 0) {
+      return stackInstructions;
     }
-    Instruction decrementStack =
-        new Arithmetic(ArithmeticOpcode.SUB, SP, SP,
-            new ImmediateNum(sizeOfVariablesDeclaredInScope), false);
 
-    instructions.add(0, decrementStack);
+    // decrement virtual stack and generate stack instruction
+    stackInstructions.add(SP.increment(estimatedStackSize));
 
-    Instruction incrementStack =
-        new Arithmetic(ArithmeticOpcode.ADD, SP, SP,
-            new ImmediateNum(sizeOfVariablesDeclaredInScope), false);
-
-    instructions.add(incrementStack);
-    return instructions;
+    return stackInstructions;
   }
 
 
