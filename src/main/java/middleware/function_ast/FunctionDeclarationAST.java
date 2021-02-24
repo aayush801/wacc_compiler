@@ -76,7 +76,13 @@ public class FunctionDeclarationAST extends NodeAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    FunctionLabel label = new FunctionLabel(funcName, statementAST.translate(registers));
+
+    // translate statement body in the context of the function scope
+    List<Instruction> instructions = program.allocateStackSpace(funcObj.getST());
+    instructions.addAll(statementAST.translate(registers));
+    instructions.addAll(program.deallocateStackSpace(funcObj.getST()));
+
+    FunctionLabel label = new FunctionLabel(funcName, instructions);
     program.addCode(label);
     funcObj.setLabel(label);
     return null;

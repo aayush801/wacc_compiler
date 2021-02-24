@@ -1,6 +1,11 @@
 package middleware.statement_ast;
 
+import backend.instructions.Branch;
+import backend.instructions.Compare;
+import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
+import backend.instructions.stack_instructions.LabelledInstruction;
+import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
@@ -15,6 +20,7 @@ public class WhileAST extends StatementAST {
 
   private final ExpressionAST expressionAST;
   private final StatementAST statementAST;
+  private SymbolTable scopeST;
 
   public WhileAST(ParserRuleContext ctx, ExpressionAST expressionAST,
       StatementAST statementAST) {
@@ -47,7 +53,7 @@ public class WhileAST extends StatementAST {
 
     // expression valid, now check the statement inside the body.
     // create a new scope(symbol table) for the statement.
-    ST = new SymbolTable(ST);
+    scopeST = ST = new SymbolTable(ST);
     statementAST.check();
     ST = ST.getEncSymTable();
 
@@ -55,7 +61,38 @@ public class WhileAST extends StatementAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return new ArrayList<>();
+    Register destination = registers.get(0);
+    List<Instruction> instructions = new ArrayList<>();
+
+    int labelNumber = program.nextLabelNumber();
+    program.nextLabelNumber();
+
+    instructions.add(new Branch("L" + labelNumber));
+
+    // translate statement in new scope
+    List<Instruction> statement = program.allocateStackSpace(scopeST);
+    statement.addAll(statementAST.translate(registers));
+    statement.addAll(program.deallocateStackSpace(scopeST));
+
+    Instruction start = null;
+    if (statement.size() > 0) {
+      start = statement.get(0);
+      statement.remove(0);
+    }
+    instructions.add(new LabelledInstruction("L" + (labelNumber + 1), start));
+    instructions.addAll(statement);
+
+    List<Instruction> condition = expressionAST.translate(registers);
+    if (condition.size() > 0) {
+      start = condition.get(0);
+      condition.remove(0);
+    }
+    instructions.add(new LabelledInstruction("L" + labelNumber, start));
+    instructions.addAll(condition);
+    instructions.add(new Compare(destination, new ImmediateNum(1)));
+    instructions.add(new Branch(ConditionCode.EQ, "L" + (labelNumber + 1), false));
+
+    return instructions;
   }
 
 }

@@ -1,7 +1,10 @@
 package middleware.arrays_ast;
 
+import backend.arrays.PrintArrayBoundsChecks;
+import backend.instructions.Branch;
 import backend.instructions.Instruction;
 import backend.instructions.Load;
+import backend.instructions.Move;
 import backend.instructions.addr_modes.ZeroOffset;
 import backend.instructions.arithmetic.Arithmetic;
 import backend.instructions.arithmetic.ArithmeticOpcode;
@@ -117,7 +120,10 @@ public class ArrayElemAST extends ExpressionAST {
 
     ret.add(new Load(target, new ZeroOffset(target)));
 
-    // TODO: ARRAY BOUNDS CHECKING!!!!
+    // Array index checking
+    ret.add(new Move(new Register(0), index));
+    ret.add(new Move(new Register(1), target));
+    ret.add(new Branch("p_check_array_bounds", true));
 
     ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target, new ImmediateNum(4), false));
 
@@ -126,6 +132,11 @@ public class ArrayElemAST extends ExpressionAST {
     } else {
       ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target, new ImmediateNumLSL(index, 2), false));
     }
+    
+    PrintArrayBoundsChecks.printArrayNegativeIndexMessage(program);
+    PrintArrayBoundsChecks.printArrayTooLargeIndexMessage(program);
+
+    program.addCode(PrintArrayBoundsChecks.printArrayIndexCheck(program));
 
     return ret;
   }

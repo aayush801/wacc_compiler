@@ -3,6 +3,7 @@ package backend.functions;
 import backend.ProgramGenerator;
 import backend.instructions.Branch;
 import backend.instructions.Compare;
+import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
 import backend.instructions.Load;
 import backend.instructions.Move;
@@ -77,10 +78,10 @@ public class PrintFunctions {
     program.addData(falseLabel);
 
     //		LDRNE r0, =msg_3
-    instructions.add(new Load(R0, new Address(trueLabel.getLabelName())));
+    instructions.add(new Load(ConditionCode.NE, R0, new Address(trueLabel.getLabelName()), false, false));
 
     //		LDREQ r0, =msg_4
-    instructions.add(new Load(R0, new Address(falseLabel.getLabelName())));
+    instructions.add(new Load(ConditionCode.NE, R0, new Address(falseLabel.getLabelName()), false, false));
 
     //		ADD r0, r0, #4
     instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R0, R0, new ImmediateNum(4), false));

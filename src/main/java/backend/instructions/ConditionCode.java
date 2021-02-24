@@ -7,6 +7,7 @@ public enum ConditionCode {
   LT,
   GE,
   LE,
+  CS,
   NONE;
 
   @Override
@@ -24,6 +25,8 @@ public enum ConditionCode {
         return "GE";
       case LE:
         return "LE";
+      case CS:
+        return "CS";
       default:
         return "";
     }
