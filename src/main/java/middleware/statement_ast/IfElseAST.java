@@ -5,6 +5,7 @@ import backend.instructions.Compare;
 import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
 import backend.instructions.stack_instructions.LabelledInstruction;
+import backend.labels.code.InstructionLabel;
 import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
@@ -21,6 +22,8 @@ public class IfElseAST extends StatementAST {
   private final ExpressionAST expressionAST;
   private final StatementAST firstStatAST;
   private final StatementAST secondStatAST;
+  private SymbolTable ST1;
+  private SymbolTable ST2;
 
   public IfElseAST(ParserRuleContext ctx, ExpressionAST expressionAST,
       StatementAST firstStatAST, StatementAST secondStatAST) {
@@ -50,7 +53,7 @@ public class IfElseAST extends StatementAST {
     }
 
     // Create new symbol table(scope) for the 'then' statement.
-    ST = new SymbolTable(ST);
+    ST1 = ST = new SymbolTable(ST);
 
     // Verify the 'then' statement.
     firstStatAST.check();
@@ -59,7 +62,7 @@ public class IfElseAST extends StatementAST {
     ST = ST.getEncSymTable();
 
     // Create new symbol table(scope) for the 'else' statement.
-    ST = new SymbolTable(ST);
+    ST2 = ST = new SymbolTable(ST);
 
     // Verify the 'else' statement.
     secondStatAST.check();
@@ -77,23 +80,25 @@ public class IfElseAST extends StatementAST {
 
     instructions.add(new Compare(destination, new ImmediateNum(0)));
 
-    int labelNumber = program.nextLabelNumber();
-    program.nextLabelNumber();
-    instructions.add(new Branch(ConditionCode.EQ,
-        "L" + labelNumber, false));
+    LabelledInstruction body = new LabelledInstruction();
+    LabelledInstruction rest = new LabelledInstruction();
 
+
+    instructions.add(new Branch(ConditionCode.EQ, body.getLabel(), false));
+
+    instructions.addAll(program.allocateStackSpace(ST1));
     instructions.addAll(firstStatAST.translate(registers));
-    instructions.add(new Branch("L" + (labelNumber + 1)));
+    instructions.addAll(program.deallocateStackSpace(ST1));
 
-    List<Instruction> second = secondStatAST.translate(registers);
-    Instruction start = null;
-    if (second.size() > 0) {
-      start = second.get(0);
-      second.remove(0);
-    }
-    instructions.add(new LabelledInstruction("L" + labelNumber, start));
-    instructions.addAll(second);
-    instructions.add(new LabelledInstruction("L" + (labelNumber + 1), null));
+    instructions.add(new Branch(rest.getLabel()));
+
+    instructions.add(body);
+
+    instructions.addAll(program.allocateStackSpace(ST2));
+    instructions.addAll(secondStatAST.translate(registers));
+    instructions.addAll(program.deallocateStackSpace(ST2));
+
+    instructions.add(rest);
 
     return instructions;
   }

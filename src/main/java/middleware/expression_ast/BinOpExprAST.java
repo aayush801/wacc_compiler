@@ -246,7 +246,7 @@ public class BinOpExprAST extends ExpressionAST {
         instructions.add(new Arithmetic(ArithmeticOpcode.AND, Rn, Rn, Rm, true));
         break;
       case "||":
-        instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, Rm, true));
+        instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, Rm, false));
         break;
       // Unrecognized Operator
       default:

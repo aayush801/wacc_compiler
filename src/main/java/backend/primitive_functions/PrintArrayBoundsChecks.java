@@ -66,7 +66,7 @@ public class PrintArrayBoundsChecks {
     // BLCS p_throw_runtime_error
     instructions.add(new Branch(ConditionCode.CS, "p_throw_runtime_error", true));
 
-    return new PrimitiveLabel("check_array_bounds", instructions);
+    return new PrimitiveLabel("check_array_bounds", instructions, program);
   }
 
 }

@@ -38,7 +38,7 @@ public class PrintFunctions {
     //msg_1:
     //		.word 5
     //		.ascii	"%.*s\0"
-    DataLabel printFormat = new DataLabel("\"%.*s\0\"");
+    DataLabel printFormat = new DataLabel("\"%.*s\\0\"");
 
     program.addData(printFormat);
 
@@ -57,7 +57,7 @@ public class PrintFunctions {
     //		BL fflush
     instructions.add(new Branch("fflush", true));
 
-    return new PrimitiveLabel("print_string", instructions);
+    return new PrimitiveLabel("print_string", instructions, program);
 
   }
 
@@ -98,7 +98,7 @@ public class PrintFunctions {
     //		BL fflush
     instructions.add(new Branch("fflush", true));
 
-    return new PrimitiveLabel("print_bool", instructions);
+    return new PrimitiveLabel("print_bool", instructions, program);
   }
 
   public static PrimitiveLabel printInt(ProgramGenerator program) {
@@ -129,7 +129,7 @@ public class PrintFunctions {
     //	BL fflush
     instructions.add(new Branch("fflush", true));
 
-    return new PrimitiveLabel("print_int", instructions);
+    return new PrimitiveLabel("print_int", instructions, program);
   }
 
   public static PrimitiveLabel printLine(ProgramGenerator program) {
@@ -157,7 +157,7 @@ public class PrintFunctions {
     //		BL fflush
     instructions.add(new Branch("fflush", true));
 
-    return new PrimitiveLabel("print_ln", instructions);
+    return new PrimitiveLabel("print_ln", instructions, program);
   }
 
 }

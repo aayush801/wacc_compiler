@@ -6,19 +6,8 @@
 # Program:
 
 begin
-  int f(int x) is
-    int y = 3;
-    if x == 0
-      then
-      if y == 2
-        then
-          exit 1
-        else
-          exit 9
-      fi
-      else
-        return 2
-    fi
+  int f() is
+    return 0
   end
-  print 2
+  skip
 end

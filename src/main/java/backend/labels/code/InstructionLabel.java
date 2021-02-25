@@ -15,19 +15,9 @@ public class InstructionLabel extends Label {
   public InstructionLabel(String name, List<Instruction> instructions) {
     super(name);
     this.instructions = instructions;
-    encapsulateFunction(instructions);
 
   }
 
-  private void encapsulateFunction(List<Instruction> instructions) {
-    //    PUSH {lr}
-    instructions.add(0, new Push(new LinkRegister()));
-
-    // instruction body unchanged
-
-    //		POP {pc}
-    instructions.add(new Pop(new ProgramCounter()));
-  }
 
   @Override
   public String toString() {

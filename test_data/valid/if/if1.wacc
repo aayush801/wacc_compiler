@@ -8,7 +8,7 @@
 begin
   int a = 13;	
   if a == 13 
-  then 
+  then
     println "correct"
   else 
     println "incorrect"

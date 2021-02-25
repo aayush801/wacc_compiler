@@ -1,6 +1,8 @@
 package backend;
 
 import backend.instructions.Instruction;
+import backend.instructions.stack_instructions.Pop;
+import backend.instructions.stack_instructions.Push;
 import backend.labels.code.InstructionLabel;
 import backend.labels.data.DataLabel;
 import backend.labels.text.TextLabel;
@@ -8,6 +10,8 @@ import backend.registers.LinkRegister;
 import backend.registers.ProgramCounter;
 import backend.registers.Register;
 import backend.registers.StackPointer;
+import frontend.identifier_objects.VARIABLE;
+import frontend.identifier_objects.basic_types.INT;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -23,7 +27,6 @@ public class ProgramGenerator {
   private final Set<DataLabel> dataSection = new LinkedHashSet<>();
   private final Set<TextLabel> textSection = new LinkedHashSet<>();
   private final Set<InstructionLabel> codeSection = new LinkedHashSet<>();
-  private int labelsUsed = 0;
 
   public ProgramGenerator() {
     // only use registers from 4 onwards
@@ -119,11 +122,20 @@ public class ProgramGenerator {
     }
   }
 
-  public Set<InstructionLabel> getCodeSection() {
-    return codeSection;
+  public void pushLR(List<Instruction> instructions){
+    //    PUSH {lr}
+    instructions.add(0, new Push(LR));
+    // decrements stack pointer and free pointer by 4 bytes
+    SP.push(new VARIABLE(new INT()));
   }
 
-  public int nextLabelNumber() {
-    return labelsUsed++;
+
+  public void popPC(List<Instruction> instructions){
+    //		POP {pc}
+    instructions.add(new Pop(PC));
+    // increments stack pointer and free pointer by 4 bytes
+    SP.pop(new VARIABLE(new INT()));
   }
+
+
 }

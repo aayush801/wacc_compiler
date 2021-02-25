@@ -65,33 +65,24 @@ public class WhileAST extends StatementAST {
     Register destination = registers.get(0);
     List<Instruction> instructions = new ArrayList<>();
 
-    int labelNumber = program.nextLabelNumber();
-    program.nextLabelNumber();
+    LabelledInstruction rest = new LabelledInstruction();
+    LabelledInstruction body = new LabelledInstruction();
 
-    instructions.add(new Branch("L" + labelNumber));
+    instructions.add(new Branch(body.getLabel()));
 
     // translate statement in new scope
-    List<Instruction> statement = program.allocateStackSpace(scopeST);
-    statement.addAll(statementAST.translate(registers));
-    statement.addAll(program.deallocateStackSpace(scopeST));
+    instructions.add(body);
 
-    Instruction start = null;
-    if (statement.size() > 0) {
-      start = statement.get(0);
-      statement.remove(0);
-    }
-    instructions.add(new LabelledInstruction("L" + (labelNumber + 1), start));
-    instructions.addAll(statement);
+    instructions.addAll(program.allocateStackSpace(scopeST));
+    instructions.addAll(statementAST.translate(registers));
+    instructions.addAll(program.deallocateStackSpace(scopeST));
 
-    List<Instruction> condition = expressionAST.translate(registers);
-    if (condition.size() > 0) {
-      start = condition.get(0);
-      condition.remove(0);
-    }
-    instructions.add(new LabelledInstruction("L" + labelNumber, start));
-    instructions.addAll(condition);
+    // translate instructions after loop body
+    instructions.add(rest);
+    instructions.addAll(expressionAST.translate(registers));
+
     instructions.add(new Compare(destination, new ImmediateNum(1)));
-    instructions.add(new Branch(ConditionCode.EQ, "L" + (labelNumber + 1), false));
+    instructions.add(new Branch(ConditionCode.EQ, rest.getLabel(), false));
 
     return instructions;
   }

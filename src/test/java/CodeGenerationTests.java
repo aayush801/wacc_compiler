@@ -31,21 +31,16 @@ public class CodeGenerationTests {
   public void testFuncDeclaration() throws IOException {
     String instruction =
         "begin\n"
-            + "  int f(int x) is\n"
-            + "    int y = 3;\n"
-            + "    if x == 0\n"
-            + "      then\n"
-            + "      if y == 2\n"
-            + "        then\n"
-            + "          return 1\n"
-            + "        else\n"
-            + "          return 9\n"
-            + "      fi\n"
-            + "      else\n"
-            + "        return 2\n"
-            + "    fi\n"
-            + "  end\n"
-            + "  print 2\n"
+            + "  int i = 0 ;\n"
+            + "  int x = 10 ;\n"
+            + "  int y = 17 ;\n"
+            + "  while (y > 0 || x > 0) do\n"
+            + "    x = x - 1 ;\n"
+            + "    y = y - 1 ;\n"
+            + "    i = i + 1\n"
+            + "  done ;\n"
+            + "  print \"max value = \";\n"
+            + "  println i\n"
             + "end";
     WaccCompiler compiler = new WaccCompiler(instruction);
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));

@@ -1,5 +1,6 @@
 package middleware.function_ast;
 
+import backend.instructions.EOC;
 import backend.instructions.Instruction;
 import backend.labels.code.FunctionLabel;
 import backend.registers.Register;
@@ -11,6 +12,7 @@ import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
 import frontend.identifier_objects.basic_types.INT;
+import java.util.ArrayList;
 import java.util.List;
 import middleware.NodeAST;
 import middleware.NodeASTList;
@@ -86,20 +88,22 @@ public class FunctionDeclarationAST extends NodeAST {
     for (int i = paramASTList.size() - 1; i >= 0; i--) {
       paramASTList.get(i).translate(registers);
     }
-
+    List<Instruction> instructions = new ArrayList<>();
     //implicit stack change because of PUSH {LR}
-    program.SP.push(new VARIABLE(new INT()));
+    program.pushLR(instructions);
 
     // translate statement body in the context of the function scope
-    List<Instruction> instructions = program.allocateStackSpace(funcObj.getST());
+    instructions.addAll(program.allocateStackSpace(funcObj.getST()));
     instructions.addAll(statementAST.translate(registers));
+
+    //implicit stack change because of POP {PC}
+    program.popPC(instructions);
+    instructions.add(new EOC());
+
 
     // add the function label
     FunctionLabel label = new FunctionLabel(funcName, instructions);
     program.addCode(label);
-
-    //implicit stack change because of POP {PC}
-    program.SP.pop(new VARIABLE(new INT()));
 
     return null;
 

@@ -21,7 +21,7 @@ public enum ArithmeticOpcode {
       case AND:
         return "AND";
       case OR:
-        return "OR";
+        return "ORR";
       case RSB:
         return "RSB";
       case EOR:

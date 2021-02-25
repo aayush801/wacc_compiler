@@ -1,11 +1,13 @@
 package middleware;
 
 import backend.ProgramGenerator;
+import backend.instructions.EOC;
 import backend.instructions.Instruction;
 import backend.instructions.Load;
 import backend.instructions.addr_modes.Address;
 import backend.labels.code.InstructionLabel;
 import backend.registers.Register;
+import java.util.ArrayList;
 import java.util.List;
 import middleware.function_ast.FunctionDeclarationAST;
 import middleware.symbol_table.SymbolTable;
@@ -54,16 +56,20 @@ public class ProgAST extends NodeAST {
     for (FunctionDeclarationAST func : functionDeclarationASTS) {
       func.translate(registers);
     }
+    List<Instruction> instructions = new ArrayList<>();
+    program.pushLR(instructions);
 
     // translate statement body (encapsulates the statement in a new scope)
-    List<Instruction> statementInstructions = program.allocateStackSpace(scopeST);
-    statementInstructions.addAll(statementAST.translate(registers));
-    statementInstructions.addAll(program.deallocateStackSpace(scopeST));
+    instructions.addAll(program.allocateStackSpace(scopeST));
+    instructions.addAll(statementAST.translate(registers));
+    instructions.addAll(program.deallocateStackSpace(scopeST));
 
     // add exit code 0 on successful exit
-    statementInstructions.add(new Load(new Register(0), new Address("0")));
+    instructions.add(new Load(new Register(0), new Address("0")));
+    program.popPC(instructions);
+    instructions.add(new EOC());
 
-    program.addCode(new InstructionLabel("main", statementInstructions));
+    program.addCode(new InstructionLabel("main", instructions));
 
     return null;
   }
