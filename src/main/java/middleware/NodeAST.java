@@ -18,9 +18,13 @@ public abstract class NodeAST implements NodeASTInterface {
 
   // One symbol table reference, updated throughout when required.
   // Initially this is set to the top level symbol table.
-  protected static SymbolTable ST = SymbolTable.TopSymbolTable();
+  protected static SymbolTable ST;
   protected static ProgramGenerator program = new ProgramGenerator();
+  protected static SymbolTable funcScope;
+
   private static List<WaccError> semanticErrors;
+
+
   public ParserRuleContext ctx;
 
   public NodeAST(ParserRuleContext ctx) {

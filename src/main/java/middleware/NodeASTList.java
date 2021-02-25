@@ -28,12 +28,18 @@ public class NodeASTList<T> extends NodeAST implements Iterable<T> {
 
   @Override
   public void check() {
-
+    for (T elem : ASTList) {
+      ((NodeAST) elem).check();
+    }
   }
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return null;
+    List<Instruction> instructions = new ArrayList<>();
+    for (T elem : ASTList) {
+      instructions.addAll(((NodeAST) elem).translate(registers));
+    }
+    return instructions;
   }
 
   public boolean isEmpty() {

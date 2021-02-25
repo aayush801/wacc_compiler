@@ -31,15 +31,21 @@ public class CodeGenerationTests {
   public void testFuncDeclaration() throws IOException {
     String instruction =
         "begin\n"
-            + "  int f(int n) is\n"
-            + "    int i = 0;\n"
-            + "    while i < n do\n"
-            + "      i = i + 1\n"
-            + "    done;\n"
-            + "    return i \n"
+            + "  int f(int x) is\n"
+            + "    int y = 3;\n"
+            + "    if x == 0\n"
+            + "      then\n"
+            + "      if y == 2\n"
+            + "        then\n"
+            + "          return 1\n"
+            + "        else\n"
+            + "          return 9\n"
+            + "      fi\n"
+            + "      else\n"
+            + "        return 2\n"
+            + "    fi\n"
             + "  end\n"
-            + "  int x = call f(10) ;\n"
-            + "  println x \n"
+            + "  print 2\n"
             + "end";
     WaccCompiler compiler = new WaccCompiler(instruction);
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));

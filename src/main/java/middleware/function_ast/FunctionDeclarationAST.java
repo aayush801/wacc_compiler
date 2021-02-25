@@ -7,7 +7,10 @@ import errors.semantic_errors.DuplicateIdentifier;
 import errors.semantic_errors.Undefined;
 import frontend.identifier_objects.FUNCTION;
 import frontend.identifier_objects.IDENTIFIER;
+import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.TYPE;
+import frontend.identifier_objects.VARIABLE;
+import frontend.identifier_objects.basic_types.INT;
 import java.util.List;
 import middleware.NodeAST;
 import middleware.NodeASTList;
@@ -23,6 +26,7 @@ public class FunctionDeclarationAST extends NodeAST {
   private final NodeASTList<ParamAST> paramASTList;
   private final StatementAST statementAST;
   public FUNCTION funcObj;
+
 
   public FunctionDeclarationAST(ParserRuleContext ctx, TypeAST typeAST, String funcName,
       NodeASTList<ParamAST> paramASTList, StatementAST statementAST) {
@@ -76,14 +80,27 @@ public class FunctionDeclarationAST extends NodeAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
+    funcScope = funcObj.getST();
+
+    // implicitly adds parameters to the stack
+    for (int i = paramASTList.size() - 1; i >= 0; i--) {
+      paramASTList.get(i).translate(registers);
+    }
+
+    //implicit stack change because of PUSH {LR}
+    program.SP.push(new VARIABLE(new INT()));
 
     // translate statement body in the context of the function scope
     List<Instruction> instructions = program.allocateStackSpace(funcObj.getST());
     instructions.addAll(statementAST.translate(registers));
-    instructions.addAll(program.deallocateStackSpace(funcObj.getST()));
 
+    // add the function label
     FunctionLabel label = new FunctionLabel(funcName, instructions);
     program.addCode(label);
+
+    //implicit stack change because of POP {PC}
+    program.SP.pop(new VARIABLE(new INT()));
+
     return null;
 
   }

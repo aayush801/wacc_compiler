@@ -10,6 +10,7 @@ import frontend.identifier_objects.TYPE;
 import java.util.List;
 import middleware.ExpressionAST;
 import middleware.StatementAST;
+import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class ReturnAST extends StatementAST {
@@ -70,6 +71,8 @@ public class ReturnAST extends StatementAST {
     Register dest = registers.get(0);
     List<Instruction> instructions = expressionAST.translate(registers);
     instructions.add(new Move(new Register(0), dest));
+
+    instructions.addAll(program.deallocateStackSpace(funcScope));
     instructions.add(new Pop(program.PC));
 
     return instructions;

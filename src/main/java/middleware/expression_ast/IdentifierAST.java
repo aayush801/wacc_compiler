@@ -9,6 +9,7 @@ import backend.registers.StackPointer;
 import errors.semantic_errors.Undefined;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.PARAM;
+import frontend.identifier_objects.STACK_OBJECT;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
 import java.util.ArrayList;
@@ -73,10 +74,10 @@ public class IdentifierAST extends ExpressionAST {
     // lookup varObj in current and higher scopes to find the variable.
     IDENTIFIER varObj = scopeST.lookupAll(identifier);
 
-    if (varObj instanceof VARIABLE) {
+    if (varObj instanceof STACK_OBJECT) {
 
       // calculate offset
-      int offset = program.SP.calculateOffset(((VARIABLE) varObj).getStackAddress());
+      int offset = program.SP.calculateOffset(((STACK_OBJECT) varObj).getStackAddress());
 
       // Simply load the identifier into the first register in the list.
       List<Instruction> ret = new ArrayList<>();

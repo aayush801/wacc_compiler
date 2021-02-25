@@ -4,6 +4,7 @@ import backend.instructions.Instruction;
 import backend.instructions.arithmetic.Arithmetic;
 import backend.instructions.arithmetic.ArithmeticOpcode;
 import backend.operands.ImmediateNum;
+import frontend.identifier_objects.STACK_OBJECT;
 import frontend.identifier_objects.VARIABLE;
 
 public class StackPointer extends Register {
@@ -15,16 +16,16 @@ public class StackPointer extends Register {
     super(13);
   }
 
-  public int push(VARIABLE varObj) {
+  public int push(STACK_OBJECT varObj) {
     freePtr -= varObj.getType().getSize();
     varObj.setStackAddress(freePtr);
-    if (freePtr < stackPtr) {
+    if (freePtr <= stackPtr) {
       stackPtr = freePtr;
     }
     return freePtr;
   }
 
-  public int pop(VARIABLE varObj) {
+  public int pop(STACK_OBJECT varObj) {
     freePtr += varObj.getType().getSize();
     if (freePtr > stackPtr) {
       stackPtr = freePtr;

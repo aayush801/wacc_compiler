@@ -1,6 +1,6 @@
 package middleware.statement_ast;
 
-import backend.functions.PrintFunctions;
+import backend.primitive_functions.PrintFunctions;
 import backend.instructions.Branch;
 import backend.instructions.Instruction;
 import backend.instructions.Move;

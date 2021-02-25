@@ -1,6 +1,6 @@
 package middleware.arrays_ast;
 
-import backend.arrays.PrintArrayBoundsChecks;
+import backend.primitive_functions.PrintArrayBoundsChecks;
 import backend.instructions.Branch;
 import backend.instructions.Instruction;
 import backend.instructions.Load;
@@ -16,6 +16,7 @@ import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.PARAM;
+import frontend.identifier_objects.STACK_OBJECT;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
 import frontend.identifier_objects.basic_types.ARRAY;
@@ -103,7 +104,7 @@ public class ArrayElemAST extends ExpressionAST {
     Register target = registers.get(0);
 
     // setting target to point to the array we want to index.
-    VARIABLE varObj = (VARIABLE) scopeST.lookupAll(arrayName);
+    STACK_OBJECT varObj = (STACK_OBJECT) scopeST.lookupAll(arrayName);
     int offset = program.SP.calculateOffset(varObj.getStackAddress());
     ret.add(
         new Arithmetic(ArithmeticOpcode.ADD, target, new StackPointer(), new ImmediateNum(offset),

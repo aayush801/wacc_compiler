@@ -3,12 +3,18 @@ package middleware.function_ast;
 import backend.instructions.Branch;
 import backend.instructions.Instruction;
 import backend.instructions.Move;
+import backend.instructions.Store;
+import backend.instructions.addr_modes.ImmediateOffset;
+import backend.instructions.arithmetic.Arithmetic;
+import backend.instructions.arithmetic.ArithmeticOpcode;
+import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import errors.semantic_errors.InvalidArguments;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
 import frontend.identifier_objects.FUNCTION;
 import frontend.identifier_objects.IDENTIFIER;
+import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.TYPE;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +79,7 @@ public class FunctionCallAST extends NodeAST {
           addError(new MismatchedTypes(actuals.get(i).ctx, actualType, formalType));
         }
 
+
       }
 
       // save the function obj in the ast node
@@ -86,13 +93,31 @@ public class FunctionCallAST extends NodeAST {
   public List<Instruction> translate(List<Register> registers) {
     Register dest = registers.get(0);
     List<Instruction> instructions = new ArrayList<>();
+    int originalStackPointer = program.SP.getStackPtr();
+    // push parameters onto the stack
     for (ExpressionAST expr : actuals) {
+      Register exprResult = registers.get(0);
+
+      // translate expression AST
       List<Instruction> exprInstructions = expr.translate(registers);
       instructions.addAll(exprInstructions);
 
+      // push param to bottom of stack
+      int offset = expr.getType().getSize();
+      program.SP.decrement(offset);
+      instructions.add(new Store(exprResult,
+          new ImmediateOffset(program.SP, new ImmediateNum(-offset), true)));
     }
+
     // branch to the function label
     instructions.add(new Branch("f_" + funcName, true));
+
+    // restore stack pointer address (pop parameters off the stack)
+    int offset = program.SP.calculateOffset(originalStackPointer);
+    program.SP.increment(offset);
+    instructions.add(
+        new Arithmetic(ArithmeticOpcode.ADD, program.SP, program.SP, new ImmediateNum(offset),
+            false));
 
     // store the result in the destination register
     instructions.add(new Move(dest, new Register(0)));

@@ -44,7 +44,11 @@ public class ParamAST extends NodeAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return new ArrayList<>();
+
+    // push paramObj onto the virtual stack
+    program.SP.push(paramObj);
+
+    return null;
   }
 
 }

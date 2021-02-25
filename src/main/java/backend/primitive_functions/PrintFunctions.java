@@ -1,4 +1,4 @@
-package backend.functions;
+package backend.primitive_functions;
 
 import backend.ProgramGenerator;
 import backend.instructions.Branch;

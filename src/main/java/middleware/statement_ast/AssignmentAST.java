@@ -9,6 +9,7 @@ import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
+import frontend.identifier_objects.STACK_OBJECT;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
 import frontend.identifier_objects.basic_types.BOOL;
@@ -72,17 +73,13 @@ public class AssignmentAST extends StatementAST {
     // TODO: DO THE CHAR CHECK FOR ALL 3 CASES!!!!!!!!!!!!!!!!!
     // Case when LHS is an identifier
     if (LHS.getIdentifier() != null) {
-      VARIABLE varObj = (VARIABLE) scopeST.lookupAll(LHS.getIdentifier());
+      STACK_OBJECT varObj = (STACK_OBJECT) scopeST.lookupAll(LHS.getIdentifier());
       int offset = program.SP.calculateOffset(varObj.getStackAddress());
 
       TYPE type = varObj.getType();
-      if (type instanceof CHAR || type instanceof BOOL) {
-        instructions.add(new Store(ConditionCode.NONE, target,
-            new ImmediateOffset(program.SP, new ImmediateNum(offset)), true));
-      } else {
-        instructions.add(new Store(ConditionCode.NONE, target,
-            new ImmediateOffset(program.SP, new ImmediateNum(offset)), false));
-      }
+      instructions.add(new Store(ConditionCode.NONE, target,
+          new ImmediateOffset(program.SP, new ImmediateNum(offset)),
+          (type instanceof CHAR || type instanceof BOOL)));
     }
 
     if (LHS.getArrayElemAST() != null) {
