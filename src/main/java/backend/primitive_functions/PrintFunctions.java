@@ -33,7 +33,8 @@ public class PrintFunctions {
     instructions.add(new Load(R1, new ZeroOffset(R0)));
 
     // 		ADD r2, r0, #4
-    instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R2, R0, new ImmediateNum(4), false));
+    instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R2, R0,
+        new ImmediateNum(4), false));
 
     //msg_1:
     //		.word 5
@@ -46,7 +47,8 @@ public class PrintFunctions {
     instructions.add(new Load(R0, new Address(printFormat.getLabelName())));
 
     //		ADD r0, r0, #4
-    instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R0, R0, new ImmediateNum(4), false));
+    instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R0, R0,
+        new ImmediateNum(4), false));
 
     //		BL printf
     instructions.add(new Branch("printf", true));
@@ -80,14 +82,17 @@ public class PrintFunctions {
 
     //		LDRNE r0, =msg_3
     instructions
-        .add(new Load(ConditionCode.NE, R0, new Address(trueLabel.getLabelName()), false, false));
+        .add(new Load(ConditionCode.NE, R0, new Address(trueLabel.getLabelName()),
+            false, false));
 
     //		LDREQ r0, =msg_4
     instructions
-        .add(new Load(ConditionCode.NE, R0, new Address(falseLabel.getLabelName()), false, false));
+        .add(new Load(ConditionCode.NE, R0,
+            new Address(falseLabel.getLabelName()), false, false));
 
     //		ADD r0, r0, #4
-    instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R0, R0, new ImmediateNum(4), false));
+    instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R0, R0,
+        new ImmediateNum(4), false));
 
     //		BL printf
     instructions.add(new Branch("printf", true));
@@ -118,7 +123,8 @@ public class PrintFunctions {
     instructions.add(new Load(R0, new Address(format.getLabelName())));
 
     //	ADD r0, r0, #4
-    instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R0, R0, new ImmediateNum(4), false));
+    instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R0, R0,
+        new ImmediateNum(4), false));
 
     //	BL printf
     instructions.add(new Branch("printf", true));
@@ -146,7 +152,8 @@ public class PrintFunctions {
         .add(new Load(R0, new Address(nullTerminator.getLabelName())));
 
     //		ADD r0, r0, #4
-    instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R0, R0, new ImmediateNum(4), false));
+    instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R0, R0,
+        new ImmediateNum(4), false));
 
     //		BL puts
     instructions.add(new Branch("puts", true));
