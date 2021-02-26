@@ -7,6 +7,7 @@ import backend.instructions.addr_modes.ImmediateOffset;
 import backend.instructions.arithmetic.Arithmetic;
 import backend.instructions.arithmetic.ArithmeticOpcode;
 import backend.operands.ImmediateNum;
+import backend.primitive_functions.ReadFunctions;
 import backend.registers.Register;
 import backend.registers.StackPointer;
 import errors.semantic_errors.MismatchedTypes;
@@ -69,11 +70,12 @@ public class ReadAST extends StatementAST {
     // TODO: Differentiate for chars and ints.
     if (LHS.getIsChar()) {
       ret.add(new Branch("p_read_char", true));
+      program.addCode(ReadFunctions.readCharFunction(program));
     } else {
       ret.add(new Branch("p_read_int", true));
+      program.addCode(ReadFunctions.readIntFunction(program));
     }
 
-    System.out.println(ret);
     return ret;
   }
 }
