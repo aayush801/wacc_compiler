@@ -106,9 +106,8 @@ public class ArrayElemAST extends ExpressionAST {
     // setting target to point to the array we want to index.
     STACK_OBJECT varObj = (STACK_OBJECT) scopeST.lookupAll(arrayName);
     int offset = program.SP.calculateOffset(varObj.getStackAddress());
-    ret.add(
-        new Arithmetic(ArithmeticOpcode.ADD, target, new StackPointer(), new ImmediateNum(offset),
-            false));
+    ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, new StackPointer(),
+            new ImmediateNum(offset), false));
 
     List<Register> remainingRegs = new ArrayList<>(registers);
     remainingRegs.remove(0);
@@ -123,17 +122,19 @@ public class ArrayElemAST extends ExpressionAST {
     ret.add(new Load(target, new ZeroOffset(target)));
 
     // Array index checking
-    ret.add(new Move(new Register(0), index));
-    ret.add(new Move(new Register(1), target));
+    ret.add(new Move(Register.R0, index));
+    ret.add(new Move(Register.R1, target));
     ret.add(new Branch("p_check_array_bounds", true));
 
-    ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target, new ImmediateNum(4), false));
+    ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target,
+        new ImmediateNum(4), false));
 
     if (type instanceof CHAR || type instanceof BOOL) {
-      ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target, index, false));
-    } else {
-      ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target, new ImmediateNumLSL(index, 2),
+      ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target, index,
           false));
+    } else {
+      ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target,
+          new ImmediateNumLSL(index, 2), false));
     }
 
     PrintArrayBoundsChecks.printArrayNegativeIndexMessage(program);

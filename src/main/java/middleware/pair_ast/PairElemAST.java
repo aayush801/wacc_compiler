@@ -71,13 +71,14 @@ public class PairElemAST extends NodeAST {
     List<Instruction> ret = expr.translate(registers);
 
     // Move result into r0
-    ret.add(new Move(new Register(0), target));
+    ret.add(new Move(Register.R0, target));
 
     // Branch to null check
     ret.add(new Branch("p_check_null_pointer", true));
 
     // Load appropriate address into target.
-    ret.add(new Load(target, new ImmediateOffset(target, new ImmediateNum(index*4))));
+    ret.add(new Load(target, new ImmediateOffset(target,
+        new ImmediateNum(index * 4))));
 
     PairElemNullAccessCheck.pairElemNullReferenceMessage(program);
     program.addCode(PairElemNullAccessCheck.pairElemCheckProgram(program));

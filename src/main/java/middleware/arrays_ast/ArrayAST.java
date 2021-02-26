@@ -87,11 +87,11 @@ public class ArrayAST extends NodeAST {
     List<Instruction> ret = new ArrayList<>();
 
     // Calculate size of heap space required.
-    int numElems = expressionASTList.size();
-    int size = numElems * arrayObj.getType().getSize() + arrayObj.getSize();
+    int length = expressionASTList.size();
+    int elementSize = arrayObj.getType().getSize();
+    int size = length * elementSize + 4;
 
-    Instruction malloc_size = new Load(new Register(0), new ImmediateAddress(size));
-    ret.add(malloc_size);
+    ret.add(new Load(Register.R0, new ImmediateAddress(size)));
 
     // Add malloc instruction.
     ret.add(new Branch("malloc", true));
@@ -99,24 +99,26 @@ public class ArrayAST extends NodeAST {
     // Store result from malloc in destination.
     ret.add(new Move(destination, new Register(0)));
 
-    int soFar = 4;
     List<Register> remainingRegs = new ArrayList<>(registers);
     remainingRegs.remove(0);
     Register target = remainingRegs.get(0);
 
-    boolean charOrBool = arrayObj.getType() instanceof CHAR
+    boolean singleByte
+        = arrayObj.getType() instanceof CHAR
         || arrayObj.getType() instanceof BOOL;
 
     // Store parameters on the heap
-    for (ExpressionAST e : expressionASTList) {
+    ExpressionAST e;
+    for (int i = 0; i < length; i++) {
+      e = expressionASTList.get(i);
       ret.addAll(e.translate(remainingRegs));
       ret.add(new Store(ConditionCode.NONE, target,
-          new ImmediateOffset(destination, new ImmediateNum(soFar)), charOrBool));
-      soFar += arrayObj.getType().getSize();
+          new ImmediateOffset(destination,
+              new ImmediateNum(4 + i * elementSize)), singleByte));
     }
 
     // Store size of array on the starting address of the heap entry.
-    ret.add(new Load(target, new ImmediateAddress(numElems)));
+    ret.add(new Load(target, new ImmediateAddress(length)));
     ret.add(new Store(target, new ZeroOffset(destination)));
 
     return ret;
