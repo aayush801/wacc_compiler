@@ -1,6 +1,13 @@
 package middleware.pair_ast;
 
+import backend.instructions.Branch;
 import backend.instructions.Instruction;
+import backend.instructions.Load;
+import backend.instructions.Move;
+import backend.instructions.addr_modes.ImmediateOffset;
+import backend.instructions.addr_modes.ZeroOffset;
+import backend.operands.ImmediateNum;
+import backend.primitive_functions.PairElemNullAccessCheck;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
@@ -57,7 +64,25 @@ public class PairElemAST extends NodeAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return new ArrayList<>();
+
+    Register target = registers.get(0);
+
+    // evaluate the expression.
+    List<Instruction> ret = expr.translate(registers);
+
+    // Move result into r0
+    ret.add(new Move(new Register(0), target));
+
+    // Branch to null check
+    ret.add(new Branch("p_check_null_pointer", true));
+
+    // Load appropriate address into target.
+    ret.add(new Load(target, new ImmediateOffset(target, new ImmediateNum(index*4))));
+
+    PairElemNullAccessCheck.pairElemNullReferenceMessage(program);
+    program.addCode(PairElemNullAccessCheck.pairElemCheckProgram(program));
+
+    return ret;
   }
 
 }

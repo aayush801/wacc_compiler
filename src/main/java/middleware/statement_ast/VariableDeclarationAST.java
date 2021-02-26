@@ -8,10 +8,7 @@ import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import errors.semantic_errors.DuplicateIdentifier;
 import errors.semantic_errors.MismatchedTypes;
-import frontend.identifier_objects.FUNCTION;
-import frontend.identifier_objects.IDENTIFIER;
-import frontend.identifier_objects.TYPE;
-import frontend.identifier_objects.VARIABLE;
+import frontend.identifier_objects.*;
 import frontend.identifier_objects.basic_types.BOOL;
 import frontend.identifier_objects.basic_types.CHAR;
 import java.util.List;
@@ -26,7 +23,7 @@ public class VariableDeclarationAST extends StatementAST {
   private final TypeAST typeAST;
   private final String varName;
   private final RHSAssignAST rhsAssignAST;
-  public VARIABLE varObj;
+  public STACK_OBJECT varObj;
 
   private SymbolTable scopeST;
 
@@ -80,7 +77,7 @@ public class VariableDeclarationAST extends StatementAST {
 
     scopeST = ST;
     varObj = new VARIABLE(typeAST.getType());
-
+   // System.out.println(varObj);
     NodeAST.ST.add(varName, varObj);
   }
 
@@ -88,6 +85,7 @@ public class VariableDeclarationAST extends StatementAST {
   public List<Instruction> translate(List<Register> registers) {
     Register destination = registers.get(0);
     List<Instruction> instructions = rhsAssignAST.translate(registers);
+
     // Amount of bytes to add to the stack pointer to get address of variable
     int stackAddress = program.SP.push(varObj); //pushes varObj onto stack
     int offset = program.SP.calculateOffset(

@@ -304,4 +304,34 @@ public class CodeGenerationTests {
     WaccCompiler compiler = new WaccCompiler(instruction);
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
   }
+
+  @Test
+  public void testfstPairElemOnRHS() throws IOException {
+    String instruction = "begin\n" +
+            "  pair(int, char) p = newpair(10, 'a') ;\n" +
+            "  int x = fst p\n" +
+            "          end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
+
+  @Test
+  public void testsndPairElemOnRHS() throws IOException {
+    String instruction = "begin\n" +
+            "  pair(int, char) p = newpair(10, 'a') ;\n" +
+            "  char x = snd p\n" +
+            "          end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
+
+  @Test
+  public void testPairElemOnLHS() throws IOException {
+    String instruction = "begin\n" +
+            "  pair(int, char) p = newpair(10, 'a') ;\n" +
+            "  snd p = 'c'\n" +
+            "end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
 }

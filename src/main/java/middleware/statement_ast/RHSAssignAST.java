@@ -124,6 +124,7 @@ public class RHSAssignAST extends StatementAST {
       // check the pairelem.
       pairElemAST.check();
 
+
       // verify that the pairelem is not null. If it is present, set the type.
       if (pairElemAST.getType() == null) {
         return;
@@ -179,8 +180,14 @@ public class RHSAssignAST extends StatementAST {
     }
 
     if (pairElemAST != null) {
+      Register target = registers.get(0);
 
-      return pairElemAST.translate(registers);
+      List<Instruction> ret = pairElemAST.translate(registers);
+
+      // Get actual value into target
+      ret.add(new Load(target, new ZeroOffset(target)));
+
+      return ret;
 
     }
 

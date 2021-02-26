@@ -178,10 +178,12 @@ public class LHSAssignAST extends StatementAST {
       ret.add(new Store(target, new ZeroOffset(remainingRegs.get(0))));
     }
 
-
+    // case when LHS is a pairElem
     if (pairElemAST != null) {
-
+      ret.addAll(pairElemAST.translate(remainingRegs));
+      ret.add(new Store(target, new ZeroOffset(remainingRegs.get(0))));
     }
+
     return ret;
   }
 
