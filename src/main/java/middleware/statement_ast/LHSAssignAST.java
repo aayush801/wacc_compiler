@@ -29,6 +29,9 @@ public class LHSAssignAST extends StatementAST {
   private ArrayElemAST arrayElemAST;
   private PairElemAST pairElemAST;
 
+  private int offsetIdent;
+  private boolean isChar;
+
   private TYPE type;
 
   private SymbolTable scopeST;
@@ -159,11 +162,14 @@ public class LHSAssignAST extends StatementAST {
     if (identifier != null) {
       STACK_OBJECT varObj = (STACK_OBJECT) scopeST.lookupAll(identifier);
       int offset = program.SP.calculateOffset(varObj.getStackAddress());
+      offsetIdent = offset;
 
       TYPE type = varObj.getType();
       ret.add(new Store(ConditionCode.NONE, target,
               new ImmediateOffset(program.SP, new ImmediateNum(offset)),
               (type instanceof CHAR || type instanceof BOOL)));
+
+      isChar = type instanceof CHAR;
     }
 
     // case when LHS is an arrayElem.
@@ -179,4 +185,11 @@ public class LHSAssignAST extends StatementAST {
     return ret;
   }
 
+  public int getOffset() {
+    return offsetIdent;
+  }
+
+  public boolean getIsChar() {
+    return isChar;
+  }
 }

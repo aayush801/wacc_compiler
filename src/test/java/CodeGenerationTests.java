@@ -275,4 +275,16 @@ public class CodeGenerationTests {
     WaccCompiler compiler = new WaccCompiler(instruction);
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
   }
+
+  @Test
+  public void testReadChar() throws IOException {
+    String instruction = "begin\n" +
+            "\tchar c = '\\0' ;\n" +
+            "    println \"enter a character to echo\";\n" +
+            "\tread c ;\n" +
+            "\tprintln c \n" +
+            "end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
 }

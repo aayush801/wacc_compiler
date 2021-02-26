@@ -1,7 +1,14 @@
 package middleware.statement_ast;
 
+import backend.instructions.Branch;
 import backend.instructions.Instruction;
+import backend.instructions.Move;
+import backend.instructions.addr_modes.ImmediateOffset;
+import backend.instructions.arithmetic.Arithmetic;
+import backend.instructions.arithmetic.ArithmeticOpcode;
+import backend.operands.ImmediateNum;
 import backend.registers.Register;
+import backend.registers.StackPointer;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.basic_types.CHAR;
@@ -47,9 +54,26 @@ public class ReadAST extends StatementAST {
 
     Register target = registers.get(0);
 
+    List<Instruction> ret = new ArrayList<>();
+
+    LHS.translate(registers);
+
     // Translate the LHS we want to read into.
-    List<Instruction> instructions = LHS.translate(registers);
-    System.out.println(instructions);
-    return instructions;
+    if (LHS.getIdentifier() != null) {
+      int offset = LHS.getOffset();
+      ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, new StackPointer(), new ImmediateNum(offset), false));
+    }
+
+    ret.add(new Move(new Register(0), target));
+
+    // TODO: Differentiate for chars and ints.
+    if (LHS.getIsChar()) {
+      ret.add(new Branch("p_read_char", true));
+    } else {
+      ret.add(new Branch("p_read_int", true));
+    }
+
+    System.out.println(ret);
+    return ret;
   }
 }
