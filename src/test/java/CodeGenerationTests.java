@@ -287,4 +287,21 @@ public class CodeGenerationTests {
     WaccCompiler compiler = new WaccCompiler(instruction);
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
   }
+
+  @Test
+  public void testFreeBasic() throws IOException {
+    String instruction = "begin\n" +
+            "  pair(int, char) a = newpair(10, 'a') ;\n" +
+            "  int x = 2 ;\n" +
+            "  if x == 2\n" +
+            "  then\n" +
+            "    skip\n" +
+            "  else\n" +
+            "    skip\n" +
+            "  fi ;\n" +
+            "  free a\n" +
+            "end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
 }

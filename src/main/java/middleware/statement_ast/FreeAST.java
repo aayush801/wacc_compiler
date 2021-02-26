@@ -1,6 +1,9 @@
 package middleware.statement_ast;
 
+import backend.instructions.Branch;
 import backend.instructions.Instruction;
+import backend.instructions.Move;
+import backend.primitive_functions.FreeFunction;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
@@ -42,6 +45,21 @@ public class FreeAST extends StatementAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return new ArrayList<>();
+
+    Register target = registers.get(0);
+
+    // Translate expression.
+    List<Instruction> ret = new ArrayList<>(expr.translate(registers));
+
+    // Load result into R0
+    ret.add(new Move(new Register(0), target));
+
+    // Add branch to p_free_pair
+    ret.add(new Branch("p_free_pair", true));
+
+    FreeFunction.printNullDereferenceMessage(program);
+    program.addCode(FreeFunction.printPairFree(program));
+
+    return ret;
   }
 }

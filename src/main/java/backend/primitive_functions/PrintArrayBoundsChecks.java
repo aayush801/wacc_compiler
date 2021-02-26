@@ -24,7 +24,7 @@ public class PrintArrayBoundsChecks {
 
   public static void printArrayNegativeIndexMessage(ProgramGenerator program) {
     if (!printedNeg) {
-      negLabel = new DataLabel("ArrayIndexOutOfBoundsError: negative index\\n\\0");
+      negLabel = new DataLabel("\"ArrayIndexOutOfBoundsError: negative index\\n\\0\"");
       program.addData(negLabel);
       printedNeg = true;
     }
@@ -32,7 +32,7 @@ public class PrintArrayBoundsChecks {
 
   public static void printArrayTooLargeIndexMessage(ProgramGenerator program) {
     if (!printedLarge) {
-      largeLabel = new DataLabel("ArrayIndexOutOfBoundsError: index too large\\n\\0");
+      largeLabel = new DataLabel("\"ArrayIndexOutOfBoundsError: index too large\\n\\0\"");
       program.addData(largeLabel);
       printedLarge = true;
     }
