@@ -61,31 +61,13 @@ public class AssignmentAST extends StatementAST {
   @Override
   public List<Instruction> translate(List<Register> registers) {
 
-    // Result of evaluating RHS will be stored here.
-    Register target = registers.get(0);
-
-    List<Register> remainingRegs = new ArrayList<>(registers);
-    remainingRegs.remove(0);
-
     // evaluate RHS first.
     List<Instruction> instructions = RHS.translate(registers);
 
-    // TODO: DO THE CHAR CHECK FOR ALL 3 CASES!!!!!!!!!!!!!!!!!
-    // Case when LHS is an identifier
-    if (LHS.getIdentifier() != null) {
-      STACK_OBJECT varObj = (STACK_OBJECT) scopeST.lookupAll(LHS.getIdentifier());
-      int offset = program.SP.calculateOffset(varObj.getStackAddress());
-
-      TYPE type = varObj.getType();
-      instructions.add(new Store(ConditionCode.NONE, target,
-          new ImmediateOffset(program.SP, new ImmediateNum(offset)),
-          (type instanceof CHAR || type instanceof BOOL)));
-    }
-
-    if (LHS.getArrayElemAST() != null) {
-      instructions.addAll(LHS.getArrayElemAST().translate(remainingRegs));
-      instructions.add(new Store(target, new ZeroOffset(remainingRegs.get(0))));
-    }
+    // At this point, result of evaluating the RHS in in registers.get(0), and this is handled
+    // carefully in LHS.translate().
+    // The LHS translate does what it needs to do to do the storing.
+    instructions.addAll(LHS.translate(registers));
 
     return instructions;
   }

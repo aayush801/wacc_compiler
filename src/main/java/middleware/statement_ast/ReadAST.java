@@ -41,6 +41,15 @@ public class ReadAST extends StatementAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return new ArrayList<>();
+    // read x is probably the only case right. Well, it could also be x[1], or fst(x).
+    // So, let's say evaluate x (via the LHS.translate right), and this could be arbitrarily complex.
+    // Then, we use getChar or something cuz it can only be int or char, which we have verified.
+
+    Register target = registers.get(0);
+
+    // Translate the LHS we want to read into.
+    List<Instruction> instructions = LHS.translate(registers);
+    System.out.println(instructions);
+    return instructions;
   }
 }

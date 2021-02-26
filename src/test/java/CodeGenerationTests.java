@@ -263,4 +263,16 @@ public class CodeGenerationTests {
     WaccCompiler compiler = new WaccCompiler(instruction);
     compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
   }
+
+  @Test
+  public void testReadInt() throws IOException {
+    String instruction = "begin\n" +
+            "  int x = 1 ;\n" +
+            "  println \"enter an integer to echo\";\n" +
+            "  read x ;\n" +
+            "  println x\n" +
+            "  end";
+    WaccCompiler compiler = new WaccCompiler(instruction);
+    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+  }
 }

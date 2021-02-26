@@ -1,19 +1,26 @@
 package middleware.statement_ast;
 
+import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
+import backend.instructions.Store;
+import backend.instructions.addr_modes.ImmediateOffset;
+import backend.instructions.addr_modes.ZeroOffset;
+import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import errors.semantic_errors.Undefined;
 import errors.semantic_errors.expressionNotFound;
-import frontend.identifier_objects.IDENTIFIER;
-import frontend.identifier_objects.PARAM;
-import frontend.identifier_objects.TYPE;
-import frontend.identifier_objects.VARIABLE;
+import frontend.identifier_objects.*;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import frontend.identifier_objects.basic_types.BOOL;
+import frontend.identifier_objects.basic_types.CHAR;
 import middleware.NodeAST;
 import middleware.StatementAST;
 import middleware.arrays_ast.ArrayElemAST;
 import middleware.pair_ast.PairElemAST;
+import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class LHSAssignAST extends StatementAST {
@@ -23,6 +30,8 @@ public class LHSAssignAST extends StatementAST {
   private PairElemAST pairElemAST;
 
   private TYPE type;
+
+  private SymbolTable scopeST;
 
   // For when LHSAssign is an IDENT.
   public LHSAssignAST(ParserRuleContext ctx, String ident) {
@@ -49,6 +58,9 @@ public class LHSAssignAST extends StatementAST {
 
   @Override
   public void check() {
+
+    scopeST = ST;
+
     if (identifier != null) {
       // For when LHSAssign is an IDENT.
 
@@ -131,7 +143,40 @@ public class LHSAssignAST extends StatementAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
-    return new ArrayList<>();
+
+    // where the thing we need to store will be.
+    Register target = registers.get(0);
+
+    // get the registers that are free.
+    List<Register> remainingRegs = new ArrayList<>(registers);
+    remainingRegs.remove(0);
+
+    List<Instruction> ret = new ArrayList<>();
+
+    // TODO: DO THE CHAR CHECK FOR ALL 3 CASES!!!!!!!!!!!!!!!!!
+
+    // case when LHS is just an identifier a.k.a. a variable having a base type.
+    if (identifier != null) {
+      STACK_OBJECT varObj = (STACK_OBJECT) scopeST.lookupAll(identifier);
+      int offset = program.SP.calculateOffset(varObj.getStackAddress());
+
+      TYPE type = varObj.getType();
+      ret.add(new Store(ConditionCode.NONE, target,
+              new ImmediateOffset(program.SP, new ImmediateNum(offset)),
+              (type instanceof CHAR || type instanceof BOOL)));
+    }
+
+    // case when LHS is an arrayElem.
+    if (arrayElemAST != null) {
+      ret.addAll(arrayElemAST.translate(remainingRegs));
+      ret.add(new Store(target, new ZeroOffset(remainingRegs.get(0))));
+    }
+
+
+    if (pairElemAST != null) {
+
+    }
+    return ret;
   }
 
 }
