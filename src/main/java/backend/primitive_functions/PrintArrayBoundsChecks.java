@@ -17,32 +17,22 @@ import java.util.List;
 
 public class PrintArrayBoundsChecks {
 
-  private static boolean printedNeg = false;
-  private static boolean printedLarge = false;
-  private static DataLabel negLabel;
-  private static DataLabel largeLabel;
+  private static final DataLabel negLabel = new DataLabel(
+      "\"ArrayIndexOutOfBoundsError: negative index\\n\\0\"");
+  ;
 
-  public static void printArrayNegativeIndexMessage(ProgramGenerator program) {
-    if (!printedNeg) {
-      negLabel = new DataLabel("\"ArrayIndexOutOfBoundsError: negative index\\n\\0\"");
-      program.addData(negLabel);
-      printedNeg = true;
-    }
-  }
-
-  public static void printArrayTooLargeIndexMessage(ProgramGenerator program) {
-    if (!printedLarge) {
-      largeLabel = new DataLabel("\"ArrayIndexOutOfBoundsError: index too large\\n\\0\"");
-      program.addData(largeLabel);
-      printedLarge = true;
-    }
-  }
+  private static final DataLabel largeLabel = new DataLabel(
+      "\"ArrayIndexOutOfBoundsError: index too large\\n\\0\"");
+  ;
 
   public static PrimitiveLabel printArrayIndexCheck(ProgramGenerator program) {
     List<Instruction> instructions = new ArrayList<>();
 
     // CMP r0, #0
     instructions.add(new Compare(new Register(0), new ImmediateNum(0)));
+
+    // add msg data to program
+    program.addData(negLabel);
 
     // LDRLT r0, =msg_negIndex
     instructions.add(
@@ -57,6 +47,9 @@ public class PrintArrayBoundsChecks {
 
     // CMP r0, r1
     instructions.add(new Compare(new Register(0), new Register(1)));
+
+    // add msg data to program
+    program.addData(largeLabel);
 
     // LDRCS ro, =msg_largeIndex
     instructions.add(

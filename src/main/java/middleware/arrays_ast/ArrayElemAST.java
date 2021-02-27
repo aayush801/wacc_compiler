@@ -137,10 +137,7 @@ public class ArrayElemAST extends ExpressionAST {
           new ImmediateNumLSL(index, 2), false));
     }
 
-    PrintArrayBoundsChecks.printArrayNegativeIndexMessage(program);
-    PrintArrayBoundsChecks.printArrayTooLargeIndexMessage(program);
-
-    program.addCode(PrintArrayBoundsChecks.printArrayIndexCheck(program));
+    program.addPrimitive(PrintArrayBoundsChecks.printArrayIndexCheck(program));
 
     return ret;
   }

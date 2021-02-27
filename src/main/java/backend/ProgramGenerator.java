@@ -4,6 +4,7 @@ import backend.instructions.Instruction;
 import backend.instructions.stack_instructions.Pop;
 import backend.instructions.stack_instructions.Push;
 import backend.labels.code.InstructionLabel;
+import backend.labels.code.PrimitiveLabel;
 import backend.labels.data.DataLabel;
 import backend.labels.text.TextLabel;
 import backend.registers.LinkRegister;
@@ -28,6 +29,9 @@ public class ProgramGenerator {
   private final Set<TextLabel> textSection = new LinkedHashSet<>();
   private final Set<InstructionLabel> codeSection = new LinkedHashSet<>();
 
+  // stores a set dependency functions which are hard coded
+  private final Set<PrimitiveLabel> primitives = new LinkedHashSet<>();
+
   public ProgramGenerator() {
     // only use registers from 4 onwards
     for (int i = 4; i <= 12; i++) {
@@ -44,6 +48,7 @@ public class ProgramGenerator {
 
   }
 
+
   public void addText(TextLabel label) {
 
     textSection.add(label);
@@ -53,6 +58,12 @@ public class ProgramGenerator {
   public void addCode(InstructionLabel label) {
 
     codeSection.add(label);
+
+  }
+
+  public void addPrimitive(PrimitiveLabel label){
+
+    primitives.add(label);
 
   }
 
@@ -109,6 +120,8 @@ public class ProgramGenerator {
     builder.append(".global main\n");
 
     codeSection.forEach(builder::append);
+    // imported functions are added after code section
+    primitives.forEach(builder::append);
 
     return builder.toString();
   }

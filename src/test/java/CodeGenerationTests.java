@@ -52,8 +52,11 @@ public class CodeGenerationTests {
   public void testPrint() throws IOException {
     String instruction =
         "begin\n"
-            + "  print \"An escaped character example is \" ;\n"
-            + "  println '\\\"' \n"
+            + "  print \"True is \" ;\n"
+            + "  println true ;\n"
+            + "\n"
+            + "  print \"False is \" ;\n"
+            + "  println false\n"
             + "end\n";
     checkSourceCode(instruction);
   }

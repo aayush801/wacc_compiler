@@ -46,10 +46,9 @@ public class PrintAST extends StatementAST {
     // move result of expression to register 0
     instructions.add(new Move(new Register(0), dest));
 
-    PrimitiveLabel label = null;
-
+    PrimitiveLabel primitiveLabel = null;
     if (type instanceof INT) {
-      label = PrintFunctions.printInt(program);
+      primitiveLabel = PrintFunctions.printInt(program);
 
     } else if (type instanceof CHAR) {
 
@@ -57,7 +56,7 @@ public class PrintAST extends StatementAST {
 
     } else if (type instanceof BOOL) {
 
-      label = PrintFunctions.printBool(program);
+      primitiveLabel = PrintFunctions.printBool(program);
 
     } else if (type instanceof ARRAY || type instanceof PAIR) {
 
@@ -65,19 +64,19 @@ public class PrintAST extends StatementAST {
 
     } else if (type instanceof STR) {
 
-      label = PrintFunctions.printString(program);
+      primitiveLabel = PrintFunctions.printString(program);
 
     }
 
-    if (label != null) {
-      instructions.add(new Branch(label.getLabelName(), true));
-      program.addCode(label);
+    if (primitiveLabel != null) {
+      instructions.add(new Branch(primitiveLabel.getLabelName(), true));
+      program.addPrimitive(primitiveLabel);
     }
 
     if (newLine) {
-      label = PrintFunctions.printLine(program);
-      instructions.add(new Branch(label.getLabelName(), true));
-      program.addCode(label);
+      primitiveLabel = PrintFunctions.printLine(program);
+      instructions.add(new Branch(primitiveLabel.getLabelName(), true));
+      program.addPrimitive(primitiveLabel);
     }
 
     return instructions;

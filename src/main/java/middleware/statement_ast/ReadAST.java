@@ -70,10 +70,10 @@ public class ReadAST extends StatementAST {
     // TODO: Differentiate for chars and ints.
     if (LHS.getIsChar()) {
       ret.add(new Branch("p_read_char", true));
-      program.addCode(ReadFunctions.readCharFunction(program));
+      program.addPrimitive(ReadFunctions.readCharFunction(program));
     } else {
       ret.add(new Branch("p_read_int", true));
-      program.addCode(ReadFunctions.readIntFunction(program));
+      program.addPrimitive(ReadFunctions.readIntFunction(program));
     }
 
     return ret;

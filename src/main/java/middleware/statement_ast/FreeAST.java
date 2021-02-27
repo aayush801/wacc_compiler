@@ -57,8 +57,7 @@ public class FreeAST extends StatementAST {
     // Add branch to p_free_pair
     ret.add(new Branch("p_free_pair", true));
 
-    FreeFunction.printNullDereferenceMessage(program);
-    program.addCode(FreeFunction.printPairFree(program));
+    program.addPrimitive(FreeFunction.printPairFree(program));
 
     return ret;
   }

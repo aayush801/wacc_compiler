@@ -80,8 +80,7 @@ public class PairElemAST extends NodeAST {
     ret.add(new Load(target, new ImmediateOffset(target,
         new ImmediateNum(index * 4))));
 
-    PairElemNullAccessCheck.pairElemNullReferenceMessage(program);
-    program.addCode(PairElemNullAccessCheck.pairElemCheckProgram(program));
+    program.addPrimitive(PairElemNullAccessCheck.pairElemCheckProgram(program));
 
     return ret;
   }
