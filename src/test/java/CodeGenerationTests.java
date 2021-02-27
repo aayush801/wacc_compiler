@@ -1,19 +1,23 @@
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import java.io.IOException;
 import org.junit.Test;
 
 public class CodeGenerationTests {
+
+  private void checkSourceCode(String instruction) throws IOException {
+    WaccCompiler compiler = new WaccCompiler(instruction);
+
+    String sourceCode = compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+
+    System.out.println(sourceCode);
+  }
 
   @Test
   public void testUndefined() throws IOException {
     String instruction =
         "begin " +
             "exit -1" +
-        "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+            "end";
+    checkSourceCode(instruction);
   }
 
   @Test
@@ -23,8 +27,7 @@ public class CodeGenerationTests {
             + "  # I can write stuff on a comment line\n"
             + "  skip \n"
             + "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+    checkSourceCode(instruction);
   }
 
   @Test
@@ -42,18 +45,26 @@ public class CodeGenerationTests {
             + "  print \"max value = \";\n"
             + "  println i\n"
             + "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testPrint() throws IOException {
     String instruction =
         "begin\n"
-            + "  print \"Hello World!\\n\"\n"
+            + "  char continue = 'Y' ;\n"
+            + "  int buff = 0 ;\n"
+            + "  while continue != 'N' do\n"
+            + "    print \"Please input an integer: \" ;\n"
+            + "    read buff ;\n"
+            + "    print \"echo input: \" ;\n"
+            + "    println buff ;\n"
+            + "    println \"Do you want to continue entering input?\" ; \n"
+            + "    println \"(enter Y for \\'yes\\' and N for \\'no\\')\" ;\n"
+            + "    read continue\n"
+            + "  done\n"
             + "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+    checkSourceCode(instruction);
   }
 
   @Test
@@ -63,119 +74,108 @@ public class CodeGenerationTests {
             + "  int x = 1 ; \n"
             + "  int y = 2 ; \n"
             + "  int z = x + y \n"
-          + "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+            + "end";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testVarDeclarationDifferentScopes() throws IOException {
     String instruction = "begin\n" +
-            " int x = 0 ;\n" +
-            " begin\n" +
-            "    int z = 3\n" +
-            " end ;\n" +
-            " int k = 2\n" +
-            "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        " int x = 0 ;\n" +
+        " begin\n" +
+        "    int z = 3\n" +
+        " end ;\n" +
+        " int k = 2\n" +
+        "end";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testVarDeclarationWithOtherIdent() throws IOException {
     String instruction = "begin\n" +
-            "    int x = 0 ;\n" +
-            "    int z = 0 ;\n" +
-            "    int y = x\n" +
-            "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "    int x = 0 ;\n" +
+        "    int z = 0 ;\n" +
+        "    int y = x\n" +
+        "end";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testVarDeclarationWithSumOfOtherIdents() throws IOException {
     String instruction = "begin\n" +
-            "    int x = 0 ;\n" +
-            "    int z = 1 ;\n" +
-            "    int y = x + z\n" +
-            "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "    int x = 0 ;\n" +
+        "    int z = 1 ;\n" +
+        "    int y = x + z\n" +
+        "end";
+    checkSourceCode(instruction);
   }
 
 
   @Test
   public void testVarAssignment() throws IOException {
     String instruction = "begin\n" +
-            "    int x = 0 ;\n " +
-            "    int z = x ;\n" +
-            "    x = 2\n" +
-            "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "    int x = 0 ;\n " +
+        "    int z = x ;\n" +
+        "    x = 2\n" +
+        "end";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testVarDeclarationWithNegateRHS() throws IOException {
     String instruction = "begin\n" +
-            "    int x = 0 ;\n" +
-            "    int z = -x\n" +
-            "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "    int x = 0 ;\n" +
+        "    int z = -x\n" +
+        "end";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testVarDeclarationWithNotRHS() throws IOException {
     String instruction = "begin\n" +
-            "    int x = 0 ;\n" +
-            "    bool z = !true\n" +
-            "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "    int x = 0 ;\n" +
+        "    bool z = !true\n" +
+        "end";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testVarDeclarationOrd() throws IOException {
     String instruction = "begin\n" +
-            "    char x = 'x' ;\n" +
-            "    int z = ord 'c';\n" +
-            "    int y = ord x;\n" +
-            "    y = ord 'a'\n" +
-            "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "    char x = 'x' ;\n" +
+        "    int z = ord 'c';\n" +
+        "    int y = ord x;\n" +
+        "    y = ord 'a'\n" +
+        "end";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testVarDeclarationChr() throws IOException {
     String instruction = "begin\n" +
-            "    int x = 3 ;\n" +
-            "    char z = chr x;\n" +
-            "    char y = chr 3;\n" +
-            "    y = chr 4\n" +
-            "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "    int x = 3 ;\n" +
+        "    char z = chr x;\n" +
+        "    char y = chr 3;\n" +
+        "    y = chr 4\n" +
+        "end";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testVarDeclarationLen() throws IOException {
     String instruction = "begin\n" +
-            "  int[] x = [2, 3] ;\n" +
-            "  int y = len x\n" +
-            "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "  int[] x = [2, 3] ;\n" +
+        "  int y = len x\n" +
+        "end";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testVarDeclarationBinOpEq() throws IOException {
     String instruction = "begin\n" +
-            "  bool x = 2 != 3\n" +
-            "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "  bool x = 2 != 3\n" +
+        "end";
+    checkSourceCode(instruction);
   }
 
   @Test
@@ -199,139 +199,126 @@ public class CodeGenerationTests {
         + "\n"
         + "  int s = call f(8) \n"
         + "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testVarIntArrayDeclaration() throws IOException {
     String instruction = "begin " +
-            "   int[] x = [1, 3]" +
-            "end\n";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "   int[] x = [1, 3]" +
+        "end\n";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testVarCharArrayDeclaration() throws IOException {
     String instruction = "begin " +
-            "   char[] x = ['c', 'a', 't']\n" +
-            "end\n";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "   char[] x = ['c', 'a', 't']\n" +
+        "end\n";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testArrayAssignment() throws IOException {
     String instruction = "begin " +
-            "   int[] x = [1, 3] ;\n" +
-            "  int[] y = x ;\n" +
-            "  x = [7, 3]\n" +
-            "end\n";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "   int[] x = [1, 3] ;\n" +
+        "  int[] y = x ;\n" +
+        "  x = [7, 3]\n" +
+        "end\n";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testintArrayElemAssignment() throws IOException {
     String instruction = "begin  " +
-            "int[] x = [1, 3] ;\n" +
-            "int z = 3 ;\n" +
-            "  x[0+2] = 3" +
-            "end\n";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "int[] x = [1, 3] ;\n" +
+        "int z = 3 ;\n" +
+        "  x[0+2] = 3" +
+        "end\n";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testCharArrayElemAssignment() throws IOException {
     String instruction = "begin  " +
-            "char[] x = ['c', 'a', 't'] ;\n" +
-            "  x[0+2] = 'g'" +
-            "end\n";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "char[] x = ['c', 'a', 't'] ;\n" +
+        "  x[0+2] = 'g'" +
+        "end\n";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testIntArrayAssignment() throws IOException {
     String instruction = "begin  " +
-            "int[] x = [1, 3] ;\n" +
-            "  int a = x[1] ;" +
-            "  x[0] = x[1]" +
-            "end\n";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "int[] x = [1, 3] ;\n" +
+        "  int a = x[1] ;" +
+        "  x[0] = x[1]" +
+        "end\n";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testReadInt() throws IOException {
     String instruction = "begin\n" +
-            "  int x = 1 ;\n" +
-            "  println \"enter an integer to echo\";\n" +
-            "  read x ;\n" +
-            "  println x\n" +
-            "  end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "  int x = 1 ;\n" +
+        "  println \"enter an integer to echo\";\n" +
+        "  read x ;\n" +
+        "  println x\n" +
+        "  end";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testReadChar() throws IOException {
     String instruction = "begin\n" +
-            "\tchar c = '\\0' ;\n" +
-            "    println \"enter a character to echo\";\n" +
-            "\tread c ;\n" +
-            "\tprintln c \n" +
-            "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "\tchar c = '\\0' ;\n" +
+        "    println \"enter a character to echo\";\n" +
+        "\tread c ;\n" +
+        "\tprintln c \n" +
+        "end";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testFreeBasic() throws IOException {
     String instruction = "begin\n" +
-            "  pair(int, char) a = newpair(10, 'a') ;\n" +
-            "  int x = 2 ;\n" +
-            "  if x == 2\n" +
-            "  then\n" +
-            "    skip\n" +
-            "  else\n" +
-            "    skip\n" +
-            "  fi ;\n" +
-            "  free a\n" +
-            "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "  pair(int, char) a = newpair(10, 'a') ;\n" +
+        "  int x = 2 ;\n" +
+        "  if x == 2\n" +
+        "  then\n" +
+        "    skip\n" +
+        "  else\n" +
+        "    skip\n" +
+        "  fi ;\n" +
+        "  free a\n" +
+        "end";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testfstPairElemOnRHS() throws IOException {
     String instruction = "begin\n" +
-            "  pair(int, char) p = newpair(10, 'a') ;\n" +
-            "  int x = fst p\n" +
-            "          end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "  pair(int, char) p = newpair(10, 'a') ;\n" +
+        "  int x = fst p\n" +
+        "          end";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testsndPairElemOnRHS() throws IOException {
     String instruction = "begin\n" +
-            "  pair(int, char) p = newpair(10, 'a') ;\n" +
-            "  char x = snd p\n" +
-            "          end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "  pair(int, char) p = newpair(10, 'a') ;\n" +
+        "  char x = snd p\n" +
+        "          end";
+    checkSourceCode(instruction);
   }
 
   @Test
   public void testPairElemOnLHS() throws IOException {
     String instruction = "begin\n" +
-            "  pair(int, char) p = newpair(10, 'a') ;\n" +
-            "  snd p = 'c'\n" +
-            "end";
-    WaccCompiler compiler = new WaccCompiler(instruction);
-    compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+        "  pair(int, char) p = newpair(10, 'a') ;\n" +
+        "  snd p = 'c'\n" +
+        "end";
+    checkSourceCode(instruction);
   }
 }

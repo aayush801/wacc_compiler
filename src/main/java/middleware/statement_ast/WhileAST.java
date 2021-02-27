@@ -42,10 +42,10 @@ public class WhileAST extends StatementAST {
     }
 
     // verify that the condition expression is a boolean.
-    if (!(expressionAST.getType() instanceof BOOL)) {
+    if (!(type instanceof BOOL)) {
 
       addError(new MismatchedTypes(
-          expressionAST.ctx, expressionAST.getType(), new BOOL())
+          expressionAST.ctx, type, new BOOL())
       );
 
       return;
@@ -65,20 +65,20 @@ public class WhileAST extends StatementAST {
     Register destination = registers.get(0);
     List<Instruction> instructions = new ArrayList<>();
 
-    LabelledInstruction rest = new LabelledInstruction();
     LabelledInstruction body = new LabelledInstruction();
+    LabelledInstruction rest = new LabelledInstruction();
 
     instructions.add(new Branch(body.getLabel()));
 
-    // translate statement in new scope
-    instructions.add(body);
+    // translate rest of code statement
+    instructions.add(rest);
 
     instructions.addAll(program.allocateStackSpace(scopeST));
     instructions.addAll(statementAST.translate(registers));
     instructions.addAll(program.deallocateStackSpace(scopeST));
 
-    // translate instructions after loop body
-    instructions.add(rest);
+    // translate instructions in loop body
+    instructions.add(body);
     instructions.addAll(expressionAST.translate(registers));
 
     instructions.add(new Compare(destination, new ImmediateNum(1)));
