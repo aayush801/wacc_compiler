@@ -94,6 +94,7 @@ public class FunctionCallAST extends NodeAST {
     Register dest = registers.get(0);
     List<Instruction> instructions = new ArrayList<>();
     int originalStackPointer = program.SP.getStackPtr();
+
     // push parameters onto the stack
     for (ExpressionAST expr : actuals) {
       Register exprResult = registers.get(0);

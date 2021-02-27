@@ -12,6 +12,7 @@ test:
 # cleanup all generated files
 clean:
 	$(MAVEN) clean
+	$(RM) *.s
 
 .PHONY: all clean
 

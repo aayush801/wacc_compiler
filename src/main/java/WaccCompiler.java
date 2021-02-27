@@ -43,6 +43,7 @@ enum ErrorCode {
 public class WaccCompiler {
 
   private final WaccParser parser;
+  private String sourceCode;
 
   private final List<WaccError> errors = new ArrayList<>();
   private final SyntaxErrorListener syntaxErrorListener = new SyntaxErrorListener();
@@ -91,7 +92,7 @@ public class WaccCompiler {
 
     }
 
-    translateCode(IRtree);
+    sourceCode = translateCode(IRtree);
 
     if (hasErrors()) {
 
@@ -126,10 +127,14 @@ public class WaccCompiler {
 
   }
 
-  public void translateCode(NodeAST tree) {
+  public String translateCode(NodeAST tree) {
 
-    System.out.println(tree.translate());
+    return tree.translate();
 
+  }
+
+  public String getSourceCode() {
+    return sourceCode;
   }
 
   public List<WaccError> getErrors() {
