@@ -94,32 +94,23 @@ public class ProgramGenerator {
 
     // add .data section (if there is one)
     if (!dataSection.isEmpty()) {
-      builder.append(".data \n\n");
+      builder.append(".data\n\n");
       dataSection.forEach(builder::append);
     }
 
     builder.append("\n");
 
     // add .text section
-    builder.append(".text \n\n");
+    builder.append(".text\n\n");
     textSection.forEach(builder::append);
 
     builder.append("\n");
 
-    builder.append(".global main \n");
+    builder.append(".global main\n");
 
-    printSection(codeSection, builder);
-    //codeSection.forEach(builder::append);
+    codeSection.forEach(builder::append);
 
     return builder.toString();
-  }
-
-
-  private void printSection(Set<InstructionLabel> section, StringBuilder builder) {
-    ArrayList<InstructionLabel> setAsList = new ArrayList<>(section);
-    for (int i = setAsList.size() - 1; i >= 0; i--) {
-      builder.append(setAsList.get(i));
-    }
   }
 
   public void pushLR(List<Instruction> instructions){
