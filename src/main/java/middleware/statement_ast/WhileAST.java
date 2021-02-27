@@ -65,24 +65,24 @@ public class WhileAST extends StatementAST {
     Register destination = registers.get(0);
     List<Instruction> instructions = new ArrayList<>();
 
-    LabelledInstruction body = new LabelledInstruction();
     LabelledInstruction rest = new LabelledInstruction();
+    LabelledInstruction body = new LabelledInstruction();
 
-    instructions.add(new Branch(body.getLabel()));
+    instructions.add(new Branch(rest.getLabel()));
 
-    // translate rest of code statement
-    instructions.add(rest);
+    // translate body of code statement
+    instructions.add(body);
 
     instructions.addAll(program.allocateStackSpace(scopeST));
     instructions.addAll(statementAST.translate(registers));
     instructions.addAll(program.deallocateStackSpace(scopeST));
 
-    // translate instructions in loop body
-    instructions.add(body);
+    // translate expression for loop (variance)
+    instructions.add(rest);
     instructions.addAll(expressionAST.translate(registers));
 
     instructions.add(new Compare(destination, new ImmediateNum(1)));
-    instructions.add(new Branch(ConditionCode.EQ, rest.getLabel(), false));
+    instructions.add(new Branch(ConditionCode.EQ, body.getLabel(), false));
 
     return instructions;
   }
