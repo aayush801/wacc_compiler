@@ -74,8 +74,8 @@ public class PrintFunctions {
     //    msg_4:
     //    		.word 6
     //    		.ascii	"false\0"
-    DataLabel trueLabel = new DataLabel("\"true\0\"");
-    DataLabel falseLabel = new DataLabel("\"false\0\"");
+    DataLabel trueLabel = new DataLabel("\"true\\0\"");
+    DataLabel falseLabel = new DataLabel("\"false\\0\"");
 
     program.addData(trueLabel);
     program.addData(falseLabel);
