@@ -29,6 +29,8 @@ public class ReadFunctions {
         //		.ascii	"%d\0"
         DataLabel format = new DataLabel("\"%d\\0\"");
 
+        program.addData(format);
+
         // LDR R0, =msg_0
         ret.add(new Load(new Register(0), new Address(format.getLabelName())));
 
@@ -51,6 +53,8 @@ public class ReadFunctions {
         //		.word 4
         //		.ascii	" %c\0"
         DataLabel format = new DataLabel("\" %c\\0\"");
+
+        program.addData(format);
 
         // LDR R0, =msg_0
         ret.add(new Load(new Register(0), new Address(format.getLabelName())));

@@ -51,12 +51,12 @@ public class CodeGenerationTests {
   @Test
   public void testPrint() throws IOException {
     String instruction =
-        "begin \n"
-            + "  int x = 0 ;\n"
-            + "  print \"Please input an integer: \" ;\n"
-            + "  read x ;\n"
-            + "  print \"You input: \" ;\n"
-            + "  println x\n"
+        "begin\n"
+            + "  print \"True is \" ;\n"
+            + "  println true ;\n"
+            + "\n"
+            + "  print \"False is \" ;\n"
+            + "  println false\n"
             + "end\n";
     checkSourceCode(instruction);
   }
