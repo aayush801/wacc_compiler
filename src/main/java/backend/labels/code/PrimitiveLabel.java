@@ -4,7 +4,7 @@ import backend.ProgramGenerator;
 import backend.instructions.Instruction;
 import java.util.List;
 
-public class PrimitiveLabel extends InstructionLabel {
+public class PrimitiveLabel extends CodeLabel {
 
   public PrimitiveLabel(String name, List<Instruction> instructions, ProgramGenerator program) {
     super("p_" + name, instructions);

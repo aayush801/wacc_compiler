@@ -5,7 +5,7 @@ import backend.instructions.EOC;
 import backend.instructions.Instruction;
 import backend.instructions.Load;
 import backend.instructions.addr_modes.Address;
-import backend.labels.code.InstructionLabel;
+import backend.labels.code.CodeLabel;
 import backend.registers.Register;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +69,7 @@ public class ProgAST extends NodeAST {
     program.popPC(instructions);
     instructions.add(new EOC());
 
-    program.addCode(new InstructionLabel("main", instructions));
+    program.addCode(new CodeLabel("main", instructions));
 
     return null;
   }

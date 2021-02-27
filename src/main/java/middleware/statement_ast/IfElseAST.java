@@ -5,7 +5,6 @@ import backend.instructions.Compare;
 import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
 import backend.instructions.stack_instructions.LabelledInstruction;
-import backend.labels.code.InstructionLabel;
 import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;

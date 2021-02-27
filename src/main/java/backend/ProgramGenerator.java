@@ -3,7 +3,7 @@ package backend;
 import backend.instructions.Instruction;
 import backend.instructions.stack_instructions.Pop;
 import backend.instructions.stack_instructions.Push;
-import backend.labels.code.InstructionLabel;
+import backend.labels.code.CodeLabel;
 import backend.labels.code.PrimitiveLabel;
 import backend.labels.data.DataLabel;
 import backend.labels.text.TextLabel;
@@ -27,7 +27,7 @@ public class ProgramGenerator {
   public final StackPointer SP = new StackPointer();
   private final Set<DataLabel> dataSection = new LinkedHashSet<>();
   private final Set<TextLabel> textSection = new LinkedHashSet<>();
-  private final Set<InstructionLabel> codeSection = new LinkedHashSet<>();
+  private final Set<CodeLabel> codeSection = new LinkedHashSet<>();
 
   // stores a set dependency functions which are hard coded
   private final Set<PrimitiveLabel> primitives = new LinkedHashSet<>();
@@ -55,7 +55,7 @@ public class ProgramGenerator {
 
   }
 
-  public void addCode(InstructionLabel label) {
+  public void addCode(CodeLabel label) {
 
     codeSection.add(label);
 
@@ -120,6 +120,7 @@ public class ProgramGenerator {
     builder.append(".global main\n");
 
     codeSection.forEach(builder::append);
+
     // imported functions are added after code section
     primitives.forEach(builder::append);
 

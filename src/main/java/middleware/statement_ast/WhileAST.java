@@ -70,7 +70,7 @@ public class WhileAST extends StatementAST {
 
     instructions.add(new Branch(rest.getLabel()));
 
-    // translate body of code statement
+    // translate rest of code statement
     instructions.add(body);
 
     instructions.addAll(program.allocateStackSpace(scopeST));

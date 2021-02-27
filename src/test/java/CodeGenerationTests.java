@@ -52,12 +52,18 @@ public class CodeGenerationTests {
   public void testPrint() throws IOException {
     String instruction =
         "begin\n"
-            + "  print \"True is \" ;\n"
-            + "  println true ;\n"
-            + "\n"
-            + "  print \"False is \" ;\n"
-            + "  println false\n"
-            + "end\n";
+            + "  char continue = 'Y' ;\n"
+            + "  int buff = 0 ;\n"
+            + "  while continue != 'N' do\n"
+            + "    print \"Please input an integer: \" ;\n"
+            + "    read buff ;\n"
+            + "    print \"echo input: \" ;\n"
+            + "    println buff ;\n"
+            + "    println \"Do you want to continue entering input?\" ; \n"
+            + "    println \"(enter Y for \\'yes\\' and N for \\'no\\')\" ;\n"
+            + "    read continue\n"
+            + "  done\n"
+            + "end";
     checkSourceCode(instruction);
   }
 
