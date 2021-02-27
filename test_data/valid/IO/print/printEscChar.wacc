@@ -7,5 +7,5 @@
 
 begin
   print "An escaped character example is " ;
-  println '\"'
+  println '\''
 end

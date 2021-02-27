@@ -55,7 +55,8 @@ public class LiteralsAST extends ExpressionAST {
 
     } else if (type instanceof CHAR) {
       // TODO: Reference compiler uses the 'B' flag for STR operations with characters. CHECK THIS!!
-      char c = ctx.getText().charAt(1);
+      // getting the final char of the text will implicitly solve escape char issues
+      char c = ctx.getText().charAt(ctx.getText().length() - 2);
       instruction = new Move(destination, new ImmediateChar(c));
 
     } else if (type instanceof STR) {

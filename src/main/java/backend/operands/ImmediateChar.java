@@ -19,6 +19,9 @@ public class ImmediateChar extends Operand {
 
   @Override
   public String toString() {
-    return "#'" + value + "'";
+    return "#'"
+        // special edge case of escaped char = '
+        + ((value == '\'') ? "\\'" : value)
+        + "'";
   }
 }
