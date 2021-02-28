@@ -82,7 +82,6 @@ public class IfElseAST extends StatementAST {
     LabelledInstruction body = new LabelledInstruction();
     LabelledInstruction rest = new LabelledInstruction();
 
-
     instructions.add(new Branch(ConditionCode.EQ, body.getLabel(), false));
 
     instructions.addAll(program.allocateStackSpace(ST1));

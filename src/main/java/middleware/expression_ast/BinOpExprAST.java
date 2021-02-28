@@ -181,7 +181,6 @@ public class BinOpExprAST extends ExpressionAST {
 
     boolean accumulator = registers.size() <= 3;
 
-
     Register Rn = registers.get(0);
     Register Rm = registers.get(1);
 
@@ -193,14 +192,14 @@ public class BinOpExprAST extends ExpressionAST {
 
       // push LHS value onto stack.
       instructions.add(new Push(Rn));
-     // program.SP.decrement(4);
+      // program.SP.decrement(4);
 
       // Proceed to translate RHS with the same registers.
       instructions.addAll(rightExprAST.translate(registers));
 
       // Retreive LHS from the stack.
       instructions.add(new Pop(Rm));
-     // program.SP.increment(4);
+      // program.SP.increment(4);
 
     } else {
       // Translate RHS like normal.
@@ -218,31 +217,37 @@ public class BinOpExprAST extends ExpressionAST {
     switch (operator) {
       // ARITHMETIC Operators
       case "+":
-        instructions.add(new Arithmetic(ArithmeticOpcode.ADD, Rn, Rn, Rm, true, accumulator));
+        instructions.add(new Arithmetic(ArithmeticOpcode.ADD, Rn, Rn, Rm, true,
+            accumulator));
 
         // check for overflow error
         primitiveLabel = BinOpChecks.printOverflowCheck(program);
-        instructions.add(new Branch(ConditionCode.VS, primitiveLabel.getLabelName(), true));
+        instructions.add(new Branch(ConditionCode.VS,
+            primitiveLabel.getLabelName(), true));
 
         break;
       case "-":
-        instructions.add(new Arithmetic(ArithmeticOpcode.SUB, Rn, Rn, Rm, true, accumulator));
+        instructions.add(new Arithmetic(ArithmeticOpcode.SUB, Rn, Rn, Rm,
+            true, accumulator));
 
         // check for overflow error
         primitiveLabel = BinOpChecks.printOverflowCheck(program);
-        instructions.add(new Branch(ConditionCode.VS, primitiveLabel.getLabelName(), true));
+        instructions.add(new Branch(ConditionCode.VS, primitiveLabel.getLabelName(),
+            true));
 
         break;
       case "*":
-        instructions.add(new Arithmetic(ArithmeticOpcode.MUL, Rn, Rn, Rm, true, accumulator));
+        instructions.add(new Arithmetic(ArithmeticOpcode.MUL, Rn, Rn, Rm, true,
+            accumulator));
 
         // check for overflow error
         primitiveLabel = BinOpChecks.printOverflowCheck(program);
-        instructions.add(new Branch(ConditionCode.VS, primitiveLabel.getLabelName(), true));
+        instructions.add(new Branch(ConditionCode.VS,
+            primitiveLabel.getLabelName(), true));
         break;
       case "%":
-        instructions.add(new Move(new Register(0), Rn));
-        instructions.add(new Move(new Register(1), Rm));
+        instructions.add(new Move(Register.R0, Rn));
+        instructions.add(new Move(Register.R1, Rm));
 
         // check for mod by zero error
         primitiveLabel = BinOpChecks.printDivZeroCheck(program);
@@ -252,8 +257,8 @@ public class BinOpExprAST extends ExpressionAST {
         instructions.add(new Move(Rn, Register.R1));
         break;
       case "/":
-        instructions.add(new Move(new Register(0), Rn));
-        instructions.add(new Move(new Register(1), Rm));
+        instructions.add(new Move(Register.R0, Rn));
+        instructions.add(new Move(Register.R1, Rm));
 
         // check for dividing by zero error
         primitiveLabel = BinOpChecks.printDivZeroCheck(program);
@@ -297,10 +302,12 @@ public class BinOpExprAST extends ExpressionAST {
       // BOOLEAN Operators
       case "&&":
         // false removes the S, add if needed.
-        instructions.add(new Arithmetic(ArithmeticOpcode.AND, Rn, Rn, Rm, false, accumulator));
+        instructions.add(new Arithmetic(ArithmeticOpcode.AND, Rn, Rn, Rm, false,
+            accumulator));
         break;
       case "||":
-        instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, Rm, false, accumulator));
+        instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, Rm, false,
+            accumulator));
         break;
       // Unrecognized Operator
       default:

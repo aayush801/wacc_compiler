@@ -28,7 +28,8 @@ public class ArrayAST extends NodeAST {
   private final NodeASTList<ExpressionAST> expressionASTList;
   private ARRAY arrayObj;
 
-  public ArrayAST(ParserRuleContext ctx, NodeASTList<ExpressionAST> expressionASTList) {
+  public ArrayAST(ParserRuleContext ctx,
+      NodeASTList<ExpressionAST> expressionASTList) {
     super(ctx);
     this.expressionASTList = expressionASTList;
   }
@@ -55,7 +56,8 @@ public class ArrayAST extends NodeAST {
       TYPE curType = expressionASTList.get(0).getType();
 
       if (curType == null) {
-        addError(new MismatchedTypes(expressionASTList.get(0).ctx, curType, new TYPE()));
+        addError(new MismatchedTypes(expressionASTList.get(0).ctx, curType,
+            new TYPE()));
 
       } else {
 
@@ -97,7 +99,7 @@ public class ArrayAST extends NodeAST {
     ret.add(new Branch("malloc", true));
 
     // Store result from malloc in destination.
-    ret.add(new Move(destination, new Register(0)));
+    ret.add(new Move(destination, Register.R0));
 
     List<Register> remainingRegs = new ArrayList<>(registers);
     remainingRegs.remove(0);
@@ -110,7 +112,8 @@ public class ArrayAST extends NodeAST {
       ret.addAll(e.translate(remainingRegs));
       ret.add(new Store(ConditionCode.NONE, target,
           new ImmediateOffset(destination,
-              new ImmediateNum(4 + i * elementSize)), arrayObj.getType().getSize()));
+              new ImmediateNum(4 + i * elementSize)),
+          arrayObj.getType().getSize()));
     }
 
     // Store size of array on the starting address of the heap entry.

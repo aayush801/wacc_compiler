@@ -54,12 +54,14 @@ public class NewPairAST extends NodeAST {
     // check that boh expressions are of type TYPE.
     // If not, they are a function identifier, which is invalid.
     if (!(fstExpr.getType() instanceof TYPE)) {
-      addError(new MismatchedTypes(fstExpr.ctx, fstExpr.getType(), new TYPE()));
+      addError(new MismatchedTypes(fstExpr.ctx, fstExpr.getType(),
+          new TYPE()));
       error = true;
     }
 
     if (!(sndExpr.getType() instanceof TYPE)) {
-      addError(new MismatchedTypes(sndExpr.ctx, sndExpr.getType(), new TYPE()));
+      addError(new MismatchedTypes(sndExpr.ctx, sndExpr.getType(),
+          new TYPE()));
       error = true;
     }
 
@@ -112,7 +114,6 @@ public class NewPairAST extends NodeAST {
     instructions.add(new Store(Register.R0,
         new ImmediateOffset(pairAddress,
             new ImmediateNum(fstExpr.getType().getSize()))));
-
 
     return instructions;
   }

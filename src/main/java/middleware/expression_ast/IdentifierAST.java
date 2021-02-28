@@ -79,11 +79,16 @@ public class IdentifierAST extends ExpressionAST {
       STACK_OBJECT varStackObj = (STACK_OBJECT) varObj;
 
       // calculate offset
-      int offset = program.SP.calculateOffset(((STACK_OBJECT) varObj).getStackAddress());
+      int offset
+          = program.SP.calculateOffset(((STACK_OBJECT) varObj)
+          .getStackAddress());
 
       // Simply load the identifier into the first register in the list.
       List<Instruction> ret = new ArrayList<>();
-      ret.add(new Load(target, new ImmediateOffset(new StackPointer(), new ImmediateNum(offset)), varStackObj.getType().getSize()));
+      ret.add(
+          new Load(target,
+              new ImmediateOffset(new StackPointer(), new ImmediateNum(offset)),
+              varStackObj.getType().getSize()));
       return ret;
     }
 

@@ -30,7 +30,8 @@ public class FUNCTION extends IDENTIFIER {
   public boolean equals(Object o) {
     if (o instanceof FUNCTION) {
       FUNCTION func = (FUNCTION) o;
-      if (func.formals.size() == formals.size() && returnType.equals(func.returnType)) {
+      if (func.formals.size() == formals.size()
+          && returnType.equals(func.returnType)) {
         for (int i = 0; i < formals.size(); i++) {
           if (!formals.get(i).equals(func.formals.get(i))) {
             return false;

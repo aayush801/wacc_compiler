@@ -78,8 +78,6 @@ public class FunctionCallAST extends NodeAST {
         if (!(isCompatible(actualType, formalType))) {
           addError(new MismatchedTypes(actuals.get(i).ctx, actualType, formalType));
         }
-
-
       }
 
       // save the function obj in the ast node
@@ -108,7 +106,8 @@ public class FunctionCallAST extends NodeAST {
       int offset = type.getSize();
       program.SP.decrement(offset);
       instructions.add(new Store(exprResult,
-          new ImmediateOffset(program.SP, new ImmediateNum(-offset), true), type.getSize()));
+          new ImmediateOffset(program.SP, new ImmediateNum(-offset), true),
+          type.getSize()));
     }
 
     // branch to the function label
@@ -118,11 +117,11 @@ public class FunctionCallAST extends NodeAST {
     int offset = program.SP.calculateOffset(originalStackPointer);
     program.SP.increment(offset);
     instructions.add(
-        new Arithmetic(ArithmeticOpcode.ADD, program.SP, program.SP, new ImmediateNum(offset),
-            false));
+        new Arithmetic(ArithmeticOpcode.ADD, program.SP, program.SP,
+            new ImmediateNum(offset), false));
 
     // store the result in the destination register
-    instructions.add(new Move(dest, new Register(0)));
+    instructions.add(new Move(dest, Register.R0));
 
     return instructions;
   }
