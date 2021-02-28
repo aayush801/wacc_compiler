@@ -26,8 +26,12 @@ public class BinOpChecks {
         // LDR r0, overflowLabel
         ret.add(new Load(new Register(0), new Address(overflowLabel.getLabelName())));
 
+        // include runtime error function in code base
+        PrimitiveLabel runtimeErrorPrimitive = RuntimeError.printRuntimeErrorCheck(program);
+        program.addPrimitive(runtimeErrorPrimitive);
+
         // BL p_throw_runtime_error
-        ret.add(new Branch("p_throw_overflow_error", true));
+        ret.add(new Branch("p_throw_runtime_error", true));
 
         return new PrimitiveLabel("throw_overflow_error", ret, program).wrap();
     }

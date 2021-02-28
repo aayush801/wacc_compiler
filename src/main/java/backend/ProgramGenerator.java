@@ -7,8 +7,6 @@ import backend.labels.code.CodeLabel;
 import backend.labels.code.PrimitiveLabel;
 import backend.labels.data.DataLabel;
 import backend.labels.text.TextLabel;
-import backend.primitive_functions.PrintFunctions;
-import backend.primitive_functions.RuntimeError;
 import backend.registers.LinkRegister;
 import backend.registers.ProgramCounter;
 import backend.registers.Register;

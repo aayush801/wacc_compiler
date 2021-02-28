@@ -10,6 +10,7 @@ public class Arithmetic extends Instruction {
   private final Register Rd, Rn;
   private final backend.operands.Operand operand;
   private final ArithmeticOpcode opcode;
+  private boolean registerSave = false;
 
   public Arithmetic(ArithmeticOpcode opcode, Register Rd, Register Rn,
       Operand operand, boolean setConditionCodes) {
@@ -20,17 +21,15 @@ public class Arithmetic extends Instruction {
     flags = setConditionCodes;
   }
 
-//  public Arithmetic(ArithmeticOpcode Opcode, Register Rd, Register Rn,
-//      Operand Operand, boolean flags) {
-//    this.Rd = Rd;
-//    this.Rn = Rn;
-//    this.Operand = Operand;
-//    this.Opcode = Opcode;
-//    setFlags(flags);
-//  }
+  public Arithmetic(ArithmeticOpcode opcode, Register Rd, Register Rn,
+                    Operand operand, boolean setConditionCodes, boolean registerSave) {
+    this(opcode, Rd, Rn, operand, setConditionCodes);
+    this.registerSave = registerSave;
+  }
 
   @Override
   public String toString() {
-    return opcode + (flags ? "S" : "") + " " + Rd + ", " + Rn + ", " + operand;
+    return opcode + (flags ? "S" : "") + " " +
+            (!registerSave ? Rd + ", " + Rn + ", " + operand :  Rd + ", " + operand + ", " + Rn);
   }
 }
