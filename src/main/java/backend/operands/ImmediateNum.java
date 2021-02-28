@@ -4,6 +4,8 @@ public class ImmediateNum extends Operand {
 
   private Integer value;
 
+  public static Integer MAX_SIZE = 1024;
+
   public static final ImmediateNum ZERO = new ImmediateNum(0);
   public static final ImmediateNum ONE = new ImmediateNum(1);
 

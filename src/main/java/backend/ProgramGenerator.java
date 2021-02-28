@@ -78,7 +78,7 @@ public class ProgramGenerator {
     }
 
     // decrement virtual stack and generate stack instruction
-    stackInstructions.add(SP.decrement(estimatedStackSize));
+    stackInstructions.addAll(SP.decrement(estimatedStackSize));
 
     return stackInstructions;
   }
@@ -93,7 +93,7 @@ public class ProgramGenerator {
     }
 
     // decrement virtual stack and generate stack instruction
-    stackInstructions.add(SP.increment(estimatedStackSize));
+    stackInstructions.addAll(SP.increment(estimatedStackSize));
 
     return stackInstructions;
   }
