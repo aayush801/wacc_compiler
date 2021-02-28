@@ -13,9 +13,12 @@ import java.util.List;
 
 public class BinOpChecks {
 
-    private static final DataLabel overflowLabel = new DataLabel("\"OverflowError: the result is too small/large to store in a 4-byte signed-integer.\\n\"");
+    private static final DataLabel overflowLabel
+        = new DataLabel("\"OverflowError: the result is too small/large to "
+        + "store in a 4-byte signed-integer.\\n\"");
 
-    private static final DataLabel divByZeroLabel = new DataLabel("\"DivideByZeroError: divide or modulo by zero\\n\\0\"");
+    private static final DataLabel divByZeroLabel
+        = new DataLabel("\"DivideByZeroError: divide or modulo by zero\\n\\0\"");
 
     public static PrimitiveLabel printOverflowCheck(ProgramGenerator program) {
         List<Instruction> ret = new ArrayList<>();
@@ -24,10 +27,12 @@ public class BinOpChecks {
         program.addData(overflowLabel);
 
         // LDR r0, overflowLabel
-        ret.add(new Load(new Register(0), new Address(overflowLabel.getLabelName())));
+        ret.add(new Load(Register.R0,
+            new Address(overflowLabel.getLabelName())));
 
         // include runtime error function in code base
-        PrimitiveLabel runtimeErrorPrimitive = RuntimeError.printRuntimeErrorCheck(program);
+        PrimitiveLabel runtimeErrorPrimitive
+            = RuntimeError.printRuntimeErrorCheck(program);
         program.addPrimitive(runtimeErrorPrimitive);
 
         // BL p_throw_runtime_error
@@ -40,20 +45,22 @@ public class BinOpChecks {
         List<Instruction> ret = new ArrayList<>();
 
         // CMP r1, #0
-        ret.add(new Compare(new Register(1), new ImmediateNum(0)));
+        ret.add(new Compare(Register.R1, ImmediateNum.ZERO));
 
         // add div by zero msg data label to program
         program.addData(divByZeroLabel);
 
         // LDREQ r0, =msg_0
-        ret.add(new Load(ConditionCode.EQ, new Register(0), new Address(divByZeroLabel.getLabelName())));
+        ret.add(new Load(ConditionCode.EQ, Register.R0,
+            new Address(divByZeroLabel.getLabelName())));
 
         // include runtime error function in code base
         PrimitiveLabel runtimeErrorPrimitive = RuntimeError.printRuntimeErrorCheck(program);
         program.addPrimitive(runtimeErrorPrimitive);
 
         // BLEQ p_throw_runtime_error
-        ret.add(new Branch(ConditionCode.EQ, runtimeErrorPrimitive.getLabelName(), true));
+        ret.add(new Branch(ConditionCode.EQ,
+            runtimeErrorPrimitive.getLabelName(), true));
 
         return new PrimitiveLabel("check_divide_by_zero", ret, program).wrap();
     }

@@ -23,7 +23,7 @@ public class RuntimeError {
     ret.add(new Branch(printLabel.getLabelName(), true));
 
     // MOV r0, #-1
-    ret.add(new Move(new Register(0), new ImmediateNum(-1)));
+    ret.add(new Move(Register.R0, new ImmediateNum(-1)));
 
     // BL exit
     ret.add(new Branch("exit", true));

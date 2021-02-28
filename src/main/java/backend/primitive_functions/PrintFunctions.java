@@ -1,5 +1,9 @@
 package backend.primitive_functions;
 
+import static backend.registers.Register.R0;
+import static backend.registers.Register.R1;
+import static backend.registers.Register.R2;
+
 import backend.ProgramGenerator;
 import backend.instructions.Branch;
 import backend.instructions.Compare;
@@ -20,9 +24,6 @@ import java.util.List;
 
 public class PrintFunctions {
 
-  private final static Register R0 = new Register(0);
-  private final static Register R1 = new Register(1);
-  private final static Register R2 = new Register(2);
 
   private static final DataLabel stringFormat = new DataLabel("\"%.*s\\0\"");
   private static final DataLabel intFormat = new DataLabel("\"%d\\0\"");
@@ -30,7 +31,6 @@ public class PrintFunctions {
   private static final DataLabel referenceFormat = new DataLabel("\"%p\\0\"");
   private static final DataLabel trueLabel = new DataLabel("\"true\\0\"");
   private static final DataLabel falseLabel = new DataLabel("\"false\\0\"");
-
 
 
   public static PrimitiveLabel printReference(ProgramGenerator program) {
@@ -164,7 +164,7 @@ public class PrintFunctions {
     instructions.add(new Branch(printf, true));
 
     //		MOV r0, #0
-    instructions.add(new Move(R0, new ImmediateNum(0)));
+    instructions.add(new Move(R0, ImmediateNum.ZERO));
 
     //		print and flush the console
     instructions.add(new Branch("fflush", true));

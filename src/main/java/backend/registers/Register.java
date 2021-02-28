@@ -9,8 +9,10 @@ enum RegType {
 
 public class Register extends Operand {
 
-  public static final Register R0 = new Register(0);
-  public static final Register R1 = new Register(1);
+  public static final Register
+      R0 = new Register(0),
+      R1 = new Register(1),
+      R2 = new Register(2);
   private final Integer number;
   private Integer value;
   private RegType type;
