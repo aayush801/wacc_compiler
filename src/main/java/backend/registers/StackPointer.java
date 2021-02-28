@@ -5,7 +5,8 @@ import backend.instructions.arithmetic.Arithmetic;
 import backend.instructions.arithmetic.ArithmeticOpcode;
 import backend.operands.ImmediateNum;
 import frontend.identifier_objects.STACK_OBJECT;
-import frontend.identifier_objects.VARIABLE;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StackPointer extends Register {
 
@@ -34,22 +35,46 @@ public class StackPointer extends Register {
     return freePtr;
   }
 
-  public Instruction decrement(int size) {
+  public List<Instruction> decrement(int size) {
     stackPtr -= size;
-    return new Arithmetic(ArithmeticOpcode.SUB, this, this,
-        new ImmediateNum(size), false);
+    List<Instruction> instructions = new ArrayList<>();
+
+    for (; size > ImmediateNum.MAX_SIZE; size -= ImmediateNum.MAX_SIZE) {
+      instructions.add(
+          new Arithmetic(ArithmeticOpcode.SUB, this, this, new ImmediateNum(ImmediateNum.MAX_SIZE),
+              false));
+    }
+
+    if (size >= 0) {
+      instructions.add(
+          new Arithmetic(ArithmeticOpcode.SUB, this, this, new ImmediateNum(size),
+              false));
+
+    }
+
+    return instructions;
   }
 
 
-  public Instruction increment(int size) {
+  public List<Instruction> increment(int size) {
     stackPtr += size;
-    return new Arithmetic(ArithmeticOpcode.ADD, this, this,
-        new ImmediateNum(size), false);
-  }
 
-  public void reset() {
-    stackPtr = 0;
-    freePtr = 0;
+    List<Instruction> instructions = new ArrayList<>();
+
+    for (; size > ImmediateNum.MAX_SIZE; size -= ImmediateNum.MAX_SIZE) {
+      instructions.add(
+          new Arithmetic(ArithmeticOpcode.ADD, this, this, new ImmediateNum(ImmediateNum.MAX_SIZE),
+              false));
+    }
+
+    if (size >= 0) {
+      instructions.add(
+          new Arithmetic(ArithmeticOpcode.ADD, this, this, new ImmediateNum(size),
+              false));
+
+    }
+
+    return instructions;
   }
 
   public int getStackPtr() {
