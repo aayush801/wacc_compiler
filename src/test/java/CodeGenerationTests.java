@@ -1,4 +1,5 @@
 import java.io.IOException;
+import middleware.NodeAST;
 import org.junit.Test;
 
 public class CodeGenerationTests {
@@ -6,7 +7,8 @@ public class CodeGenerationTests {
   private void checkSourceCode(String instruction) throws IOException {
     WaccCompiler compiler = new WaccCompiler(instruction);
 
-    String sourceCode = compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+    NodeAST tree = compiler.parseSemantics(compiler.parseSyntactics());
+    String sourceCode = compiler.translateCode(tree);
 
     System.out.println(sourceCode);
   }

@@ -93,7 +93,7 @@ public class WaccCompiler {
     }
 
     sourceCode = translateCode(IRtree);
-
+    System.out.println(sourceCode);
     if (hasErrors()) {
 
       return ErrorCode.FAIL;

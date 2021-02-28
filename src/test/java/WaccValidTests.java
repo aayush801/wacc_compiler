@@ -31,6 +31,7 @@ public class WaccValidTests {
             System.out.println(compiler.getErrors());
           }
 
+
           assertThat(errorCode, is(ErrorCode.SUCCESS));
           System.out.println("==============================================");
         }else{
