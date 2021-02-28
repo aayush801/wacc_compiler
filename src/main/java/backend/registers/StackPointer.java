@@ -27,8 +27,8 @@ public class StackPointer extends Register {
 
   public int pop(STACK_OBJECT varObj) {
     int popSize = varObj.getType().getSize();
-    if (freePtr + popSize > stackPtr && freePtr <= stackPtr) {
-      stackPtr = freePtr + popSize;
+    if (freePtr == stackPtr) {
+      stackPtr += popSize;
     }
     freePtr += popSize;
     return freePtr;

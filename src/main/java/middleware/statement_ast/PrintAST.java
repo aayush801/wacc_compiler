@@ -2,8 +2,12 @@ package middleware.statement_ast;
 
 import backend.instructions.Branch;
 import backend.instructions.Instruction;
+import backend.instructions.Load;
 import backend.instructions.Move;
+import backend.instructions.addr_modes.Address;
+import backend.instructions.addr_modes.ImmediateAddress;
 import backend.labels.code.PrimitiveLabel;
+import backend.operands.ImmediateNum;
 import backend.primitive_functions.PrintFunctions;
 import backend.registers.Register;
 import frontend.identifier_objects.TYPE;

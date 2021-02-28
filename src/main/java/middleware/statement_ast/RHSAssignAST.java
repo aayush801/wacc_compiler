@@ -2,9 +2,14 @@ package middleware.statement_ast;
 
 import backend.instructions.Instruction;
 import backend.instructions.Load;
+import backend.instructions.addr_modes.ImmediateAddress;
+import backend.instructions.addr_modes.ImmediateOffset;
 import backend.instructions.addr_modes.ZeroOffset;
+import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import frontend.identifier_objects.TYPE;
+
+import java.util.ArrayList;
 import java.util.List;
 import middleware.ExpressionAST;
 import middleware.StatementAST;
