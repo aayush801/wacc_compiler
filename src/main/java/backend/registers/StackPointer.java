@@ -19,10 +19,8 @@ public class StackPointer extends Register {
     freePtr -= varObj.getType().getSize();
     varObj.setStackAddress(freePtr);
     if (freePtr <= stackPtr) {
-      System.out.println("yee");
       stackPtr = freePtr;
     }
-    System.out.println(stackPtr);
     return freePtr;
   }
 
