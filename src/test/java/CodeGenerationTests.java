@@ -323,4 +323,14 @@ public class CodeGenerationTests {
             "end";
     checkSourceCode(instruction);
   }
+
+  @Test
+  public void testDiv() throws IOException {
+    String instruction = "begin\n" +
+            "  int x = -4 ;\n" +
+            "  int y = -2 ;\n" +
+            "  println x / y\n" +
+            "end";
+    checkSourceCode(instruction);
+  }
 }

@@ -199,13 +199,13 @@ public class BinOpExprAST extends ExpressionAST {
         break;
       case "%":
         instructions.add(new Move(new Register(0), Rn));
-        instructions.add(new Move(new Register(0), Rm));
+        instructions.add(new Move(new Register(1), Rm));
         instructions.add(new Branch("__aeabi_idivmod", true));
         instructions.add(new Move(Rn, Register.R1));
         break;
       case "/":
         instructions.add(new Move(new Register(0), Rn));
-        instructions.add(new Move(new Register(0), Rm));
+        instructions.add(new Move(new Register(1), Rm));
         instructions.add(new Branch("__aeabi_idiv", true));
         instructions.add(new Move(Rn, Register.R0));
         break;
