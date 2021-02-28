@@ -31,7 +31,7 @@ public class BinOpChecks {
         program.addPrimitive(runtimeErrorPrimitive);
 
         // BL p_throw_runtime_error
-        ret.add(new Branch("p_throw_runtime_error", true));
+        ret.add(new Branch(runtimeErrorPrimitive.getLabelName(), true));
 
         return new PrimitiveLabel("throw_overflow_error", ret, program).wrap();
     }
