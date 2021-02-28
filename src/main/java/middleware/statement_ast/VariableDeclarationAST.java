@@ -77,7 +77,7 @@ public class VariableDeclarationAST extends StatementAST {
 
     scopeST = ST;
     varObj = new VARIABLE(typeAST.getType());
-   // System.out.println(varObj);
+    // System.out.println(varObj);
     NodeAST.ST.add(varName, varObj);
   }
 
@@ -92,8 +92,9 @@ public class VariableDeclarationAST extends StatementAST {
 
     // Amount of bytes to add to the stack pointer to get address of variable
     int stackAddress = program.SP.push(varObj); //pushes varObj onto stack
-    int offset = program.SP.calculateOffset(
-        stackAddress); // gets address of var in respect to the current stack pointer
+    // Gets address of var in respect to the current stack pointer
+    int offset = program.SP.calculateOffset(stackAddress);
+
     TYPE type = typeAST.getType();
     instructions.add(new Store(ConditionCode.NONE, destination,
         new ImmediateOffset(program.SP, new ImmediateNum(offset)), type.getSize()));

@@ -93,7 +93,8 @@ public class NewPairAST extends NodeAST {
     instructions.add(new Branch("malloc", true));
 
     // Store the value of the first element at the given address
-    instructions.add(new Store(pairElem, new ZeroOffset(Register.R0), type1.getSize()));
+    instructions.add(new Store(pairElem, new ZeroOffset(Register.R0),
+        type1.getSize()));
 
     // Store the address pf the first element into the first word of the pair
     instructions.add(new Store(Register.R0, new ZeroOffset(pairAddress)));
@@ -104,11 +105,13 @@ public class NewPairAST extends NodeAST {
         new ImmediateAddress(sndExpr.getType().getSize())));
 
     instructions.add(new Branch("malloc", true));
-    instructions.add(new Store(pairElem, new ZeroOffset(Register.R0), type2.getSize()));
+    instructions.add(new Store(pairElem, new ZeroOffset(Register.R0),
+        type2.getSize()));
 
     // Storing address to value of second element in the second word of pair
     instructions.add(new Store(Register.R0,
-        new ImmediateOffset(pairAddress, new ImmediateNum(fstExpr.getType().getSize()))));
+        new ImmediateOffset(pairAddress,
+            new ImmediateNum(fstExpr.getType().getSize()))));
 
 
     return instructions;

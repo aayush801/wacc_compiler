@@ -9,8 +9,7 @@ import frontend.identifier_objects.VARIABLE;
 
 public class StackPointer extends Register {
 
-  private int freePtr = 0;
-  private int stackPtr = 0;
+  private int freePtr = 0, stackPtr = 0;
 
   public StackPointer() {
     super(13);
@@ -50,8 +49,7 @@ public class StackPointer extends Register {
   }
 
   public void reset() {
-    stackPtr = 0;
-    freePtr = 0;
+    stackPtr = freePtr = 0;
   }
 
   public int getStackPtr() {

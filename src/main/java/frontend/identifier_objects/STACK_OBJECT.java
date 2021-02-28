@@ -1,6 +1,7 @@
 package frontend.identifier_objects;
 
-public abstract class STACK_OBJECT extends IDENTIFIER{
+public abstract class STACK_OBJECT extends IDENTIFIER {
+
   TYPE type;
   private int stackAddress;
 
