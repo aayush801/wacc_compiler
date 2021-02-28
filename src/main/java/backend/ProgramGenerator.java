@@ -7,6 +7,8 @@ import backend.labels.code.CodeLabel;
 import backend.labels.code.PrimitiveLabel;
 import backend.labels.data.DataLabel;
 import backend.labels.text.TextLabel;
+import backend.primitive_functions.PrintFunctions;
+import backend.primitive_functions.RuntimeError;
 import backend.registers.LinkRegister;
 import backend.registers.ProgramCounter;
 import backend.registers.Register;
@@ -103,6 +105,9 @@ public class ProgramGenerator {
   public String toString() {
     StringBuilder builder = new StringBuilder();
 
+    // TODO: Remove the hardcoding.
+    this.addPrimitive(PrintFunctions.printString(this));
+
     // add .data section (if there is one)
     if (!dataSection.isEmpty()) {
       builder.append(".data\n\n");
@@ -124,6 +129,9 @@ public class ProgramGenerator {
     // imported functions are added after code section
     primitives.forEach(builder::append);
 
+    // TODO: Remove the hardcoding.
+    builder.append(RuntimeError.printRuntimeErrorCheck(this));
+
     return builder.toString();
   }
 
@@ -141,6 +149,4 @@ public class ProgramGenerator {
     // increments stack pointer and free pointer by 4 bytes
     SP.pop(new VARIABLE(new INT()));
   }
-
-
 }

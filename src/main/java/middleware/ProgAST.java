@@ -6,6 +6,7 @@ import backend.instructions.Instruction;
 import backend.instructions.Load;
 import backend.instructions.addr_modes.Address;
 import backend.labels.code.CodeLabel;
+import backend.primitive_functions.RuntimeError;
 import backend.registers.Register;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,4 +74,5 @@ public class ProgAST extends NodeAST {
 
     return null;
   }
+
 }

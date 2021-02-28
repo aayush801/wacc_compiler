@@ -333,4 +333,14 @@ public class CodeGenerationTests {
             "end";
     checkSourceCode(instruction);
   }
+
+  @Test
+  public void testMod() throws IOException {
+    String instruction = "begin\n" +
+            "  int x = 5 ;\n" +
+            "  int y = 3 ;\n" +
+            "  println x % y\n" +
+            "end";
+    checkSourceCode(instruction);
+  }
 }

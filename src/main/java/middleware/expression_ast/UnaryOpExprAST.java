@@ -1,5 +1,7 @@
 package middleware.expression_ast;
 
+import backend.instructions.Branch;
+import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
 import backend.instructions.Load;
 import backend.instructions.addr_modes.ImmediateOffset;
@@ -157,6 +159,7 @@ public class UnaryOpExprAST extends ExpressionAST {
         Instruction negate = new Arithmetic(ArithmeticOpcode.RSB, destination, destination,
             new ImmediateNum(0), true);
         instructions.add(negate);
+        instructions.add(new Branch(ConditionCode.VS, "p_throw_overflow_error", true));
         break;
       // LENGTH Operator
       case "len":

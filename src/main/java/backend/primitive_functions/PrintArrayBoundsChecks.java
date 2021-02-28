@@ -19,11 +19,11 @@ public class PrintArrayBoundsChecks {
 
   private static final DataLabel negLabel = new DataLabel(
       "\"ArrayIndexOutOfBoundsError: negative index\\n\\0\"");
-  ;
+
 
   private static final DataLabel largeLabel = new DataLabel(
       "\"ArrayIndexOutOfBoundsError: index too large\\n\\0\"");
-  ;
+
 
   public static PrimitiveLabel printArrayIndexCheck(ProgramGenerator program) {
     List<Instruction> instructions = new ArrayList<>();

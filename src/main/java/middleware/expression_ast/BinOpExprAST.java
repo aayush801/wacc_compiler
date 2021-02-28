@@ -8,6 +8,7 @@ import backend.instructions.Move;
 import backend.instructions.arithmetic.Arithmetic;
 import backend.instructions.arithmetic.ArithmeticOpcode;
 import backend.operands.ImmediateNum;
+import backend.primitive_functions.BinOpChecks;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.NotAFunction;
@@ -190,24 +191,34 @@ public class BinOpExprAST extends ExpressionAST {
       // ARITHMETIC Operators
       case "+":
         instructions.add(new Arithmetic(ArithmeticOpcode.ADD, Rn, Rn, Rm, true));
+        instructions.add(new Branch(ConditionCode.VS, "p_throw_overflow_error", true));
+        program.addPrimitive(BinOpChecks.printOverflowCheck(program));
         break;
       case "-":
         instructions.add(new Arithmetic(ArithmeticOpcode.SUB, Rn, Rn, Rm, true));
+        instructions.add(new Branch(ConditionCode.VS, "p_throw_overflow_error", true));
+        program.addPrimitive(BinOpChecks.printOverflowCheck(program));
         break;
       case "*":
         instructions.add(new Arithmetic(ArithmeticOpcode.MUL, Rn, Rn, Rm, true));
+        instructions.add(new Branch(ConditionCode.VS, "p_throw_overflow_error", true));
+        program.addPrimitive(BinOpChecks.printOverflowCheck(program));
         break;
       case "%":
         instructions.add(new Move(new Register(0), Rn));
         instructions.add(new Move(new Register(1), Rm));
+        instructions.add(new Branch("p_check_divide_by_zero", true));
         instructions.add(new Branch("__aeabi_idivmod", true));
         instructions.add(new Move(Rn, Register.R1));
+        program.addPrimitive(BinOpChecks.printDivZeroCheck(program));
         break;
       case "/":
         instructions.add(new Move(new Register(0), Rn));
         instructions.add(new Move(new Register(1), Rm));
+        instructions.add(new Branch("p_check_divide_by_zero", true));
         instructions.add(new Branch("__aeabi_idiv", true));
         instructions.add(new Move(Rn, Register.R0));
+        program.addPrimitive(BinOpChecks.printDivZeroCheck(program));
         break;
       // EQUATABLE Operators
       case "==":
