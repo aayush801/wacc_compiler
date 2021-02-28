@@ -47,7 +47,8 @@ public class PrintFunctions {
     instructions.add(new Load(R0, new Address(referenceFormat.getLabelName())));
 
     //		ADD r0, r0, #4
-    instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R0, R0, new ImmediateNum(4), false));
+    instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R0, R0,
+        new ImmediateNum(4), false));
 
     //		print and flush the console
     printAndFlushOutput(instructions, "printf");
