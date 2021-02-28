@@ -2,19 +2,15 @@ package backend.instructions;
 
 import backend.instructions.addr_modes.AddressingMode;
 import backend.registers.Register;
-import frontend.identifier_objects.TYPE;
-import frontend.identifier_objects.basic_types.BOOL;
-import frontend.identifier_objects.basic_types.CHAR;
-import frontend.identifier_objects.basic_types.INT;
 
 public class Store extends Instruction {
 
   private final Register Rs;
   private final AddressingMode addressingMode;
-  private TYPE type = new INT();
+  private int size = 4; // size in bytes
 
-  public Store(Register Rs, AddressingMode addressingMode, TYPE type) {
-    this(ConditionCode.NONE, Rs, addressingMode, type);
+  public Store(Register Rs, AddressingMode addressingMode, int size) {
+    this(ConditionCode.NONE, Rs, addressingMode, size);
   }
 
   public Store(Register Rs, AddressingMode addressingMode) {
@@ -23,11 +19,11 @@ public class Store extends Instruction {
 
 
   public Store(ConditionCode code, Register Rs, AddressingMode addressingMode,
-      TYPE type) {
+      int size) {
     super(code);
     this.Rs = Rs;
     this.addressingMode = addressingMode;
-    this.type = type;
+    this.size = size;
   }
 
   public Store(ConditionCode code, Register Rs, AddressingMode addressingMode) {
@@ -39,7 +35,7 @@ public class Store extends Instruction {
   @Override
   public String toString() {
     String mnemonic = "STR";
-    if (type instanceof CHAR || type instanceof BOOL) {
+    if (size == 1) {
       mnemonic += "B";
     }
     return mnemonic + " " + Rs + ", " + addressingMode;

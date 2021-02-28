@@ -110,7 +110,7 @@ public class ArrayAST extends NodeAST {
       ret.addAll(e.translate(remainingRegs));
       ret.add(new Store(ConditionCode.NONE, target,
           new ImmediateOffset(destination,
-              new ImmediateNum(4 + i * elementSize)), arrayObj.getType()));
+              new ImmediateNum(4 + i * elementSize)), arrayObj.getType().getSize()));
     }
 
     // Store size of array on the starting address of the heap entry.

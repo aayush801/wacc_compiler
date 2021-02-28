@@ -15,6 +15,6 @@ public class Compare extends Instruction {
   }
 
   public String toString() {
-    return "CMP" + getFLags() + " " + Rn + ", " + operand;
+    return "CMP" + getFlags() + " " + Rn + ", " + operand;
   }
 }

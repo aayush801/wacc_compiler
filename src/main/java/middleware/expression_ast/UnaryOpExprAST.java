@@ -189,7 +189,7 @@ public class UnaryOpExprAST extends ExpressionAST {
 
           List<Instruction> ret = new ArrayList<>();
           ret.add(
-              new Load(destination, new ImmediateOffset(program.SP, new ImmediateNum(offset)), new CHAR()));
+              new Load(destination, new ImmediateOffset(program.SP, new ImmediateNum(offset)), 1));
           return ret;
         }
         break;
