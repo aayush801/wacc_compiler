@@ -27,8 +27,35 @@ public class PrintFunctions {
   private static final DataLabel stringFormat = new DataLabel("\"%.*s\\0\"");
   private static final DataLabel intFormat = new DataLabel("\"%d\\0\"");
   private static final DataLabel newLineFormat = new DataLabel("\"\\0\"");
+  private static final DataLabel referenceFormat = new DataLabel("\"%p\\0\"");
   private static final DataLabel trueLabel = new DataLabel("\"true\\0\"");
   private static final DataLabel falseLabel = new DataLabel("\"false\\0\"");
+
+
+
+  public static PrimitiveLabel printReference(ProgramGenerator program) {
+
+    List<Instruction> instructions = new ArrayList<>();
+
+    //		MOV r1, r0
+    instructions.add(new Move(R1, R0));
+
+    // add referenceFormat label to program data section
+    program.addData(referenceFormat);
+
+    //		LDR r0, =msg_0
+    instructions.add(new Load(R0, new Address(referenceFormat.getLabelName())));
+
+    //		ADD r0, r0, #4
+    instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R0, R0, new ImmediateNum(4), false));
+
+    //		print and flush the console
+    printAndFlushOutput(instructions, "printf");
+
+    return new PrimitiveLabel("print_reference", instructions, program);
+
+  }
+
 
   public static PrimitiveLabel printString(ProgramGenerator program) {
 
@@ -41,7 +68,6 @@ public class PrintFunctions {
     instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R2, R0,
         new ImmediateNum(4), false));
 
-
     // add stringFormat data label to code
     program.addData(stringFormat);
 
@@ -52,14 +78,8 @@ public class PrintFunctions {
     instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R0, R0,
         new ImmediateNum(4), false));
 
-    //		BL printf
-    instructions.add(new Branch("printf", true));
-
-    //		MOV r0, #0
-    instructions.add(new Move(R0, new ImmediateNum(0)));
-
-    //		BL fflush
-    instructions.add(new Branch("fflush", true));
+    //		print and flush the console
+    printAndFlushOutput(instructions, "printf");
 
     return new PrimitiveLabel("print_string", instructions, program);
 
@@ -81,21 +101,15 @@ public class PrintFunctions {
 
     //		LDREQ r0, =msg_4
     instructions
-        .add(new Load(ConditionCode.NE, R0,
+        .add(new Load(ConditionCode.EQ, R0,
             new Address(falseLabel.getLabelName()), false, false));
 
     //		ADD r0, r0, #4
     instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R0, R0,
         new ImmediateNum(4), false));
 
-    //		BL printf
-    instructions.add(new Branch("printf", true));
-
-    //		MOV r0, #0
-    instructions.add(new Move(R0, new ImmediateNum(0)));
-
-    //		BL fflush
-    instructions.add(new Branch("fflush", true));
+    //		print and flush the console
+    printAndFlushOutput(instructions, "printf");
 
     return new PrimitiveLabel("print_bool", instructions, program);
   }
@@ -116,14 +130,8 @@ public class PrintFunctions {
     instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R0, R0,
         new ImmediateNum(4), false));
 
-    //	BL printf
-    instructions.add(new Branch("printf", true));
-
-    //	MOV r0, #0
-    instructions.add(new Move(R0, new ImmediateNum(0)));
-
-    //	BL fflush
-    instructions.add(new Branch("fflush", true));
+    //		print and flush the console
+    printAndFlushOutput(instructions, "printf");
 
     return new PrimitiveLabel("print_int", instructions, program);
   }
@@ -143,16 +151,23 @@ public class PrintFunctions {
     instructions.add(new Arithmetic(ArithmeticOpcode.ADD, R0, R0,
         new ImmediateNum(4), false));
 
-    //		BL puts
-    instructions.add(new Branch("puts", true));
+    //		print and flush the console
+    printAndFlushOutput(instructions, "puts");
+
+    return new PrimitiveLabel("print_ln", instructions, program);
+  }
+
+  /* ======================== HELPER METHODS ======================== */
+
+  private static void printAndFlushOutput(List<Instruction> instructions, String printf) {
+    //		BL printf
+    instructions.add(new Branch(printf, true));
 
     //		MOV r0, #0
     instructions.add(new Move(R0, new ImmediateNum(0)));
 
-    //		BL fflush
+    //		print and flush the console
     instructions.add(new Branch("fflush", true));
-
-    return new PrimitiveLabel("print_ln", instructions, program);
   }
 
 }

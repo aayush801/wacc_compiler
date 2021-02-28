@@ -1,10 +1,10 @@
 package middleware.statement_ast;
 
-import backend.primitive_functions.PrintFunctions;
 import backend.instructions.Branch;
 import backend.instructions.Instruction;
 import backend.instructions.Move;
 import backend.labels.code.PrimitiveLabel;
+import backend.primitive_functions.PrintFunctions;
 import backend.registers.Register;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.ARRAY;
@@ -60,7 +60,25 @@ public class PrintAST extends StatementAST {
 
     } else if (type instanceof ARRAY || type instanceof PAIR) {
 
-      instructions.add(new Branch("p_print_reference", true));
+      if (type instanceof ARRAY) {
+
+        TYPE arrayType = ((ARRAY) type).getType();
+
+        if (arrayType instanceof CHAR) {
+
+          // print array of chars as a string
+          primitiveLabel = PrintFunctions.printString(program);
+
+        }
+
+      }
+
+      // if NOT printing a char array, then print by reference
+      if (primitiveLabel == null) {
+
+        primitiveLabel = PrintFunctions.printReference(program);
+
+      }
 
     } else if (type instanceof STR) {
 
