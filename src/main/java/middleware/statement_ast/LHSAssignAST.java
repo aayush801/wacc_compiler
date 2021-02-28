@@ -166,22 +166,23 @@ public class LHSAssignAST extends StatementAST {
 
       TYPE type = varObj.getType();
       ret.add(new Store(ConditionCode.NONE, target,
-              new ImmediateOffset(program.SP, new ImmediateNum(offset)),
-              (type instanceof CHAR || type instanceof BOOL)));
+              new ImmediateOffset(program.SP, new ImmediateNum(offset)), type));
 
       isChar = type instanceof CHAR;
     }
 
     // case when LHS is an arrayElem.
     if (arrayElemAST != null) {
+      TYPE type = arrayElemAST.getType();
       ret.addAll(arrayElemAST.translate(remainingRegs));
-      ret.add(new Store(target, new ZeroOffset(remainingRegs.get(0))));
+      ret.add(new Store(target, new ZeroOffset(remainingRegs.get(0)), type));
     }
 
     // case when LHS is a pairElem
     if (pairElemAST != null) {
+      TYPE type = pairElemAST.getType();
       ret.addAll(pairElemAST.translate(remainingRegs));
-      ret.add(new Store(target, new ZeroOffset(remainingRegs.get(0))));
+      ret.add(new Store(target, new ZeroOffset(remainingRegs.get(0)), type));
     }
 
     return ret;

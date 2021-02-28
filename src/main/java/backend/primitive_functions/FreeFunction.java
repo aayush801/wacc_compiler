@@ -36,8 +36,7 @@ public class FreeFunction {
 
     // LDREQ r0, =msg_0
     ret.add(
-        new Load(ConditionCode.EQ, new Register(0), new Address(nullLabel.getLabelName()), false,
-            false));
+        new Load(ConditionCode.EQ, new Register(0), new Address(nullLabel.getLabelName())));
 
     // BEQ p_throw_runtime_error
     ret.add(new Branch(ConditionCode.EQ, "p_throw_runtime_error", false));

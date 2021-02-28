@@ -119,6 +119,7 @@ public class ArrayElemAST extends ExpressionAST {
     ExpressionAST i = expressionASTS.get(0);
     ret.addAll(i.translate(remainingRegs));
 
+    // TODO: MAYBE BE MISSING SB STUFF
     ret.add(new Load(target, new ZeroOffset(target)));
 
     // Array index checking

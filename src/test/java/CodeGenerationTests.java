@@ -312,4 +312,15 @@ public class CodeGenerationTests {
         "end";
     checkSourceCode(instruction);
   }
+
+  @Test
+  public void testBoolCalcEpxr() throws IOException {
+    String instruction = "begin\n" +
+            "  bool b1 = true ;\n" +
+            "  bool b2 = false ;\n" +
+            "  bool b3 = b1 && b2 ;\n" +
+            "  println b3\n" +
+            "end";
+    checkSourceCode(instruction);
+  }
 }

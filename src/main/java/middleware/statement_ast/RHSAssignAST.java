@@ -156,11 +156,12 @@ public class RHSAssignAST extends StatementAST {
   @Override
   public List<Instruction> translate(List<Register> registers) {
     if (expressionAST != null) {
+      TYPE type = expressionAST.getType();
       Register target = registers.get(0);
       List<Instruction> ret = expressionAST.translate(registers);
 
       if (expressionAST instanceof ArrayElemAST) {
-        ret.add(new Load(target, new ZeroOffset(target)));
+        ret.add(new Load(target, new ZeroOffset(target), type));
       }
 
       return ret;
@@ -182,10 +183,12 @@ public class RHSAssignAST extends StatementAST {
     if (pairElemAST != null) {
       Register target = registers.get(0);
 
+      TYPE type = pairElemAST.getType();
+
       List<Instruction> ret = pairElemAST.translate(registers);
 
       // Get actual value into target
-      ret.add(new Load(target, new ZeroOffset(target)));
+      ret.add(new Load(target, new ZeroOffset(target), type));
 
       return ret;
 

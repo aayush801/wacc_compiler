@@ -243,7 +243,8 @@ public class BinOpExprAST extends ExpressionAST {
         break;
       // BOOLEAN Operators
       case "&&":
-        instructions.add(new Arithmetic(ArithmeticOpcode.AND, Rn, Rn, Rm, true));
+        // false removes the S, add if needed.
+        instructions.add(new Arithmetic(ArithmeticOpcode.AND, Rn, Rn, Rm, false));
         break;
       case "||":
         instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, Rm, false));

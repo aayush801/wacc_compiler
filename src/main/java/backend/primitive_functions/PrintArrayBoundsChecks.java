@@ -36,8 +36,7 @@ public class PrintArrayBoundsChecks {
 
     // LDRLT r0, =msg_negIndex
     instructions.add(
-        new Load(ConditionCode.LT, new Register(0), new Address(negLabel.getLabelName()), false,
-            false));
+        new Load(ConditionCode.LT, new Register(0), new Address(negLabel.getLabelName())));
 
     // BLLT p_throw_runtime_error
     instructions.add(new Branch(ConditionCode.LT, "p_throw_runtime_error", true));
@@ -53,8 +52,7 @@ public class PrintArrayBoundsChecks {
 
     // LDRCS ro, =msg_largeIndex
     instructions.add(
-        new Load(ConditionCode.CS, new Register(0), new Address(largeLabel.getLabelName()), false,
-            false));
+        new Load(ConditionCode.CS, new Register(0), new Address(largeLabel.getLabelName())));
 
     // BLCS p_throw_runtime_error
     instructions.add(new Branch(ConditionCode.CS, "p_throw_runtime_error", true));

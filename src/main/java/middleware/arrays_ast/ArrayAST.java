@@ -103,10 +103,6 @@ public class ArrayAST extends NodeAST {
     remainingRegs.remove(0);
     Register target = remainingRegs.get(0);
 
-    boolean singleByte
-        = arrayObj.getType() instanceof CHAR
-        || arrayObj.getType() instanceof BOOL;
-
     // Store parameters on the heap
     ExpressionAST e;
     for (int i = 0; i < length; i++) {
@@ -114,11 +110,13 @@ public class ArrayAST extends NodeAST {
       ret.addAll(e.translate(remainingRegs));
       ret.add(new Store(ConditionCode.NONE, target,
           new ImmediateOffset(destination,
-              new ImmediateNum(4 + i * elementSize)), singleByte));
+              new ImmediateNum(4 + i * elementSize)), arrayObj.getType()));
     }
 
     // Store size of array on the starting address of the heap entry.
     ret.add(new Load(target, new ImmediateAddress(length)));
+
+    // storing address of the array.
     ret.add(new Store(target, new ZeroOffset(destination)));
 
     return ret;

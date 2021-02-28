@@ -2,43 +2,50 @@ package backend.instructions;
 
 import backend.instructions.addr_modes.AddressingMode;
 import backend.registers.Register;
+import frontend.identifier_objects.TYPE;
+import frontend.identifier_objects.basic_types.BOOL;
+import frontend.identifier_objects.basic_types.CHAR;
+import frontend.identifier_objects.basic_types.INT;
 
 public class Load extends Instruction {
 
   private final Register Rn;
   private final AddressingMode addressingMode;
 
-  private final boolean registerByte;
-  private final boolean signed;
+  private TYPE type = new INT();
 
-  public Load(Register Rn, AddressingMode addressingMode, boolean registerByte, boolean signed) {
-    this(ConditionCode.NONE, Rn, addressingMode, registerByte, signed);
+  public Load(Register Rn, AddressingMode addressingMode, TYPE type) {
+    this(ConditionCode.NONE, Rn, addressingMode, type);
   }
 
 
   public Load(ConditionCode conditionCode, Register Rn, AddressingMode addressingMode,
-      boolean registerByte, boolean signed) {
+      TYPE type) {
     super(conditionCode);
     this.Rn = Rn;
     this.addressingMode = addressingMode;
-    this.registerByte = registerByte;
-    this.signed = signed;
+    this.type = type;
+  }
+
+  public Load(ConditionCode conditionCode, Register Rn, AddressingMode addressingMode) {
+    super(conditionCode);
+    this.Rn = Rn;
+    this.addressingMode = addressingMode;
   }
 
   public Load(Register Rn, AddressingMode addressingMode) {
-    this(Rn, addressingMode, false, false);
+    this.Rn = Rn;
+    this.addressingMode = addressingMode;
   }
 
   @Override
   public String toString() {
 
     String mnemonic = "LDR";
-    if (signed) {
-      mnemonic += "S";
+    if (type instanceof CHAR || type instanceof BOOL) {
+      mnemonic += "SB";
     }
-    if (registerByte) {
-      mnemonic += "B";
-    }
+
     return mnemonic + code + " " + Rn + ", " + addressingMode;
 
   }

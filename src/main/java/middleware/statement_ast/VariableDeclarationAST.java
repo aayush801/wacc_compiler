@@ -93,8 +93,7 @@ public class VariableDeclarationAST extends StatementAST {
 
     TYPE type = typeAST.getType();
     instructions.add(new Store(ConditionCode.NONE, destination,
-        new ImmediateOffset(program.SP, new ImmediateNum(offset)),
-        (type instanceof CHAR || type instanceof BOOL)));
+        new ImmediateOffset(program.SP, new ImmediateNum(offset)), type));
 
     return instructions;
   }

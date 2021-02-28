@@ -14,6 +14,7 @@ import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.TYPE;
+import frontend.identifier_objects.basic_types.INT;
 import frontend.identifier_objects.basic_types.PAIR;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 public class NewPairAST extends NodeAST {
 
   private final ExpressionAST fstExpr, sndExpr;
+  private TYPE type1, type2;
   public PAIR pair;
 
   public NewPairAST(ParserRuleContext ctx, ExpressionAST fstExpr,
@@ -43,6 +45,9 @@ public class NewPairAST extends NodeAST {
     // check both expressions.
     fstExpr.check();
     sndExpr.check();
+
+    type1 = fstExpr.getType();
+    type2 = sndExpr.getType();
 
     boolean error = false;
 
@@ -72,6 +77,7 @@ public class NewPairAST extends NodeAST {
     instructions.add(new Load(Register.R0, new ImmediateAddress(8)));
     instructions.add(new Branch("malloc", true));
     Register pairAddress = registers.get(0);
+
     // Copy the address to the first element of the pair
     instructions.add(new Move(pairAddress, Register.R0));
     List<Register> remaining = new ArrayList<>(registers);
@@ -79,21 +85,27 @@ public class NewPairAST extends NodeAST {
 
     Register pairElem = remaining.get(0);
     instructions.addAll(fstExpr.translate(remaining));
+
     // Allocate memory for first element of the pair based on the size of the type
     instructions.add(new Load(Register.R0,
         new ImmediateAddress(fstExpr.getType().getSize())));
+
     instructions.add(new Branch("malloc", true));
+
     // Store the value of the first element at the given address
-    instructions.add(new Store(pairElem, new ZeroOffset(Register.R0)));
-    // Store the address to the first element into the first word of the pair
+    instructions.add(new Store(pairElem, new ZeroOffset(Register.R0), type1));
+
+    // Store the address pf the first element into the first word of the pair
     instructions.add(new Store(Register.R0, new ZeroOffset(pairAddress)));
 
     // Repeating same for second element
     instructions.addAll(sndExpr.translate(remaining));
     instructions.add(new Load(Register.R0,
         new ImmediateAddress(sndExpr.getType().getSize())));
+
     instructions.add(new Branch("malloc", true));
-    instructions.add(new Store(pairElem, new ZeroOffset(Register.R0)));
+    instructions.add(new Store(pairElem, new ZeroOffset(Register.R0), type2));
+
     // Storing address to value of second element in the second word of pair
     instructions.add(new Store(Register.R0,
         new ImmediateOffset(pairAddress, new ImmediateNum(fstExpr.getType().getSize()))));

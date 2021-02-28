@@ -104,10 +104,11 @@ public class FunctionCallAST extends NodeAST {
       instructions.addAll(exprInstructions);
 
       // push param to bottom of stack
-      int offset = expr.getType().getSize();
+      TYPE type = expr.getType();
+      int offset = type.getSize();
       program.SP.decrement(offset);
       instructions.add(new Store(exprResult,
-          new ImmediateOffset(program.SP, new ImmediateNum(-offset), true)));
+          new ImmediateOffset(program.SP, new ImmediateNum(-offset), true), type));
     }
 
     // branch to the function label

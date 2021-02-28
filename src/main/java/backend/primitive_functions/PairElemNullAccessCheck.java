@@ -26,7 +26,7 @@ public class PairElemNullAccessCheck {
         program.addData(nullLabel);
 
         // LDREQ r0, =msg_0
-        instructions.add(new Load(ConditionCode.EQ, new Register(0), new Address(nullLabel.getLabelName()), false, false));
+        instructions.add(new Load(ConditionCode.EQ, new Register(0), new Address(nullLabel.getLabelName())));
 
         // BLEQ p_throw_runtime_error
         instructions.add(new Branch(ConditionCode.EQ, "p_throw_runtime_error", true));
