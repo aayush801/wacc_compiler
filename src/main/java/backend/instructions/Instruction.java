@@ -17,7 +17,9 @@ public abstract class Instruction {
     flags = value;
   }
 
-  public String getFLags() {
+  public String getFlags() {
+
     return (flags ? "S" : "") + code;
+
   }
 }

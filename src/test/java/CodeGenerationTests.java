@@ -349,11 +349,54 @@ public class CodeGenerationTests {
   @Test
   public void testRuntimeError() throws IOException {
     String instruction =
+            "begin\n"
+                    + "\tint x = 10 ;\n"
+                    + "\tint y = 0 ;\n"
+                    + "\tprint x / y\n"
+                    + "end";
+    checkSourceCode(instruction);
+  }
+
+  @Test
+  public void testLongExpr() throws IOException {
+    String instruction = "begin\n" +
+            "\n" +
+            "  int x = 1 + (2 + (3 + (4 + (5 + (6 + (7 + (8 + (9 + (10 + (11 + (12 + (13 + (14 - (15 - (16 - 17)))))))))))))));\n" +
+            "  exit x\n" +
+            "\n" +
+            "  end";
+    checkSourceCode(instruction);
+  }
+
+  @Test
+  public void testLongExpr1() throws IOException {
+    String instruction = "begin\n" +
+            "\n" +
+            "  int a = 1 + 2 ;\n" +
+            "  int b = 3 + 4 ; \n" +
+            "  int c = 5 + 6 ;\n" +
+            "  int d = 7 + 8 ;\n" +
+            "  int e = 9 + 10 ;\n" +
+            "  int f = 11 + 12 ;\n" +
+            "  int g = 13 + 14 ;\n" +
+            "  int h = 15 + 16 ;\n" +
+            "  int i = 17 ;\n" +
+            "  exit a + b + c + d + e + f + g + h + i\n" +
+            "\n" +
+            "end";
+    checkSourceCode(instruction);
+  }
+
+  @Test
+  public void testOrExpr() throws IOException {
+    String instruction =
         "begin\n"
-        + "\tint x = 10 ;\n"
-        + "\tint y = 0 ;\n"
-        + "\tprint x / y\n"
-        + "end";
+            + "  bool a = true ;\n"
+            + "  bool b = false ;\n"
+            + "  println a || b ;\n"
+            + "  println a || true ;\n"
+            + "  println b || false\n"
+            + "end";
     checkSourceCode(instruction);
   }
 }

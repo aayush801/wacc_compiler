@@ -24,6 +24,6 @@ public class Move extends Instruction {
 
   @Override
   public String toString() {
-    return "MOV" + getFLags() + " " + Rd + ", " + Operand;
+    return "MOV" + getFlags() + " " + Rd + ", " + Operand;
   }
 }

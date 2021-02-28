@@ -8,6 +8,8 @@ import backend.instructions.Move;
 import backend.instructions.arithmetic.Arithmetic;
 import backend.instructions.arithmetic.ArithmeticOpcode;
 import backend.labels.code.PrimitiveLabel;
+import backend.instructions.stack_instructions.Pop;
+import backend.instructions.stack_instructions.Push;
 import backend.operands.ImmediateNum;
 import backend.primitive_functions.BinOpChecks;
 import backend.registers.Register;
@@ -176,14 +178,36 @@ public class BinOpExprAST extends ExpressionAST {
   }
 
   public List<Instruction> translate(List<Register> registers) {
+
+    boolean accumulator = registers.size() <= 3;
+
+
     Register Rn = registers.get(0);
+    Register Rm = registers.get(1);
+
+    // we go until r12 in our case, they do pushing when they get to r10 for some reason.
     List<Instruction> instructions = leftExprAST.translate(registers);
 
-    List<Register> remaining = new ArrayList<>(registers);
-    remaining.remove(0);
+    if (accumulator) {
+      // go into register saving mode.
 
-    Register Rm = remaining.get(0);
-    instructions.addAll(rightExprAST.translate(remaining));
+      // push LHS value onto stack.
+      instructions.add(new Push(Rn));
+
+      // Proceed to translate RHS with the same registers.
+      instructions.addAll(rightExprAST.translate(registers));
+
+      // Retreive LHS from the stack.
+      instructions.add(new Pop(Rm));
+
+    } else {
+      // Translate RHS like normal.
+
+      List<Register> remaining = new ArrayList<>(registers);
+      remaining.remove(0);
+
+      instructions.addAll(rightExprAST.translate(remaining));
+    }
 
     ImmediateNum TRUE = new ImmediateNum(1);
     ImmediateNum FALSE = new ImmediateNum(0);
@@ -192,7 +216,7 @@ public class BinOpExprAST extends ExpressionAST {
     switch (operator) {
       // ARITHMETIC Operators
       case "+":
-        instructions.add(new Arithmetic(ArithmeticOpcode.ADD, Rn, Rn, Rm, true));
+        instructions.add(new Arithmetic(ArithmeticOpcode.ADD, Rn, Rn, Rm, true, accumulator));
 
         // check for overflow error
         primitiveLabel = BinOpChecks.printOverflowCheck(program);
@@ -200,7 +224,7 @@ public class BinOpExprAST extends ExpressionAST {
 
         break;
       case "-":
-        instructions.add(new Arithmetic(ArithmeticOpcode.SUB, Rn, Rn, Rm, true));
+        instructions.add(new Arithmetic(ArithmeticOpcode.SUB, Rn, Rn, Rm, true, accumulator));
 
         // check for overflow error
         primitiveLabel = BinOpChecks.printOverflowCheck(program);
@@ -208,12 +232,11 @@ public class BinOpExprAST extends ExpressionAST {
 
         break;
       case "*":
-        instructions.add(new Arithmetic(ArithmeticOpcode.MUL, Rn, Rn, Rm, true));
+        instructions.add(new Arithmetic(ArithmeticOpcode.MUL, Rn, Rn, Rm, true, accumulator));
 
         // check for overflow error
         primitiveLabel = BinOpChecks.printOverflowCheck(program);
         instructions.add(new Branch(ConditionCode.VS, primitiveLabel.getLabelName(), true));
-
         break;
       case "%":
         instructions.add(new Move(new Register(0), Rn));
@@ -272,10 +295,10 @@ public class BinOpExprAST extends ExpressionAST {
       // BOOLEAN Operators
       case "&&":
         // false removes the S, add if needed.
-        instructions.add(new Arithmetic(ArithmeticOpcode.AND, Rn, Rn, Rm, false));
+        instructions.add(new Arithmetic(ArithmeticOpcode.AND, Rn, Rn, Rm, false, accumulator));
         break;
       case "||":
-        instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, Rm, false));
+        instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, Rm, false, accumulator));
         break;
       // Unrecognized Operator
       default:

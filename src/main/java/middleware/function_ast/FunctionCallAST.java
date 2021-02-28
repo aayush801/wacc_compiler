@@ -108,7 +108,7 @@ public class FunctionCallAST extends NodeAST {
       int offset = type.getSize();
       program.SP.decrement(offset);
       instructions.add(new Store(exprResult,
-          new ImmediateOffset(program.SP, new ImmediateNum(-offset), true), type));
+          new ImmediateOffset(program.SP, new ImmediateNum(-offset), true), type.getSize()));
     }
 
     // branch to the function label
