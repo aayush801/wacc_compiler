@@ -33,7 +33,7 @@ public class BinOpChecks {
         // BL p_throw_runtime_error
         ret.add(new Branch(runtimeErrorPrimitive.getLabelName(), true));
 
-        return new PrimitiveLabel("throw_overflow_error", ret, program).wrap();
+        return new PrimitiveLabel("throw_overflow_error", ret, program);
     }
 
     public static PrimitiveLabel printDivZeroCheck(ProgramGenerator program) {
