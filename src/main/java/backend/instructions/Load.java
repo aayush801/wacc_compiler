@@ -2,29 +2,24 @@ package backend.instructions;
 
 import backend.instructions.addr_modes.AddressingMode;
 import backend.registers.Register;
-import frontend.identifier_objects.TYPE;
-import frontend.identifier_objects.basic_types.BOOL;
-import frontend.identifier_objects.basic_types.CHAR;
-import frontend.identifier_objects.basic_types.INT;
 
 public class Load extends Instruction {
 
   private final Register Rn;
   private final AddressingMode addressingMode;
 
-  private TYPE type = new INT();
+  private int size = 4;
 
-  public Load(Register Rn, AddressingMode addressingMode, TYPE type) {
-    this(ConditionCode.NONE, Rn, addressingMode, type);
+  public Load(Register Rn, AddressingMode addressingMode, int size) {
+    this(ConditionCode.NONE, Rn, addressingMode, size);
   }
 
-
   public Load(ConditionCode conditionCode, Register Rn, AddressingMode addressingMode,
-      TYPE type) {
+      int size) {
     super(conditionCode);
     this.Rn = Rn;
     this.addressingMode = addressingMode;
-    this.type = type;
+    this.size = size;
   }
 
   public Load(ConditionCode conditionCode, Register Rn, AddressingMode addressingMode) {
@@ -41,12 +36,13 @@ public class Load extends Instruction {
   @Override
   public String toString() {
 
-    String mnemonic = "LDR";
-    if (type instanceof CHAR || type instanceof BOOL) {
-      mnemonic += "SB";
-    }
-
-    return mnemonic + code + " " + Rn + ", " + addressingMode;
+    return "LDR"
+        + (size == 1 ? "SB" : "")
+        + code
+        + " "
+        + Rn
+        + ", "
+        + addressingMode;
 
   }
 }

@@ -83,7 +83,7 @@ public class IdentifierAST extends ExpressionAST {
 
       // Simply load the identifier into the first register in the list.
       List<Instruction> ret = new ArrayList<>();
-      ret.add(new Load(target, new ImmediateOffset(new StackPointer(), new ImmediateNum(offset)), varStackObj.getType()));
+      ret.add(new Load(target, new ImmediateOffset(new StackPointer(), new ImmediateNum(offset)), varStackObj.getType().getSize()));
       return ret;
     }
 

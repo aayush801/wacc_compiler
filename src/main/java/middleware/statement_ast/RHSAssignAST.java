@@ -161,7 +161,7 @@ public class RHSAssignAST extends StatementAST {
       List<Instruction> ret = expressionAST.translate(registers);
 
       if (expressionAST instanceof ArrayElemAST) {
-        ret.add(new Load(target, new ZeroOffset(target), type));
+        ret.add(new Load(target, new ZeroOffset(target), type.getSize()));
       }
 
       return ret;
@@ -188,7 +188,7 @@ public class RHSAssignAST extends StatementAST {
       List<Instruction> ret = pairElemAST.translate(registers);
 
       // Get actual value into target
-      ret.add(new Load(target, new ZeroOffset(target), type));
+      ret.add(new Load(target, new ZeroOffset(target), type.getSize()));
 
       return ret;
 

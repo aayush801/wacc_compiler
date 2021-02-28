@@ -354,4 +354,17 @@ public class CodeGenerationTests {
         + "end";
     checkSourceCode(instruction);
   }
+
+  @Test
+  public void testOrExpr() throws IOException {
+    String instruction =
+        "begin\n"
+            + "  bool a = true ;\n"
+            + "  bool b = false ;\n"
+            + "  println a || b ;\n"
+            + "  println a || true ;\n"
+            + "  println b || false\n"
+            + "end";
+    checkSourceCode(instruction);
+  }
 }
