@@ -20,13 +20,16 @@ public class BinOpChecks {
     public static PrimitiveLabel printOverflowCheck(ProgramGenerator program) {
         List<Instruction> ret = new ArrayList<>();
 
+        // add overflow data label to program
+        program.addData(overflowLabel);
+
         // LDR r0, overflowLabel
         ret.add(new Load(new Register(0), new Address(overflowLabel.getLabelName())));
 
         // BL p_throw_runtime_error
         ret.add(new Branch("p_throw_overflow_error", true));
 
-        return new PrimitiveLabel("throw_overflow_error", ret, program);
+        return new PrimitiveLabel("throw_overflow_error", ret, program).wrap();
     }
 
     public static PrimitiveLabel printDivZeroCheck(ProgramGenerator program) {
@@ -35,13 +38,20 @@ public class BinOpChecks {
         // CMP r1, #0
         ret.add(new Compare(new Register(1), new ImmediateNum(0)));
 
+        // add div by zero msg data label to program
+        program.addData(divByZeroLabel);
+
         // LDREQ r0, =msg_0
         ret.add(new Load(ConditionCode.EQ, new Register(0), new Address(divByZeroLabel.getLabelName())));
 
-        // BLEQ p_throw_runtime_error
-        ret.add(new Branch(ConditionCode.EQ, "p_throw_runtime_error", true));
+        // include runtime error function in code base
+        PrimitiveLabel runtimeErrorPrimitive = RuntimeError.printRuntimeErrorCheck(program);
+        program.addPrimitive(runtimeErrorPrimitive);
 
-        return new PrimitiveLabel("check_divide_by_zero", ret, program);
+        // BLEQ p_throw_runtime_error
+        ret.add(new Branch(ConditionCode.EQ, runtimeErrorPrimitive.getLabelName(), true));
+
+        return new PrimitiveLabel("check_divide_by_zero", ret, program).wrap();
     }
 
 }

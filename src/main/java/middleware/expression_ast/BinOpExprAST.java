@@ -7,6 +7,7 @@ import backend.instructions.Instruction;
 import backend.instructions.Move;
 import backend.instructions.arithmetic.Arithmetic;
 import backend.instructions.arithmetic.ArithmeticOpcode;
+import backend.labels.code.PrimitiveLabel;
 import backend.operands.ImmediateNum;
 import backend.primitive_functions.BinOpChecks;
 import backend.registers.Register;
@@ -187,38 +188,54 @@ public class BinOpExprAST extends ExpressionAST {
     ImmediateNum TRUE = new ImmediateNum(1);
     ImmediateNum FALSE = new ImmediateNum(0);
 
+    PrimitiveLabel primitiveLabel = null;
     switch (operator) {
       // ARITHMETIC Operators
       case "+":
         instructions.add(new Arithmetic(ArithmeticOpcode.ADD, Rn, Rn, Rm, true));
-//        instructions.add(new Branch(ConditionCode.VS, "p_throw_overflow_error", true));
-//        program.addPrimitive(BinOpChecks.printOverflowCheck(program));
+
+        // check for overflow error
+        primitiveLabel = BinOpChecks.printOverflowCheck(program);
+        instructions.add(new Branch(ConditionCode.VS, primitiveLabel.getLabelName(), true));
+
         break;
       case "-":
         instructions.add(new Arithmetic(ArithmeticOpcode.SUB, Rn, Rn, Rm, true));
-//        instructions.add(new Branch(ConditionCode.VS, "p_throw_overflow_error", true));
-//        program.addPrimitive(BinOpChecks.printOverflowCheck(program));
+
+        // check for overflow error
+        primitiveLabel = BinOpChecks.printOverflowCheck(program);
+        instructions.add(new Branch(ConditionCode.VS, primitiveLabel.getLabelName(), true));
+
         break;
       case "*":
         instructions.add(new Arithmetic(ArithmeticOpcode.MUL, Rn, Rn, Rm, true));
-//        instructions.add(new Branch(ConditionCode.VS, "p_throw_overflow_error", true));
-//        program.addPrimitive(BinOpChecks.printOverflowCheck(program));
+
+        // check for overflow error
+        primitiveLabel = BinOpChecks.printOverflowCheck(program);
+        instructions.add(new Branch(ConditionCode.VS, primitiveLabel.getLabelName(), true));
+
         break;
       case "%":
         instructions.add(new Move(new Register(0), Rn));
         instructions.add(new Move(new Register(1), Rm));
-//        instructions.add(new Branch("p_check_divide_by_zero", true));
+
+        // check for mod by zero error
+        primitiveLabel = BinOpChecks.printDivZeroCheck(program);
+        instructions.add(new Branch(primitiveLabel.getLabelName(), true));
+
         instructions.add(new Branch("__aeabi_idivmod", true));
         instructions.add(new Move(Rn, Register.R1));
-//        program.addPrimitive(BinOpChecks.printDivZeroCheck(program));
         break;
       case "/":
         instructions.add(new Move(new Register(0), Rn));
         instructions.add(new Move(new Register(1), Rm));
-//        instructions.add(new Branch("p_check_divide_by_zero", true));
+
+        // check for dividing by zero error
+        primitiveLabel = BinOpChecks.printDivZeroCheck(program);
+        instructions.add(new Branch(primitiveLabel.getLabelName(), true));
+
         instructions.add(new Branch("__aeabi_idiv", true));
         instructions.add(new Move(Rn, Register.R0));
-        program.addPrimitive(BinOpChecks.printDivZeroCheck(program));
         break;
       // EQUATABLE Operators
       case "==":
@@ -264,6 +281,12 @@ public class BinOpExprAST extends ExpressionAST {
       default:
         break;
     }
+
+    // include the primitive function dependency into the code base
+    if (primitiveLabel != null) {
+      program.addPrimitive(primitiveLabel);
+    }
+
     return instructions;
   }
 }

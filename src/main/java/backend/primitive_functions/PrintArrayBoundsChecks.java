@@ -38,8 +38,12 @@ public class PrintArrayBoundsChecks {
     instructions.add(
         new Load(ConditionCode.LT, new Register(0), new Address(negLabel.getLabelName())));
 
+    // include runtime error primitive function in code base
+    PrimitiveLabel runtimeErrorPrimitive = RuntimeError.printRuntimeErrorCheck(program);
+    program.addPrimitive(RuntimeError.printRuntimeErrorCheck(program));
+
     // BLLT p_throw_runtime_error
-    instructions.add(new Branch(ConditionCode.LT, "p_throw_runtime_error", true));
+    instructions.add(new Branch(ConditionCode.LT, runtimeErrorPrimitive.getLabelName(), true));
 
     // LDR r1, [r1]
     instructions.add(new Load(new Register(1), new ZeroOffset(new Register(1))));

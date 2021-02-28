@@ -7,7 +7,7 @@ import java.util.List;
 
 public class CodeLabel extends Label {
 
-  private final List<Instruction> instructions;
+  protected final List<Instruction> instructions;
 
   public CodeLabel(String name, List<Instruction> instructions) {
     super(name);

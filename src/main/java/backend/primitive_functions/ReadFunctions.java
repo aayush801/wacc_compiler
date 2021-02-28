@@ -39,7 +39,7 @@ public class ReadFunctions {
         // BL scanf
         ret.add(new Branch("scanf", true));
 
-        return new PrimitiveLabel("read_int", ret, program);
+        return new PrimitiveLabel("read_int", ret, program).wrap();
     }
 
     public static PrimitiveLabel readCharFunction(ProgramGenerator program) {
@@ -60,6 +60,6 @@ public class ReadFunctions {
         // BL scanf
         ret.add(new Branch("scanf", true));
 
-        return new PrimitiveLabel("read_char", ret, program);
+        return new PrimitiveLabel("read_char", ret, program).wrap();
     }
 }

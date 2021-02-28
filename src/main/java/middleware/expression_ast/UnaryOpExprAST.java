@@ -7,7 +7,10 @@ import backend.instructions.Load;
 import backend.instructions.addr_modes.ImmediateOffset;
 import backend.instructions.arithmetic.Arithmetic;
 import backend.instructions.arithmetic.ArithmeticOpcode;
+import backend.labels.code.PrimitiveLabel;
 import backend.operands.ImmediateNum;
+import backend.primitive_functions.BinOpChecks;
+import backend.primitive_functions.RuntimeError;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.NotAFunction;
@@ -159,7 +162,12 @@ public class UnaryOpExprAST extends ExpressionAST {
         Instruction negate = new Arithmetic(ArithmeticOpcode.RSB, destination, destination,
             new ImmediateNum(0), true);
         instructions.add(negate);
-//        instructions.add(new Branch(ConditionCode.VS, "p_throw_overflow_error", true));
+
+        // check for overflow error
+        PrimitiveLabel overflowError = BinOpChecks.printOverflowCheck(program);
+        instructions.add(new Branch(ConditionCode.VS, overflowError.getLabelName(), true));
+        program.addPrimitive(overflowError);
+
         break;
       // LENGTH Operator
       case "len":

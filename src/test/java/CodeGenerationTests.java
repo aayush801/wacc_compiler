@@ -343,4 +343,15 @@ public class CodeGenerationTests {
             "end";
     checkSourceCode(instruction);
   }
+
+  @Test
+  public void testRuntimeError() throws IOException {
+    String instruction =
+        "begin\n"
+        + "\tint x = 10 ;\n"
+        + "\tint y = 0 ;\n"
+        + "\tprint x / y\n"
+        + "end";
+    checkSourceCode(instruction);
+  }
 }

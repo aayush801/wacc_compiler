@@ -52,7 +52,7 @@ public class PrintFunctions {
     //		print and flush the console
     printAndFlushOutput(instructions, "printf");
 
-    return new PrimitiveLabel("print_reference", instructions, program);
+    return new PrimitiveLabel("print_reference", instructions, program).wrap();
 
   }
 
@@ -81,7 +81,7 @@ public class PrintFunctions {
     //		print and flush the console
     printAndFlushOutput(instructions, "printf");
 
-    return new PrimitiveLabel("print_string", instructions, program);
+    return new PrimitiveLabel("print_string", instructions, program).wrap();
 
   }
 
@@ -110,7 +110,7 @@ public class PrintFunctions {
     //		print and flush the console
     printAndFlushOutput(instructions, "printf");
 
-    return new PrimitiveLabel("print_bool", instructions, program);
+    return new PrimitiveLabel("print_bool", instructions, program).wrap();
   }
 
   public static PrimitiveLabel printInt(ProgramGenerator program) {
@@ -132,7 +132,7 @@ public class PrintFunctions {
     //		print and flush the console
     printAndFlushOutput(instructions, "printf");
 
-    return new PrimitiveLabel("print_int", instructions, program);
+    return new PrimitiveLabel("print_int", instructions, program).wrap();
   }
 
   public static PrimitiveLabel printLine(ProgramGenerator program) {
@@ -153,7 +153,7 @@ public class PrintFunctions {
     //		print and flush the console
     printAndFlushOutput(instructions, "puts");
 
-    return new PrimitiveLabel("print_ln", instructions, program);
+    return new PrimitiveLabel("print_ln", instructions, program).wrap();
   }
 
   /* ======================== HELPER METHODS ======================== */

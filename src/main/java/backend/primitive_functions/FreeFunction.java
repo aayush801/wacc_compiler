@@ -38,8 +38,12 @@ public class FreeFunction {
     ret.add(
         new Load(ConditionCode.EQ, new Register(0), new Address(nullLabel.getLabelName())));
 
+    // include runtime error primitive function in code base
+    PrimitiveLabel runtimeErrorPrimitive = RuntimeError.printRuntimeErrorCheck(program);
+    program.addPrimitive(RuntimeError.printRuntimeErrorCheck(program));
+
     // BEQ p_throw_runtime_error
-    ret.add(new Branch(ConditionCode.EQ, "p_throw_runtime_error", false));
+    ret.add(new Branch(ConditionCode.EQ, runtimeErrorPrimitive.getLabelName(), false));
 
     // PUSH {r0}
     ret.add(new Push(new Register(0)));
@@ -65,6 +69,6 @@ public class FreeFunction {
     // BL free
     ret.add(new Branch("free", true));
 
-    return new PrimitiveLabel("free_pair", ret, program);
+    return new PrimitiveLabel("free_pair", ret, program).wrap();
   }
 }
