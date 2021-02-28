@@ -20,16 +20,19 @@ public class StackPointer extends Register {
     freePtr -= varObj.getType().getSize();
     varObj.setStackAddress(freePtr);
     if (freePtr <= stackPtr) {
+      System.out.println("yee");
       stackPtr = freePtr;
     }
+    System.out.println(stackPtr);
     return freePtr;
   }
 
   public int pop(STACK_OBJECT varObj) {
-    freePtr += varObj.getType().getSize();
-    if (freePtr > stackPtr) {
-      stackPtr = freePtr;
+    int popSize = varObj.getType().getSize();
+    if (freePtr + popSize > stackPtr && freePtr <= stackPtr) {
+      stackPtr = freePtr + popSize;
     }
+    freePtr += popSize;
     return freePtr;
   }
 

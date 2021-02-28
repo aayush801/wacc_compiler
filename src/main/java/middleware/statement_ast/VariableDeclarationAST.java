@@ -84,13 +84,16 @@ public class VariableDeclarationAST extends StatementAST {
   @Override
   public List<Instruction> translate(List<Register> registers) {
     Register destination = registers.get(0);
+   // System.out.println(program.SP.getStackPtr());
+
     List<Instruction> instructions = rhsAssignAST.translate(registers);
+
+   // System.out.println(program.SP.getStackPtr());
 
     // Amount of bytes to add to the stack pointer to get address of variable
     int stackAddress = program.SP.push(varObj); //pushes varObj onto stack
     int offset = program.SP.calculateOffset(
         stackAddress); // gets address of var in respect to the current stack pointer
-
     TYPE type = typeAST.getType();
     instructions.add(new Store(ConditionCode.NONE, destination,
         new ImmediateOffset(program.SP, new ImmediateNum(offset)), type.getSize()));

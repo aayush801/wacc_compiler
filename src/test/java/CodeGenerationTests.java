@@ -399,4 +399,20 @@ public class CodeGenerationTests {
             + "end";
     checkSourceCode(instruction);
   }
+
+  @Test
+  public void testLongSplitExpr2() throws IOException {
+    String instruction = " begin\n" +
+            "\n" +
+            "  int x = 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 + 14 + 15 + 16 + 17 ;\n" +
+            "  int y = -1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - 10 - 11 - 12 - 13 - 14 - 15 - 16 - 17 ;\n" +
+            "  int z = 1 * 2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10 ;\n" +
+            "  int div = 10 ;\n" +
+            "  println x + y + ( z / div ) ;\n" +
+            "  println (x + y + ( z / div )) % 256 ;\n" +
+            "  exit x + y + ( z / div )\n" +
+            "\n" +
+            "  end";
+    checkSourceCode(instruction);
+  }
 }

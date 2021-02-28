@@ -193,12 +193,14 @@ public class BinOpExprAST extends ExpressionAST {
 
       // push LHS value onto stack.
       instructions.add(new Push(Rn));
+     // program.SP.decrement(4);
 
       // Proceed to translate RHS with the same registers.
       instructions.addAll(rightExprAST.translate(registers));
 
       // Retreive LHS from the stack.
       instructions.add(new Pop(Rm));
+     // program.SP.increment(4);
 
     } else {
       // Translate RHS like normal.
