@@ -401,18 +401,21 @@ public class CodeGenerationTests {
   }
 
   @Test
-  public void testLongSplitExpr2() throws IOException {
-    String instruction = " begin\n" +
+  public void testLongSplitExpr() throws IOException {
+    String instruction = "begin\n" +
             "\n" +
-            "  int x = 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 + 14 + 15 + 16 + 17 ;\n" +
-            "  int y = -1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - 10 - 11 - 12 - 13 - 14 - 15 - 16 - 17 ;\n" +
-            "  int z = 1 * 2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10 ;\n" +
-            "  int div = 10 ;\n" +
-            "  println x + y + ( z / div ) ;\n" +
-            "  println (x + y + ( z / div )) % 256 ;\n" +
-            "  exit x + y + ( z / div )\n" +
+            "  int a = 1 + 2 ;\n" +
+            "  int b = 3 + 4 ; \n" +
+            "  int c = 5 + 6 ;\n" +
+            "  int d = 7 + 8 ;\n" +
+            "  int e = 9 + 10 ;\n" +
+            "  int f = 11 + 12 ;\n" +
+            "  int g = 13 + 14 ;\n" +
+            "  int h = 15 + 16 ;\n" +
+            "  int i = 17 ;\n" +
+            "  exit a + b + c + d + e + f + g + h + i\n" +
             "\n" +
-            "  end";
+            "end";
     checkSourceCode(instruction);
   }
 
@@ -439,4 +442,65 @@ public class CodeGenerationTests {
             "end";
     checkSourceCode(instruction);
   }
+
+  @Test
+  public void testNull() throws IOException {
+    String instruction = "begin\n" +
+            "  pair(pair, pair) p = null ;\n" +
+            "  println p ;\n" +
+            "  p = null ;\n" +
+            "  println p\n" +
+            "end";
+    checkSourceCode(instruction);
+  }
+
+  @Test
+  public void testReadPair() throws IOException {
+    String instruction = "begin\n" +
+            "\tpair(char, int) p = newpair('\\0', 0) ;\n" +
+            "\tprint \"Please enter the first element (char): \" ;\n" +
+            "  \tchar c = '0';\n" +
+            "\tread c ;\n" +
+            "  \tfst p = c ;\n" +
+            "\tprint \"Please enter the second element (int): \" ;\n" +
+            "\tint i = 0 ;\n" +
+            "\tread i ;\n" +
+            "\tsnd p = i ;\n" +
+            "\t# Clear the value for c and i\n" +
+            "\tc = '\\0' ;\n" +
+            "\ti = -1 ;\n" +
+            "\tprint \"The first element was \" ;\n" +
+            "\tc = fst p ;\n" +
+            "\tprintln c ;\n" +
+            "\tprint \"The second element was \" ;\n" +
+            "\ti = snd p ;\n" +
+            "\tprintln i \n" +
+            "end";
+    checkSourceCode(instruction);
+  }
+
+  @Test
+  public void testPrintNull() throws IOException {
+    String instruction = "begin\n" +
+            "  println null\n" +
+            "end";
+    checkSourceCode(instruction);
+  }
+
+  @Test
+  public void testPrintPairOfNulls() throws IOException {
+    String instruction = "begin\n" +
+            "  pair(pair, pair) p = newpair(null, null) ;\n" +
+            "  print p ;\n" +
+            "  print \" = (\" ;\n" +
+            "  pair(pair, pair) q = fst p ;\n" +
+            "  print q ;\n" +
+            "  print \",\" ;\n" +
+            "  pair(int, bool) r = snd p ;\n" +
+            "  print r ;\n" +
+            "  println \")\"\n" +
+            "  end";
+    checkSourceCode(instruction);
+  }
+
 }

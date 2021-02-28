@@ -108,7 +108,7 @@ public class NewPairAST extends NodeAST {
 
     // Storing address to value of second element in the second word of pair
     instructions.add(new Store(Register.R0,
-        new ImmediateOffset(pairAddress, new ImmediateNum(fstExpr.getType().getSize()))));
+        new ImmediateOffset(pairAddress, new ImmediateNum(4))));
 
 
     return instructions;

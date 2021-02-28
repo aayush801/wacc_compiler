@@ -2,6 +2,9 @@ package backend.labels.code;
 
 import backend.ProgramGenerator;
 import backend.instructions.Instruction;
+import backend.instructions.stack_instructions.Pop;
+import backend.instructions.stack_instructions.Push;
+
 import java.util.List;
 
 public class PrimitiveLabel extends CodeLabel {
@@ -14,8 +17,11 @@ public class PrimitiveLabel extends CodeLabel {
   }
 
   public PrimitiveLabel wrap() {
-    program.pushLR(instructions);
-    program.popPC(instructions);
+
+    instructions.add(0, new Push(program.LR));
+
+    instructions.add(new Pop(program.PC));
+
     return this;
   }
 }

@@ -67,7 +67,6 @@ public class ReadAST extends StatementAST {
 
     ret.add(new Move(new Register(0), target));
 
-    // TODO: Differentiate for chars and ints.
     if (LHS.getIsChar()) {
       ret.add(new Branch("p_read_char", true));
       program.addPrimitive(ReadFunctions.readCharFunction(program));
