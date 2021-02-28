@@ -138,6 +138,8 @@ public class ArrayElemAST extends ExpressionAST {
           new ImmediateNumLSL(index, 2), false));
     }
 
+    ret.add(new Load(target, new ZeroOffset(target)));
+
     program.addPrimitive(PrintArrayBoundsChecks.printArrayIndexCheck(program));
 
     return ret;
