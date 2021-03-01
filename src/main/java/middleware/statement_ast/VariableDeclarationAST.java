@@ -73,10 +73,7 @@ public class VariableDeclarationAST extends StatementAST {
     // If all checks pass, create new VARIABLE object with the type of the
     // typeAST node, and add this to the current symbol table.
     varObj = new VARIABLE(typeAST.getType());
-<<<<<<< HEAD
-    // System.out.println(varObj);
-=======
->>>>>>> eeeacc9ff61e2fb4ca8a4dc8546ea77004daa761
+
     NodeAST.ST.add(varName, varObj);
   }
 
