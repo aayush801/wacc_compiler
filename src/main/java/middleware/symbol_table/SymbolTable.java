@@ -8,10 +8,8 @@ import frontend.identifier_objects.basic_types.CHAR;
 import frontend.identifier_objects.basic_types.INT;
 import frontend.identifier_objects.basic_types.PAIR;
 import frontend.identifier_objects.basic_types.STR;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SymbolTable {
@@ -89,12 +87,13 @@ public class SymbolTable {
 
   // total estimated size of local variables
   public int calculateScopeSize() {
-    return dict.values().stream()
-        .mapToInt(e -> (e instanceof VARIABLE) ? ((VARIABLE) e).getType().getSize() : 0).sum();
+    return getVariables().stream().mapToInt(e -> e.getType().getSize()).sum();
   }
 
-  public List<IDENTIFIER> getVariables(){
-    return dict.values().stream().filter(e -> e instanceof VARIABLE).collect(Collectors.toList());
+  // gets a list of all the variables defined within the scope
+  public List<VARIABLE> getVariables() {
+    return dict.values().stream().filter(e -> e instanceof VARIABLE).map(e -> (VARIABLE) e)
+        .collect(Collectors.toList());
   }
 
 

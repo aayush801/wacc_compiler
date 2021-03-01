@@ -84,11 +84,11 @@ public class ProgramGenerator {
     stackInstructions.addAll(SP.decrement(estimatedStackSize));
 
 
-    List<IDENTIFIER> variables = ST.getVariables();
+    List<VARIABLE> variables = ST.getVariables();
 
     // push variables to stack (implicitly assigns them addresses)
-    for(IDENTIFIER var : variables){
-      SP.push((STACK_OBJECT) var);
+    for(VARIABLE var : variables){
+      SP.push(var);
     }
 
     return stackInstructions;

@@ -1,5 +1,6 @@
 package middleware.arrays_ast;
 
+import backend.labels.code.PrimitiveLabel;
 import backend.primitive_functions.PrintArrayBoundsChecks;
 import backend.instructions.Branch;
 import backend.instructions.Instruction;
@@ -131,7 +132,11 @@ public class ArrayElemAST extends ExpressionAST {
     // Array index checking
     ret.add(new Move(Register.R0, index));
     ret.add(new Move(Register.R1, target));
-    ret.add(new Branch("p_check_array_bounds", true));
+
+    // include primitive array bounds checker
+    PrimitiveLabel arrayBoundsPrimitive = PrintArrayBoundsChecks.printArrayIndexCheck(program);
+    ret.add(new Branch(arrayBoundsPrimitive.getLabelName(), true));
+    program.addPrimitive(arrayBoundsPrimitive);
 
     ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target,
         new ImmediateNum(4), false));
@@ -146,7 +151,6 @@ public class ArrayElemAST extends ExpressionAST {
 
     ret.add(new Load(target, new ZeroOffset(target)));
 
-    program.addPrimitive(PrintArrayBoundsChecks.printArrayIndexCheck(program));
 
     return ret;
   }
