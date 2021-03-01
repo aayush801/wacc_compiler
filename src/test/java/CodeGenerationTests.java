@@ -75,14 +75,14 @@ public class CodeGenerationTests {
   public void testVarDeclarationDifferentScopes() throws IOException {
     String instruction =
         "begin\n"
-        + "  int x = 1 ;\n"
-        + "  begin\n"
-        + "    x = 2 ;\n"
-        + "    bool x = true ;\n"
-        + "    println x\n"
-        + "  end ;\n"
-        + "  println x \n"
-        + "end";
+            + "  int x = 1 ;\n"
+            + "  begin\n"
+            + "    x = 2 ;\n"
+            + "    bool x = true ;\n"
+            + "    println x\n"
+            + "  end ;\n"
+            + "  println x \n"
+            + "end";
     checkSourceCode(instruction);
   }
 
@@ -503,6 +503,33 @@ public class CodeGenerationTests {
             "  print r ;\n" +
             "  println \")\"\n" +
             "  end";
+    checkSourceCode(instruction);
+  }
+
+  @Test
+  public void testPrintAllTypes() throws IOException {
+    String instruction = "begin\n"
+        + "  char doSomething(int a, bool b, char c, string d, bool[] e, int[] f) is\n"
+        + "    print \"a is \" ;\n"
+        + "    println a ;\n"
+        + "    print \"b is \" ;\n"
+        + "    println b ;\n"
+        + "    print \"c is \" ;\n"
+        + "    println c ;\n"
+        + "    print \"d is \" ;\n"
+        + "    println d ;\n"
+        + "    print \"e is \" ;\n"
+        + "    println e ;\n"
+        + "    print \"f is \" ;\n"
+        + "    println f ;\n"
+        + "    return 'g'\n"
+        + "  end\n"
+        + "  bool[] bools = [ false, true ] ;\n"
+        + "  int[] ints = [ 1, 2 ] ;\n"
+        + "  char answer = call doSomething(42, true, 'u', \"hello\", bools, ints) ;\n"
+        + "  print \"answer is \" ;\n"
+        + "  println answer\n"
+        + "end";
     checkSourceCode(instruction);
   }
 

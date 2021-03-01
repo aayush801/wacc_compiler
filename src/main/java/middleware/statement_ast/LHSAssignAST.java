@@ -156,14 +156,19 @@ public class LHSAssignAST extends StatementAST {
 
     // case when LHS is just an identifier a.k.a. a variable having a base type.
     if (identifier != null) {
-      STACK_OBJECT varObj = (STACK_OBJECT) scopeST.lookupAll(identifier);
-      if(varObj.getStackAddress() == 0){
-        // if the object found is not live yet, then we must be referencing an older declaration of the identifier
-        varObj = (STACK_OBJECT) scopeST.getEncSymTable().lookupAll(identifier);
+
+      STACK_OBJECT varStackObj = (STACK_OBJECT) scopeST.lookupAll(identifier);
+
+      if(!varStackObj.isLive()){
+        // if the object is not live yet, then we must be referencing an even older declaration
+        varStackObj = (STACK_OBJECT) scopeST.getEncSymTable().lookupAll(identifier);
       }
-      int offset = program.SP.calculateOffset(varObj.getStackAddress());
+
+      int offset = program.SP.calculateOffset(varStackObj.getStackAddress());
+
       offsetIdent = offset;
-      TYPE type = varObj.getType();
+
+      TYPE type = varStackObj.getType();
       ret.add(new Store(ConditionCode.NONE, target,
               new ImmediateOffset(program.SP, new ImmediateNum(offset)), type.getSize()));
 

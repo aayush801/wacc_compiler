@@ -161,15 +161,8 @@ public class RHSAssignAST extends StatementAST {
   @Override
   public List<Instruction> translate(List<Register> registers) {
     if (expressionAST != null) {
-      TYPE type = expressionAST.getType();
-      Register target = registers.get(0);
-      List<Instruction> ret = expressionAST.translate(registers);
 
-      if (expressionAST instanceof ArrayElemAST) {
-        ret.add(new Load(target, new ZeroOffset(target), type.getSize()));
-      }
-
-      return ret;
+      return expressionAST.translate(registers);
 
     }
 

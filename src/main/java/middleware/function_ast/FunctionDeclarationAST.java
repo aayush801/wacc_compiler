@@ -94,7 +94,7 @@ public class FunctionDeclarationAST extends NodeAST {
     program.pushLR(instructions);
 
     // translate statement body in the context of the function scope
-    instructions.addAll(program.allocateStackSpace(funcObj.getST()));
+    instructions.addAll(program.allocateStackSpace(funcScope));
     instructions.addAll(statementAST.translate(registers));
 
     //implicit stack change because of POP {PC}

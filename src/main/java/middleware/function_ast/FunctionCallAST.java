@@ -93,21 +93,21 @@ public class FunctionCallAST extends NodeAST {
     List<Instruction> instructions = new ArrayList<>();
     int originalStackPointer = program.SP.getStackPtr();
 
-    // push parameters onto the stack
-    for (ExpressionAST expr : actuals) {
+    // push parameters onto the stack from last to first
+    for (int i = actuals.size() - 1; i >= 0; i--) {
+      ExpressionAST exprAST = actuals.get(i);
       Register exprResult = registers.get(0);
 
       // translate expression AST
-      List<Instruction> exprInstructions = expr.translate(registers);
+      List<Instruction> exprInstructions = exprAST.translate(registers);
       instructions.addAll(exprInstructions);
 
       // push param to bottom of stack
-      TYPE type = expr.getType();
-      int offset = type.getSize();
-      program.SP.decrement(offset);
+      int exprSize = exprAST.getType().getSize();
+      program.SP.decrement(exprSize);
       instructions.add(new Store(exprResult,
-          new ImmediateOffset(program.SP, new ImmediateNum(-offset), true),
-          type.getSize()));
+          new ImmediateOffset(program.SP, new ImmediateNum(-exprSize), true),
+          exprSize));
     }
 
     // branch to the function label

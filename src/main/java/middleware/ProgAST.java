@@ -66,13 +66,17 @@ public class ProgAST extends NodeAST {
     instructions.addAll(program.deallocateStackSpace(scopeST));
 
     // add exit code 0 on successful exit
-    instructions.add(new Load(new Register(0), new Address("0")));
+    instructions.add(new Load(Register.R0, new Address("0")));
     program.popPC(instructions);
     instructions.add(new EOC());
 
     program.addCode(new CodeLabel("main", instructions));
 
     return null;
+  }
+
+  public NodeASTList<FunctionDeclarationAST> getFunctionDeclarationASTS() {
+    return functionDeclarationASTS;
   }
 
 }

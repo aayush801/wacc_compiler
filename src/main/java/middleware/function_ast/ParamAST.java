@@ -47,6 +47,7 @@ public class ParamAST extends NodeAST {
 
     // push paramObj onto the virtual stack
     program.SP.push(paramObj);
+    paramObj.setLive(true);
 
     return null;
   }

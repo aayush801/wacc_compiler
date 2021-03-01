@@ -11,6 +11,8 @@ import backend.registers.LinkRegister;
 import backend.registers.ProgramCounter;
 import backend.registers.Register;
 import backend.registers.StackPointer;
+import frontend.identifier_objects.IDENTIFIER;
+import frontend.identifier_objects.STACK_OBJECT;
 import frontend.identifier_objects.VARIABLE;
 import frontend.identifier_objects.basic_types.INT;
 import java.util.ArrayList;
@@ -70,6 +72,7 @@ public class ProgramGenerator {
   // allocate space on the stack for local variables
   public List<Instruction> allocateStackSpace(SymbolTable ST) {
     List<Instruction> stackInstructions = new ArrayList<>();
+
     int estimatedStackSize = ST.calculateScopeSize();
 
     // no variables declared in this scope, so just return empty list.
@@ -79,6 +82,14 @@ public class ProgramGenerator {
 
     // decrement virtual stack and generate stack instruction
     stackInstructions.addAll(SP.decrement(estimatedStackSize));
+
+
+    List<VARIABLE> variables = ST.getVariables();
+
+    // push variables to stack (implicitly assigns them addresses)
+    for(VARIABLE var : variables){
+      SP.push(var);
+    }
 
     return stackInstructions;
   }

@@ -4,6 +4,7 @@ public abstract class STACK_OBJECT extends IDENTIFIER {
 
   TYPE type;
   private int stackAddress;
+  private boolean isLive = false; //is alive at this part of code
 
   public STACK_OBJECT(String name, TYPE type) {
     super(name);
@@ -21,4 +22,13 @@ public abstract class STACK_OBJECT extends IDENTIFIER {
   public TYPE getType() {
     return type;
   }
+
+  public void setLive(boolean live) {
+    isLive = live;
+  }
+
+  public boolean isLive() {
+    return isLive;
+  }
+
 }
