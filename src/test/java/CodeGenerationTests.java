@@ -276,6 +276,37 @@ public class CodeGenerationTests {
   }
 
   @Test
+  public void testFibRecursive() throws IOException {
+    String instruction = "begin\n"
+        + "  int fibonacci(int n, bool toPrint) is\n"
+        + "    if n > 1\n"
+        + "    then\n"
+        + "      skip\n"
+        + "    else\n"
+        + "      return n\n"
+        + "    fi ;\n"
+        + "    int f1 = call fibonacci(n - 1, toPrint) ;\n"
+        + "    if toPrint\n"
+        + "    then\n"
+        + "      print f1 ;\n"
+        + "      print \", \"\n"
+        + "    else\n"
+        + "      skip\n"
+        + "    fi ;\n"
+        + "    int f2 = call fibonacci(n - 2, false) ;\n"
+        + "    return f1 + f2\n"
+        + "  end\n"
+        + "\n"
+        + "  println \"The first 20 fibonacci numbers are:\" ;\n"
+        + "  print \"0, \" ;\n"
+        + "  int result = call fibonacci(19, true) ;\n"
+        + "  print result ;\n"
+        + "  println \"...\"\n"
+        + "end";
+    checkSourceCode(instruction);
+  }
+
+  @Test
   public void testCharArrayElemAssignment() throws IOException {
     String instruction = "begin  " +
         "char[] x = ['c', 'a', 't'] ;\n" +

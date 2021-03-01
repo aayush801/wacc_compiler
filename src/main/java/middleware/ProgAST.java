@@ -57,6 +57,7 @@ public class ProgAST extends NodeAST {
     for (FunctionDeclarationAST func : functionDeclarationASTS) {
       func.translate(registers);
     }
+
     List<Instruction> instructions = new ArrayList<>();
     program.pushLR(instructions);
 

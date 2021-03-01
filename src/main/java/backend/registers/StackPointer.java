@@ -10,7 +10,7 @@ import java.util.List;
 
 public class StackPointer extends Register {
 
-  private int freePtr = 0, stackPtr = 0;
+  private int freePtr = 0, stackPtr = 0, savedStackPtr = 0, savedFreePtr = 0;
 
   public StackPointer() {
     super(13);
@@ -74,6 +74,16 @@ public class StackPointer extends Register {
     }
 
     return instructions;
+  }
+
+  public void store() {
+    savedStackPtr = stackPtr;
+    savedFreePtr = freePtr;
+  }
+
+  public void restore() {
+    stackPtr = savedStackPtr;
+    freePtr = savedFreePtr;
   }
 
   public int getStackPtr() {

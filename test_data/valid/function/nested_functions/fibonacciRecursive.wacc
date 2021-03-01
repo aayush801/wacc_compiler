@@ -8,11 +8,11 @@
 
 begin
   int fibonacci(int n, bool toPrint) is
-    if n <= 1
+    if n > 1
     then
-      return n
-    else
       skip
+    else
+      return n
     fi ;
     int f1 = call fibonacci(n - 1, toPrint) ;
     if toPrint
