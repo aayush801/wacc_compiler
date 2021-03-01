@@ -80,8 +80,6 @@ public class ProgramGenerator {
       return stackInstructions;
     }
 
-    // save the stack state in the symbol table
-    ST.saveStackState(SP);
 
     // decrement virtual stack and generate stack instruction
     stackInstructions.addAll(SP.decrement(estimatedStackSize));
@@ -109,9 +107,6 @@ public class ProgramGenerator {
     // decrement virtual stack and generate stack instruction
     stackInstructions.addAll(SP.increment(estimatedStackSize));
 
-
-    // restore the stack state in the symbol table
-    ST.restoreStackState(SP);
 
     return stackInstructions;
   }
