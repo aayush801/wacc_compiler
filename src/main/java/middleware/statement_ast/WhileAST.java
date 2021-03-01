@@ -73,9 +73,15 @@ public class WhileAST extends StatementAST {
     // translate rest of code statement
     instructions.add(body);
 
+    // save the stack state in the symbol table
+    scopeST.saveStackState(program.SP);
+
     instructions.addAll(program.allocateStackSpace(scopeST));
     instructions.addAll(statementAST.translate(registers));
     instructions.addAll(program.deallocateStackSpace(scopeST));
+
+    // save the stack state in the symbol table
+    scopeST.restoreStackState(program.SP);
 
     // translate expression for loop (variance)
     instructions.add(rest);

@@ -32,11 +32,15 @@ public class BeginAST extends StatementAST {
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
+    // save the stack state in the symbol table
+    scopeST.saveStackState(program.SP);
+
     List<Instruction> instructions = program.allocateStackSpace(scopeST);
-
     instructions.addAll(statementAST.translate(registers));
-
     instructions.addAll(program.deallocateStackSpace(scopeST));
+
+    // save the stack state in the symbol table
+    scopeST.restoreStackState(program.SP);
 
     return instructions;
 
