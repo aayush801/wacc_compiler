@@ -74,10 +74,6 @@ public class PrintAST extends StatementAST {
           // print array of chars as a string
           primitiveLabel = PrintFunctions.printString(program);
 
-        }else if(arrayType instanceof INT){
-
-          primitiveLabel = PrintFunctions.printInt(program);
-
         }
 
       }

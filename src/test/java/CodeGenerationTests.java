@@ -337,6 +337,16 @@ public class CodeGenerationTests {
   }
 
   @Test
+  public void testPrintRef() throws IOException {
+    String instruction = "begin\n"
+        + "  print \"Printing an array variable gives an address, such as \" ;\n"
+        + "  int[] a = [1,2,3] ;\n"
+        + "  println a\n"
+        + "end";
+    checkSourceCode(instruction);
+  }
+
+  @Test
   public void testReadChar() throws IOException {
     String instruction = "begin\n" +
         "\tchar c = '\\0' ;\n" +
