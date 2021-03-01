@@ -11,6 +11,7 @@ import backend.labels.code.PrimitiveLabel;
 import backend.instructions.stack_instructions.Pop;
 import backend.instructions.stack_instructions.Push;
 import backend.operands.ImmediateNum;
+import backend.operands.ImmediateNumASR;
 import backend.primitive_functions.BinOpChecks;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
@@ -237,12 +238,13 @@ public class BinOpExprAST extends ExpressionAST {
 
         break;
       case "*":
-        instructions.add(new Arithmetic(ArithmeticOpcode.MUL, Rn, Rn, Rm, true,
-            accumulator));
+        instructions.add(new Arithmetic(ArithmeticOpcode.SMULL, Rn, Rm, Rn, Rm, accumulator));
+
+        instructions.add(new Compare(Rm, new ImmediateNumASR(Rn, 31)));
 
         // check for overflow error
         primitiveLabel = BinOpChecks.printOverflowCheck(program);
-        instructions.add(new Branch(ConditionCode.VS,
+        instructions.add(new Branch(ConditionCode.NE,
             primitiveLabel.getLabelName(), true));
         break;
       case "%":

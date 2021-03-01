@@ -626,6 +626,48 @@ public class CodeGenerationTests {
     checkSourceCode(instruction);
   }
 
+  @Test
+  public void testReadNull1() throws IOException {
+    String instruction = "begin\n" +
+            "\tpair(int, int) p = null ;\n" +
+            "\tread fst p\n" +
+            "end";
+    checkSourceCode(instruction);
+  }
 
+  @Test
+  public void testReadNull2() throws IOException {
+    String instruction = "begin\n" +
+            "\tpair(int, int) p = null ;\n" +
+            "\tread snd p\n" +
+            "end";
+    checkSourceCode(instruction);
+  }
+
+  @Test
+  public void testMulOverflow() throws IOException {
+    String instruction = "begin\n" +
+            "int y = 1 * 2 ; \n" +
+            "  int x = 2147483 ;\n" +
+            "  println x ;\n" +
+            "  x = x * 1000 ;\n" +
+            "  println x ;\n" +
+            "  x = x * 1000 ;\n" +
+            "  println x ;\n" +
+            "  x = x * 1000 ; #err here?\n" +
+            "  println x \n" +
+            "end";
+    checkSourceCode(instruction);
+  }
+
+  @Test
+  public void testLongMult() throws IOException {
+    String instruction = " begin\n" +
+            "  int x = 1 * (2 * (3 * (4 * (5 * (6 * (7 * (8 * (9 * (10 * (11 * (12 * (13 * (14 - (15 - (16 - 17)))))))))))))));\n" +
+            "  exit x\n" +
+            "\n" +
+            "  end";
+    checkSourceCode(instruction);
+  }
 
 }

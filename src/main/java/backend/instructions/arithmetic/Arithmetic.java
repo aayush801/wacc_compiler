@@ -9,8 +9,19 @@ public class Arithmetic extends Instruction {
 
   private final Register Rd, Rn;
   private final backend.operands.Operand operand;
+  private backend.operands.Operand operand1;
   private final ArithmeticOpcode opcode;
   private boolean registerSave = false;
+
+  public Arithmetic(ArithmeticOpcode opcode, Register Rd, Register Rn,
+                    Operand operand, Operand operand1, boolean registerSave) {
+    this.opcode = opcode;
+    this.Rd = Rd;
+    this.Rn = Rn;
+    this.operand = operand;
+    this.operand1 = operand1;
+    this.registerSave = registerSave;
+  }
 
   public Arithmetic(ArithmeticOpcode opcode, Register Rd, Register Rn,
       Operand operand, boolean setConditionCodes) {
@@ -29,8 +40,11 @@ public class Arithmetic extends Instruction {
 
   @Override
   public String toString() {
+    boolean operand1Exists = operand1 != null;
+
     return opcode + (flags ? "S" : "") + " " +
-            (!registerSave ? Rd + ", " + Rn + ", " + operand :
-                Rd + ", " + operand + ", " + Rn);
+            (!registerSave ? Rd + ", " + Rn + ", " + operand + (operand1Exists ? ", " + operand1 : ""):
+                    (operand1Exists ? Rd + ", " + Rn + ", " + operand1 + ", " + operand :
+                            Rd + ", " + operand + ". " + Rn));
   }
 }

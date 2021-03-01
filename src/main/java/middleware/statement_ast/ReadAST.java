@@ -57,12 +57,14 @@ public class ReadAST extends StatementAST {
 
     List<Instruction> ret = new ArrayList<>();
 
-    LHS.translate(registers);
+    List<Instruction> temp = LHS.translate(registers);
 
     // Translate the LHS we want to read into.
     if (LHS.getIdentifier() != null) {
       int offset = LHS.getOffset();
       ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, new StackPointer(), new ImmediateNum(offset), false));
+    } else {
+      ret.addAll(temp);
     }
 
     ret.add(new Move(new Register(0), target));

@@ -2,7 +2,7 @@ package backend.instructions.arithmetic;
 
 public enum ArithmeticOpcode {
   ADD,
-  MUL,
+  SMULL,
   SUB,
   AND,
   OR,
@@ -16,8 +16,8 @@ public enum ArithmeticOpcode {
         return "ADD";
       case SUB:
         return "SUB";
-      case MUL:
-        return "MUL";
+      case SMULL:
+        return "SMULL";
       case AND:
         return "AND";
       case OR:
