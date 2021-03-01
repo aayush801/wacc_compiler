@@ -73,6 +73,7 @@ public class VariableDeclarationAST extends StatementAST {
     // If all checks pass, create new VARIABLE object with the type of the
     // typeAST node, and add this to the current symbol table.
     varObj = new VARIABLE(typeAST.getType());
+
     NodeAST.ST.add(varName, varObj);
   }
 
@@ -83,9 +84,11 @@ public class VariableDeclarationAST extends StatementAST {
     List<Instruction> instructions = rhsAssignAST.translate(registers);
 
     // Amount of bytes to add to the stack pointer to get address of variable
+
     //int stackAddress = program.SP.push(varObj); //pushes varObj onto stack
     varObj.setLive(true);
-    int offset = program.SP.calculateOffset(varObj.getStackAddress()); // gets address of var in respect to the current stack pointer
+    // gets address of var in respect to the current stack pointer
+    int offset = program.SP.calculateOffset(varObj.getStackAddress());
     TYPE type = typeAST.getType();
     instructions.add(new Store(ConditionCode.NONE, destination,
         new ImmediateOffset(program.SP, new ImmediateNum(offset)), type.getSize()));

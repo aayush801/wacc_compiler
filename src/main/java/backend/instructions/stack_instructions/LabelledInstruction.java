@@ -3,10 +3,11 @@ package backend.instructions.stack_instructions;
 import backend.instructions.Instruction;
 
 public class LabelledInstruction extends Instruction {
+
   private static int INDEX = 0;
   private final String label;
 
-  public LabelledInstruction(){
+  public LabelledInstruction() {
     label = "L" + INDEX++;
   }
 

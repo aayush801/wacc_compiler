@@ -153,26 +153,28 @@ public class UnaryOpExprAST extends ExpressionAST {
     switch (operator) {
       // NOT Operator
       case "!":
-        Instruction not = new Arithmetic(ArithmeticOpcode.EOR, destination, destination,
-            new ImmediateNum(1), false);
+        Instruction not = new Arithmetic(ArithmeticOpcode.EOR, destination,
+            destination, ImmediateNum.ONE, false);
         instructions.add(not);
         break;
       // NEGATE Operator
       case "-":
-        Instruction negate = new Arithmetic(ArithmeticOpcode.RSB, destination, destination,
-            new ImmediateNum(0), true);
+        Instruction negate = new Arithmetic(ArithmeticOpcode.RSB, destination,
+            destination, ImmediateNum.ZERO, true);
         instructions.add(negate);
 
         // check for overflow error
         PrimitiveLabel overflowError = BinOpChecks.printOverflowCheck(program);
-        instructions.add(new Branch(ConditionCode.VS, overflowError.getLabelName(), true));
+        instructions.add(
+            new Branch(ConditionCode.VS, overflowError.getLabelName(),
+                true));
         program.addPrimitive(overflowError);
 
         break;
       // LENGTH Operator
       case "len":
         Instruction loadVal = new Load(destination,
-            new ImmediateOffset(destination, new ImmediateNum(0)));
+            new ImmediateOffset(destination, ImmediateNum.ZERO));
         instructions.add(loadVal);
         break;
       // CHR Operator
@@ -189,7 +191,8 @@ public class UnaryOpExprAST extends ExpressionAST {
 
           List<Instruction> ret = new ArrayList<>();
           ret.add(
-              new Load(destination, new ImmediateOffset(program.SP, new ImmediateNum(offset)), 1));
+              new Load(destination, new ImmediateOffset(program.SP,
+                  new ImmediateNum(offset)), 1));
           return ret;
         }
         break;

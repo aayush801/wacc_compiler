@@ -10,8 +10,7 @@ import java.util.List;
 
 public class StackPointer extends Register {
 
-  private int freePtr = 0;
-  private int stackPtr = 0;
+  private int freePtr = 0, stackPtr = 0;
 
   public StackPointer() {
     super(13);
@@ -41,14 +40,14 @@ public class StackPointer extends Register {
 
     for (; size > ImmediateNum.MAX_SIZE; size -= ImmediateNum.MAX_SIZE) {
       instructions.add(
-          new Arithmetic(ArithmeticOpcode.SUB, this, this, new ImmediateNum(ImmediateNum.MAX_SIZE),
-              false));
+          new Arithmetic(ArithmeticOpcode.SUB, this, this,
+              new ImmediateNum(ImmediateNum.MAX_SIZE), false));
     }
 
     if (size >= 0) {
       instructions.add(
-          new Arithmetic(ArithmeticOpcode.SUB, this, this, new ImmediateNum(size),
-              false));
+          new Arithmetic(ArithmeticOpcode.SUB, this, this,
+              new ImmediateNum(size), false));
 
     }
 
@@ -63,14 +62,14 @@ public class StackPointer extends Register {
 
     for (; size > ImmediateNum.MAX_SIZE; size -= ImmediateNum.MAX_SIZE) {
       instructions.add(
-          new Arithmetic(ArithmeticOpcode.ADD, this, this, new ImmediateNum(ImmediateNum.MAX_SIZE),
-              false));
+          new Arithmetic(ArithmeticOpcode.ADD, this, this,
+              new ImmediateNum(ImmediateNum.MAX_SIZE), false));
     }
 
     if (size >= 0) {
       instructions.add(
-          new Arithmetic(ArithmeticOpcode.ADD, this, this, new ImmediateNum(size),
-              false));
+          new Arithmetic(ArithmeticOpcode.ADD, this, this,
+              new ImmediateNum(size), false));
 
     }
 

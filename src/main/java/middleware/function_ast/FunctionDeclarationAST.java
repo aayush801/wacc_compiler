@@ -31,8 +31,9 @@ public class FunctionDeclarationAST extends NodeAST {
   public FUNCTION funcObj;
 
 
-  public FunctionDeclarationAST(ParserRuleContext ctx, TypeAST typeAST, String funcName,
-      NodeASTList<ParamAST> paramASTList, StatementAST statementAST) {
+  public FunctionDeclarationAST(ParserRuleContext ctx, TypeAST typeAST,
+      String funcName, NodeASTList<ParamAST> paramASTList,
+      StatementAST statementAST) {
     super(ctx);
     this.typeAST = typeAST;
     this.funcName = funcName;
@@ -101,7 +102,6 @@ public class FunctionDeclarationAST extends NodeAST {
     //implicit stack change because of POP {PC}
     program.popPC(instructions);
     instructions.add(new EOC());
-
 
     // add the function label
     FunctionLabel label = new FunctionLabel(funcName, instructions);

@@ -11,7 +11,8 @@ public class PrimitiveLabel extends CodeLabel {
 
   private final ProgramGenerator program;
 
-  public PrimitiveLabel(String name, List<Instruction> instructions, ProgramGenerator program) {
+  public PrimitiveLabel(String name, List<Instruction> instructions,
+      ProgramGenerator program) {
     super("p_" + name, instructions);
     this.program = program;
   }

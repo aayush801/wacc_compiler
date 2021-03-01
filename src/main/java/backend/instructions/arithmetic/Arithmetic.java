@@ -22,7 +22,7 @@ public class Arithmetic extends Instruction {
   }
 
   public Arithmetic(ArithmeticOpcode opcode, Register Rd, Register Rn,
-                    Operand operand, boolean setConditionCodes, boolean registerSave) {
+      Operand operand, boolean setConditionCodes, boolean registerSave) {
     this(opcode, Rd, Rn, operand, setConditionCodes);
     this.registerSave = registerSave;
   }
@@ -30,6 +30,7 @@ public class Arithmetic extends Instruction {
   @Override
   public String toString() {
     return opcode + (flags ? "S" : "") + " " +
-            (!registerSave ? Rd + ", " + Rn + ", " + operand :  Rd + ", " + operand + ", " + Rn);
+            (!registerSave ? Rd + ", " + Rn + ", " + operand :
+                Rd + ", " + operand + ", " + Rn);
   }
 }

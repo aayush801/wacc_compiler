@@ -54,12 +54,14 @@ public class NewPairAST extends NodeAST {
     // check that boh expressions are of type TYPE.
     // If not, they are a function identifier, which is invalid.
     if (!(fstExpr.getType() instanceof TYPE)) {
-      addError(new MismatchedTypes(fstExpr.ctx, fstExpr.getType(), new TYPE()));
+      addError(
+          new MismatchedTypes(fstExpr.ctx, fstExpr.getType(), new TYPE()));
       error = true;
     }
 
     if (!(sndExpr.getType() instanceof TYPE)) {
-      addError(new MismatchedTypes(sndExpr.ctx, sndExpr.getType(), new TYPE()));
+      addError(
+          new MismatchedTypes(sndExpr.ctx, sndExpr.getType(), new TYPE()));
       error = true;
     }
 
@@ -93,7 +95,8 @@ public class NewPairAST extends NodeAST {
     instructions.add(new Branch("malloc", true));
 
     // Store the value of the first element at the given address
-    instructions.add(new Store(pairElem, new ZeroOffset(Register.R0), type1.getSize()));
+    instructions.add(new Store(pairElem, new ZeroOffset(Register.R0),
+        type1.getSize()));
 
     // Store the address pf the first element into the first word of the pair
     instructions.add(new Store(Register.R0, new ZeroOffset(pairAddress)));
@@ -104,12 +107,13 @@ public class NewPairAST extends NodeAST {
         new ImmediateAddress(sndExpr.getType().getSize())));
 
     instructions.add(new Branch("malloc", true));
-    instructions.add(new Store(pairElem, new ZeroOffset(Register.R0), type2.getSize()));
+    instructions.add(new Store(pairElem, new ZeroOffset(Register.R0),
+        type2.getSize()));
 
     // Storing address to value of second element in the second word of pair
-    instructions.add(new Store(Register.R0,
-        new ImmediateOffset(pairAddress, new ImmediateNum(4))));
-
+    instructions.add(
+        new Store(Register.R0,
+            new ImmediateOffset(pairAddress, new ImmediateNum(4))));
 
     return instructions;
   }

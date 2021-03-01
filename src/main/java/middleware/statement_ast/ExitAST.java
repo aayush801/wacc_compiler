@@ -46,7 +46,7 @@ public class ExitAST extends StatementAST {
     Register intReg = registers.get(0);
 
     if (intReg.getNumber() != 0) {
-      instructions.add(new Move(new Register(0), intReg));
+      instructions.add(new Move(Register.R0, intReg));
     }
 
     instructions.add(new Branch("exit", true));

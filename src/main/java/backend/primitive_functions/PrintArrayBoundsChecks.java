@@ -39,7 +39,8 @@ public class PrintArrayBoundsChecks {
         new Address(negLabel.getLabelName())));
 
     // include runtime error primitive function in code base
-    PrimitiveLabel runtimeErrorPrimitive = RuntimeError.printRuntimeErrorCheck(program);
+    PrimitiveLabel runtimeErrorPrimitive
+        = RuntimeError.printRuntimeErrorCheck(program);
     program.addPrimitive(RuntimeError.printRuntimeErrorCheck(program));
 
     // BLLT p_throw_runtime_error

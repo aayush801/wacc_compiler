@@ -77,11 +77,10 @@ public class IfElseAST extends StatementAST {
 
     List<Instruction> instructions = expressionAST.translate(registers);
 
-    instructions.add(new Compare(destination, new ImmediateNum(0)));
+    instructions.add(new Compare(destination, ImmediateNum.ZERO));
 
     LabelledInstruction body = new LabelledInstruction();
     LabelledInstruction rest = new LabelledInstruction();
-
 
     instructions.add(new Branch(ConditionCode.EQ, body.getLabel(), false));
 

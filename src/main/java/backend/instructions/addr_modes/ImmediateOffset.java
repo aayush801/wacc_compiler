@@ -14,7 +14,8 @@ public class ImmediateOffset extends AddressingMode {
     this.offset = offset;
   }
 
-  public ImmediateOffset(Register Rn, ImmediateNum offset, boolean  preIndexed) {
+  public ImmediateOffset(Register Rn, ImmediateNum offset,
+      boolean  preIndexed) {
     this(Rn, offset);
     this.preIndexed = preIndexed;
   }

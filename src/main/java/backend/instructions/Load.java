@@ -14,15 +14,16 @@ public class Load extends Instruction {
     this(ConditionCode.NONE, Rn, addressingMode, size);
   }
 
-  public Load(ConditionCode conditionCode, Register Rn, AddressingMode addressingMode,
-      int size) {
+  public Load(ConditionCode conditionCode, Register Rn,
+      AddressingMode addressingMode, int size) {
     super(conditionCode);
     this.Rn = Rn;
     this.addressingMode = addressingMode;
     this.size = size;
   }
 
-  public Load(ConditionCode conditionCode, Register Rn, AddressingMode addressingMode) {
+  public Load(ConditionCode conditionCode, Register Rn,
+      AddressingMode addressingMode) {
     super(conditionCode);
     this.Rn = Rn;
     this.addressingMode = addressingMode;

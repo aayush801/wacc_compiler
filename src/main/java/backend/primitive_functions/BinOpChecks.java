@@ -55,7 +55,8 @@ public class BinOpChecks {
             new Address(divByZeroLabel.getLabelName())));
 
         // include runtime error function in code base
-        PrimitiveLabel runtimeErrorPrimitive = RuntimeError.printRuntimeErrorCheck(program);
+        PrimitiveLabel runtimeErrorPrimitive
+            = RuntimeError.printRuntimeErrorCheck(program);
         program.addPrimitive(runtimeErrorPrimitive);
 
         // BLEQ p_throw_runtime_error

@@ -34,11 +34,13 @@ public class FreeFunction {
     program.addData(nullLabel);
 
     // LDREQ r0, =msg_0
-    ret.add(new Load(ConditionCode.EQ, Register.R0,
-        new Address(nullLabel.getLabelName())));
+    ret.add(
+        new Load(ConditionCode.EQ, Register.R0,
+            new Address(nullLabel.getLabelName())));
 
     // include runtime error primitive function in code base
-    PrimitiveLabel runtimeErrorPrimitive = RuntimeError.printRuntimeErrorCheck(program);
+    PrimitiveLabel runtimeErrorPrimitive
+        = RuntimeError.printRuntimeErrorCheck(program);
     program.addPrimitive(RuntimeError.printRuntimeErrorCheck(program));
 
     // BEQ p_throw_runtime_error
