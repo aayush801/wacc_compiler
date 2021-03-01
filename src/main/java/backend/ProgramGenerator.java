@@ -73,10 +73,7 @@ public class ProgramGenerator {
   public List<Instruction> allocateStackSpace(SymbolTable ST) {
     List<Instruction> stackInstructions = new ArrayList<>();
 
-
-    List<IDENTIFIER> variables = ST.getVariables();
-
-    int estimatedStackSize = variables.size();
+    int estimatedStackSize = ST.calculateScopeSize();
 
     // no variables declared in this scope, so just return empty list.
     if (estimatedStackSize == 0) {
@@ -85,6 +82,9 @@ public class ProgramGenerator {
 
     // decrement virtual stack and generate stack instruction
     stackInstructions.addAll(SP.decrement(estimatedStackSize));
+
+
+    List<IDENTIFIER> variables = ST.getVariables();
 
     // push variables to stack (implicitly assigns them addresses)
     for(IDENTIFIER var : variables){
