@@ -57,7 +57,5 @@ public abstract class NodeAST implements NodeASTInterface {
     return t1 instanceof TYPE && t2 instanceof TYPE && t2.equals(t1);
   }
 
-  public List<Instruction> accept(NodeASTVisitor visitor) {
-    return visitor.visit(this);
-  }
+  public abstract List<Instruction> accept(NodeASTVisitor visitor);
 }

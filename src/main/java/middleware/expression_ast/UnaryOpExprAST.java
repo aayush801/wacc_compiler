@@ -1,5 +1,6 @@
 package middleware.expression_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.Branch;
 import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
@@ -202,6 +203,11 @@ public class UnaryOpExprAST extends ExpressionAST {
         break;
     }
     return instructions;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 }
 

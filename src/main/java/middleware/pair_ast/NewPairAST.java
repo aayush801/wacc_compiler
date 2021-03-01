@@ -1,5 +1,6 @@
 package middleware.pair_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.Branch;
 import backend.instructions.Instruction;
 import backend.instructions.Load;
@@ -116,6 +117,12 @@ public class NewPairAST extends NodeAST {
             new ImmediateOffset(pairAddress, new ImmediateNum(4))));
 
     return instructions;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
+
   }
 
 }

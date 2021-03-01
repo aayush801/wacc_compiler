@@ -1,5 +1,7 @@
 package backend;
 
+import backend.instructions.Instruction;
+import java.util.List;
 import middleware.ProgAST;
 import middleware.arrays_ast.ArrayAST;
 import middleware.arrays_ast.ArrayElemAST;
@@ -11,12 +13,14 @@ import middleware.function_ast.FunctionCallAST;
 import middleware.function_ast.FunctionDeclarationAST;
 import middleware.function_ast.ParamAST;
 import middleware.pair_ast.NewPairAST;
+import middleware.pair_ast.PairElemAST;
 import middleware.statement_ast.AssignmentAST;
 import middleware.statement_ast.BeginAST;
 import middleware.statement_ast.ChainedStatementAST;
 import middleware.statement_ast.ExitAST;
 import middleware.statement_ast.FreeAST;
 import middleware.statement_ast.IfElseAST;
+import middleware.statement_ast.LHSAssignAST;
 import middleware.statement_ast.PrintAST;
 import middleware.statement_ast.RHSAssignAST;
 import middleware.statement_ast.ReadAST;
@@ -49,6 +53,8 @@ public abstract class NodeASTVisitor<T> {
 
   public abstract T visit(NewPairAST newPair);
 
+  public abstract T visit(PairElemAST pairElem);
+
   public abstract T visit(AssignmentAST assignment);
 
   public abstract T visit(BeginAST begin);
@@ -66,6 +72,8 @@ public abstract class NodeASTVisitor<T> {
   public abstract T visit(ReadAST read);
 
   public abstract T visit(ReturnAST returnStatement);
+
+  public abstract T visit(LHSAssignAST rhs);
 
   public abstract T visit(RHSAssignAST rhs);
 

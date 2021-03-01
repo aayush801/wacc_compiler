@@ -1,5 +1,6 @@
 package middleware.statement_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
 import backend.instructions.Store;
@@ -94,6 +95,11 @@ public class VariableDeclarationAST extends StatementAST {
         new ImmediateOffset(program.SP, new ImmediateNum(offset)), type.getSize()));
 
     return instructions;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 
 }

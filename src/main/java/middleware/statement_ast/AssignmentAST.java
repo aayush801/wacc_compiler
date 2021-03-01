@@ -1,5 +1,6 @@
 package middleware.statement_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
 import backend.instructions.Store;
@@ -70,5 +71,10 @@ public class AssignmentAST extends StatementAST {
     instructions.addAll(LHS.translate(registers));
 
     return instructions;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 }

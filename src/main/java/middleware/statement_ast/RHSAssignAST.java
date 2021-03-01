@@ -1,5 +1,6 @@
 package middleware.statement_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.Instruction;
 import backend.instructions.Load;
 import backend.instructions.addr_modes.ZeroOffset;
@@ -193,6 +194,11 @@ public class RHSAssignAST extends StatementAST {
     }
 
     return null;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 }
 

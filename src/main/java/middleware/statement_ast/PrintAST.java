@@ -1,5 +1,6 @@
 package middleware.statement_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.Branch;
 import backend.instructions.Instruction;
 import backend.instructions.Load;
@@ -103,6 +104,11 @@ public class PrintAST extends StatementAST {
     }
 
     return instructions;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 
 }

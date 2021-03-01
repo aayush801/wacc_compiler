@@ -1,5 +1,6 @@
 package middleware.function_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.EOC;
 import backend.instructions.Instruction;
 import backend.labels.code.FunctionLabel;
@@ -109,6 +110,11 @@ public class FunctionDeclarationAST extends NodeAST {
 
     return null;
 
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 
 }

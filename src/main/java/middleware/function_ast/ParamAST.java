@@ -1,5 +1,6 @@
 package middleware.function_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.Instruction;
 import backend.registers.Register;
 import errors.semantic_errors.DuplicateIdentifier;
@@ -50,6 +51,12 @@ public class ParamAST extends NodeAST {
     paramObj.setLive(true);
 
     return null;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
+
   }
 
 }

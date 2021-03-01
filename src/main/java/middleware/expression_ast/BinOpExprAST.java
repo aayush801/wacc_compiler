@@ -1,5 +1,6 @@
 package middleware.expression_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.Branch;
 import backend.instructions.Compare;
 import backend.instructions.ConditionCode;
@@ -322,5 +323,10 @@ public class BinOpExprAST extends ExpressionAST {
     }
 
     return instructions;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 }

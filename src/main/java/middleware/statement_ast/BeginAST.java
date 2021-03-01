@@ -1,5 +1,6 @@
 package middleware.statement_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.Instruction;
 import backend.registers.Register;
 import java.util.List;
@@ -44,6 +45,11 @@ public class BeginAST extends StatementAST {
 
     return instructions;
 
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 
 }

@@ -1,5 +1,6 @@
 package middleware.statement_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.Branch;
 import backend.instructions.Compare;
 import backend.instructions.ConditionCode;
@@ -111,6 +112,11 @@ public class IfElseAST extends StatementAST {
     instructions.add(rest);
 
     return instructions;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 
 }

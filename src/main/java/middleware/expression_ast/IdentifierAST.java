@@ -1,5 +1,6 @@
 package middleware.expression_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.Instruction;
 import backend.instructions.Load;
 import backend.instructions.addr_modes.ImmediateOffset;
@@ -97,6 +98,11 @@ public class IdentifierAST extends ExpressionAST {
     }
 
     return new ArrayList<>();
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 }
 

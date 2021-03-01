@@ -1,5 +1,6 @@
 package middleware.statement_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.Branch;
 import backend.instructions.Compare;
 import backend.instructions.ConditionCode;
@@ -91,6 +92,11 @@ public class WhileAST extends StatementAST {
     instructions.add(new Branch(ConditionCode.EQ, body.getLabel(), false));
 
     return instructions;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 
 }

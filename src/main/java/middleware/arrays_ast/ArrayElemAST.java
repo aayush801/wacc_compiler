@@ -1,5 +1,6 @@
 package middleware.arrays_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.Branch;
 import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
@@ -168,5 +169,10 @@ public class ArrayElemAST extends ExpressionAST {
     }
 
     return ret;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 }

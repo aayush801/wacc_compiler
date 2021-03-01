@@ -1,5 +1,6 @@
 package middleware.statement_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
 import backend.instructions.Store;
@@ -190,6 +191,11 @@ public class LHSAssignAST extends StatementAST {
     }
 
     return ret;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 
   public int getOffset() {

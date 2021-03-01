@@ -1,5 +1,6 @@
 package middleware.arrays_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.Branch;
 import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
@@ -123,5 +124,10 @@ public class ArrayAST extends NodeAST {
     ret.add(new Store(target, new ZeroOffset(destination)));
 
     return ret;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 }

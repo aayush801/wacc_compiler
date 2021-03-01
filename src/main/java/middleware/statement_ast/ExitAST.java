@@ -1,5 +1,6 @@
 package middleware.statement_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.Branch;
 import backend.instructions.Instruction;
 import backend.instructions.Move;
@@ -52,5 +53,10 @@ public class ExitAST extends StatementAST {
     instructions.add(new Branch("exit", true));
 
     return instructions;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 }

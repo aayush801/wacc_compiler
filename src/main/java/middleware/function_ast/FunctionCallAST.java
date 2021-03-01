@@ -1,5 +1,6 @@
 package middleware.function_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.Branch;
 import backend.instructions.Instruction;
 import backend.instructions.Move;
@@ -124,6 +125,11 @@ public class FunctionCallAST extends NodeAST {
     instructions.add(new Move(dest, Register.R0));
 
     return instructions;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 
 }
