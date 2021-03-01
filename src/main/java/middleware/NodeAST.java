@@ -1,5 +1,6 @@
 package middleware;
 
+import backend.NodeASTVisitor;
 import backend.ProgramGenerator;
 import backend.instructions.Instruction;
 import backend.registers.Register;
@@ -56,4 +57,7 @@ public abstract class NodeAST implements NodeASTInterface {
     return t1 instanceof TYPE && t2 instanceof TYPE && t2.equals(t1);
   }
 
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return visitor.visit(this);
+  }
 }
