@@ -37,9 +37,9 @@ public class LHSAssignAST extends StatementAST {
   private SymbolTable scopeST;
 
   // For when LHSAssign is an IDENT.
-  public LHSAssignAST(ParserRuleContext ctx, String ident) {
+  public LHSAssignAST(ParserRuleContext ctx, String identifier) {
     super(ctx);
-    this.identifier = ident;
+    this.identifier = identifier;
   }
 
   // For when LHSAssign is an arrayElem.
@@ -140,10 +140,6 @@ public class LHSAssignAST extends StatementAST {
     return identifier;
   }
 
-  public ArrayElemAST getArrayElemAST() {
-    return arrayElemAST;
-  }
-
   @Override
   public List<Instruction> translate(List<Register> registers) {
 
@@ -161,9 +157,12 @@ public class LHSAssignAST extends StatementAST {
     // case when LHS is just an identifier a.k.a. a variable having a base type.
     if (identifier != null) {
       STACK_OBJECT varObj = (STACK_OBJECT) scopeST.lookupAll(identifier);
+      if(varObj.getStackAddress() == 0){
+        // if the object found is not live yet, then we must be referencing an older declaration of the identifier
+        varObj = (STACK_OBJECT) scopeST.getEncSymTable().lookupAll(identifier);
+      }
       int offset = program.SP.calculateOffset(varObj.getStackAddress());
       offsetIdent = offset;
-
       TYPE type = varObj.getType();
       ret.add(new Store(ConditionCode.NONE, target,
               new ImmediateOffset(program.SP, new ImmediateNum(offset)), type.getSize()));

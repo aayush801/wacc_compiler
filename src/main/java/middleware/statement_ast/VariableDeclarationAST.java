@@ -25,8 +25,6 @@ public class VariableDeclarationAST extends StatementAST {
   private final RHSAssignAST rhsAssignAST;
   public STACK_OBJECT varObj;
 
-  private SymbolTable scopeST;
-
   public VariableDeclarationAST(ParserRuleContext ctx, TypeAST typeAST,
       String varName, RHSAssignAST rhsAssignAST) {
     super(ctx);
@@ -74,27 +72,25 @@ public class VariableDeclarationAST extends StatementAST {
 
     // If all checks pass, create new VARIABLE object with the type of the
     // typeAST node, and add this to the current symbol table.
-
-    scopeST = ST;
     varObj = new VARIABLE(typeAST.getType());
+<<<<<<< HEAD
     // System.out.println(varObj);
+=======
+>>>>>>> eeeacc9ff61e2fb4ca8a4dc8546ea77004daa761
     NodeAST.ST.add(varName, varObj);
   }
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
     Register destination = registers.get(0);
-   // System.out.println(program.SP.getStackPtr());
 
     List<Instruction> instructions = rhsAssignAST.translate(registers);
 
-   // System.out.println(program.SP.getStackPtr());
-
     // Amount of bytes to add to the stack pointer to get address of variable
     int stackAddress = program.SP.push(varObj); //pushes varObj onto stack
+
     // Gets address of var in respect to the current stack pointer
     int offset = program.SP.calculateOffset(stackAddress);
-
     TYPE type = typeAST.getType();
     instructions.add(new Store(ConditionCode.NONE, destination,
         new ImmediateOffset(program.SP, new ImmediateNum(offset)), type.getSize()));

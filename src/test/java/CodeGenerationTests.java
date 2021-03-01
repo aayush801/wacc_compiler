@@ -73,13 +73,16 @@ public class CodeGenerationTests {
 
   @Test
   public void testVarDeclarationDifferentScopes() throws IOException {
-    String instruction = "begin\n" +
-        " int x = 0 ;\n" +
-        " begin\n" +
-        "    int z = 3\n" +
-        " end ;\n" +
-        " int k = 2\n" +
-        "end";
+    String instruction =
+        "begin\n"
+        + "  int x = 1 ;\n"
+        + "  begin\n"
+        + "    x = 2 ;\n"
+        + "    bool x = true ;\n"
+        + "    println x\n"
+        + "  end ;\n"
+        + "  println x \n"
+        + "end";
     checkSourceCode(instruction);
   }
 
@@ -502,5 +505,7 @@ public class CodeGenerationTests {
             "  end";
     checkSourceCode(instruction);
   }
+
+
 
 }
