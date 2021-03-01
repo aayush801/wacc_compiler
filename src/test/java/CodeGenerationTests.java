@@ -75,14 +75,14 @@ public class CodeGenerationTests {
   public void testVarDeclarationDifferentScopes() throws IOException {
     String instruction =
         "begin\n"
-        + "  int x = 1 ;\n"
-        + "  begin\n"
-        + "    x = 2 ;\n"
-        + "    bool x = true ;\n"
-        + "    println x\n"
-        + "  end ;\n"
-        + "  println x \n"
-        + "end";
+            + "  int x = 1 ;\n"
+            + "  begin\n"
+            + "    x = 2 ;\n"
+            + "    bool x = true ;\n"
+            + "    println x\n"
+            + "  end ;\n"
+            + "  println x \n"
+            + "end";
     checkSourceCode(instruction);
   }
 

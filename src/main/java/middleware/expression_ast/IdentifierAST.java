@@ -77,7 +77,6 @@ public class IdentifierAST extends ExpressionAST {
     if (varObj instanceof STACK_OBJECT) {
 
       STACK_OBJECT varStackObj = (STACK_OBJECT) varObj;
-
       if(!varStackObj.isLive()){
         // if the object is not live yet, then we must be referencing an even older declaration
         varStackObj = (STACK_OBJECT) scopeST.getEncSymTable().lookupAll(identifier);

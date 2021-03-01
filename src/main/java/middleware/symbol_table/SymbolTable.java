@@ -9,6 +9,7 @@ import frontend.identifier_objects.basic_types.INT;
 import frontend.identifier_objects.basic_types.PAIR;
 import frontend.identifier_objects.basic_types.STR;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 public class SymbolTable {
 
   private final SymbolTable encSymTable;
-  private final Map<String, IDENTIFIER> dict;
+  private final LinkedHashMap<String, IDENTIFIER> dict;
   protected TYPE scopeReturnType = null;
 
   public SymbolTable() {
@@ -33,7 +34,7 @@ public class SymbolTable {
     if (st != null) {
       scopeReturnType = st.getScopeReturnType();
     }
-    dict = new HashMap<>();
+    dict = new LinkedHashMap<>();
 
   }
 
@@ -69,9 +70,6 @@ public class SymbolTable {
 
   public void add(String name, IDENTIFIER obj) {
     dict.put(name, obj);
-    if(obj instanceof VARIABLE){
-
-    }
   }
 
   // lookup identifier in the local scope
