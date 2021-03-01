@@ -45,6 +45,6 @@ public class Arithmetic extends Instruction {
     return opcode + (flags ? "S" : "") + " " +
             (!registerSave ? Rd + ", " + Rn + ", " + operand + (operand1Exists ? ", " + operand1 : ""):
                     (operand1Exists ? Rd + ", " + Rn + ", " + operand1 + ", " + operand :
-                            Rd + ", " + operand + ". " + Rn));
+                            Rd + ", " + operand + ", " + Rn));
   }
 }
