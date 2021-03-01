@@ -276,6 +276,30 @@ public class CodeGenerationTests {
   }
 
   @Test
+  public void testPrintArray() throws IOException {
+    String instruction = "begin\n"
+        + "  int[] a = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] ;\n"
+        + "  int i = 0 ;\n"
+        + "  print a ;\n"
+        + "  print \" = {\" ;\n"
+        + "  i = 0 ;\n"
+        + "  while i < 10 \n"
+        + "  do \n"
+        + "    print a[i] ;\n"
+        + "    if i < 9\n"
+        + "    then\n"
+        + "      print \", \"\n"
+        + "    else\n"
+        + "      skip\n"
+        + "    fi ;\n"
+        + "    i = i + 1\n"
+        + "  done ;\n"
+        + "  println \"}\"\n"
+        + "end";
+    checkSourceCode(instruction);
+  }
+
+  @Test
   public void testFreeBasic() throws IOException {
     String instruction = "begin\n" +
         "  pair(int, char) a = newpair(10, 'a') ;\n" +

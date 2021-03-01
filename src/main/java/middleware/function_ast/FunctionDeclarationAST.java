@@ -4,6 +4,7 @@ import backend.instructions.EOC;
 import backend.instructions.Instruction;
 import backend.labels.code.FunctionLabel;
 import backend.registers.Register;
+import backend.registers.StackPointer;
 import errors.semantic_errors.DuplicateIdentifier;
 import errors.semantic_errors.Undefined;
 import frontend.identifier_objects.FUNCTION;
@@ -84,12 +85,13 @@ public class FunctionDeclarationAST extends NodeAST {
   @Override
   public List<Instruction> translate(List<Register> registers) {
     funcScope = funcObj.getST();
+    List<Instruction> instructions = new ArrayList<>();
 
     // implicitly adds parameters to the stack
     for (int i = paramASTList.size() - 1; i >= 0; i--) {
       paramASTList.get(i).translate(registers);
     }
-    List<Instruction> instructions = new ArrayList<>();
+
     //implicit stack change because of PUSH {LR}
     program.pushLR(instructions);
 
