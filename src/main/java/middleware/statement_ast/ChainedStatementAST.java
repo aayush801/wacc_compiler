@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class ChainedStatementAST extends StatementAST {
 
-  private final StatementAST statementAST1, statementAST2;
+  public final StatementAST statementAST1, statementAST2;
 
   public ChainedStatementAST(ParserRuleContext ctx, StatementAST statementAST1,
       StatementAST statementAST2) {

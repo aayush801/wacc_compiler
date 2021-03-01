@@ -1,6 +1,7 @@
 package backend;
 
 import backend.instructions.Instruction;
+import backend.registers.Register;
 import java.util.List;
 import middleware.NodeASTList;
 import middleware.ProgAST;
@@ -36,6 +37,8 @@ import middleware.types_ast.PairTypeAST;
 
 public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> {
 
+  private ProgramGenerator program = new ProgramGenerator();
+  
   @Override
   public List<Instruction> visit(ProgAST prog) {
     return null;
@@ -108,7 +111,10 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
   @Override
   public List<Instruction> visit(ChainedStatementAST chainedStatement) {
-    return null;
+    List<Instruction> instructions = chainedStatement.statementAST1.accept(this);
+    instructions.addAll(chainedStatement.statementAST2.accept(this));
+    return instructions;
+
   }
 
   @Override
