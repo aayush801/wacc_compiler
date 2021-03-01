@@ -6,8 +6,10 @@ import backend.instructions.Load;
 import backend.instructions.Move;
 import backend.instructions.addr_modes.ImmediateOffset;
 import backend.instructions.addr_modes.ZeroOffset;
+import backend.labels.code.PrimitiveLabel;
 import backend.operands.ImmediateNum;
 import backend.primitive_functions.PairElemNullAccessCheck;
+import backend.primitive_functions.PrintFunctions;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
@@ -74,13 +76,14 @@ public class PairElemAST extends NodeAST {
     ret.add(new Move(Register.R0, target));
 
     // Branch to null check
-    ret.add(new Branch("p_check_null_pointer", true));
+    PrimitiveLabel checkNullPrimitive = PairElemNullAccessCheck.pairElemCheckProgram(program);
+    ret.add(new Branch(checkNullPrimitive.getLabelName(), true));
+    program.addPrimitive(checkNullPrimitive);
 
     // Load appropriate address into target.
     ret.add(new Load(target, new ImmediateOffset(target,
         new ImmediateNum(index * 4))));
 
-    program.addPrimitive(PairElemNullAccessCheck.pairElemCheckProgram(program));
 
     return ret;
   }

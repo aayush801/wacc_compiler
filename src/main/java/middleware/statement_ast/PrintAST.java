@@ -52,6 +52,7 @@ public class PrintAST extends StatementAST {
 
     PrimitiveLabel primitiveLabel = null;
     if (type instanceof INT) {
+
       primitiveLabel = PrintFunctions.printInt(program);
 
     } else if (type instanceof CHAR) {
@@ -72,6 +73,10 @@ public class PrintAST extends StatementAST {
 
           // print array of chars as a string
           primitiveLabel = PrintFunctions.printString(program);
+
+        }else if(arrayType instanceof INT){
+
+          primitiveLabel = PrintFunctions.printInt(program);
 
         }
 

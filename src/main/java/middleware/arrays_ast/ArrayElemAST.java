@@ -129,30 +129,33 @@ public class ArrayElemAST extends ExpressionAST {
 
     // calculate index, and set it to the register index.
     // TODO: ADD CODE FOR DOING 2D ARRAYS!!!!!
-    ExpressionAST i = expressionASTS.get(0);
-    ret.addAll(i.translate(remainingRegs));
+    for (int i = 0; i < expressionASTS.size(); i++) {
+      ExpressionAST exprAST = expressionASTS.get(i);
+      ret.addAll(exprAST.translate(remainingRegs));
 
-    // TODO: MAYBE BE MISSING SB STUFF
-    ret.add(new Load(target, new ZeroOffset(target)));
+      // TODO: MAYBE BE MISSING SB STUFF
+      ret.add(new Load(target, new ZeroOffset(target)));
 
-    // Array index checking
-    ret.add(new Move(Register.R0, index));
-    ret.add(new Move(Register.R1, target));
+      // Array index checking
+      ret.add(new Move(Register.R0, index));
+      ret.add(new Move(Register.R1, target));
 
-    // include primitive array bounds checker
-    PrimitiveLabel arrayBoundsPrimitive = PrintArrayBoundsChecks.printArrayIndexCheck(program);
-    ret.add(new Branch(arrayBoundsPrimitive.getLabelName(), true));
-    program.addPrimitive(arrayBoundsPrimitive);
+      // include primitive array bounds checker
+      PrimitiveLabel arrayBoundsPrimitive = PrintArrayBoundsChecks.printArrayIndexCheck(program);
+      ret.add(new Branch(arrayBoundsPrimitive.getLabelName(), true));
+      program.addPrimitive(arrayBoundsPrimitive);
 
-    ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target,
-        new ImmediateNum(4), false));
-
-    if (type instanceof CHAR || type instanceof BOOL) {
-      ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target, index,
-          false));
-    } else {
       ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target,
-          new ImmediateNumLSL(index, 2), false));
+          new ImmediateNum(4), false));
+
+      if (type instanceof CHAR || type instanceof BOOL) {
+        ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target, index,
+            false));
+      } else {
+        ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target,
+            new ImmediateNumLSL(index, 2), false));
+      }
+
     }
 
     // if arrayElemAST requires dereference

@@ -264,10 +264,13 @@ public class CodeGenerationTests {
   }
 
   @Test
-  public void testUseNull1() throws IOException {
+  public void test2DArray() throws IOException {
     String instruction = "begin\n"
-        + "\tpair(int, int) p = null ;\n"
-        + "\tint x = fst p\n"
+        + "  int[] a = [1,2,3];\n"
+        + "  int[] b = [3,4];\n"
+        + "  int[][] c = [a,b] ;\n"
+        + "  println c[0][2] ;\n"
+        + "  println c[1][0]\n"
         + "end";
     checkSourceCode(instruction);
   }
