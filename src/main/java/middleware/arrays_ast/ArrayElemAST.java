@@ -97,10 +97,13 @@ public class ArrayElemAST extends ExpressionAST {
                 new INT())
         );
       }
+
+      // get the base element type of the array (even if nested)
+      array = ((ARRAY) array).getType();
+
     }
 
-    // Finally, update the type.
-    type = ((ARRAY) array).getType();
+    type = (TYPE) array;
 
   }
 

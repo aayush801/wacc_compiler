@@ -339,9 +339,11 @@ public class CodeGenerationTests {
   @Test
   public void testPrintRef() throws IOException {
     String instruction = "begin\n"
-        + "  print \"Printing an array variable gives an address, such as \" ;\n"
-        + "  int[] a = [1,2,3] ;\n"
-        + "  println a\n"
+        + "  int[] a = [1,2,3];\n"
+        + "  int[] b = [3,4];\n"
+        + "  int[][] c = [a,b] ;\n"
+        + "  println c[0][2] ;\n"
+        + "  println c[1][0]\n"
         + "end";
     checkSourceCode(instruction);
   }
