@@ -76,18 +76,17 @@ public class StackPointer extends Register {
     return instructions;
   }
 
-  public void store() {
-    savedStackPtr = stackPtr;
-    savedFreePtr = freePtr;
-  }
-
-  public void restore() {
-    stackPtr = savedStackPtr;
-    freePtr = savedFreePtr;
+  public void setState(int stackPtr, int freePtr) {
+    this.stackPtr = stackPtr;
+    this.freePtr = freePtr;
   }
 
   public int getStackPtr() {
     return stackPtr;
+  }
+
+  public int getFreePtr() {
+    return freePtr;
   }
 
   public int calculateOffset(int address) {
