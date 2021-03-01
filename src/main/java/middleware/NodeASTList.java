@@ -1,5 +1,6 @@
 package middleware;
 
+import backend.NodeASTVisitor;
 import backend.instructions.Instruction;
 import backend.registers.Register;
 import java.util.ArrayList;
@@ -40,6 +41,12 @@ public class NodeASTList<T> extends NodeAST implements Iterable<T> {
       instructions.addAll(((NodeAST) elem).translate(registers));
     }
     return instructions;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
+
   }
 
   public boolean isEmpty() {

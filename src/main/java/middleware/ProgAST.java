@@ -1,5 +1,6 @@
 package middleware;
 
+import backend.NodeASTVisitor;
 import backend.ProgramGenerator;
 import backend.instructions.EOC;
 import backend.instructions.Instruction;
@@ -74,6 +75,11 @@ public class ProgAST extends NodeAST {
     program.addCode(new CodeLabel("main", instructions));
 
     return null;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 
   public NodeASTList<FunctionDeclarationAST> getFunctionDeclarationASTS() {

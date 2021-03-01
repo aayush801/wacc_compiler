@@ -1,5 +1,6 @@
 package middleware.types_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.Instruction;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
@@ -46,5 +47,10 @@ public class BaseTypeAST extends TypeAST {
   @Override
   public List<Instruction> translate(List<Register> registers) {
     return null;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 }

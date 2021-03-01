@@ -1,5 +1,6 @@
 package middleware.types_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.Instruction;
 import backend.registers.Register;
 import errors.semantic_errors.Undefined;
@@ -70,5 +71,10 @@ public class PairElemTypeAST extends NodeAST {
   @Override
   public List<Instruction> translate(List<Register> registers) {
     return null;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 }

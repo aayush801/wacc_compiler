@@ -2,6 +2,7 @@ package backend;
 
 import backend.instructions.Instruction;
 import java.util.List;
+import middleware.NodeASTList;
 import middleware.ProgAST;
 import middleware.arrays_ast.ArrayAST;
 import middleware.arrays_ast.ArrayElemAST;
@@ -13,12 +14,14 @@ import middleware.function_ast.FunctionCallAST;
 import middleware.function_ast.FunctionDeclarationAST;
 import middleware.function_ast.ParamAST;
 import middleware.pair_ast.NewPairAST;
+import middleware.pair_ast.PairElemAST;
 import middleware.statement_ast.AssignmentAST;
 import middleware.statement_ast.BeginAST;
 import middleware.statement_ast.ChainedStatementAST;
 import middleware.statement_ast.ExitAST;
 import middleware.statement_ast.FreeAST;
 import middleware.statement_ast.IfElseAST;
+import middleware.statement_ast.LHSAssignAST;
 import middleware.statement_ast.PrintAST;
 import middleware.statement_ast.RHSAssignAST;
 import middleware.statement_ast.ReadAST;
@@ -26,6 +29,10 @@ import middleware.statement_ast.ReturnAST;
 import middleware.statement_ast.SkipAST;
 import middleware.statement_ast.VariableDeclarationAST;
 import middleware.statement_ast.WhileAST;
+import middleware.types_ast.ArrayTypeAST;
+import middleware.types_ast.BaseTypeAST;
+import middleware.types_ast.PairElemTypeAST;
+import middleware.types_ast.PairTypeAST;
 
 public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> {
 
@@ -85,6 +92,11 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
   }
 
   @Override
+  public List<Instruction> visit(PairElemAST pairElem) {
+    return null;
+  }
+
+  @Override
   public List<Instruction> visit(AssignmentAST assignment) {
     return null;
   }
@@ -130,6 +142,11 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
   }
 
   @Override
+  public List<Instruction> visit(LHSAssignAST rhs) {
+    return null;
+  }
+
+  @Override
   public List<Instruction> visit(RHSAssignAST rhs) {
     return null;
   }
@@ -146,6 +163,31 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
   @Override
   public List<Instruction> visit(WhileAST whileLoop) {
+    return null;
+  }
+
+  @Override
+  public List<Instruction> visit(NodeASTList nodeList) {
+    return null;
+  }
+
+  @Override
+  public List<Instruction> visit(BaseTypeAST baseType) {
+    return null;
+  }
+
+  @Override
+  public List<Instruction> visit(ArrayTypeAST arrayType) {
+    return null;
+  }
+
+  @Override
+  public List<Instruction> visit(PairTypeAST pairType) {
+    return null;
+  }
+
+  @Override
+  public List<Instruction> visit(PairElemTypeAST pairElemType) {
     return null;
   }
 }

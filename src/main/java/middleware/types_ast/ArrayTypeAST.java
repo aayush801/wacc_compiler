@@ -1,5 +1,6 @@
 package middleware.types_ast;
 
+import backend.NodeASTVisitor;
 import backend.instructions.Instruction;
 import backend.registers.Register;
 import frontend.identifier_objects.TYPE;
@@ -61,5 +62,10 @@ public class ArrayTypeAST extends TypeAST {
   @Override
   public List<Instruction> translate(List<Register> registers) {
     return null;
+  }
+
+  @Override
+  public List<Instruction> accept(NodeASTVisitor visitor) {
+    return (List<Instruction>) visitor.visit(this);
   }
 }

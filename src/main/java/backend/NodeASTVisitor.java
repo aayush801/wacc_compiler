@@ -2,6 +2,7 @@ package backend;
 
 import backend.instructions.Instruction;
 import java.util.List;
+import middleware.NodeASTList;
 import middleware.ProgAST;
 import middleware.arrays_ast.ArrayAST;
 import middleware.arrays_ast.ArrayElemAST;
@@ -28,6 +29,10 @@ import middleware.statement_ast.ReturnAST;
 import middleware.statement_ast.SkipAST;
 import middleware.statement_ast.VariableDeclarationAST;
 import middleware.statement_ast.WhileAST;
+import middleware.types_ast.ArrayTypeAST;
+import middleware.types_ast.BaseTypeAST;
+import middleware.types_ast.PairElemTypeAST;
+import middleware.types_ast.PairTypeAST;
 
 public abstract class NodeASTVisitor<T> {
 
@@ -83,4 +88,13 @@ public abstract class NodeASTVisitor<T> {
 
   public abstract T visit(WhileAST whileLoop);
 
+  public abstract T visit(NodeASTList nodeList);
+
+  public abstract T visit(BaseTypeAST baseType);
+
+  public abstract T visit(ArrayTypeAST arrayType);
+
+  public abstract T visit(PairTypeAST pairType);
+
+  public abstract T visit(PairElemTypeAST pairElemType);
 }
