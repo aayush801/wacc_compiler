@@ -23,7 +23,7 @@ public class VariableDeclarationAST extends StatementAST {
   private final TypeAST typeAST;
   private final String varName;
   private final RHSAssignAST rhsAssignAST;
-  public STACK_OBJECT varObj;
+  public VARIABLE varObj;
 
   public VariableDeclarationAST(ParserRuleContext ctx, TypeAST typeAST,
       String varName, RHSAssignAST rhsAssignAST) {
@@ -83,8 +83,9 @@ public class VariableDeclarationAST extends StatementAST {
     List<Instruction> instructions = rhsAssignAST.translate(registers);
 
     // Amount of bytes to add to the stack pointer to get address of variable
-    int stackAddress = program.SP.push(varObj); //pushes varObj onto stack
-    int offset = program.SP.calculateOffset(stackAddress); // gets address of var in respect to the current stack pointer
+    //int stackAddress = program.SP.push(varObj); //pushes varObj onto stack
+    varObj.setLive(true);
+    int offset = program.SP.calculateOffset(varObj.getStackAddress()); // gets address of var in respect to the current stack pointer
     TYPE type = typeAST.getType();
     instructions.add(new Store(ConditionCode.NONE, destination,
         new ImmediateOffset(program.SP, new ImmediateNum(offset)), type.getSize()));

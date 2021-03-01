@@ -9,7 +9,9 @@ import frontend.identifier_objects.basic_types.INT;
 import frontend.identifier_objects.basic_types.PAIR;
 import frontend.identifier_objects.basic_types.STR;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SymbolTable {
 
@@ -67,6 +69,9 @@ public class SymbolTable {
 
   public void add(String name, IDENTIFIER obj) {
     dict.put(name, obj);
+    if(obj instanceof VARIABLE){
+
+    }
   }
 
   // lookup identifier in the local scope
@@ -89,5 +94,10 @@ public class SymbolTable {
     return dict.values().stream()
         .mapToInt(e -> (e instanceof VARIABLE) ? ((VARIABLE) e).getType().getSize() : 0).sum();
   }
+
+  public List<IDENTIFIER> getVariables(){
+    return dict.values().stream().filter(e -> e instanceof VARIABLE).collect(Collectors.toList());
+  }
+
 
 }

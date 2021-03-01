@@ -78,6 +78,11 @@ public class IdentifierAST extends ExpressionAST {
 
       STACK_OBJECT varStackObj = (STACK_OBJECT) varObj;
 
+      if(!varStackObj.isLive()){
+        // if the object is not live yet, then we must be referencing an even older declaration
+        varStackObj = (STACK_OBJECT) scopeST.getEncSymTable().lookupAll(identifier);
+      }
+
       // calculate offset
       int offset = program.SP.calculateOffset(((STACK_OBJECT) varObj).getStackAddress());
 

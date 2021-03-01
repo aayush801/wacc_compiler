@@ -104,8 +104,14 @@ public class ArrayElemAST extends ExpressionAST {
     Register target = registers.get(0);
 
     // setting target to point to the array we want to index.
-    STACK_OBJECT varObj = (STACK_OBJECT) scopeST.lookupAll(arrayName);
-    int offset = program.SP.calculateOffset(varObj.getStackAddress());
+    STACK_OBJECT varStackObj = (STACK_OBJECT) scopeST.lookupAll(arrayName);
+
+    if(!varStackObj.isLive()){
+      // if the object is not live yet, then we must be referencing an even older declaration
+      varStackObj = (STACK_OBJECT) scopeST.getEncSymTable().lookupAll(arrayName);
+    }
+
+    int offset = program.SP.calculateOffset(varStackObj.getStackAddress());
     ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, new StackPointer(),
             new ImmediateNum(offset), false));
 
