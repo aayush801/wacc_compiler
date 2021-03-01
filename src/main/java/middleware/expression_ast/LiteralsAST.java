@@ -5,7 +5,6 @@ import backend.instructions.Load;
 import backend.instructions.Move;
 import backend.instructions.addr_modes.Address;
 import backend.instructions.addr_modes.ImmediateAddress;
-import backend.instructions.stack_instructions.Push;
 import backend.labels.data.DataLabel;
 import backend.operands.ImmediateChar;
 import backend.operands.ImmediateNum;
@@ -14,6 +13,7 @@ import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.BOOL;
 import frontend.identifier_objects.basic_types.CHAR;
 import frontend.identifier_objects.basic_types.INT;
+import frontend.identifier_objects.basic_types.PAIR;
 import frontend.identifier_objects.basic_types.STR;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +64,12 @@ public class LiteralsAST extends ExpressionAST {
       DataLabel dataLabel = new DataLabel(ctx.getText());
       program.addData(dataLabel);
       instruction = new Load(destination, new Address(dataLabel.getLabelName()));
+
+    } else if (type instanceof PAIR) {
+
+      // null pair represented as 0
+      instruction = new Load(destination, new ImmediateAddress(0));
+
     }
 
     //return new Collections.singleton(new Load(registers.get(0), new Address()));

@@ -264,6 +264,15 @@ public class CodeGenerationTests {
   }
 
   @Test
+  public void testUseNull1() throws IOException {
+    String instruction = "begin\n"
+        + "\tpair(int, int) p = null ;\n"
+        + "\tint x = fst p\n"
+        + "end";
+    checkSourceCode(instruction);
+  }
+
+  @Test
   public void testCharArrayElemAssignment() throws IOException {
     String instruction = "begin  " +
         "char[] x = ['c', 'a', 't'] ;\n" +
