@@ -80,6 +80,9 @@ public class ProgramGenerator {
       return stackInstructions;
     }
 
+    // store a copy of SP state
+    SP.store();
+
     // decrement virtual stack and generate stack instruction
     stackInstructions.addAll(SP.decrement(estimatedStackSize));
 
@@ -105,6 +108,10 @@ public class ProgramGenerator {
 
     // decrement virtual stack and generate stack instruction
     stackInstructions.addAll(SP.increment(estimatedStackSize));
+
+    // restore SP state before scope
+    SP.restore();
+
 
     return stackInstructions;
   }

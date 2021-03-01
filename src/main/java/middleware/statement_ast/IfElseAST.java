@@ -84,21 +84,17 @@ public class IfElseAST extends StatementAST {
 
     instructions.add(new Branch(ConditionCode.EQ, body.getLabel(), false));
 
-    program.SP.store();
     instructions.addAll(program.allocateStackSpace(ST1));
     instructions.addAll(firstStatAST.translate(registers));
     instructions.addAll(program.deallocateStackSpace(ST1));
-    program.SP.restore();
 
     instructions.add(new Branch(rest.getLabel()));
 
     instructions.add(body);
 
-    program.SP.store();
     instructions.addAll(program.allocateStackSpace(ST2));
     instructions.addAll(secondStatAST.translate(registers));
     instructions.addAll(program.deallocateStackSpace(ST2));
-    program.SP.restore();
 
     instructions.add(rest);
 
