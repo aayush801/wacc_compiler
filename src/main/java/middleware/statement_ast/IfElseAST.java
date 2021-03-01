@@ -84,17 +84,29 @@ public class IfElseAST extends StatementAST {
 
     instructions.add(new Branch(ConditionCode.EQ, body.getLabel(), false));
 
+    // save the stack state in the symbol table
+    ST1.saveStackState(program.SP);
+
     instructions.addAll(program.allocateStackSpace(ST1));
     instructions.addAll(firstStatAST.translate(registers));
     instructions.addAll(program.deallocateStackSpace(ST1));
+
+    // save the stack state in the symbol table
+    ST1.restoreStackState(program.SP);
 
     instructions.add(new Branch(rest.getLabel()));
 
     instructions.add(body);
 
+    // save the stack state in the symbol table
+    ST2.saveStackState(program.SP);
+
     instructions.addAll(program.allocateStackSpace(ST2));
     instructions.addAll(secondStatAST.translate(registers));
     instructions.addAll(program.deallocateStackSpace(ST2));
+
+    // save the stack state in the symbol table
+    ST2.restoreStackState(program.SP);
 
     instructions.add(rest);
 

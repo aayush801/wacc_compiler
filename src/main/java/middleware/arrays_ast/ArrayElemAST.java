@@ -1,6 +1,7 @@
 package middleware.arrays_ast;
 
 import backend.instructions.Branch;
+import backend.instructions.ConditionCode;
 import backend.instructions.Instruction;
 import backend.instructions.Load;
 import backend.instructions.Move;
@@ -133,7 +134,6 @@ public class ArrayElemAST extends ExpressionAST {
       ExpressionAST exprAST = expressionASTS.get(i);
       ret.addAll(exprAST.translate(remainingRegs));
 
-      // TODO: MAYBE BE MISSING SB STUFF
       ret.add(new Load(target, new ZeroOffset(target)));
 
       // Array index checking
@@ -160,7 +160,8 @@ public class ArrayElemAST extends ExpressionAST {
 
     // if arrayElemAST requires dereference
     if (requiresDereference) {
-      ret.add(new Load(target, new ZeroOffset(target)));
+      ret.add(new Load(ConditionCode.NONE, target, new ZeroOffset(target),
+          type.getSize()));
     }
 
     return ret;

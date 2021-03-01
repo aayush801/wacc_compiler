@@ -1,5 +1,6 @@
 package middleware.symbol_table;
 
+import backend.registers.StackPointer;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
@@ -17,6 +18,8 @@ public class SymbolTable {
   private final SymbolTable encSymTable;
   private final LinkedHashMap<String, IDENTIFIER> dict;
   protected TYPE scopeReturnType = null;
+
+  int stackPtr = 0, freePtr = 0;
 
   public SymbolTable() {
     this(null);
@@ -94,6 +97,15 @@ public class SymbolTable {
   public List<VARIABLE> getVariables() {
     return dict.values().stream().filter(e -> e instanceof VARIABLE).map(e -> (VARIABLE) e)
         .collect(Collectors.toList());
+  }
+
+  public void saveStackState(StackPointer SP){
+    stackPtr = SP.getStackPtr();
+    freePtr = SP.getFreePtr();
+  }
+
+  public void restoreStackState(StackPointer SP){
+    SP.setState(stackPtr, freePtr);
   }
 
 
