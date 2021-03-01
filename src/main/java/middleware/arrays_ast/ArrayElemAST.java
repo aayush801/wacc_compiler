@@ -1,7 +1,5 @@
 package middleware.arrays_ast;
 
-import backend.labels.code.PrimitiveLabel;
-import backend.primitive_functions.PrintArrayBoundsChecks;
 import backend.instructions.Branch;
 import backend.instructions.Instruction;
 import backend.instructions.Load;
@@ -9,8 +7,10 @@ import backend.instructions.Move;
 import backend.instructions.addr_modes.ZeroOffset;
 import backend.instructions.arithmetic.Arithmetic;
 import backend.instructions.arithmetic.ArithmeticOpcode;
+import backend.labels.code.PrimitiveLabel;
 import backend.operands.ImmediateNum;
 import backend.operands.ImmediateNumLSL;
+import backend.primitive_functions.PrintArrayBoundsChecks;
 import backend.registers.Register;
 import backend.registers.StackPointer;
 import errors.semantic_errors.MismatchedTypes;
@@ -38,12 +38,18 @@ public class ArrayElemAST extends ExpressionAST {
   private final NodeASTList<ExpressionAST> expressionASTS;
   public TYPE type;
   private SymbolTable scopeST;
+  private boolean requiresDereference = true;
 
   public ArrayElemAST(ParserRuleContext ctx, String arrayName,
       NodeASTList<ExpressionAST> expressionASTS) {
     super(ctx);
     this.arrayName = arrayName;
     this.expressionASTS = expressionASTS;
+  }
+
+
+  public void setDereference(boolean requiresDereference) {
+    this.requiresDereference = requiresDereference;
   }
 
   public TYPE getType() {
@@ -107,14 +113,14 @@ public class ArrayElemAST extends ExpressionAST {
     // setting target to point to the array we want to index.
     STACK_OBJECT varStackObj = (STACK_OBJECT) scopeST.lookupAll(arrayName);
 
-    if(!varStackObj.isLive()){
+    if (!varStackObj.isLive()) {
       // if the object is not live yet, then we must be referencing an even older declaration
       varStackObj = (STACK_OBJECT) scopeST.getEncSymTable().lookupAll(arrayName);
     }
 
     int offset = program.SP.calculateOffset(varStackObj.getStackAddress());
     ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, new StackPointer(),
-            new ImmediateNum(offset), false));
+        new ImmediateNum(offset), false));
 
     List<Register> remainingRegs = new ArrayList<>(registers);
     remainingRegs.remove(0);
@@ -149,8 +155,10 @@ public class ArrayElemAST extends ExpressionAST {
           new ImmediateNumLSL(index, 2), false));
     }
 
-    ret.add(new Load(target, new ZeroOffset(target)));
-
+    // if arrayElemAST requires dereference
+    if (requiresDereference) {
+      ret.add(new Load(target, new ZeroOffset(target)));
+    }
 
     return ret;
   }

@@ -225,6 +225,35 @@ public class CodeGenerationTests {
   }
 
   @Test
+  public void testArray() throws IOException {
+    String instruction = "begin\n"
+        + "  int[] a = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ;\n"
+        + "  int i = 0 ;\n"
+        + "  while i < 10 \n"
+        + "  do\n"
+        + "    a[i] = i ;\n"
+        + "    i = i + 1\n"
+        + "  done ;\n"
+        + "  print a ;\n"
+        + "  print \" = {\" ;\n"
+        + "  i = 0 ;\n"
+        + "  while i < 10 \n"
+        + "  do \n"
+        + "    print a[i] ;\n"
+        + "    if i < 9\n"
+        + "    then\n"
+        + "      print \", \"\n"
+        + "    else\n"
+        + "      skip\n"
+        + "    fi ;\n"
+        + "    i = i + 1\n"
+        + "  done ;\n"
+        + "  println \"}\"\n"
+        + "end";
+    checkSourceCode(instruction);
+  }
+
+  @Test
   public void testintArrayElemAssignment() throws IOException {
     String instruction = "begin  " +
         "int[] x = [1, 3] ;\n" +

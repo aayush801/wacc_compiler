@@ -293,7 +293,9 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
       return new LHSAssignAST(ctx, ctx.IDENT().getText());
     }
     if (ctx.arrayElem() != null) {
-      return new LHSAssignAST(ctx, visitArrayElem(ctx.arrayElem()));
+      ArrayElemAST arrayElemAST = visitArrayElem(ctx.arrayElem());
+      arrayElemAST.setDereference(false);
+      return new LHSAssignAST(ctx, arrayElemAST);
     }
     if (ctx.pairElem() != null) {
       return new LHSAssignAST(ctx, visitPairElem(ctx.pairElem()));
