@@ -619,40 +619,51 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
     // Allocate memory for two address, one for each element of the pair
     instructions.add(new Load(Register.R0, new ImmediateAddress(8)));
     instructions.add(new Branch("malloc", true));
-    Register pairAddress = program.registers.get(0);
+
+    Register pairAddress = program.registers.remove(0);
 
     // Copy the address to the first element of the pair
     instructions.add(new Move(pairAddress, Register.R0));
-    List<Register> remaining = new ArrayList<>(program.registers);
-    remaining.remove(0);
 
-    Register pairElem = remaining.get(0);
+    Register pairElem = program.registers.get(0);
+
+    // evaluate firstExpr translating it into a code representation
     instructions.addAll(newPair.getFstExpr().accept(this));
 
     // Allocate memory for first element of the pair based on the size of the type
     int fstSize = newPair.getPair().getFirst().getSize();
-    instructions.add(new Load(Register.R0, new ImmediateAddress(fstSize)));
-
-    instructions.add(new Branch("malloc", true));
-
-    // Store the value of the first element at the given address
-    instructions.add(new Store(pairElem, new ZeroOffset(Register.R0), fstSize));
+    allocateAndStorePairElemToMemory(instructions, pairElem, fstSize);
 
     // Store the address of the first element into the first word of the pair
     instructions.add(new Store(Register.R0, new ZeroOffset(pairAddress)));
 
     // Repeating same for second element
-    int sndSize = newPair.getPair().getSecond().getSize();
-    instructions.addAll(newPair.getSndExpr().accept(this));
-    instructions.add(new Load(Register.R0, new ImmediateAddress(sndSize)));
 
-    instructions.add(new Branch("malloc", true));
-    instructions.add(new Store(pairElem, new ZeroOffset(Register.R0), sndSize));
+    // evaluate firstExpr translating it into a code representation
+    instructions.addAll(newPair.getSndExpr().accept(this));
+
+    // Allocate memory for second element of the pair based on the size of the type
+    int sndSize = newPair.getPair().getSecond().getSize();
+    allocateAndStorePairElemToMemory(instructions, pairElem, sndSize);
 
     // Storing address to value of second element in the second word of pair
     instructions.add(new Store(Register.R0, new ImmediateOffset(pairAddress, new ImmediateNum(4))));
 
+    program.registers.add(0, pairAddress);
+
     return instructions;
+  }
+
+  // helper method
+  private void allocateAndStorePairElemToMemory(List<Instruction> instructions, Register pairElem,
+      int typeSize) {
+
+    instructions.add(new Load(Register.R0, new ImmediateAddress(typeSize)));
+
+    instructions.add(new Branch("malloc", true));
+
+    // Store the value of the pair element at the given address
+    instructions.add(new Store(pairElem, new ZeroOffset(Register.R0), typeSize));
   }
 
   @Override
@@ -972,11 +983,13 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
   @Override
   public List<Instruction> visit(RHSAssignAST rhs) {
+
     ExpressionAST expressionAST = rhs.getExpressionAST();
     ArrayAST arrayAST = rhs.getArrayAST();
     NewPairAST newPairAST = rhs.getNewPairAST();
     PairElemAST pairElemAST = rhs.getPairElemAST();
     FunctionCallAST functionCallAST = rhs.getFunctionCallAST();
+
     if (expressionAST != null) {
 
       return expressionAST.accept(this);

@@ -36,16 +36,15 @@ public class CodeGenerationTests {
   public void testFuncDeclaration() throws IOException {
     String instruction =
         "begin\n"
-            + "  int i = 0 ;\n"
-            + "  int x = 10 ;\n"
-            + "  int y = 17 ;\n"
-            + "  while (y > 0 || x > 0) do\n"
-            + "    x = x - 1 ;\n"
-            + "    y = y - 1 ;\n"
-            + "    i = i + 1\n"
-            + "  done ;\n"
-            + "  print \"max value = \";\n"
-            + "  println i\n"
+            + "\n"
+            + "  pair(int, int) getPair() is\n"
+            + "    pair(int, int) p = newpair(10,15);\n"
+            + "    return p\n"
+            + "  end\n"
+            + "\n"
+            + "  pair(int, int) p = call getPair();\n"
+            + "  int x = fst p;\n"
+            + "  println x\n"
             + "end";
     checkSourceCode(instruction);
   }
