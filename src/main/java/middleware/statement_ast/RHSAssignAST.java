@@ -200,5 +200,31 @@ public class RHSAssignAST extends StatementAST {
   public List<Instruction> accept(NodeASTVisitor visitor) {
     return (List<Instruction>) visitor.visit(this);
   }
+
+
+  public ExpressionAST getExpressionAST() {
+    return expressionAST;
+  }
+
+  public ArrayAST getArrayAST() {
+    return arrayAST;
+  }
+
+  public NewPairAST getNewPairAST() {
+    return newPairAST;
+  }
+
+  public PairElemAST getPairElemAST() {
+    return pairElemAST;
+  }
+
+  public FunctionCallAST getFunctionCallAST() {
+    return functionCallAST;
+  }
+
+  public SymbolTable getScopeST() {
+    return scopeST;
+  }
+
 }
 

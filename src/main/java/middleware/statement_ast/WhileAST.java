@@ -99,4 +99,16 @@ public class WhileAST extends StatementAST {
     return (List<Instruction>) visitor.visit(this);
   }
 
+  public ExpressionAST getExpressionAST() {
+    return expressionAST;
+  }
+
+  public StatementAST getStatementAST() {
+    return statementAST;
+  }
+
+  public SymbolTable getScopeST() {
+    return scopeST;
+  }
+
 }

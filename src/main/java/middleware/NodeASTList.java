@@ -49,6 +49,10 @@ public class NodeASTList<T> extends NodeAST implements Iterable<T> {
 
   }
 
+  public List<T> getASTList() {
+    return ASTList;
+  }
+
   public boolean isEmpty() {
     return ASTList.isEmpty();
   }

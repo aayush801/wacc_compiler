@@ -14,6 +14,7 @@ import backend.instructions.addr_modes.ImmediateOffset;
 import backend.instructions.addr_modes.ZeroOffset;
 import backend.instructions.arithmetic.Arithmetic;
 import backend.instructions.arithmetic.ArithmeticOpcode;
+import backend.instructions.stack_instructions.LabelledInstruction;
 import backend.instructions.stack_instructions.Pop;
 import backend.instructions.stack_instructions.Push;
 import backend.labels.code.CodeLabel;
@@ -41,8 +42,11 @@ import frontend.identifier_objects.basic_types.STR;
 import java.util.ArrayList;
 import java.util.List;
 import middleware.ExpressionAST;
+import middleware.NodeAST;
 import middleware.NodeASTList;
 import middleware.ProgAST;
+import middleware.StatementAST;
+import middleware.TypeAST;
 import middleware.arrays_ast.ArrayAST;
 import middleware.arrays_ast.ArrayElemAST;
 import middleware.expression_ast.BinOpExprAST;
@@ -81,9 +85,9 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
   @Override
   public String toString() {
-    return program.toString();  
+    return program.toString();
   }
-  
+
   @Override
   public List<Instruction> visit(ProgAST prog) {
 
@@ -114,7 +118,7 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
   public List<Instruction> visit(ArrayAST array) {
     Register destination = program.registers.get(0);
     program.registers.remove(0);
-    
+
     List<Instruction> ret = new ArrayList<>();
 
     // Calculate size of heap space required.
@@ -129,7 +133,7 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
     // Store result from malloc in destination.
     ret.add(new Move(destination, Register.R0));
-    
+
     Register target = program.registers.get(0);
 
     // Store parameters on the heap
@@ -142,15 +146,15 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
               new ImmediateNum(4 + i * elementSize)),
           array.getArrayObj().getType().getSize()));
     }
-    
+
     program.registers.add(0, destination);
-    
+
     // Store size of array on the starting address of the heap entry.
     ret.add(new Load(target, new ImmediateAddress(length)));
 
     // storing address of the array.
     ret.add(new Store(target, new ZeroOffset(destination)));
-    
+
     return ret;
   }
 
@@ -217,7 +221,6 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
       ret.add(new Load(ConditionCode.NONE, target, new ZeroOffset(target),
           arrayElem.type.getSize()));
     }
-
 
     return ret;
   }
@@ -380,7 +383,7 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
     if (varObj instanceof STACK_OBJECT) {
 
       STACK_OBJECT varStackObj = (STACK_OBJECT) varObj;
-      if(!varStackObj.isLive()){
+      if (!varStackObj.isLive()) {
         // if the object is not live yet, then we must be referencing an even older declaration
         varStackObj = (STACK_OBJECT) identifier.getScopeST().getEncSymTable()
             .lookupAll(identifier.getIdentifier());
@@ -618,6 +621,49 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
   @Override
   public List<Instruction> visit(RHSAssignAST rhs) {
+    ExpressionAST expressionAST = rhs.getExpressionAST();
+    ArrayAST arrayAST = rhs.getArrayAST();
+    NewPairAST newPairAST = rhs.getNewPairAST();
+    PairElemAST pairElemAST = rhs.getPairElemAST();
+    FunctionCallAST functionCallAST = rhs.getFunctionCallAST();
+    if (expressionAST != null) {
+
+      return expressionAST.accept(this);
+
+    }
+
+    if (arrayAST != null) {
+
+      return arrayAST.accept(this);
+
+    }
+
+    if (newPairAST != null) {
+
+      return newPairAST.accept(this);
+
+    }
+
+    if (pairElemAST != null) {
+      Register target = program.registers.get(0);
+
+      TYPE type = pairElemAST.getType();
+
+      List<Instruction> ret = pairElemAST.accept(this);
+
+      // Get actual value into target
+      ret.add(new Load(target, new ZeroOffset(target), type.getSize()));
+
+      return ret;
+
+    }
+
+    if (functionCallAST != null) {
+
+      return functionCallAST.accept(this);
+
+    }
+
     return null;
   }
 
@@ -628,17 +674,69 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
   @Override
   public List<Instruction> visit(VariableDeclarationAST variableDeclaration) {
-    return null;
+    RHSAssignAST rhsAssignAST = variableDeclaration.getRhsAssignAST();
+    VARIABLE varObj = variableDeclaration.getVarObj();
+    TypeAST typeAST = variableDeclaration.getTypeAST();
+    Register destination = program.registers.get(0);
+
+    List<Instruction> instructions = rhsAssignAST.accept(this);
+
+    // Amount of bytes to add to the stack pointer to get address of variable
+
+    //int stackAddress = program.SP.push(varObj); //pushes varObj onto stack
+    varObj.setLive(true);
+    // gets address of var in respect to the current stack pointer
+    int offset = program.SP.calculateOffset(varObj.getStackAddress());
+    TYPE type = typeAST.getType();
+    instructions.add(new Store(ConditionCode.NONE, destination,
+        new ImmediateOffset(program.SP, new ImmediateNum(offset)), type.getSize()));
+
+    return instructions;
   }
 
   @Override
   public List<Instruction> visit(WhileAST whileLoop) {
-    return null;
+    SymbolTable scopeST = whileLoop.getST();
+    StatementAST statementAST = whileLoop.getStatementAST();
+    ExpressionAST expressionAST = whileLoop.getExpressionAST();
+    Register destination = program.registers.get(0);
+    List<Instruction> instructions = new ArrayList<>();
+
+    LabelledInstruction rest = new LabelledInstruction();
+    LabelledInstruction body = new LabelledInstruction();
+
+    instructions.add(new Branch(rest.getLabel()));
+
+    // translate rest of code statement
+    instructions.add(body);
+
+    // save the stack state in the symbol table
+    scopeST.saveStackState(program.SP);
+
+    instructions.addAll(program.allocateStackSpace(scopeST));
+    instructions.addAll(statementAST.accept(this));
+    instructions.addAll(program.deallocateStackSpace(scopeST));
+
+    // save the stack state in the symbol table
+    scopeST.restoreStackState(program.SP);
+
+    // translate expression for loop (variance)
+    instructions.add(rest);
+    instructions.addAll(expressionAST.accept(this));
+
+    instructions.add(new Compare(destination, ImmediateNum.ONE));
+    instructions.add(new Branch(ConditionCode.EQ, body.getLabel(), false));
+
+    return instructions;
   }
 
   @Override
   public List<Instruction> visit(NodeASTList nodeList) {
-    return null;
+    List<Instruction> instructions = new ArrayList<>();
+    for (Object elem : nodeList.getASTList()) {
+      instructions.addAll(((NodeAST) elem).accept(this));
+    }
+    return instructions;
   }
 
   @Override
