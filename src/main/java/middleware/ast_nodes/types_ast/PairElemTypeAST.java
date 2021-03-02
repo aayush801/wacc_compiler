@@ -1,10 +1,10 @@
 package middleware.ast_nodes.types_ast;
 
-import middleware.NodeASTVisitor;
 import errors.semantic_errors.Undefined;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.PAIR;
 import middleware.NodeAST;
+import middleware.NodeASTVisitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 // PairElemType could be a baseType, an arrayType, or an identifier.

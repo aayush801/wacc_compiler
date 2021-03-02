@@ -1,7 +1,6 @@
 package middleware;
 
 import middleware.ast_nodes.NodeASTList;
-import middleware.ast_nodes.prog_ast.ProgAST;
 import middleware.ast_nodes.arrays_ast.ArrayAST;
 import middleware.ast_nodes.arrays_ast.ArrayElemAST;
 import middleware.ast_nodes.expression_ast.BinOpExprAST;
@@ -13,6 +12,7 @@ import middleware.ast_nodes.function_ast.FunctionDeclarationAST;
 import middleware.ast_nodes.function_ast.ParamAST;
 import middleware.ast_nodes.pair_ast.NewPairAST;
 import middleware.ast_nodes.pair_ast.PairElemAST;
+import middleware.ast_nodes.prog_ast.ProgAST;
 import middleware.ast_nodes.statement_ast.AssignmentAST;
 import middleware.ast_nodes.statement_ast.BeginAST;
 import middleware.ast_nodes.statement_ast.ChainedStatementAST;

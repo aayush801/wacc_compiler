@@ -1,8 +1,8 @@
 package middleware.ast_nodes.types_ast;
 
-import middleware.NodeASTVisitor;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.PAIR;
+import middleware.NodeASTVisitor;
 import middleware.ast_nodes.TypeAST;
 import org.antlr.v4.runtime.ParserRuleContext;
 

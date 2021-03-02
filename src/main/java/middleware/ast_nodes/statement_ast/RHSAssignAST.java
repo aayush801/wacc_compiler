@@ -1,8 +1,8 @@
 package middleware.ast_nodes.statement_ast;
 
-import middleware.NodeASTVisitor;
 import frontend.identifier_objects.TYPE;
 import middleware.ExpressionAST;
+import middleware.NodeASTVisitor;
 import middleware.ast_nodes.StatementAST;
 import middleware.ast_nodes.arrays_ast.ArrayAST;
 import middleware.ast_nodes.function_ast.FunctionCallAST;

@@ -1,8 +1,8 @@
 package middleware.ast_nodes.prog_ast;
 
 import middleware.NodeAST;
-import middleware.ast_nodes.NodeASTList;
 import middleware.NodeASTVisitor;
+import middleware.ast_nodes.NodeASTList;
 import middleware.ast_nodes.StatementAST;
 import middleware.ast_nodes.function_ast.FunctionDeclarationAST;
 import middleware.symbol_table.SymbolTable;

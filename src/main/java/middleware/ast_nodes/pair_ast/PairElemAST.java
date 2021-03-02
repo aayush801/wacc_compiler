@@ -1,12 +1,12 @@
 package middleware.ast_nodes.pair_ast;
 
-import middleware.NodeASTVisitor;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.PAIR;
 import middleware.ExpressionAST;
 import middleware.NodeAST;
+import middleware.NodeASTVisitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class PairElemAST extends NodeAST {

@@ -1,6 +1,5 @@
 package middleware.ast_nodes.statement_ast;
 
-import middleware.NodeASTVisitor;
 import errors.semantic_errors.Undefined;
 import errors.semantic_errors.expressionNotFound;
 import frontend.identifier_objects.IDENTIFIER;
@@ -8,6 +7,7 @@ import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
 import middleware.NodeAST;
+import middleware.NodeASTVisitor;
 import middleware.ast_nodes.StatementAST;
 import middleware.ast_nodes.arrays_ast.ArrayElemAST;
 import middleware.ast_nodes.pair_ast.PairElemAST;

@@ -3,7 +3,7 @@
 import antlr.WaccLexer;
 import antlr.WaccParser;
 import antlr.WaccParser.ProgContext;
-import backend.WaccCodeGeneratorVisitor;
+import backend.WaccTranslator;
 import errors.WaccError;
 import frontend.syntactic_parser.SyntacticParser;
 import frontend.syntactic_parser.SyntaxErrorListener;
@@ -106,24 +106,24 @@ public class WaccCompiler {
 
     SyntacticParser syntacticParser = new SyntacticParser(syntaxErrorListener);
 
-    ProgContext progParseTree = parser.prog();
+    ProgContext parseTree = parser.prog();
 
     // only do further syntax analysis if tokenization passed
     if (!syntaxErrorListener.hasErrors()) {
 
-      syntacticParser.visit(progParseTree);
+      syntacticParser.visit(parseTree);
 
     }
 
-    return progParseTree;
+    return parseTree;
 
   }
 
-  public NodeAST parseSemantics(ProgContext progParseTree) {
+  public NodeAST parseSemantics(ProgContext parseTree) {
 
     WaccASTParser semanticParser = new WaccASTParser();
 
-    NodeAST tree = semanticParser.visit(progParseTree);
+    NodeAST tree = semanticParser.visit(parseTree);
 
     tree.check();
 
@@ -133,7 +133,7 @@ public class WaccCompiler {
 
   public String translateCode(NodeAST ASTtree) {
 
-    WaccCodeGeneratorVisitor codeGenerator = new WaccCodeGeneratorVisitor();
+    WaccTranslator codeGenerator = new WaccTranslator();
 
     codeGenerator.visit(ASTtree);
 

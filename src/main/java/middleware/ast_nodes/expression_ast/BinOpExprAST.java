@@ -1,6 +1,5 @@
 package middleware.ast_nodes.expression_ast;
 
-import middleware.NodeASTVisitor;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.NotAFunction;
 import frontend.identifier_objects.IDENTIFIER;
@@ -8,6 +7,7 @@ import frontend.identifier_objects.basic_types.BOOL;
 import frontend.identifier_objects.basic_types.CHAR;
 import frontend.identifier_objects.basic_types.INT;
 import middleware.ExpressionAST;
+import middleware.NodeASTVisitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class BinOpExprAST extends ExpressionAST {

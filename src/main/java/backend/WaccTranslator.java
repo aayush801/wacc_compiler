@@ -49,9 +49,8 @@ import java.util.ArrayList;
 import java.util.List;
 import middleware.ExpressionAST;
 import middleware.NodeAST;
-import middleware.ast_nodes.NodeASTList;
 import middleware.NodeASTVisitor;
-import middleware.ast_nodes.prog_ast.ProgAST;
+import middleware.ast_nodes.NodeASTList;
 import middleware.ast_nodes.StatementAST;
 import middleware.ast_nodes.TypeAST;
 import middleware.ast_nodes.arrays_ast.ArrayAST;
@@ -65,6 +64,7 @@ import middleware.ast_nodes.function_ast.FunctionDeclarationAST;
 import middleware.ast_nodes.function_ast.ParamAST;
 import middleware.ast_nodes.pair_ast.NewPairAST;
 import middleware.ast_nodes.pair_ast.PairElemAST;
+import middleware.ast_nodes.prog_ast.ProgAST;
 import middleware.ast_nodes.statement_ast.AssignmentAST;
 import middleware.ast_nodes.statement_ast.BeginAST;
 import middleware.ast_nodes.statement_ast.ChainedStatementAST;
@@ -79,14 +79,14 @@ import middleware.ast_nodes.statement_ast.ReturnAST;
 import middleware.ast_nodes.statement_ast.SkipAST;
 import middleware.ast_nodes.statement_ast.VariableDeclarationAST;
 import middleware.ast_nodes.statement_ast.WhileAST;
-import middleware.symbol_table.SymbolTable;
 import middleware.ast_nodes.types_ast.ArrayTypeAST;
 import middleware.ast_nodes.types_ast.BaseTypeAST;
 import middleware.ast_nodes.types_ast.PairElemTypeAST;
 import middleware.ast_nodes.types_ast.PairTypeAST;
+import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> {
+public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
   private final ProgramGenerator program = new ProgramGenerator();
 

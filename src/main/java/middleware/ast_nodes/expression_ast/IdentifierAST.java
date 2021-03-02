@@ -1,12 +1,12 @@
 package middleware.ast_nodes.expression_ast;
 
-import middleware.NodeASTVisitor;
 import errors.semantic_errors.Undefined;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
 import middleware.ExpressionAST;
+import middleware.NodeASTVisitor;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 

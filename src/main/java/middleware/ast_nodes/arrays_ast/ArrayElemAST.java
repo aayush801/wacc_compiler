@@ -1,6 +1,5 @@
 package middleware.ast_nodes.arrays_ast;
 
-import middleware.NodeASTVisitor;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
 import frontend.identifier_objects.IDENTIFIER;
@@ -11,6 +10,7 @@ import frontend.identifier_objects.basic_types.ARRAY;
 import frontend.identifier_objects.basic_types.INT;
 import middleware.ExpressionAST;
 import middleware.NodeAST;
+import middleware.NodeASTVisitor;
 import middleware.ast_nodes.NodeASTList;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;

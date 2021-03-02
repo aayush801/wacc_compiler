@@ -1,12 +1,12 @@
 package middleware.ast_nodes.function_ast;
 
-import middleware.NodeASTVisitor;
 import errors.semantic_errors.DuplicateIdentifier;
 import errors.semantic_errors.Undefined;
 import frontend.identifier_objects.FUNCTION;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import middleware.NodeAST;
+import middleware.NodeASTVisitor;
 import middleware.ast_nodes.NodeASTList;
 import middleware.ast_nodes.StatementAST;
 import middleware.ast_nodes.TypeAST;

@@ -1,8 +1,8 @@
 package middleware.ast_nodes.statement_ast;
 
-import middleware.NodeASTVisitor;
 import frontend.identifier_objects.TYPE;
 import middleware.ExpressionAST;
+import middleware.NodeASTVisitor;
 import middleware.ast_nodes.StatementAST;
 import org.antlr.v4.runtime.ParserRuleContext;
 

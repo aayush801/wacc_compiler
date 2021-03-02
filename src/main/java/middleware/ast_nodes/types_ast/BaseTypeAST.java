@@ -1,11 +1,11 @@
 package middleware.ast_nodes.types_ast;
 
-import middleware.NodeASTVisitor;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import middleware.NodeAST;
+import middleware.NodeASTVisitor;
 import middleware.ast_nodes.TypeAST;
 import org.antlr.v4.runtime.ParserRuleContext;
 
