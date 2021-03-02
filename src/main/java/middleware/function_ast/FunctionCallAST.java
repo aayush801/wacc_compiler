@@ -37,6 +37,14 @@ public class FunctionCallAST extends NodeAST {
     this.actuals = actuals;
   }
 
+  public NodeASTList<ExpressionAST> getActuals() {
+    return actuals;
+  }
+
+  public String getFuncName() {
+    return funcName;
+  }
+
   public FUNCTION getFuncObj() {
     return funcObj;
   }

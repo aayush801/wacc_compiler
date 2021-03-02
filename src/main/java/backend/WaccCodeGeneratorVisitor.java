@@ -26,11 +26,13 @@ import backend.operands.ImmediateNum;
 import backend.operands.ImmediateNumASR;
 import backend.operands.ImmediateNumLSL;
 import backend.primitive_functions.BinOpChecks;
+import backend.primitive_functions.PairElemNullAccessCheck;
 import backend.primitive_functions.PrintArrayBoundsChecks;
 import backend.registers.Register;
 import backend.registers.StackPointer;
 import errors.semantic_errors.NotAFunction;
 import frontend.identifier_objects.IDENTIFIER;
+import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.STACK_OBJECT;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
@@ -81,7 +83,9 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> {
 
-  private ProgramGenerator program = new ProgramGenerator();
+  private final ProgramGenerator program = new ProgramGenerator();
+
+  private SymbolTable funcScope;
 
   @Override
   public String toString() {
@@ -548,22 +552,123 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
   @Override
   public List<Instruction> visit(FunctionCallAST functionCall) {
-    return null;
+    Register dest = program.registers.get(0);
+
+    NodeASTList<ExpressionAST> actuals = functionCall.getActuals();
+
+    List<Instruction> instructions = new ArrayList<>();
+
+    int originalStackPointer = program.SP.getStackPtr();
+
+    // push parameters onto the stack from last to first
+    for (int i = actuals.size() - 1; i >= 0; i--) {
+      ExpressionAST exprAST = actuals.get(i);
+
+      Register exprResult = program.registers.get(0);
+
+      // translate expression AST
+      List<Instruction> exprInstructions = exprAST.accept(this);
+      instructions.addAll(exprInstructions);
+
+      // push param to bottom of stack
+      int exprSize = exprAST.getType().getSize();
+      program.SP.decrement(exprSize);
+      instructions.add(new Store(exprResult,
+          new ImmediateOffset(program.SP, new ImmediateNum(-exprSize), true),
+          exprSize));
+    }
+
+    // branch to the function label
+    instructions.add(new Branch("f_" + functionCall.getFuncName(), true));
+
+    // restore stack pointer address (pop parameters off the stack)
+    int offset = program.SP.calculateOffset(originalStackPointer);
+    program.SP.increment(offset);
+    instructions.add(
+        new Arithmetic(ArithmeticOpcode.ADD, program.SP, program.SP,
+            new ImmediateNum(offset), false));
+
+    // store the result in the destination register
+    instructions.add(new Move(dest, Register.R0));
+
+    return instructions;
   }
 
   @Override
   public List<Instruction> visit(ParamAST param) {
+
+    PARAM paramObj = param.getParamObj();
+
+    // push paramObj onto the virtual stack
+    program.SP.push(paramObj);
+    paramObj.setLive(true);
+
     return null;
   }
 
   @Override
   public List<Instruction> visit(NewPairAST newPair) {
-    return null;
+    List<Instruction> instructions = new ArrayList<>();
+
+    // Allocate memory for two address, one for each element of the pair
+    instructions.add(new Load(Register.R0, new ImmediateAddress(8)));
+    instructions.add(new Branch("malloc", true));
+    Register pairAddress = program.registers.get(0);
+
+    // Copy the address to the first element of the pair
+    instructions.add(new Move(pairAddress, Register.R0));
+    List<Register> remaining = new ArrayList<>(program.registers);
+    remaining.remove(0);
+
+    Register pairElem = remaining.get(0);
+    instructions.addAll(newPair.getFstExpr().translate(remaining));
+
+    // Allocate memory for first element of the pair based on the size of the type
+    int fstSize = newPair.getPair().getFirst().getSize();
+    instructions.add(new Load(Register.R0, new ImmediateAddress(fstSize)));
+
+    instructions.add(new Branch("malloc", true));
+
+    // Store the value of the first element at the given address
+    instructions.add(new Store(pairElem, new ZeroOffset(Register.R0), fstSize));
+
+    // Store the address of the first element into the first word of the pair
+    instructions.add(new Store(Register.R0, new ZeroOffset(pairAddress)));
+
+    // Repeating same for second element
+    int sndSize = newPair.getPair().getSecond().getSize();
+    instructions.addAll(newPair.getSndExpr().translate(remaining));
+    instructions.add(new Load(Register.R0, new ImmediateAddress(sndSize)));
+
+    instructions.add(new Branch("malloc", true));
+    instructions.add(new Store(pairElem, new ZeroOffset(Register.R0), sndSize));
+
+    // Storing address to value of second element in the second word of pair
+    instructions.add(new Store(Register.R0, new ImmediateOffset(pairAddress, new ImmediateNum(4))));
+
+    return instructions;
   }
 
   @Override
   public List<Instruction> visit(PairElemAST pairElem) {
-    return null;
+    Register target = program.registers.get(0);
+
+    // evaluate the expression.
+    List<Instruction> ret = pairElem.getExprAST().accept(this);
+
+    // Move result into r0
+    ret.add(new Move(Register.R0, target));
+
+    // Branch to null check
+    PrimitiveLabel checkNullPrimitive = PairElemNullAccessCheck.pairElemCheckProgram(program);
+    ret.add(new Branch(checkNullPrimitive.getLabelName(), true));
+    program.addPrimitive(checkNullPrimitive);
+
+    // Load appropriate address into target.
+    ret.add(new Load(target, new ImmediateOffset(target,
+        new ImmediateNum(pairElem.isFirstElem() ? 0 : 4))));
+
+    return ret;
   }
 
   @Override
@@ -729,6 +834,9 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
     return instructions;
   }
+
+
+  /** DO NOT OVERRIDE **/
 
   @Override
   public List<Instruction> visit(NodeASTList nodeList) {

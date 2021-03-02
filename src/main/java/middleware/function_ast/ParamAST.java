@@ -17,12 +17,16 @@ public class ParamAST extends NodeAST {
 
   private final TypeAST typeAST;
   private final String paramName;
-  PARAM paramObj;
+  private PARAM paramObj;
 
   public ParamAST(ParserRuleContext ctx, TypeAST typeAST, String paramName) {
     super(ctx);
     this.typeAST = typeAST;
     this.paramName = paramName;
+  }
+
+  public PARAM getParamObj() {
+    return paramObj;
   }
 
   @Override

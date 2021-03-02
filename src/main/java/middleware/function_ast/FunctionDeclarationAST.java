@@ -93,7 +93,7 @@ public class FunctionDeclarationAST extends NodeAST {
 
     for (ParamAST paramAST : paramASTList) {
       paramAST.check();
-      funcObj.formals.add(paramAST.paramObj);
+      funcObj.formals.add(paramAST.getParamObj());
     }
 
     ST = ST.getEncSymTable();

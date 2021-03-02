@@ -6,16 +6,13 @@ import backend.instructions.Instruction;
 import backend.instructions.Load;
 import backend.instructions.Move;
 import backend.instructions.Store;
-import backend.instructions.addr_modes.AddressingMode;
 import backend.instructions.addr_modes.ImmediateAddress;
 import backend.instructions.addr_modes.ImmediateOffset;
-import backend.instructions.addr_modes.RegisterOffset;
 import backend.instructions.addr_modes.ZeroOffset;
 import backend.operands.ImmediateNum;
 import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.TYPE;
-import frontend.identifier_objects.basic_types.INT;
 import frontend.identifier_objects.basic_types.PAIR;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +23,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 public class NewPairAST extends NodeAST {
 
   private final ExpressionAST fstExpr, sndExpr;
-  private TYPE type1, type2;
-  public PAIR pair;
+  private PAIR pair;
 
   public NewPairAST(ParserRuleContext ctx, ExpressionAST fstExpr,
       ExpressionAST sndExpr) {
@@ -40,6 +36,15 @@ public class NewPairAST extends NodeAST {
     return pair;
   }
 
+  public ExpressionAST getFstExpr() {
+    return fstExpr;
+  }
+
+  public ExpressionAST getSndExpr() {
+    return sndExpr;
+  }
+
+
   @Override
   public void check() {
 
@@ -47,29 +52,31 @@ public class NewPairAST extends NodeAST {
     fstExpr.check();
     sndExpr.check();
 
-    type1 = fstExpr.getType();
-    type2 = sndExpr.getType();
+    TYPE fstType = fstExpr.getType();
+    TYPE sndType = sndExpr.getType();
 
     boolean error = false;
 
     // check that boh expressions are of type TYPE.
     // If not, they are a function identifier, which is invalid.
-    if (!(fstExpr.getType() instanceof TYPE)) {
+    if (fstType == null) {
       addError(
-          new MismatchedTypes(fstExpr.ctx, fstExpr.getType(), new TYPE()));
+          new MismatchedTypes(fstExpr.ctx, fstType, new TYPE()));
       error = true;
     }
 
-    if (!(sndExpr.getType() instanceof TYPE)) {
+
+    if (sndType == null) {
       addError(
-          new MismatchedTypes(sndExpr.ctx, sndExpr.getType(), new TYPE()));
+          new MismatchedTypes(sndExpr.ctx, sndType, new TYPE()));
       error = true;
     }
 
     if (!error) {
       // If both types valid, make a new pair.
-      pair = new PAIR(fstExpr.getType(), sndExpr.getType());
+      pair = new PAIR(fstType, sndType);
     }
+
   }
 
   @Override
@@ -97,7 +104,7 @@ public class NewPairAST extends NodeAST {
 
     // Store the value of the first element at the given address
     instructions.add(new Store(pairElem, new ZeroOffset(Register.R0),
-        type1.getSize()));
+        pair.getFirst().getSize()));
 
     // Store the address pf the first element into the first word of the pair
     instructions.add(new Store(Register.R0, new ZeroOffset(pairAddress)));
@@ -109,7 +116,7 @@ public class NewPairAST extends NodeAST {
 
     instructions.add(new Branch("malloc", true));
     instructions.add(new Store(pairElem, new ZeroOffset(Register.R0),
-        type2.getSize()));
+        pair.getSecond().getSize()));
 
     // Storing address to value of second element in the second word of pair
     instructions.add(
