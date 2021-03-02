@@ -1,8 +1,6 @@
 package middleware;
 
 import backend.NodeASTVisitor;
-import backend.instructions.Instruction;
-import backend.registers.Register;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -34,19 +32,10 @@ public class NodeASTList<T> extends NodeAST implements Iterable<T> {
     }
   }
 
-  @Override
-  public List<Instruction> translate(List<Register> registers) {
-    List<Instruction> instructions = new ArrayList<>();
-    for (T elem : ASTList) {
-      instructions.addAll(((NodeAST) elem).translate(registers));
-    }
-    return instructions;
-  }
 
   @Override
-  public List<Instruction> accept(NodeASTVisitor visitor) {
-    return (List<Instruction>) visitor.visit(this);
-
+  public <T> T accept(NodeASTVisitor<? extends T> visitor) {
+    return visitor.visit(this);
   }
 
   public List<T> getASTList() {

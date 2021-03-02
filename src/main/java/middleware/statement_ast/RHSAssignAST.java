@@ -1,16 +1,10 @@
 package middleware.statement_ast;
 
 import backend.NodeASTVisitor;
-import backend.instructions.Instruction;
-import backend.instructions.Load;
-import backend.instructions.addr_modes.ZeroOffset;
-import backend.registers.Register;
 import frontend.identifier_objects.TYPE;
-import java.util.List;
 import middleware.ExpressionAST;
 import middleware.StatementAST;
 import middleware.arrays_ast.ArrayAST;
-import middleware.arrays_ast.ArrayElemAST;
 import middleware.function_ast.FunctionCallAST;
 import middleware.pair_ast.NewPairAST;
 import middleware.pair_ast.PairElemAST;
@@ -153,55 +147,6 @@ public class RHSAssignAST extends StatementAST {
 
   }
 
-  @Override
-  public List<Instruction> translate(List<Register> registers) {
-    if (expressionAST != null) {
-
-      return expressionAST.translate(registers);
-
-    }
-
-    if (arrayAST != null) {
-
-      return arrayAST.translate(registers);
-
-    }
-
-    if (newPairAST != null) {
-
-      return newPairAST.translate(registers);
-
-    }
-
-    if (pairElemAST != null) {
-      Register target = registers.get(0);
-
-      TYPE type = pairElemAST.getType();
-
-      List<Instruction> ret = pairElemAST.translate(registers);
-
-      // Get actual value into target
-      ret.add(new Load(target, new ZeroOffset(target), type.getSize()));
-
-      return ret;
-
-    }
-
-    if (functionCallAST != null) {
-
-      return functionCallAST.translate(registers);
-
-    }
-
-    return null;
-  }
-
-  @Override
-  public List<Instruction> accept(NodeASTVisitor visitor) {
-    return (List<Instruction>) visitor.visit(this);
-  }
-
-
   public ExpressionAST getExpressionAST() {
     return expressionAST;
   }
@@ -224,6 +169,10 @@ public class RHSAssignAST extends StatementAST {
 
   public SymbolTable getScopeST() {
     return scopeST;
+  }
+  @Override
+  public <T> T accept(NodeASTVisitor<? extends T> visitor) {
+    return visitor.visit(this);
   }
 
 }

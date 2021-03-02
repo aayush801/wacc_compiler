@@ -1,18 +1,9 @@
 package middleware.statement_ast;
 
 import backend.NodeASTVisitor;
-import backend.instructions.Branch;
-import backend.instructions.Compare;
-import backend.instructions.ConditionCode;
-import backend.instructions.Instruction;
-import backend.instructions.stack_instructions.LabelledInstruction;
-import backend.operands.ImmediateNum;
-import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.basic_types.BOOL;
-import java.util.ArrayList;
-import java.util.List;
 import middleware.ExpressionAST;
 import middleware.StatementAST;
 import middleware.symbol_table.SymbolTable;
@@ -61,43 +52,6 @@ public class WhileAST extends StatementAST {
 
   }
 
-  @Override
-  public List<Instruction> translate(List<Register> registers) {
-    Register destination = registers.get(0);
-    List<Instruction> instructions = new ArrayList<>();
-
-    LabelledInstruction rest = new LabelledInstruction();
-    LabelledInstruction body = new LabelledInstruction();
-
-    instructions.add(new Branch(rest.getLabel()));
-
-    // translate rest of code statement
-    instructions.add(body);
-
-    // save the stack state in the symbol table
-    scopeST.saveStackState(program.SP);
-
-    instructions.addAll(program.allocateStackSpace(scopeST));
-    instructions.addAll(statementAST.translate(registers));
-    instructions.addAll(program.deallocateStackSpace(scopeST));
-
-    // save the stack state in the symbol table
-    scopeST.restoreStackState(program.SP);
-
-    // translate expression for loop (variance)
-    instructions.add(rest);
-    instructions.addAll(expressionAST.translate(registers));
-
-    instructions.add(new Compare(destination, new ImmediateNum(1)));
-    instructions.add(new Branch(ConditionCode.EQ, body.getLabel(), false));
-
-    return instructions;
-  }
-
-  @Override
-  public List<Instruction> accept(NodeASTVisitor visitor) {
-    return (List<Instruction>) visitor.visit(this);
-  }
 
   public ExpressionAST getExpressionAST() {
     return expressionAST;
@@ -109,6 +63,10 @@ public class WhileAST extends StatementAST {
 
   public SymbolTable getScopeST() {
     return scopeST;
+  }
+  @Override
+  public <T> T accept(NodeASTVisitor<? extends T> visitor) {
+    return visitor.visit(this);
   }
 
 }

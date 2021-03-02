@@ -3,6 +3,7 @@
 import antlr.WaccLexer;
 import antlr.WaccParser;
 import antlr.WaccParser.ProgContext;
+import backend.WaccCodeGeneratorVisitor;
 import errors.WaccError;
 import frontend.syntactic_parser.SyntacticParser;
 import frontend.syntactic_parser.SyntaxErrorListener;
@@ -46,10 +47,8 @@ public class WaccCompiler {
   private String sourceCode;
 
   private final List<WaccError> errors = new ArrayList<>();
-  private final SyntaxErrorListener syntaxErrorListener = new SyntaxErrorListener();
 
-  private final WaccASTParser semanticParser = new WaccASTParser();
-  private final SyntacticParser syntacticParser = new SyntacticParser(syntaxErrorListener);
+  private final SyntaxErrorListener syntaxErrorListener = new SyntaxErrorListener();
 
   public WaccCompiler(String inputString) throws IOException {
     this(new ByteArrayInputStream(inputString.getBytes(StandardCharsets.UTF_8)));
@@ -76,15 +75,16 @@ public class WaccCompiler {
 
   public ErrorCode compile() {
 
-    ProgContext ASTtree = parseSyntactics();
+    ProgContext parseTree = parseSyntactics();
 
     if (hasErrors()) {
+
       // we don't do semantic analysis if syntax fails
       return ErrorCode.SYNTAX_ERROR;
 
     }
 
-    NodeAST IRtree = parseSemantics(ASTtree);
+    NodeAST ASTtree = parseSemantics(parseTree);
 
     if (hasErrors()) {
       // don't do code generation if semantic analysis fails
@@ -92,8 +92,8 @@ public class WaccCompiler {
 
     }
 
-    sourceCode = translateCode(IRtree);
-    System.out.println(sourceCode);
+    sourceCode = translateCode(ASTtree);
+
     if (hasErrors()) {
 
       return ErrorCode.FAIL;
@@ -106,20 +106,26 @@ public class WaccCompiler {
 
   public ProgContext parseSyntactics() {
 
-    ProgContext AST = parser.prog();
+    SyntacticParser syntacticParser = new SyntacticParser(syntaxErrorListener);
+
+    ProgContext progParseTree = parser.prog();
 
     // only do further syntax analysis if tokenization passed
     if (!syntaxErrorListener.hasErrors()) {
-      syntacticParser.visit(AST);
+
+      syntacticParser.visit(progParseTree);
+
     }
 
-    return AST;
+    return progParseTree;
 
   }
 
-  public NodeAST parseSemantics(ProgContext AST) {
+  public NodeAST parseSemantics(ProgContext progParseTree) {
 
-    NodeAST tree = semanticParser.visit(AST);
+    WaccASTParser semanticParser = new WaccASTParser();
+
+    NodeAST tree = semanticParser.visit(progParseTree);
 
     tree.check();
 
@@ -127,9 +133,13 @@ public class WaccCompiler {
 
   }
 
-  public String translateCode(NodeAST tree) {
+  public String translateCode(NodeAST ASTtree) {
 
-    return tree.translate();
+    WaccCodeGeneratorVisitor codeGenerator = new WaccCodeGeneratorVisitor();
+
+    codeGenerator.visit(ASTtree);
+
+    return codeGenerator.toString();
 
   }
 

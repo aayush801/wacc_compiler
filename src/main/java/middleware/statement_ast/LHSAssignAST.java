@@ -1,22 +1,12 @@
 package middleware.statement_ast;
 
 import backend.NodeASTVisitor;
-import backend.instructions.ConditionCode;
-import backend.instructions.Instruction;
-import backend.instructions.Store;
-import backend.instructions.addr_modes.ImmediateOffset;
-import backend.instructions.addr_modes.ZeroOffset;
-import backend.operands.ImmediateNum;
-import backend.registers.Register;
 import errors.semantic_errors.Undefined;
 import errors.semantic_errors.expressionNotFound;
-import frontend.identifier_objects.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import frontend.identifier_objects.basic_types.BOOL;
-import frontend.identifier_objects.basic_types.CHAR;
+import frontend.identifier_objects.IDENTIFIER;
+import frontend.identifier_objects.PARAM;
+import frontend.identifier_objects.TYPE;
+import frontend.identifier_objects.VARIABLE;
 import middleware.NodeAST;
 import middleware.StatementAST;
 import middleware.arrays_ast.ArrayElemAST;
@@ -141,75 +131,21 @@ public class LHSAssignAST extends StatementAST {
     return identifier;
   }
 
-  @Override
-  public List<Instruction> translate(List<Register> registers) {
-
-    // where the thing we need to store will be.
-    Register target = registers.get(0);
-
-    // get the registers that are free.
-    List<Register> remainingRegs = new ArrayList<>(registers);
-    remainingRegs.remove(0);
-
-    List<Instruction> ret = new ArrayList<>();
-
-    // case when LHS is just an identifier a.k.a. a variable having a base type.
-    if (identifier != null) {
-
-      STACK_OBJECT varStackObj = (STACK_OBJECT) scopeST.lookupAll(identifier);
-
-      if(!varStackObj.isLive()){
-        // if the object is not live yet, then we must be referencing an even older declaration
-        varStackObj = (STACK_OBJECT) scopeST.getEncSymTable().lookupAll(identifier);
-      }
-
-      int offset = program.SP.calculateOffset(varStackObj.getStackAddress());
-
-      offsetIdent = offset;
-
-      TYPE type = varStackObj.getType();
-      ret.add(new Store(ConditionCode.NONE, target,
-              new ImmediateOffset(program.SP, new ImmediateNum(offset)), type.getSize()));
-
-      isChar = type instanceof CHAR;
-    }
-
-    // case when LHS is an arrayElem.
-    if (arrayElemAST != null) {
-      TYPE type = arrayElemAST.getType();
-      ret.addAll(arrayElemAST.translate(remainingRegs));
-      ret.add(new Store(target, new ZeroOffset(remainingRegs.get(0)), type.getSize()));
-    }
-
-    // case when LHS is a pairElem
-    if (pairElemAST != null) {
-      TYPE type = pairElemAST.getType();
-      ret.addAll(pairElemAST.translate(remainingRegs));
-      ret.add(new Store(target, new ZeroOffset(remainingRegs.get(0)), type.getSize()));
-    }
-
-    return ret;
-  }
-
-  @Override
-  public List<Instruction> accept(NodeASTVisitor visitor) {
-    return (List<Instruction>) visitor.visit(this);
-  }
 
   public int getOffset() {
     return offsetIdent;
   }
 
   public void setOffset(int setOffset) {
-    this.offsetIdent =  setOffset;
-  }
-
-  public void setIsChar(boolean isChar) {
-    this.isChar = isChar;
+    this.offsetIdent = setOffset;
   }
 
   public boolean getIsChar() {
     return isChar;
+  }
+
+  public void setIsChar(boolean isChar) {
+    this.isChar = isChar;
   }
 
   public SymbolTable getScopeST() {
@@ -223,4 +159,10 @@ public class LHSAssignAST extends StatementAST {
   public PairElemAST getPairElemAST() {
     return pairElemAST;
   }
+
+  @Override
+  public <T> T accept(NodeASTVisitor<? extends T> visitor) {
+    return visitor.visit(this);
+  }
+
 }

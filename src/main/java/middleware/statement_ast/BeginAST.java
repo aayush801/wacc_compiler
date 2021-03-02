@@ -1,9 +1,6 @@
 package middleware.statement_ast;
 
 import backend.NodeASTVisitor;
-import backend.instructions.Instruction;
-import backend.registers.Register;
-import java.util.List;
 import middleware.StatementAST;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -31,27 +28,6 @@ public class BeginAST extends StatementAST {
     ST = ST.getEncSymTable();
   }
 
-  @Override
-  public List<Instruction> translate(List<Register> registers) {
-    // save the stack state in the symbol table
-    scopeST.saveStackState(program.SP);
-
-    List<Instruction> instructions = program.allocateStackSpace(scopeST);
-    instructions.addAll(statementAST.translate(registers));
-    instructions.addAll(program.deallocateStackSpace(scopeST));
-
-    // save the stack state in the symbol table
-    scopeST.restoreStackState(program.SP);
-
-    return instructions;
-
-  }
-
-  @Override
-  public List<Instruction> accept(NodeASTVisitor visitor) {
-    return (List<Instruction>) visitor.visit(this);
-  }
-
   public StatementAST getStatementAST() {
     return statementAST;
   }
@@ -59,4 +35,11 @@ public class BeginAST extends StatementAST {
   public SymbolTable getScopeST() {
     return scopeST;
   }
+
+
+  @Override
+  public <T> T accept(NodeASTVisitor<? extends T> visitor) {
+    return visitor.visit(this);
+  }
+
 }

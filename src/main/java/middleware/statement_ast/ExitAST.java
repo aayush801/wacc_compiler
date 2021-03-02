@@ -1,14 +1,9 @@
 package middleware.statement_ast;
 
 import backend.NodeASTVisitor;
-import backend.instructions.Branch;
-import backend.instructions.Instruction;
-import backend.instructions.Move;
-import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.basic_types.INT;
-import java.util.List;
 import middleware.ExpressionAST;
 import middleware.StatementAST;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -41,26 +36,13 @@ public class ExitAST extends StatementAST {
 
   }
 
-  public ExpressionAST getExpr(){
+  public ExpressionAST getExpr() {
     return expressionAST;
   }
-
   @Override
-  public List<Instruction> translate(List<Register> registers) {
-    List<Instruction> instructions = expressionAST.translate(registers);
-    Register intReg = registers.get(0);
-
-    if (intReg.getNumber() != 0) {
-      instructions.add(new Move(Register.R0, intReg));
-    }
-
-    instructions.add(new Branch("exit", true));
-
-    return instructions;
+  public <T> T accept(NodeASTVisitor<? extends T> visitor) {
+    return visitor.visit(this);
   }
 
-  @Override
-  public List<Instruction> accept(NodeASTVisitor visitor) {
-    return (List<Instruction>) visitor.visit(this);
-  }
+
 }

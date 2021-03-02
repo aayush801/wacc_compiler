@@ -99,12 +99,12 @@ public class SymbolTable {
         .collect(Collectors.toList());
   }
 
-  public void saveStackState(StackPointer SP){
+  public void saveStackState(StackPointer SP) {
     stackPtr = SP.getStackPtr();
     freePtr = SP.getFreePtr();
   }
 
-  public void restoreStackState(StackPointer SP){
+  public void restoreStackState(StackPointer SP) {
     SP.setState(stackPtr, freePtr);
   }
 

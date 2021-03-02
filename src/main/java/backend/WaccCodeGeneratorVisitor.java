@@ -519,7 +519,8 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
   @Override
   public List<Instruction> visit(FunctionDeclarationAST functionDeclaration) {
-    functionDeclaration.setFuncScope(functionDeclaration.funcObj.getST());
+    funcScope = functionDeclaration.funcObj.getST();
+
     List<Instruction> instructions = new ArrayList<>();
 
     NodeASTList<ParamAST> paramASTList = functionDeclaration.getParamASTList();
@@ -533,7 +534,7 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
     // translate statement body in the context of the function scope
     instructions.addAll(
-        program.allocateStackSpace(functionDeclaration.getFuncScope()));
+        program.allocateStackSpace(funcScope));
     instructions.addAll(functionDeclaration.getStatementAST().accept(this));
 
     //implicit stack change because of POP {PC}
@@ -619,7 +620,7 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
     remaining.remove(0);
 
     Register pairElem = remaining.get(0);
-    instructions.addAll(newPair.getFstExpr().translate(remaining));
+    instructions.addAll(newPair.getFstExpr().accept(this));
 
     // Allocate memory for first element of the pair based on the size of the type
     int fstSize = newPair.getPair().getFirst().getSize();
@@ -635,7 +636,7 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
     // Repeating same for second element
     int sndSize = newPair.getPair().getSecond().getSize();
-    instructions.addAll(newPair.getSndExpr().translate(remaining));
+    instructions.addAll(newPair.getSndExpr().accept(this));
     instructions.add(new Load(Register.R0, new ImmediateAddress(sndSize)));
 
     instructions.add(new Branch("malloc", true));
@@ -672,12 +673,12 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
   @Override
   public List<Instruction> visit(AssignmentAST assignment) {
     // evaluate RHS first.
-    List<Instruction> instructions = assignment.getRHS().translate(program.registers);
+    List<Instruction> instructions = visit(assignment.getRHS());
 
     // At this point, result of evaluating the RHS in in registers.get(0), and this is handled
     // carefully in LHS.translate().
     // The LHS translate does what it needs to do to do the storing.
-    instructions.addAll(assignment.getLHS().translate(program.registers));
+    instructions.addAll(visit(assignment.getLHS()));
 
     return instructions;
   }
@@ -689,7 +690,7 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
     scopeST.saveStackState(program.SP);
 
     List<Instruction> instructions = program.allocateStackSpace(scopeST);
-    instructions.addAll(begin.getStatementAST().translate(program.registers));
+    instructions.addAll(visit(begin.getStatementAST()));
     instructions.addAll(program.deallocateStackSpace(scopeST));
 
     // save the stack state in the symbol table
@@ -746,7 +747,7 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
     List<Register> registers = program.registers;
     Register destination = registers.get(0);
 
-    List<Instruction> instructions = ifElse.getExpressionAST().translate(program.registers);
+    List<Instruction> instructions = visit(ifElse.getExpressionAST());
 
     instructions.add(new Compare(destination, ImmediateNum.ZERO));
 
@@ -760,7 +761,7 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
     ST1.saveStackState(program.SP);
 
     instructions.addAll(program.allocateStackSpace(ST1));
-    instructions.addAll(ifElse.getFirstStatAST().translate(registers));
+    instructions.addAll(visit(ifElse.getFirstStatAST()));
     instructions.addAll(program.deallocateStackSpace(ST1));
 
     // save the stack state in the symbol table
@@ -775,7 +776,7 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
     ST2.saveStackState(program.SP);
 
     instructions.addAll(program.allocateStackSpace(ST2));
-    instructions.addAll(ifElse.getSecondStatAST().translate(registers));
+    instructions.addAll(visit(ifElse.getSecondStatAST()));
     instructions.addAll(program.deallocateStackSpace(ST2));
 
     // save the stack state in the symbol table
@@ -906,14 +907,12 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
   @Override
   public List<Instruction> visit(LHSAssignAST lhs) {
 
-    List<Register> registers = program.registers;
 
     // where the thing we need to store will be.
-    Register target = registers.get(0);
+    Register targetReg = program.registers.remove(0);
 
     // get the registers that are free.
-    List<Register> remainingRegs = new ArrayList<>(registers);
-    remainingRegs.remove(0);
+    Register indexReg = program.registers.get(0);
 
     List<Instruction> ret = new ArrayList<>();
 
@@ -935,7 +934,7 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
       lhs.setOffset(offset);
 
       TYPE type = varStackObj.getType();
-      ret.add(new Store(ConditionCode.NONE, target,
+      ret.add(new Store(ConditionCode.NONE, targetReg,
               new ImmediateOffset(program.SP, new ImmediateNum(offset)), type.getSize()));
 
       lhs.setIsChar(type instanceof CHAR);
@@ -946,8 +945,8 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
       ArrayElemAST arrayElemAST = lhs.getArrayElemAST();
 
       TYPE type = arrayElemAST.getType();
-      ret.addAll(arrayElemAST.translate(remainingRegs));
-      ret.add(new Store(target, new ZeroOffset(remainingRegs.get(0)), type.getSize()));
+      ret.addAll(visit(arrayElemAST));
+      ret.add(new Store(targetReg, new ZeroOffset(indexReg), type.getSize()));
     }
 
     // case when LHS is a pairElem
@@ -955,9 +954,11 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
       PairElemAST pairElemAST = lhs.getPairElemAST();
 
       TYPE type = pairElemAST.getType();
-      ret.addAll(pairElemAST.translate(remainingRegs));
-      ret.add(new Store(target, new ZeroOffset(remainingRegs.get(0)), type.getSize()));
+      ret.addAll(visit(pairElemAST));
+      ret.add(new Store(targetReg, new ZeroOffset(indexReg), type.getSize()));
     }
+
+    program.registers.add(0, targetReg);
 
     return ret;
   }
@@ -1078,12 +1079,18 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
   /** DO NOT OVERRIDE **/
 
   @Override
-  public List<Instruction> visit(NodeASTList nodeList) {
+  public List<Instruction> visit(NodeASTList<NodeAST> nodeList) {
+
     List<Instruction> instructions = new ArrayList<>();
-    for (Object elem : nodeList.getASTList()) {
-      instructions.addAll(((NodeAST) elem).accept(this));
+
+    for (NodeAST node : nodeList.getASTList()) {
+
+      instructions.addAll(visit(node));
+
     }
+
     return instructions;
+
   }
 
   @Override

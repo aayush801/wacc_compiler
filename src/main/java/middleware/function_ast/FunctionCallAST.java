@@ -1,24 +1,12 @@
 package middleware.function_ast;
 
 import backend.NodeASTVisitor;
-import backend.instructions.Branch;
-import backend.instructions.Instruction;
-import backend.instructions.Move;
-import backend.instructions.Store;
-import backend.instructions.addr_modes.ImmediateOffset;
-import backend.instructions.arithmetic.Arithmetic;
-import backend.instructions.arithmetic.ArithmeticOpcode;
-import backend.operands.ImmediateNum;
-import backend.registers.Register;
 import errors.semantic_errors.InvalidArguments;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.Undefined;
 import frontend.identifier_objects.FUNCTION;
 import frontend.identifier_objects.IDENTIFIER;
-import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.TYPE;
-import java.util.ArrayList;
-import java.util.List;
 import middleware.ExpressionAST;
 import middleware.NodeAST;
 import middleware.NodeASTList;
@@ -95,49 +83,9 @@ public class FunctionCallAST extends NodeAST {
     }
 
   }
-
   @Override
-  public List<Instruction> translate(List<Register> registers) {
-    Register dest = registers.get(0);
-    List<Instruction> instructions = new ArrayList<>();
-    int originalStackPointer = program.SP.getStackPtr();
-
-    // push parameters onto the stack from last to first
-    for (int i = actuals.size() - 1; i >= 0; i--) {
-      ExpressionAST exprAST = actuals.get(i);
-      Register exprResult = registers.get(0);
-
-      // translate expression AST
-      List<Instruction> exprInstructions = exprAST.translate(registers);
-      instructions.addAll(exprInstructions);
-
-      // push param to bottom of stack
-      int exprSize = exprAST.getType().getSize();
-      program.SP.decrement(exprSize);
-      instructions.add(new Store(exprResult,
-          new ImmediateOffset(program.SP, new ImmediateNum(-exprSize), true),
-          exprSize));
-    }
-
-    // branch to the function label
-    instructions.add(new Branch("f_" + funcName, true));
-
-    // restore stack pointer address (pop parameters off the stack)
-    int offset = program.SP.calculateOffset(originalStackPointer);
-    program.SP.increment(offset);
-    instructions.add(
-        new Arithmetic(ArithmeticOpcode.ADD, program.SP, program.SP,
-            new ImmediateNum(offset), false));
-
-    // store the result in the destination register
-    instructions.add(new Move(dest, Register.R0));
-
-    return instructions;
-  }
-
-  @Override
-  public List<Instruction> accept(NodeASTVisitor visitor) {
-    return (List<Instruction>) visitor.visit(this);
+  public <T> T accept(NodeASTVisitor<? extends T> visitor) {
+    return visitor.visit(this);
   }
 
 }

@@ -1,17 +1,9 @@
 package middleware.statement_ast;
 
 import backend.NodeASTVisitor;
-import backend.instructions.Branch;
-import backend.instructions.Compare;
-import backend.instructions.ConditionCode;
-import backend.instructions.Instruction;
-import backend.instructions.stack_instructions.LabelledInstruction;
-import backend.operands.ImmediateNum;
-import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.basic_types.BOOL;
-import java.util.List;
 import middleware.ExpressionAST;
 import middleware.StatementAST;
 import middleware.symbol_table.SymbolTable;
@@ -72,52 +64,6 @@ public class IfElseAST extends StatementAST {
 
   }
 
-  @Override
-  public List<Instruction> translate(List<Register> registers) {
-    Register destination = registers.get(0);
-
-    List<Instruction> instructions = expressionAST.translate(registers);
-
-    instructions.add(new Compare(destination, ImmediateNum.ZERO));
-
-    LabelledInstruction body = new LabelledInstruction();
-    LabelledInstruction rest = new LabelledInstruction();
-
-    instructions.add(new Branch(ConditionCode.EQ, body.getLabel(), false));
-
-    // save the stack state in the symbol table
-    ST1.saveStackState(program.SP);
-
-    instructions.addAll(program.allocateStackSpace(ST1));
-    instructions.addAll(firstStatAST.translate(registers));
-    instructions.addAll(program.deallocateStackSpace(ST1));
-
-    // save the stack state in the symbol table
-    ST1.restoreStackState(program.SP);
-
-    instructions.add(new Branch(rest.getLabel()));
-
-    instructions.add(body);
-
-    // save the stack state in the symbol table
-    ST2.saveStackState(program.SP);
-
-    instructions.addAll(program.allocateStackSpace(ST2));
-    instructions.addAll(secondStatAST.translate(registers));
-    instructions.addAll(program.deallocateStackSpace(ST2));
-
-    // save the stack state in the symbol table
-    ST2.restoreStackState(program.SP);
-
-    instructions.add(rest);
-
-    return instructions;
-  }
-
-  @Override
-  public List<Instruction> accept(NodeASTVisitor visitor) {
-    return (List<Instruction>) visitor.visit(this);
-  }
 
   public ExpressionAST getExpressionAST() {
     return expressionAST;
@@ -138,4 +84,10 @@ public class IfElseAST extends StatementAST {
   public StatementAST getSecondStatAST() {
     return secondStatAST;
   }
+
+  @Override
+  public <T> T accept(NodeASTVisitor<? extends T> visitor) {
+    return visitor.visit(this);
+  }
+
 }

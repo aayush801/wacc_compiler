@@ -1,14 +1,10 @@
 package middleware.function_ast;
 
 import backend.NodeASTVisitor;
-import backend.instructions.Instruction;
-import backend.registers.Register;
 import errors.semantic_errors.DuplicateIdentifier;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.TYPE;
-import java.util.ArrayList;
-import java.util.List;
 import middleware.NodeAST;
 import middleware.TypeAST;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -46,21 +42,9 @@ public class ParamAST extends NodeAST {
     }
 
   }
-
   @Override
-  public List<Instruction> translate(List<Register> registers) {
-
-    // push paramObj onto the virtual stack
-    program.SP.push(paramObj);
-    paramObj.setLive(true);
-
-    return null;
-  }
-
-  @Override
-  public List<Instruction> accept(NodeASTVisitor visitor) {
-    return (List<Instruction>) visitor.visit(this);
-
+  public <T> T accept(NodeASTVisitor<? extends T> visitor) {
+    return visitor.visit(this);
   }
 
 }

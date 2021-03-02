@@ -2,6 +2,7 @@ package backend;
 
 import backend.instructions.Instruction;
 import java.util.List;
+import middleware.NodeAST;
 import middleware.NodeASTList;
 import middleware.ProgAST;
 import middleware.arrays_ast.ArrayAST;
@@ -88,7 +89,11 @@ public abstract class NodeASTVisitor<T> {
 
   public abstract T visit(WhileAST whileLoop);
 
-  public abstract T visit(NodeASTList nodeList);
+  public abstract T visit(NodeASTList<NodeAST> nodeList);
+
+  public T visit(NodeAST node){
+    return node.accept(this);
+  };
 
   public abstract T visit(BaseTypeAST baseType);
 

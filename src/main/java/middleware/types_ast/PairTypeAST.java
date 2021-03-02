@@ -1,11 +1,8 @@
 package middleware.types_ast;
 
 import backend.NodeASTVisitor;
-import backend.instructions.Instruction;
-import backend.registers.Register;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.PAIR;
-import java.util.List;
 import middleware.TypeAST;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -35,17 +32,13 @@ public class PairTypeAST extends TypeAST {
   }
 
   @Override
-  public List<Instruction> translate(List<Register> registers) {
-    return null;
-  }
-
-  @Override
-  public List<Instruction> accept(NodeASTVisitor visitor) {
-    return (List<Instruction>) visitor.visit(this);
-  }
-
-  @Override
   public TYPE getType() {
     return type;
   }
+
+  @Override
+  public <T> T accept(NodeASTVisitor<? extends T> visitor) {
+    return visitor.visit(this);
+  }
+
 }

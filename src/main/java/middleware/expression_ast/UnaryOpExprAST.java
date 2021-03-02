@@ -1,30 +1,15 @@
 package middleware.expression_ast;
 
 import backend.NodeASTVisitor;
-import backend.instructions.Branch;
-import backend.instructions.ConditionCode;
-import backend.instructions.Instruction;
-import backend.instructions.Load;
-import backend.instructions.addr_modes.ImmediateOffset;
-import backend.instructions.arithmetic.Arithmetic;
-import backend.instructions.arithmetic.ArithmeticOpcode;
-import backend.labels.code.PrimitiveLabel;
-import backend.operands.ImmediateNum;
-import backend.primitive_functions.BinOpChecks;
-import backend.primitive_functions.RuntimeError;
-import backend.registers.Register;
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.NotAFunction;
 import errors.semantic_errors.expressionNotFound;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
-import frontend.identifier_objects.VARIABLE;
 import frontend.identifier_objects.basic_types.ARRAY;
 import frontend.identifier_objects.basic_types.BOOL;
 import frontend.identifier_objects.basic_types.CHAR;
 import frontend.identifier_objects.basic_types.INT;
-import java.util.ArrayList;
-import java.util.List;
 import middleware.ExpressionAST;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -157,70 +142,11 @@ public class UnaryOpExprAST extends ExpressionAST {
         break;
     }
   }
-
-  public List<Instruction> translate(List<Register> registers) {
-    // evaluate expression.
-    Register destination = registers.get(0);
-    List<Instruction> instructions = expr.translate(registers);
-
-    switch (operator) {
-      // NOT Operator
-      case "!":
-        Instruction not = new Arithmetic(ArithmeticOpcode.EOR, destination,
-            destination, ImmediateNum.ONE, false);
-        instructions.add(not);
-        break;
-      // NEGATE Operator
-      case "-":
-        Instruction negate = new Arithmetic(ArithmeticOpcode.RSB, destination,
-            destination, ImmediateNum.ZERO, true);
-        instructions.add(negate);
-
-        // check for overflow error
-        PrimitiveLabel overflowError = BinOpChecks.printOverflowCheck(program);
-        instructions.add(
-            new Branch(ConditionCode.VS, overflowError.getLabelName(),
-                true));
-        program.addPrimitive(overflowError);
-
-        break;
-      // LENGTH Operator
-      case "len":
-        Instruction loadVal = new Load(destination,
-            new ImmediateOffset(destination, ImmediateNum.ZERO));
-        instructions.add(loadVal);
-        break;
-      // CHR Operator
-      case "chr":
-        break;
-      // ORD Operator
-      case "ord":
-        if (expr.isIdentifier()) {
-          IdentifierAST ident = (IdentifierAST) expr;
-          VARIABLE varObj = (VARIABLE) scopeST.lookupAll(ident.getIdentifier());
-
-          // calculate offset
-          int offset = program.SP.calculateOffset(varObj.getStackAddress());
-
-          List<Instruction> ret = new ArrayList<>();
-          ret.add(
-              new Load(destination, new ImmediateOffset(program.SP,
-                  new ImmediateNum(offset)), 1));
-          return ret;
-        }
-        break;
-      // Unrecognized Operator
-      default:
-        addError(new NotAFunction(ctx));
-        break;
-    }
-    return instructions;
-  }
-
   @Override
-  public List<Instruction> accept(NodeASTVisitor visitor) {
-    return (List<Instruction>) visitor.visit(this);
+  public <T> T accept(NodeASTVisitor<? extends T> visitor) {
+    return visitor.visit(this);
   }
+
 }
 
 
