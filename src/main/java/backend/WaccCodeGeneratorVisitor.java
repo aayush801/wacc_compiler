@@ -49,40 +49,41 @@ import java.util.ArrayList;
 import java.util.List;
 import middleware.ExpressionAST;
 import middleware.NodeAST;
-import middleware.NodeASTList;
-import middleware.ProgAST;
-import middleware.StatementAST;
-import middleware.TypeAST;
-import middleware.arrays_ast.ArrayAST;
-import middleware.arrays_ast.ArrayElemAST;
-import middleware.expression_ast.BinOpExprAST;
-import middleware.expression_ast.IdentifierAST;
-import middleware.expression_ast.LiteralsAST;
-import middleware.expression_ast.UnaryOpExprAST;
-import middleware.function_ast.FunctionCallAST;
-import middleware.function_ast.FunctionDeclarationAST;
-import middleware.function_ast.ParamAST;
-import middleware.pair_ast.NewPairAST;
-import middleware.pair_ast.PairElemAST;
-import middleware.statement_ast.AssignmentAST;
-import middleware.statement_ast.BeginAST;
-import middleware.statement_ast.ChainedStatementAST;
-import middleware.statement_ast.ExitAST;
-import middleware.statement_ast.FreeAST;
-import middleware.statement_ast.IfElseAST;
-import middleware.statement_ast.LHSAssignAST;
-import middleware.statement_ast.PrintAST;
-import middleware.statement_ast.RHSAssignAST;
-import middleware.statement_ast.ReadAST;
-import middleware.statement_ast.ReturnAST;
-import middleware.statement_ast.SkipAST;
-import middleware.statement_ast.VariableDeclarationAST;
-import middleware.statement_ast.WhileAST;
+import middleware.ast_nodes.NodeASTList;
+import middleware.NodeASTVisitor;
+import middleware.ast_nodes.prog_ast.ProgAST;
+import middleware.ast_nodes.StatementAST;
+import middleware.ast_nodes.TypeAST;
+import middleware.ast_nodes.arrays_ast.ArrayAST;
+import middleware.ast_nodes.arrays_ast.ArrayElemAST;
+import middleware.ast_nodes.expression_ast.BinOpExprAST;
+import middleware.ast_nodes.expression_ast.IdentifierAST;
+import middleware.ast_nodes.expression_ast.LiteralsAST;
+import middleware.ast_nodes.expression_ast.UnaryOpExprAST;
+import middleware.ast_nodes.function_ast.FunctionCallAST;
+import middleware.ast_nodes.function_ast.FunctionDeclarationAST;
+import middleware.ast_nodes.function_ast.ParamAST;
+import middleware.ast_nodes.pair_ast.NewPairAST;
+import middleware.ast_nodes.pair_ast.PairElemAST;
+import middleware.ast_nodes.statement_ast.AssignmentAST;
+import middleware.ast_nodes.statement_ast.BeginAST;
+import middleware.ast_nodes.statement_ast.ChainedStatementAST;
+import middleware.ast_nodes.statement_ast.ExitAST;
+import middleware.ast_nodes.statement_ast.FreeAST;
+import middleware.ast_nodes.statement_ast.IfElseAST;
+import middleware.ast_nodes.statement_ast.LHSAssignAST;
+import middleware.ast_nodes.statement_ast.PrintAST;
+import middleware.ast_nodes.statement_ast.RHSAssignAST;
+import middleware.ast_nodes.statement_ast.ReadAST;
+import middleware.ast_nodes.statement_ast.ReturnAST;
+import middleware.ast_nodes.statement_ast.SkipAST;
+import middleware.ast_nodes.statement_ast.VariableDeclarationAST;
+import middleware.ast_nodes.statement_ast.WhileAST;
 import middleware.symbol_table.SymbolTable;
-import middleware.types_ast.ArrayTypeAST;
-import middleware.types_ast.BaseTypeAST;
-import middleware.types_ast.PairElemTypeAST;
-import middleware.types_ast.PairTypeAST;
+import middleware.ast_nodes.types_ast.ArrayTypeAST;
+import middleware.ast_nodes.types_ast.BaseTypeAST;
+import middleware.ast_nodes.types_ast.PairElemTypeAST;
+import middleware.ast_nodes.types_ast.PairTypeAST;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> {
@@ -691,7 +692,7 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
   @Override
   public List<Instruction> visit(BeginAST begin) {
-    SymbolTable scopeST = begin.getScopeST();
+    SymbolTable scopeST = begin.getScope();
 
     scopeST.saveStackState(program.SP);
 
@@ -1047,7 +1048,7 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
   @Override
   public List<Instruction> visit(WhileAST whileLoop) {
-    SymbolTable scopeST = whileLoop.getST();
+    SymbolTable scopeST = whileLoop.getScope();
     StatementAST statementAST = whileLoop.getStatementAST();
     ExpressionAST expressionAST = whileLoop.getExpressionAST();
     Register destination = program.registers.get(0);

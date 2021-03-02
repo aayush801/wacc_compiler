@@ -50,12 +50,4 @@ public abstract class NodeAST implements NodeASTInterface {
     return ctx;
   }
 
-  public SymbolTable getST() {
-    return ST;
-  }
-
-  public void setST(SymbolTable ST) {
-    NodeAST.ST = ST;
-  }
-
 }

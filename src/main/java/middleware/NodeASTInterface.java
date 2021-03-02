@@ -1,7 +1,5 @@
 package middleware;
 
-import backend.NodeASTVisitor;
-
 public interface NodeASTInterface {
 
   void check();
