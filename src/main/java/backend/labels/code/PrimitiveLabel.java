@@ -4,7 +4,6 @@ import backend.ProgramGenerator;
 import backend.instructions.Instruction;
 import backend.instructions.stack_instructions.Pop;
 import backend.instructions.stack_instructions.Push;
-
 import java.util.List;
 
 public class PrimitiveLabel extends CodeLabel {

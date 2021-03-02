@@ -1,13 +1,16 @@
 package backend.primitive_functions;
 
 import backend.ProgramGenerator;
-import backend.instructions.*;
+import backend.instructions.Branch;
+import backend.instructions.Compare;
+import backend.instructions.ConditionCode;
+import backend.instructions.Instruction;
+import backend.instructions.Load;
 import backend.instructions.addr_modes.Address;
 import backend.labels.code.PrimitiveLabel;
 import backend.labels.data.DataLabel;
 import backend.operands.ImmediateNum;
 import backend.registers.Register;
-
 import java.util.ArrayList;
 import java.util.List;
 

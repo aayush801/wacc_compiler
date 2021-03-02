@@ -17,6 +17,7 @@ public class SkipAST extends StatementAST {
   @Override
   public void check() {
   }
+
   @Override
   public <T> T accept(NodeASTVisitor<? extends T> visitor) {
     return visitor.visit(this);

@@ -23,12 +23,12 @@ public abstract class STACK_OBJECT extends IDENTIFIER {
     return type;
   }
 
-  public void setLive(boolean live) {
-    isLive = live;
-  }
-
   public boolean isLive() {
     return isLive;
+  }
+
+  public void setLive(boolean live) {
+    isLive = live;
   }
 
 }

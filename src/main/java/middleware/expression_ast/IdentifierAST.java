@@ -62,6 +62,7 @@ public class IdentifierAST extends ExpressionAST {
   public boolean isIdentifier() {
     return true;
   }
+
   @Override
   public <T> T accept(NodeASTVisitor<? extends T> visitor) {
     return visitor.visit(this);

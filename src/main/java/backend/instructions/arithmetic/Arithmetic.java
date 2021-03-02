@@ -1,7 +1,6 @@
 package backend.instructions.arithmetic;
 
 import backend.instructions.Instruction;
-import backend.operands.ImmediateChar;
 import backend.operands.Operand;
 import backend.registers.Register;
 
@@ -9,12 +8,12 @@ public class Arithmetic extends Instruction {
 
   private final Register Rd, Rn;
   private final backend.operands.Operand operand;
-  private backend.operands.Operand operand1;
   private final ArithmeticOpcode opcode;
+  private backend.operands.Operand operand1;
   private boolean registerSave = false;
 
   public Arithmetic(ArithmeticOpcode opcode, Register Rd, Register Rn,
-                    Operand operand, Operand operand1, boolean registerSave) {
+      Operand operand, Operand operand1, boolean registerSave) {
     this.opcode = opcode;
     this.Rd = Rd;
     this.Rn = Rn;
@@ -43,8 +42,8 @@ public class Arithmetic extends Instruction {
     boolean operand1Exists = operand1 != null;
 
     return opcode + (flags ? "S" : "") + " " +
-            (!registerSave ? Rd + ", " + Rn + ", " + operand + (operand1Exists ? ", " + operand1 : ""):
-                    (operand1Exists ? Rd + ", " + Rn + ", " + operand1 + ", " + operand :
-                            Rd + ", " + operand + ", " + Rn));
+        (!registerSave ? Rd + ", " + Rn + ", " + operand + (operand1Exists ? ", " + operand1 : "") :
+            (operand1Exists ? Rd + ", " + Rn + ", " + operand1 + ", " + operand :
+                Rd + ", " + operand + ", " + Rn));
   }
 }

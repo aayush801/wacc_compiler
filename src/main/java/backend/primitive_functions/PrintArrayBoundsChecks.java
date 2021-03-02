@@ -58,7 +58,7 @@ public class PrintArrayBoundsChecks {
 
     // LDRCS ro, =msg_largeIndex
     instructions.add(new Load(ConditionCode.CS, Register.R0,
-            new Address(largeLabel.getLabelName())));
+        new Address(largeLabel.getLabelName())));
 
     // BLCS p_throw_runtime_error
     instructions.add(new Branch(ConditionCode.CS,

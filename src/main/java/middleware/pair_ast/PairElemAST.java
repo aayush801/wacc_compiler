@@ -59,6 +59,7 @@ public class PairElemAST extends NodeAST {
       type = pair.getSecond();
     }
   }
+
   @Override
   public <T> T accept(NodeASTVisitor<? extends T> visitor) {
     return visitor.visit(this);

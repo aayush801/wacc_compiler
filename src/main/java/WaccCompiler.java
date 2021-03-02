@@ -44,11 +44,9 @@ enum ErrorCode {
 public class WaccCompiler {
 
   private final WaccParser parser;
-  private String sourceCode;
-
   private final List<WaccError> errors = new ArrayList<>();
-
   private final SyntaxErrorListener syntaxErrorListener = new SyntaxErrorListener();
+  private String sourceCode;
 
   public WaccCompiler(String inputString) throws IOException {
     this(new ByteArrayInputStream(inputString.getBytes(StandardCharsets.UTF_8)));

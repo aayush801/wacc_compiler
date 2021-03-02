@@ -12,6 +12,7 @@ public class ReturnAST extends StatementAST {
 
   private final ExpressionAST expressionAST;
   private TYPE type;
+
   public ReturnAST(ParserRuleContext ctx, ExpressionAST expressionAST) {
     super(ctx);
     this.expressionAST = expressionAST;
@@ -63,6 +64,7 @@ public class ReturnAST extends StatementAST {
     this.type = type;
 
   }
+
   @Override
   public <T> T accept(NodeASTVisitor<? extends T> visitor) {
     return visitor.visit(this);

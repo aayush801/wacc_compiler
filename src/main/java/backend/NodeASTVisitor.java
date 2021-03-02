@@ -1,7 +1,5 @@
 package backend;
 
-import backend.instructions.Instruction;
-import java.util.List;
 import middleware.NodeAST;
 import middleware.NodeASTList;
 import middleware.ProgAST;
@@ -91,9 +89,9 @@ public abstract class NodeASTVisitor<T> {
 
   public abstract T visit(NodeASTList<NodeAST> nodeList);
 
-  public T visit(NodeAST node){
+  public T visit(NodeAST node) {
     return node.accept(this);
-  };
+  }
 
   public abstract T visit(BaseTypeAST baseType);
 

@@ -39,6 +39,7 @@ public class ExitAST extends StatementAST {
   public ExpressionAST getExpr() {
     return expressionAST;
   }
+
   @Override
   public <T> T accept(NodeASTVisitor<? extends T> visitor) {
     return visitor.visit(this);

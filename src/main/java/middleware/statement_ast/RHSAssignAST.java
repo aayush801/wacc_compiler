@@ -170,6 +170,7 @@ public class RHSAssignAST extends StatementAST {
   public SymbolTable getScopeST() {
     return scopeST;
   }
+
   @Override
   public <T> T accept(NodeASTVisitor<? extends T> visitor) {
     return visitor.visit(this);

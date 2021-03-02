@@ -13,13 +13,13 @@ public abstract class Instruction {
     this(ConditionCode.NONE);
   }
 
-  public void setFlags(boolean value) {
-    flags = value;
-  }
-
   public String getFlags() {
 
     return (flags ? "S" : "") + code;
 
+  }
+
+  public void setFlags(boolean value) {
+    flags = value;
   }
 }

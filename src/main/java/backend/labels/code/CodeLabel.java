@@ -20,11 +20,11 @@ public class CodeLabel extends Label {
     StringBuilder builder = new StringBuilder(name);
     builder.append(": \n");
     instructions.forEach(i -> {
-      if (!(i instanceof LabelledInstruction)) {
-        builder.append("\t");
-      }
-      builder.append(i).append("\n");
-      }
+          if (!(i instanceof LabelledInstruction)) {
+            builder.append("\t");
+          }
+          builder.append(i).append("\n");
+        }
     );
     return builder.toString();
   }

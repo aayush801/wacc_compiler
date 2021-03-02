@@ -88,6 +88,7 @@ public class FunctionDeclarationAST extends NodeAST {
 
     ST = ST.getEncSymTable();
   }
+
   @Override
   public <T> T accept(NodeASTVisitor<? extends T> visitor) {
     return visitor.visit(this);

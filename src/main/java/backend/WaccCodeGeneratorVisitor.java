@@ -26,8 +26,11 @@ import backend.operands.ImmediateNum;
 import backend.operands.ImmediateNumASR;
 import backend.operands.ImmediateNumLSL;
 import backend.primitive_functions.BinOpChecks;
+import backend.primitive_functions.FreeFunction;
 import backend.primitive_functions.PairElemNullAccessCheck;
 import backend.primitive_functions.PrintArrayBoundsChecks;
+import backend.primitive_functions.PrintFunctions;
+import backend.primitive_functions.ReadFunctions;
 import backend.registers.Register;
 import backend.registers.StackPointer;
 import errors.semantic_errors.NotAFunction;
@@ -36,9 +39,12 @@ import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.STACK_OBJECT;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
-import frontend.identifier_objects.basic_types.*;
-import backend.primitive_functions.*;
-
+import frontend.identifier_objects.basic_types.ARRAY;
+import frontend.identifier_objects.basic_types.BOOL;
+import frontend.identifier_objects.basic_types.CHAR;
+import frontend.identifier_objects.basic_types.INT;
+import frontend.identifier_objects.basic_types.PAIR;
+import frontend.identifier_objects.basic_types.STR;
 import java.util.ArrayList;
 import java.util.List;
 import middleware.ExpressionAST;
@@ -790,8 +796,7 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
   @Override
   public List<Instruction> visit(PrintAST print) {
 
-     TYPE type= print.getType();
-
+    TYPE type = print.getType();
 
     Register dest = program.registers.get(0);
     // translate expression
@@ -859,54 +864,55 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
   @Override
   public List<Instruction> visit(ReadAST read) {
-      // read x is probably the only case right. Well, it could also be x[1], or fst(x).
-      // So, let's say evaluate x (via the LHS.translate right), and this could be arbitrarily complex.
-      // Then, we use getChar or something cuz it can only be int or char, which we have verified.
+    // read x is probably the only case right. Well, it could also be x[1], or fst(x).
+    // So, let's say evaluate x (via the LHS.translate right), and this could be arbitrarily complex.
+    // Then, we use getChar or something cuz it can only be int or char, which we have verified.
 
-      Register target = program.registers.get(0);
-       LHSAssignAST LHS = read.getLHS();
+    Register target = program.registers.get(0);
+    LHSAssignAST LHS = read.getLHS();
 
-      List<Instruction> ret = new ArrayList<>();
+    List<Instruction> ret = new ArrayList<>();
 
-      List<Instruction> temp = LHS.accept(this);
+    List<Instruction> temp = LHS.accept(this);
 
-      // Translate the LHS we want to read into.
-      if (LHS.getIdentifier() != null) {
-          int offset = LHS.getOffset();
-          ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, new StackPointer(), new ImmediateNum(offset), false));
-      } else {
-          ret.addAll(temp);
-      }
+    // Translate the LHS we want to read into.
+    if (LHS.getIdentifier() != null) {
+      int offset = LHS.getOffset();
+      ret.add(
+          new Arithmetic(ArithmeticOpcode.ADD, target, new StackPointer(), new ImmediateNum(offset),
+              false));
+    } else {
+      ret.addAll(temp);
+    }
 
-      ret.add(new Move(new Register(0), target));
+    ret.add(new Move(new Register(0), target));
 
-      if (LHS.getIsChar()) {
-          ret.add(new Branch("p_read_char", true));
-          program.addPrimitive(ReadFunctions.readCharFunction(program));
-      } else {
-          ret.add(new Branch("p_read_int", true));
-          program.addPrimitive(ReadFunctions.readIntFunction(program));
-      }
+    if (LHS.getIsChar()) {
+      ret.add(new Branch("p_read_char", true));
+      program.addPrimitive(ReadFunctions.readCharFunction(program));
+    } else {
+      ret.add(new Branch("p_read_int", true));
+      program.addPrimitive(ReadFunctions.readIntFunction(program));
+    }
 
-      return ret;
+    return ret;
 
   }
 
   @Override
   public List<Instruction> visit(ReturnAST returnStatement) {
-      Register dest = program.registers.get(0);
-      List<Instruction> instructions = returnStatement.getExpr().accept(this);
-      instructions.add(new Move(new Register(0), dest));
+    Register dest = program.registers.get(0);
+    List<Instruction> instructions = returnStatement.getExpr().accept(this);
+    instructions.add(new Move(new Register(0), dest));
 
-      instructions.addAll(program.deallocateStackSpace(funcScope));
-      instructions.add(new Pop(program.PC));
+    instructions.addAll(program.deallocateStackSpace(funcScope));
+    instructions.add(new Pop(program.PC));
 
-      return instructions;
+    return instructions;
   }
 
   @Override
   public List<Instruction> visit(LHSAssignAST lhs) {
-
 
     // where the thing we need to store will be.
     Register targetReg = program.registers.remove(0);
@@ -924,7 +930,7 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
       STACK_OBJECT varStackObj = (STACK_OBJECT) scopeST.lookupAll(identifier);
 
-      if(!varStackObj.isLive()){
+      if (!varStackObj.isLive()) {
         // if the object is not live yet, then we must be referencing an even older declaration
         varStackObj = (STACK_OBJECT) scopeST.getEncSymTable().lookupAll(identifier);
       }
@@ -935,7 +941,7 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
       TYPE type = varStackObj.getType();
       ret.add(new Store(ConditionCode.NONE, targetReg,
-              new ImmediateOffset(program.SP, new ImmediateNum(offset)), type.getSize()));
+          new ImmediateOffset(program.SP, new ImmediateNum(offset)), type.getSize()));
 
       lhs.setIsChar(type instanceof CHAR);
     }
@@ -1076,7 +1082,9 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
   }
 
 
-  /** DO NOT OVERRIDE **/
+  /**
+   * DO NOT OVERRIDE
+   **/
 
   @Override
   public List<Instruction> visit(NodeASTList<NodeAST> nodeList) {

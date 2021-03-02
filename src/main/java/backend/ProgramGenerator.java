@@ -11,8 +11,6 @@ import backend.registers.LinkRegister;
 import backend.registers.ProgramCounter;
 import backend.registers.Register;
 import backend.registers.StackPointer;
-import frontend.identifier_objects.IDENTIFIER;
-import frontend.identifier_objects.STACK_OBJECT;
 import frontend.identifier_objects.VARIABLE;
 import frontend.identifier_objects.basic_types.INT;
 import java.util.ArrayList;
@@ -63,7 +61,7 @@ public class ProgramGenerator {
 
   }
 
-  public void addPrimitive(PrimitiveLabel label){
+  public void addPrimitive(PrimitiveLabel label) {
 
     primitives.add(label);
 
@@ -86,11 +84,10 @@ public class ProgramGenerator {
     // decrement virtual stack and generate stack instruction
     stackInstructions.addAll(SP.decrement(estimatedStackSize));
 
-
     List<VARIABLE> variables = ST.getVariables();
 
     // push variables to stack (implicitly assigns them addresses)
-    for(VARIABLE var : variables){
+    for (VARIABLE var : variables) {
       SP.push(var);
     }
 
@@ -108,7 +105,6 @@ public class ProgramGenerator {
 
     // decrement virtual stack and generate stack instruction
     stackInstructions.addAll(SP.increment(estimatedStackSize));
-
 
     // restore the stack state in the symbol table
     ST.restoreStackState(SP);
@@ -151,7 +147,7 @@ public class ProgramGenerator {
     return builder.toString();
   }
 
-  public void pushLR(List<Instruction> instructions){
+  public void pushLR(List<Instruction> instructions) {
     //    PUSH {lr}
     instructions.add(0, new Push(LR));
     // decrements stack pointer and free pointer by 4 bytes
@@ -159,7 +155,7 @@ public class ProgramGenerator {
   }
 
 
-  public void popPC(List<Instruction> instructions){
+  public void popPC(List<Instruction> instructions) {
     //		POP {pc}
     instructions.add(new Pop(PC));
     // increments stack pointer and free pointer by 4 bytes

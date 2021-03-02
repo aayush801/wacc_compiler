@@ -1,8 +1,6 @@
 package middleware;
 
 import backend.NodeASTVisitor;
-import backend.instructions.Instruction;
-import java.util.List;
 import middleware.function_ast.FunctionDeclarationAST;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;

@@ -55,6 +55,7 @@ public class ArrayTypeAST extends TypeAST {
     }
 
   }
+
   @Override
   public <T> T accept(NodeASTVisitor<? extends T> visitor) {
     return visitor.visit(this);

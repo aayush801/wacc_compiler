@@ -18,7 +18,6 @@ import backend.instructions.arithmetic.ArithmeticOpcode;
 import backend.labels.code.PrimitiveLabel;
 import backend.labels.data.DataLabel;
 import backend.operands.ImmediateNum;
-import backend.registers.Register;
 import java.util.ArrayList;
 import java.util.List;
 
