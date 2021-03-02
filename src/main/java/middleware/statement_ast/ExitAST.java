@@ -41,6 +41,10 @@ public class ExitAST extends StatementAST {
 
   }
 
+  public ExpressionAST getExpr(){
+    return expressionAST;
+  }
+
   @Override
   public List<Instruction> translate(List<Register> registers) {
     List<Instruction> instructions = expressionAST.translate(registers);

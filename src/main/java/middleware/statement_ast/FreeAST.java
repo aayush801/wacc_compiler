@@ -44,6 +44,11 @@ public class FreeAST extends StatementAST {
 
   }
 
+  public ExpressionAST getExpr(){
+    return expr;
+  }
+
+
   @Override
   public List<Instruction> translate(List<Register> registers) {
 

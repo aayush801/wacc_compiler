@@ -16,6 +16,10 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class ReturnAST extends StatementAST {
 
+  public ExpressionAST getExpr() {
+    return expressionAST;
+  }
+
   private final ExpressionAST expressionAST;
   private TYPE type;
 

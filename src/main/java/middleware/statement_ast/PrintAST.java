@@ -28,6 +28,19 @@ public class PrintAST extends StatementAST {
   private final ExpressionAST expr;
   // Used to differentiate between print and println.
   private final boolean newLine;
+
+  public ExpressionAST getExpr() {
+    return expr;
+  }
+
+  public boolean isNewLine() {
+    return newLine;
+  }
+
+  public TYPE getType() {
+    return type;
+  }
+
   private TYPE type;
 
   public PrintAST(ParserRuleContext ctx, ExpressionAST expr, boolean newLine) {
@@ -41,6 +54,8 @@ public class PrintAST extends StatementAST {
     expr.check();
     type = expr.getType();
   }
+
+
 
   @Override
   public List<Instruction> translate(List<Register> registers) {
