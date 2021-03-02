@@ -31,14 +31,25 @@ public class BinOpExprAST extends ExpressionAST {
   private final ExpressionAST leftExprAST, rightExprAST;
   private final String operator;
 
-  public BinOpExprAST(ParserRuleContext ctx, ExpressionAST leftExprAST, String operator,
-      ExpressionAST rightExprAST) {
+  public BinOpExprAST(ParserRuleContext ctx, ExpressionAST leftExprAST,
+      String operator, ExpressionAST rightExprAST) {
     super(ctx);
     this.leftExprAST = leftExprAST;
     this.rightExprAST = rightExprAST;
     this.operator = operator;
   }
 
+  public ExpressionAST getLeftExprAST() {
+    return leftExprAST;
+  }
+
+  public ExpressionAST getRightExprAST() {
+    return rightExprAST;
+  }
+
+  public String getOperator() {
+    return operator;
+  }
   /* ================== OPERATION PARAMETER TYPING CHECKS ================== */
   /* ==================== PS: these are helper functions =================== */
 

@@ -39,6 +39,10 @@ public class IdentifierAST extends ExpressionAST {
     return identifier;
   }
 
+  public SymbolTable getScopeST() {
+    return scopeST;
+  }
+
   @Override
   public void check() {
     // find the object corresponding to the identifier in the lookup table

@@ -36,7 +36,9 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class ArrayElemAST extends ExpressionAST {
 
+
   private final String arrayName;
+
   private final NodeASTList<ExpressionAST> expressionASTS;
   public TYPE type;
   private SymbolTable scopeST;
@@ -49,6 +51,21 @@ public class ArrayElemAST extends ExpressionAST {
     this.expressionASTS = expressionASTS;
   }
 
+  public boolean isRequiresDereference() {
+    return requiresDereference;
+  }
+
+  public SymbolTable getScopeST() {
+    return scopeST;
+  }
+
+  public String getArrayName() {
+    return arrayName;
+  }
+
+  public NodeASTList<ExpressionAST> getExpressionASTS() {
+    return expressionASTS;
+  }
 
   public void setDereference(boolean requiresDereference) {
     this.requiresDereference = requiresDereference;
@@ -145,7 +162,8 @@ public class ArrayElemAST extends ExpressionAST {
       ret.add(new Move(Register.R1, target));
 
       // include primitive array bounds checker
-      PrimitiveLabel arrayBoundsPrimitive = PrintArrayBoundsChecks.printArrayIndexCheck(program);
+      PrimitiveLabel arrayBoundsPrimitive
+          = PrintArrayBoundsChecks.printArrayIndexCheck(program);
       ret.add(new Branch(arrayBoundsPrimitive.getLabelName(), true));
       program.addPrimitive(arrayBoundsPrimitive);
 

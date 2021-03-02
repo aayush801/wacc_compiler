@@ -41,6 +41,18 @@ public class UnaryOpExprAST extends ExpressionAST {
     this.operator = operator;
   }
 
+  public ExpressionAST getExpr() {
+    return expr;
+  }
+
+  public String getOperator() {
+    return operator;
+  }
+
+  public SymbolTable getScopeST() {
+    return scopeST;
+  }
+
   /* ================== OPERATION PARAMETER TYPING CHECKS ================== */
 
   private void checkNotParam(IDENTIFIER exprType) {

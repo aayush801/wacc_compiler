@@ -76,6 +76,7 @@ public class LiteralsAST extends ExpressionAST {
     //return new Collections.singleton(new Load(registers.get(0), new Address()));
     List<Instruction> instructions = new ArrayList<>();
     instructions.add(instruction);
+
     return instructions;
   }
 

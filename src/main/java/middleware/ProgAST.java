@@ -9,6 +9,7 @@ import backend.instructions.addr_modes.Address;
 import backend.labels.code.CodeLabel;
 import backend.primitive_functions.RuntimeError;
 import backend.registers.Register;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import middleware.function_ast.FunctionDeclarationAST;
@@ -84,6 +85,14 @@ public class ProgAST extends NodeAST {
 
   public NodeASTList<FunctionDeclarationAST> getFunctionDeclarationASTS() {
     return functionDeclarationASTS;
+  }
+
+  public StatementAST getStatementAST() {
+    return statementAST;
+  }
+
+  public SymbolTable getScopeST() {
+    return scopeST;
   }
 
 }

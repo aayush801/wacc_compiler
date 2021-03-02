@@ -26,6 +26,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class ArrayAST extends NodeAST {
 
+
+
   private final NodeASTList<ExpressionAST> expressionASTList;
   private ARRAY arrayObj;
 
@@ -33,6 +35,10 @@ public class ArrayAST extends NodeAST {
       NodeASTList<ExpressionAST> expressionASTList) {
     super(ctx);
     this.expressionASTList = expressionASTList;
+  }
+
+  public NodeASTList<ExpressionAST> getExpressionASTList() {
+    return expressionASTList;
   }
 
   public ARRAY getArrayObj() {

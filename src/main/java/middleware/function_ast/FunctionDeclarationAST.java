@@ -42,6 +42,22 @@ public class FunctionDeclarationAST extends NodeAST {
     this.statementAST = statementAST;
   }
 
+  public TypeAST getTypeAST() {
+    return typeAST;
+  }
+
+  public String getFuncName() {
+    return funcName;
+  }
+
+  public NodeASTList<ParamAST> getParamASTList() {
+    return paramASTList;
+  }
+
+  public StatementAST getStatementAST() {
+    return statementAST;
+  }
+
   private boolean checkFunctionAndGetReturnType() {
     typeAST.check();
     TYPE type = typeAST.getType();
@@ -109,7 +125,6 @@ public class FunctionDeclarationAST extends NodeAST {
     program.addCode(label);
 
     return null;
-
   }
 
   @Override
