@@ -52,4 +52,11 @@ public class BeginAST extends StatementAST {
     return (List<Instruction>) visitor.visit(this);
   }
 
+  public StatementAST getStatementAST() {
+    return statementAST;
+  }
+
+  public SymbolTable getScopeST() {
+    return scopeST;
+  }
 }

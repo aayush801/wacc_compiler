@@ -673,12 +673,31 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
   @Override
   public List<Instruction> visit(AssignmentAST assignment) {
-    return null;
+    // evaluate RHS first.
+    List<Instruction> instructions = assignment.getRHS().translate(program.registers);
+
+    // At this point, result of evaluating the RHS in in registers.get(0), and this is handled
+    // carefully in LHS.translate().
+    // The LHS translate does what it needs to do to do the storing.
+    instructions.addAll(assignment.getLHS().translate(program.registers));
+
+    return instructions;
   }
 
   @Override
   public List<Instruction> visit(BeginAST begin) {
-    return null;
+    SymbolTable scopeST = begin.getScopeST();
+
+    scopeST.saveStackState(program.SP);
+
+    List<Instruction> instructions = program.allocateStackSpace(scopeST);
+    instructions.addAll(begin.getStatementAST().translate(program.registers));
+    instructions.addAll(program.deallocateStackSpace(scopeST));
+
+    // save the stack state in the symbol table
+    scopeST.restoreStackState(program.SP);
+
+    return instructions;
   }
 
   @Override
@@ -701,7 +720,48 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
   @Override
   public List<Instruction> visit(IfElseAST ifElse) {
-    return null;
+
+    List<Register> registers = program.registers;
+    Register destination = registers.get(0);
+
+    List<Instruction> instructions = ifElse.getExpressionAST().translate(program.registers);
+
+    instructions.add(new Compare(destination, ImmediateNum.ZERO));
+
+    LabelledInstruction body = new LabelledInstruction();
+    LabelledInstruction rest = new LabelledInstruction();
+
+    instructions.add(new Branch(ConditionCode.EQ, body.getLabel(), false));
+
+    // save the stack state in the symbol table
+    SymbolTable ST1 = ifElse.getST1();
+    ST1.saveStackState(program.SP);
+
+    instructions.addAll(program.allocateStackSpace(ST1));
+    instructions.addAll(ifElse.getFirstStatAST().translate(registers));
+    instructions.addAll(program.deallocateStackSpace(ST1));
+
+    // save the stack state in the symbol table
+    ST1.restoreStackState(program.SP);
+
+    instructions.add(new Branch(rest.getLabel()));
+
+    instructions.add(body);
+
+    // save the stack state in the symbol table
+    SymbolTable ST2 = ifElse.getST2();
+    ST2.saveStackState(program.SP);
+
+    instructions.addAll(program.allocateStackSpace(ST2));
+    instructions.addAll(ifElse.getSecondStatAST().translate(registers));
+    instructions.addAll(program.deallocateStackSpace(ST2));
+
+    // save the stack state in the symbol table
+    ST2.restoreStackState(program.SP);
+
+    instructions.add(rest);
+
+    return instructions;
   }
 
   @Override
@@ -720,8 +780,62 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
   }
 
   @Override
-  public List<Instruction> visit(LHSAssignAST rhs) {
-    return null;
+  public List<Instruction> visit(LHSAssignAST lhs) {
+
+    List<Register> registers = program.registers;
+
+    // where the thing we need to store will be.
+    Register target = registers.get(0);
+
+    // get the registers that are free.
+    List<Register> remainingRegs = new ArrayList<>(registers);
+    remainingRegs.remove(0);
+
+    List<Instruction> ret = new ArrayList<>();
+
+    // case when LHS is just an identifier a.k.a. a variable having a base type.
+    if (lhs.getIdentifier() != null) {
+
+      String identifier = lhs.getIdentifier();
+      SymbolTable scopeST = lhs.getScopeST();
+
+      STACK_OBJECT varStackObj = (STACK_OBJECT) scopeST.lookupAll(identifier);
+
+      if(!varStackObj.isLive()){
+        // if the object is not live yet, then we must be referencing an even older declaration
+        varStackObj = (STACK_OBJECT) scopeST.getEncSymTable().lookupAll(identifier);
+      }
+
+      int offset = program.SP.calculateOffset(varStackObj.getStackAddress());
+
+      lhs.setOffset(offset);
+
+      TYPE type = varStackObj.getType();
+      ret.add(new Store(ConditionCode.NONE, target,
+              new ImmediateOffset(program.SP, new ImmediateNum(offset)), type.getSize()));
+
+      lhs.setIsChar(type instanceof CHAR);
+    }
+
+    // case when LHS is an arrayElem.
+    if (lhs.getArrayElemAST() != null) {
+      ArrayElemAST arrayElemAST = lhs.getArrayElemAST();
+
+      TYPE type = arrayElemAST.getType();
+      ret.addAll(arrayElemAST.translate(remainingRegs));
+      ret.add(new Store(target, new ZeroOffset(remainingRegs.get(0)), type.getSize()));
+    }
+
+    // case when LHS is a pairElem
+    if (lhs.getPairElemAST() != null) {
+      PairElemAST pairElemAST = lhs.getPairElemAST();
+
+      TYPE type = pairElemAST.getType();
+      ret.addAll(pairElemAST.translate(remainingRegs));
+      ret.add(new Store(target, new ZeroOffset(remainingRegs.get(0)), type.getSize()));
+    }
+
+    return ret;
   }
 
   @Override
@@ -790,6 +904,7 @@ public class WaccCodeGeneratorVisitor extends NodeASTVisitor<List<Instruction>> 
 
     //int stackAddress = program.SP.push(varObj); //pushes varObj onto stack
     varObj.setLive(true);
+
     // gets address of var in respect to the current stack pointer
     int offset = program.SP.calculateOffset(varObj.getStackAddress());
     TYPE type = typeAST.getType();

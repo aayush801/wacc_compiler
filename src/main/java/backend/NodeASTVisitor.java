@@ -78,7 +78,7 @@ public abstract class NodeASTVisitor<T> {
 
   public abstract T visit(ReturnAST returnStatement);
 
-  public abstract T visit(LHSAssignAST rhs);
+  public abstract T visit(LHSAssignAST lhs);
 
   public abstract T visit(RHSAssignAST rhs);
 

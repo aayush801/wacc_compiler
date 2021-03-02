@@ -153,8 +153,6 @@ public class LHSAssignAST extends StatementAST {
 
     List<Instruction> ret = new ArrayList<>();
 
-    // TODO: DO THE CHAR CHECK FOR ALL 3 CASES!!!!!!!!!!!!!!!!!
-
     // case when LHS is just an identifier a.k.a. a variable having a base type.
     if (identifier != null) {
 
@@ -202,7 +200,27 @@ public class LHSAssignAST extends StatementAST {
     return offsetIdent;
   }
 
+  public void setOffset(int setOffset) {
+    this.offsetIdent =  setOffset;
+  }
+
+  public void setIsChar(boolean isChar) {
+    this.isChar = isChar;
+  }
+
   public boolean getIsChar() {
     return isChar;
+  }
+
+  public SymbolTable getScopeST() {
+    return scopeST;
+  }
+
+  public ArrayElemAST getArrayElemAST() {
+    return arrayElemAST;
+  }
+
+  public PairElemAST getPairElemAST() {
+    return pairElemAST;
   }
 }

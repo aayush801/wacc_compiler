@@ -28,8 +28,16 @@ public class AssignmentAST extends StatementAST {
   private final RHSAssignAST RHS;
   private SymbolTable scopeST;
 
+  public LHSAssignAST getLHS() {
+    return LHS;
+  }
+
+  public RHSAssignAST getRHS() {
+    return RHS;
+  }
+
   public AssignmentAST(ParserRuleContext ctx, LHSAssignAST LHS,
-      RHSAssignAST RHS) {
+                       RHSAssignAST RHS) {
     super(ctx);
     this.LHS = LHS;
     this.RHS = RHS;

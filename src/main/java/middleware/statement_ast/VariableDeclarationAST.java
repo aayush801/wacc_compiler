@@ -102,13 +102,8 @@ public class VariableDeclarationAST extends StatementAST {
     return (List<Instruction>) visitor.visit(this);
   }
 
-
   public TypeAST getTypeAST() {
     return typeAST;
-  }
-
-  public String getVarName() {
-    return varName;
   }
 
   public RHSAssignAST getRhsAssignAST() {

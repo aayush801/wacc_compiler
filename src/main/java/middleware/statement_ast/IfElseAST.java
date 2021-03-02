@@ -119,4 +119,23 @@ public class IfElseAST extends StatementAST {
     return (List<Instruction>) visitor.visit(this);
   }
 
+  public ExpressionAST getExpressionAST() {
+    return expressionAST;
+  }
+
+  public SymbolTable getST1() {
+    return ST1;
+  }
+
+  public SymbolTable getST2() {
+    return ST2;
+  }
+
+  public StatementAST getFirstStatAST() {
+    return firstStatAST;
+  }
+
+  public StatementAST getSecondStatAST() {
+    return secondStatAST;
+  }
 }
