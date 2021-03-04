@@ -8,10 +8,6 @@ public class DuplicateIdentifier extends WaccSemanticError {
     super(ctx);
   }
 
-  public DuplicateIdentifier(ParserRuleContext ctx, String partOfCodeWithError) {
-    super(ctx, partOfCodeWithError);
-  }
-
   @Override
   public String getErrorMessage() {
     return " identifier is already defined";

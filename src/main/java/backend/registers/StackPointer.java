@@ -10,10 +10,7 @@ import java.util.List;
 
 public class StackPointer extends Register {
 
-  private final int savedStackPtr = 0;
-  private final int savedFreePtr = 0;
-  private int freePtr = 0;
-  private int stackPtr = 0;
+  private int freePtr = 0, stackPtr = 0;
 
   public StackPointer() {
     super(13);

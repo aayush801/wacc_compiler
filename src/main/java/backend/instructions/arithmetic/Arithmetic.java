@@ -42,8 +42,11 @@ public class Arithmetic extends Instruction {
     boolean operand1Exists = operand1 != null;
 
     return opcode + (flags ? "S" : "") + " " +
-        (!registerSave ? Rd + ", " + Rn + ", " + operand + (operand1Exists ? ", " + operand1 : "") :
-            (operand1Exists ? Rd + ", " + Rn + ", " + operand1 + ", " + operand :
+        (!registerSave ?
+            Rd + ", " + Rn + ", " + operand +
+                (operand1Exists ? ", " + operand1 : "") :
+            (operand1Exists ?
+                Rd + ", " + Rn + ", " + operand1 + ", " + operand :
                 Rd + ", " + operand + ", " + Rn));
   }
 }

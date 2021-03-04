@@ -19,7 +19,8 @@ public class ReadFunctions {
 
   private static final DataLabel intFormat = new DataLabel("\"%d\\0\"");
   private static final DataLabel charFormat = new DataLabel("\" %c\\0\"");
-
+  final static int WORD_SIZE = 4;
+  
   public static PrimitiveLabel readIntFunction(ProgramGenerator program) {
     List<Instruction> ret = new ArrayList<>();
 
@@ -34,7 +35,7 @@ public class ReadFunctions {
 
     // Add R0, R0, #4
     ret.add(new Arithmetic(ArithmeticOpcode.ADD, Register.R0, Register.R0,
-        new ImmediateNum(4), false));
+        new ImmediateNum(WORD_SIZE), false));
 
     // BL scanf
     ret.add(new Branch("scanf", true));
@@ -56,7 +57,7 @@ public class ReadFunctions {
 
     // Add R0, R0, #4
     ret.add(new Arithmetic(ArithmeticOpcode.ADD, Register.R0, Register.R0,
-        new ImmediateNum(4), false));
+        new ImmediateNum(WORD_SIZE), false));
 
     // BL scanf
     ret.add(new Branch("scanf", true));

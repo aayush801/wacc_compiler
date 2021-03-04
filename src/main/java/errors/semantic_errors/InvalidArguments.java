@@ -7,7 +7,8 @@ public class InvalidArguments extends WaccSemanticError {
   protected String func;
   protected int required, given;
 
-  public InvalidArguments(ParserRuleContext ctx, String func, int required, int given) {
+  public InvalidArguments(ParserRuleContext ctx, String func, int required,
+      int given) {
     super(ctx);
     this.func = func;
     this.required = required;

@@ -26,7 +26,8 @@ public class Store extends Instruction {
     this.size = size;
   }
 
-  public Store(ConditionCode code, Register Rs, AddressingMode addressingMode) {
+  public Store(ConditionCode code, Register Rs,
+      AddressingMode addressingMode) {
     super(code);
     this.Rs = Rs;
     this.addressingMode = addressingMode;

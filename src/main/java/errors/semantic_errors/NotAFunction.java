@@ -4,13 +4,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class NotAFunction extends WaccSemanticError {
 
-
   public NotAFunction(ParserRuleContext ctx) {
     super(ctx);
-  }
-
-  public NotAFunction(ParserRuleContext ctx, String offendingSymbol) {
-    super(ctx, offendingSymbol);
   }
 
   @Override

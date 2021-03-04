@@ -95,7 +95,8 @@ public class SymbolTable {
 
   // gets a list of all the variables defined within the scope
   public List<VARIABLE> getVariables() {
-    return dict.values().stream().filter(e -> e instanceof VARIABLE).map(e -> (VARIABLE) e)
+    return dict.values().stream().filter(e -> e instanceof VARIABLE)
+        .map(e -> (VARIABLE) e)
         .collect(Collectors.toList());
   }
 

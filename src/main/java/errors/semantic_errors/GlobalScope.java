@@ -8,10 +8,6 @@ public class GlobalScope extends WaccSemanticError {
     super(ctx);
   }
 
-  public GlobalScope(ParserRuleContext ctx, String offendingSymbol) {
-    super(ctx, offendingSymbol);
-  }
-
   @Override
   public String getErrorMessage() {
     return "Cannot return from the global scope.";

@@ -152,7 +152,8 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // return a list of ParamAST, done by calling visitParam on all
     // parameters in ctx.
     return new NodeASTList<>(
-        ctx, ctx.param().stream().map(this::visitParam).collect(Collectors.toList()));
+        ctx, ctx.param().stream().map(this::visitParam)
+        .collect(Collectors.toList()));
   }
 
   @Override
@@ -162,7 +163,8 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // in either case, return a new NodeASTList.
     if (ctx.expr() != null) {
       return new NodeASTList<>(
-          ctx, ctx.expr().stream().map(this::visitExpr).collect(Collectors.toList()));
+          ctx, ctx.expr().stream().map(this::visitExpr)
+          .collect(Collectors.toList()));
     } else {
       return new NodeASTList<>(ctx);
     }
@@ -185,14 +187,15 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   @Override
   public StatementAST visitAssignIdent(AssignIdentContext ctx) {
     // return a new VariableDeclarationAST.
-    return new VariableDeclarationAST(ctx, visitType(ctx.type()), ctx.IDENT().getText(),
-        visitAssignRHS(ctx.assignRHS()));
+    return new VariableDeclarationAST(ctx, visitType(ctx.type()),
+        ctx.IDENT().getText(), visitAssignRHS(ctx.assignRHS()));
   }
 
   @Override
   public StatementAST visitWhileDo(WhileDoContext ctx) {
     // return a new WhileAST.
-    return new WhileAST(ctx, visitExpr(ctx.expr()), (StatementAST) visit(ctx.stat()));
+    return new WhileAST(ctx, visitExpr(ctx.expr()),
+        (StatementAST) visit(ctx.stat()));
   }
 
   @Override

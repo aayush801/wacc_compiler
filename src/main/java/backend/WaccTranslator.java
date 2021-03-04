@@ -89,8 +89,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
   private final ProgramGenerator program = new ProgramGenerator();
-
   private SymbolTable funcScope;
+  private final int WORD_SIZE = 4;
 
   @Override
   public String toString() {
@@ -133,7 +133,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     // Calculate size of heap space required.
     int length = array.getExpressionASTList().size();
     int elementSize = array.getArrayObj().getType().getSize();
-    int size = length * elementSize + 4;
+    int size = length * elementSize + WORD_SIZE;
 
     ret.add(new Load(Register.R0, new ImmediateAddress(size)));
 
@@ -152,7 +152,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       ret.addAll(e.accept(this));
       ret.add(new Store(ConditionCode.NONE, target,
           new ImmediateOffset(destination,
-              new ImmediateNum(4 + i * elementSize)),
+              new ImmediateNum(WORD_SIZE + i * elementSize)),
           array.getArrayObj().getType().getSize()));
     }
 
@@ -193,7 +193,6 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     Register index = program.registers.get(0);
 
     // calculate index, and set it to the register index.
-    // TODO: ADD CODE FOR DOING 2D ARRAYS!!!!!
     for (int i = 0; i < arrayElem.getExpressionASTS().size(); i++) {
       ExpressionAST exprAST = arrayElem.getExpressionASTS().get(i);
       ret.addAll(exprAST.accept(this));
@@ -211,7 +210,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       program.addPrimitive(arrayBoundsPrimitive);
 
       ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target,
-          new ImmediateNum(4), false));
+          new ImmediateNum(WORD_SIZE), false));
 
       if (arrayElem.type instanceof CHAR || arrayElem.type instanceof BOOL) {
         ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target, index,
@@ -273,8 +272,9 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     switch (binOpExpr.getOperator()) {
       // ARITHMETIC Operators
       case "+":
-        instructions.add(new Arithmetic(ArithmeticOpcode.ADD, Rn, Rn, Rm, true,
-            accumulator));
+        instructions.add
+            (new Arithmetic(ArithmeticOpcode.ADD, Rn, Rn, Rm, true,
+                accumulator));
 
         // check for overflow error
         primitiveLabel = BinOpChecks.printOverflowCheck(program);
@@ -288,12 +288,14 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
         // check for overflow error
         primitiveLabel = BinOpChecks.printOverflowCheck(program);
-        instructions.add(new Branch(ConditionCode.VS, primitiveLabel.getLabelName(),
-            true));
+        instructions.add(
+            new Branch(ConditionCode.VS, primitiveLabel.getLabelName(), true));
 
         break;
       case "*":
-        instructions.add(new Arithmetic(ArithmeticOpcode.SMULL, Rn, Rm, Rn, Rm, accumulator));
+        instructions.add(
+            new Arithmetic(ArithmeticOpcode.SMULL, Rn, Rm, Rn, Rm,
+                accumulator));
 
         instructions.add(new Compare(Rm, new ImmediateNumASR(Rn, 31)));
 
@@ -647,7 +649,9 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     allocateAndStorePairElemToMemory(instructions, pairElem, sndSize);
 
     // Storing address to value of second element in the second word of pair
-    instructions.add(new Store(Register.R0, new ImmediateOffset(pairAddress, new ImmediateNum(4))));
+    instructions.add(
+        new Store(Register.R0,
+            new ImmediateOffset(pairAddress, new ImmediateNum(WORD_SIZE))));
 
     program.registers.add(0, pairAddress);
 
@@ -683,7 +687,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     // Load appropriate address into target.
     ret.add(new Load(target, new ImmediateOffset(target,
-        new ImmediateNum(pairElem.isFirstElem() ? 0 : 4))));
+        new ImmediateNum(pairElem.isFirstElem() ? 0 : WORD_SIZE))));
 
     return ret;
   }
@@ -719,7 +723,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
   @Override
   public List<Instruction> visit(ChainedStatementAST chainedStatement) {
-    List<Instruction> instructions = chainedStatement.statementAST1.accept(this);
+    List<Instruction> instructions = chainedStatement.statementAST1
+        .accept(this);
     instructions.addAll(chainedStatement.statementAST2.accept(this));
     return instructions;
 
@@ -815,7 +820,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     List<Instruction> instructions = print.getExpr().accept(this);
 
     // move result of expression to register 0
-    instructions.add(new Move(new Register(0), dest));
+    instructions.add(new Move(Register.R0, dest));
 
     PrimitiveLabel primitiveLabel = null;
     if (type instanceof INT) {
@@ -891,8 +896,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     if (LHS.getIdentifier() != null) {
       int offset = LHS.getOffset();
       ret.add(
-          new Arithmetic(ArithmeticOpcode.ADD, target, new StackPointer(), new ImmediateNum(offset),
-              false));
+          new Arithmetic(ArithmeticOpcode.ADD, target, new StackPointer(),
+              new ImmediateNum(offset), false));
     } else {
       ret.addAll(temp);
     }

@@ -14,7 +14,8 @@ public class Move extends Instruction {
     this.Operand = Operand;
   }
 
-  public Move(ConditionCode code, Register Rd, Operand Operand, boolean flags) {
+  public Move(ConditionCode code, Register Rd, Operand Operand,
+      boolean flags) {
     super(code);
     this.Rd = Rd;
     this.Operand = Operand;

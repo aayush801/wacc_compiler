@@ -83,12 +83,14 @@ public class Main {
 
   }
 
-  private static void writeSourceCode(String waccPath, String sourceCode) throws IOException {
+  private static void writeSourceCode(String waccPath, String sourceCode)
+      throws IOException {
     // get user directory where program is called from
     String currentLocation = System.getProperty("user.dir");
 
     // create path string for the new source file
-    String sourceFilePath = currentLocation + "/" + FilenameUtils.getBaseName(waccPath) + ".s";
+    String sourceFilePath = currentLocation + "/"
+        + FilenameUtils.getBaseName(waccPath) + ".s";
 
     // create wacc .s source file in user directory
     FileWriter sourceWriter = new FileWriter(sourceFilePath);

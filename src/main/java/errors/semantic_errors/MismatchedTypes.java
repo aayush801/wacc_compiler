@@ -10,13 +10,15 @@ public class MismatchedTypes extends WaccSemanticError {
   private IDENTIFIER expectedOther;
 
 
-  public MismatchedTypes(ParserRuleContext ctx, IDENTIFIER actual, IDENTIFIER expected) {
+  public MismatchedTypes(ParserRuleContext ctx, IDENTIFIER actual,
+      IDENTIFIER expected) {
     super(ctx);
     this.actual = actual;
     this.expected = expected;
   }
 
-  public MismatchedTypes(ParserRuleContext ctx, IDENTIFIER actual, IDENTIFIER expected,
+  public MismatchedTypes(ParserRuleContext ctx, IDENTIFIER actual,
+      IDENTIFIER expected,
       IDENTIFIER expectedOther) {
     super(ctx);
     twoTypes = true;
@@ -28,8 +30,10 @@ public class MismatchedTypes extends WaccSemanticError {
 
   @Override
   public String getErrorMessage() {
-    String expectedMsg = (expected == null) ? "null" : expected.toString().toUpperCase();
-    String actualMsg = (actual == null) ? "null" : actual.toString().toUpperCase();
+    String expectedMsg = (expected == null) ?
+        "null" : expected.toString().toUpperCase();
+    String actualMsg = (actual == null) ?
+        "null" : actual.toString().toUpperCase();
 
     if (!twoTypes) {
 

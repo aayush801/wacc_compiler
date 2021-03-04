@@ -43,8 +43,8 @@ public class PairElemNullAccessCheck {
     instructions.add(new Branch(ConditionCode.EQ,
         runtimeErrorPrimitive.getLabelName(), true));
 
-    return new PrimitiveLabel("check_null_pointer",
-        instructions, program).wrap();
+    return
+        new PrimitiveLabel("check_null_pointer",
+            instructions, program).wrap();
   }
-
 }

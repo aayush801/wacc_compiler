@@ -45,7 +45,8 @@ public class WaccCompiler {
 
   private final WaccParser parser;
   private final List<WaccError> errors = new ArrayList<>();
-  private final SyntaxErrorListener syntaxErrorListener = new SyntaxErrorListener();
+  private final SyntaxErrorListener syntaxErrorListener
+      = new SyntaxErrorListener();
   private String sourceCode;
 
   public WaccCompiler(String inputString) throws IOException {

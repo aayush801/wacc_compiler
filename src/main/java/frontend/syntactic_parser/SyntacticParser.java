@@ -28,10 +28,11 @@ public class SyntacticParser extends WaccParserBaseVisitor<Boolean> {
   public Boolean visitFuncDecl(WaccParser.FuncDeclContext ctx) {
     Boolean statHasReturn = visit(ctx.stat());
     if (!statHasReturn) {
-      listener.syntaxError(null, ctx.IDENT().getText(), ctx.getStart().getLine(),
+      listener.syntaxError(null, ctx.IDENT().getText(),
+          ctx.getStart().getLine(),
           ctx.getStart().getCharPositionInLine(),
-          "Function " + ctx.IDENT().getText() + " is not ended with a return or an exit statement.",
-          null);
+          "Function " + ctx.IDENT().getText() +
+              " is not ended with a return or an exit statement.", null);
     }
     return visitChildren(ctx);
   }
@@ -68,7 +69,8 @@ public class SyntacticParser extends WaccParserBaseVisitor<Boolean> {
     if (!new INT().check(integer)) {
       listener.syntaxError(null, ctx.getText(), ctx.getStart().getLine(),
           ctx.getStart().getCharPositionInLine(),
-          "is badly formatted (either it has a badly defined sign or it is too large for a 32-bit signed integer",
+          "is badly formatted (either it has a badly defined sign or it is too"
+              + " large for a 32-bit signed integer",
           null);
     }
     return null;

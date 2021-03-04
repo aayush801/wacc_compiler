@@ -64,7 +64,9 @@ public class PrintArrayBoundsChecks {
     instructions.add(new Branch(ConditionCode.CS,
         "p_throw_runtime_error", true));
 
-    return new PrimitiveLabel("check_array_bounds", instructions, program).wrap();
+    return
+        new PrimitiveLabel("check_array_bounds",
+            instructions, program).wrap();
   }
 
 }

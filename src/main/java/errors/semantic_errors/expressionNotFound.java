@@ -3,11 +3,11 @@ package errors.semantic_errors;
 import frontend.identifier_objects.IDENTIFIER;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class expressionNotFound extends WaccSemanticError {
+public class ExpressionNotFound extends WaccSemanticError {
 
   private final IDENTIFIER actual;
 
-  public expressionNotFound(ParserRuleContext ctx, IDENTIFIER actual) {
+  public ExpressionNotFound(ParserRuleContext ctx, IDENTIFIER actual) {
     super(ctx);
     this.actual = actual;
   }
@@ -15,7 +15,8 @@ public class expressionNotFound extends WaccSemanticError {
   @Override
   public String getErrorMessage() {
     return "Expected an expression" +
-        ", but got type : " + ((actual == null) ? "null" : actual.toString().toUpperCase());
+        ", but got type : " + ((actual == null) ?
+        "null" : actual.toString().toUpperCase());
   }
 
 }

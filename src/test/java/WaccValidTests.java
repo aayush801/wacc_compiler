@@ -31,10 +31,9 @@ public class WaccValidTests {
             System.out.println(compiler.getErrors());
           }
 
-
           assertThat(errorCode, is(ErrorCode.SUCCESS));
           System.out.println("==============================================");
-        }else{
+        } else {
           fail();
         }
       }
@@ -122,16 +121,19 @@ public class WaccValidTests {
     String base = "test_data/valid/runtimeErr/arrayOutOfBounds";
     files_checker(base);
   }
+
   @Test
   public void runtimeErrTestsDivideByZero() throws IOException {
     String base = "test_data/valid/runtimeErr/divideByZero";
     files_checker(base);
   }
+
   @Test
   public void runtimeErrTestsIntegerOverflow() throws IOException {
     String base = "test_data/valid/runtimeErr/integerOverflow";
     files_checker(base);
   }
+
   @Test
   public void runtimeErrTestsNullDereference() throws IOException {
     String base = "test_data/valid/runtimeErr/nullDereference";

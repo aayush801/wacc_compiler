@@ -428,72 +428,73 @@ public class CodeGenerationTests {
   @Test
   public void testBoolCalcEpxr() throws IOException {
     String instruction = "begin\n" +
-            "  bool b1 = true ;\n" +
-            "  bool b2 = false ;\n" +
-            "  bool b3 = b1 && b2 ;\n" +
-            "  println b3\n" +
-            "end";
+        "  bool b1 = true ;\n" +
+        "  bool b2 = false ;\n" +
+        "  bool b3 = b1 && b2 ;\n" +
+        "  println b3\n" +
+        "end";
     checkSourceCode(instruction);
   }
 
   @Test
   public void testDiv() throws IOException {
     String instruction = "begin\n" +
-            "  int x = -4 ;\n" +
-            "  int y = -2 ;\n" +
-            "  println x / y\n" +
-            "end";
+        "  int x = -4 ;\n" +
+        "  int y = -2 ;\n" +
+        "  println x / y\n" +
+        "end";
     checkSourceCode(instruction);
   }
 
   @Test
   public void testMod() throws IOException {
     String instruction = "begin\n" +
-            "  int x = 5 ;\n" +
-            "  int y = 3 ;\n" +
-            "  println x % y\n" +
-            "end";
+        "  int x = 5 ;\n" +
+        "  int y = 3 ;\n" +
+        "  println x % y\n" +
+        "end";
     checkSourceCode(instruction);
   }
 
   @Test
   public void testRuntimeError() throws IOException {
     String instruction =
-            "begin\n"
-                    + "\tint x = 10 ;\n"
-                    + "\tint y = 0 ;\n"
-                    + "\tprint x / y\n"
-                    + "end";
+        "begin\n"
+            + "\tint x = 10 ;\n"
+            + "\tint y = 0 ;\n"
+            + "\tprint x / y\n"
+            + "end";
     checkSourceCode(instruction);
   }
 
   @Test
   public void testLongExpr() throws IOException {
     String instruction = "begin\n" +
-            "\n" +
-            "  int x = 1 + (2 + (3 + (4 + (5 + (6 + (7 + (8 + (9 + (10 + (11 + (12 + (13 + (14 - (15 - (16 - 17)))))))))))))));\n" +
-            "  exit x\n" +
-            "\n" +
-            "  end";
+        "\n" +
+        "  int x = 1 + (2 + (3 + (4 + (5 + (6 + (7 + (8 + (9 + (10 + (11 + (12 + (13 + (14 - (15 - (16 - 17)))))))))))))));\n"
+        +
+        "  exit x\n" +
+        "\n" +
+        "  end";
     checkSourceCode(instruction);
   }
 
   @Test
   public void testLongExpr1() throws IOException {
     String instruction = "begin\n" +
-            "\n" +
-            "  int a = 1 + 2 ;\n" +
-            "  int b = 3 + 4 ; \n" +
-            "  int c = 5 + 6 ;\n" +
-            "  int d = 7 + 8 ;\n" +
-            "  int e = 9 + 10 ;\n" +
-            "  int f = 11 + 12 ;\n" +
-            "  int g = 13 + 14 ;\n" +
-            "  int h = 15 + 16 ;\n" +
-            "  int i = 17 ;\n" +
-            "  exit a + b + c + d + e + f + g + h + i\n" +
-            "\n" +
-            "end";
+        "\n" +
+        "  int a = 1 + 2 ;\n" +
+        "  int b = 3 + 4 ; \n" +
+        "  int c = 5 + 6 ;\n" +
+        "  int d = 7 + 8 ;\n" +
+        "  int e = 9 + 10 ;\n" +
+        "  int f = 11 + 12 ;\n" +
+        "  int g = 13 + 14 ;\n" +
+        "  int h = 15 + 16 ;\n" +
+        "  int i = 17 ;\n" +
+        "  exit a + b + c + d + e + f + g + h + i\n" +
+        "\n" +
+        "end";
     checkSourceCode(instruction);
   }
 
@@ -513,103 +514,103 @@ public class CodeGenerationTests {
   @Test
   public void testLongSplitExpr() throws IOException {
     String instruction = "begin\n" +
-            "\n" +
-            "  int a = 1 + 2 ;\n" +
-            "  int b = 3 + 4 ; \n" +
-            "  int c = 5 + 6 ;\n" +
-            "  int d = 7 + 8 ;\n" +
-            "  int e = 9 + 10 ;\n" +
-            "  int f = 11 + 12 ;\n" +
-            "  int g = 13 + 14 ;\n" +
-            "  int h = 15 + 16 ;\n" +
-            "  int i = 17 ;\n" +
-            "  exit a + b + c + d + e + f + g + h + i\n" +
-            "\n" +
-            "end";
+        "\n" +
+        "  int a = 1 + 2 ;\n" +
+        "  int b = 3 + 4 ; \n" +
+        "  int c = 5 + 6 ;\n" +
+        "  int d = 7 + 8 ;\n" +
+        "  int e = 9 + 10 ;\n" +
+        "  int f = 11 + 12 ;\n" +
+        "  int g = 13 + 14 ;\n" +
+        "  int h = 15 + 16 ;\n" +
+        "  int i = 17 ;\n" +
+        "  exit a + b + c + d + e + f + g + h + i\n" +
+        "\n" +
+        "end";
     checkSourceCode(instruction);
   }
 
   @Test
   public void testArrayPrint() throws IOException {
     String instruction = "begin\n" +
-            "  int[] a = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] ;\n" +
-            "  int i = 0 ;\n" +
-            "  print a ;\n" +
-            "  print \" = {\" ;\n" +
-            "  i = 0 ;\n" +
-            "  while i < 10 \n" +
-            "  do \n" +
-            "    print a[i] ;\n" +
-            "    if i < 9\n" +
-            "    then\n" +
-            "      print \", \"\n" +
-            "    else\n" +
-            "      skip\n" +
-            "    fi ;\n" +
-            "    i = i + 1\n" +
-            "  done ;\n" +
-            "  println \"}\"\n" +
-            "end";
+        "  int[] a = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] ;\n" +
+        "  int i = 0 ;\n" +
+        "  print a ;\n" +
+        "  print \" = {\" ;\n" +
+        "  i = 0 ;\n" +
+        "  while i < 10 \n" +
+        "  do \n" +
+        "    print a[i] ;\n" +
+        "    if i < 9\n" +
+        "    then\n" +
+        "      print \", \"\n" +
+        "    else\n" +
+        "      skip\n" +
+        "    fi ;\n" +
+        "    i = i + 1\n" +
+        "  done ;\n" +
+        "  println \"}\"\n" +
+        "end";
     checkSourceCode(instruction);
   }
 
   @Test
   public void testNull() throws IOException {
     String instruction = "begin\n" +
-            "  pair(pair, pair) p = null ;\n" +
-            "  println p ;\n" +
-            "  p = null ;\n" +
-            "  println p\n" +
-            "end";
+        "  pair(pair, pair) p = null ;\n" +
+        "  println p ;\n" +
+        "  p = null ;\n" +
+        "  println p\n" +
+        "end";
     checkSourceCode(instruction);
   }
 
   @Test
   public void testReadPair() throws IOException {
     String instruction = "begin\n" +
-            "\tpair(char, int) p = newpair('\\0', 0) ;\n" +
-            "\tprint \"Please enter the first element (char): \" ;\n" +
-            "  \tchar c = '0';\n" +
-            "\tread c ;\n" +
-            "  \tfst p = c ;\n" +
-            "\tprint \"Please enter the second element (int): \" ;\n" +
-            "\tint i = 0 ;\n" +
-            "\tread i ;\n" +
-            "\tsnd p = i ;\n" +
-            "\t# Clear the value for c and i\n" +
-            "\tc = '\\0' ;\n" +
-            "\ti = -1 ;\n" +
-            "\tprint \"The first element was \" ;\n" +
-            "\tc = fst p ;\n" +
-            "\tprintln c ;\n" +
-            "\tprint \"The second element was \" ;\n" +
-            "\ti = snd p ;\n" +
-            "\tprintln i \n" +
-            "end";
+        "\tpair(char, int) p = newpair('\\0', 0) ;\n" +
+        "\tprint \"Please enter the first element (char): \" ;\n" +
+        "  \tchar c = '0';\n" +
+        "\tread c ;\n" +
+        "  \tfst p = c ;\n" +
+        "\tprint \"Please enter the second element (int): \" ;\n" +
+        "\tint i = 0 ;\n" +
+        "\tread i ;\n" +
+        "\tsnd p = i ;\n" +
+        "\t# Clear the value for c and i\n" +
+        "\tc = '\\0' ;\n" +
+        "\ti = -1 ;\n" +
+        "\tprint \"The first element was \" ;\n" +
+        "\tc = fst p ;\n" +
+        "\tprintln c ;\n" +
+        "\tprint \"The second element was \" ;\n" +
+        "\ti = snd p ;\n" +
+        "\tprintln i \n" +
+        "end";
     checkSourceCode(instruction);
   }
 
   @Test
   public void testPrintNull() throws IOException {
     String instruction = "begin\n" +
-            "  println null\n" +
-            "end";
+        "  println null\n" +
+        "end";
     checkSourceCode(instruction);
   }
 
   @Test
   public void testPrintPairOfNulls() throws IOException {
     String instruction = "begin\n" +
-            "  pair(pair, pair) p = newpair(null, null) ;\n" +
-            "  print p ;\n" +
-            "  print \" = (\" ;\n" +
-            "  pair(pair, pair) q = fst p ;\n" +
-            "  print q ;\n" +
-            "  print \",\" ;\n" +
-            "  pair(int, bool) r = snd p ;\n" +
-            "  print r ;\n" +
-            "  println \")\"\n" +
-            "  end";
+        "  pair(pair, pair) p = newpair(null, null) ;\n" +
+        "  print p ;\n" +
+        "  print \" = (\" ;\n" +
+        "  pair(pair, pair) q = fst p ;\n" +
+        "  print q ;\n" +
+        "  print \",\" ;\n" +
+        "  pair(int, bool) r = snd p ;\n" +
+        "  print r ;\n" +
+        "  println \")\"\n" +
+        "  end";
     checkSourceCode(instruction);
   }
 
@@ -729,44 +730,45 @@ public class CodeGenerationTests {
   @Test
   public void testReadNull1() throws IOException {
     String instruction = "begin\n" +
-            "\tpair(int, int) p = null ;\n" +
-            "\tread fst p\n" +
-            "end";
+        "\tpair(int, int) p = null ;\n" +
+        "\tread fst p\n" +
+        "end";
     checkSourceCode(instruction);
   }
 
   @Test
   public void testReadNull2() throws IOException {
     String instruction = "begin\n" +
-            "\tpair(int, int) p = null ;\n" +
-            "\tread snd p\n" +
-            "end";
+        "\tpair(int, int) p = null ;\n" +
+        "\tread snd p\n" +
+        "end";
     checkSourceCode(instruction);
   }
 
   @Test
   public void testMulOverflow() throws IOException {
     String instruction = "begin\n" +
-            "int y = 1 * 2 ; \n" +
-            "  int x = 2147483 ;\n" +
-            "  println x ;\n" +
-            "  x = x * 1000 ;\n" +
-            "  println x ;\n" +
-            "  x = x * 1000 ;\n" +
-            "  println x ;\n" +
-            "  x = x * 1000 ; #err here?\n" +
-            "  println x \n" +
-            "end";
+        "int y = 1 * 2 ; \n" +
+        "  int x = 2147483 ;\n" +
+        "  println x ;\n" +
+        "  x = x * 1000 ;\n" +
+        "  println x ;\n" +
+        "  x = x * 1000 ;\n" +
+        "  println x ;\n" +
+        "  x = x * 1000 ; #err here?\n" +
+        "  println x \n" +
+        "end";
     checkSourceCode(instruction);
   }
 
   @Test
   public void testLongMult() throws IOException {
     String instruction = " begin\n" +
-            "  int x = 1 * (2 * (3 * (4 * (5 * (6 * (7 * (8 * (9 * (10 * (11 * (12 * (13 * (14 - (15 - (16 - 17)))))))))))))));\n" +
-            "  exit x\n" +
-            "\n" +
-            "  end";
+        "  int x = 1 * (2 * (3 * (4 * (5 * (6 * (7 * (8 * (9 * (10 * (11 * (12 * (13 * (14 - (15 - (16 - 17)))))))))))))));\n"
+        +
+        "  exit x\n" +
+        "\n" +
+        "  end";
     checkSourceCode(instruction);
   }
 

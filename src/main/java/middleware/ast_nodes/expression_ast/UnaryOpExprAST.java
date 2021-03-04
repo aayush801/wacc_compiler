@@ -2,7 +2,7 @@ package middleware.ast_nodes.expression_ast;
 
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.NotAFunction;
-import errors.semantic_errors.expressionNotFound;
+import errors.semantic_errors.ExpressionNotFound;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.ARRAY;
@@ -111,7 +111,7 @@ public class UnaryOpExprAST extends ExpressionAST {
     }
 
     if (!(exprType instanceof TYPE)) {
-      addError(new expressionNotFound(ctx, exprType));
+      addError(new ExpressionNotFound(ctx, exprType));
       return;
     }
 

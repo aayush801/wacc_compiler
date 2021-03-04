@@ -39,11 +39,7 @@ public class Load extends Instruction {
 
     return "LDR"
         + (size == 1 ? "SB" : "")
-        + code
-        + " "
-        + Rn
-        + ", "
-        + addressingMode;
+        + code + " " + Rn + ", " + addressingMode;
 
   }
 }

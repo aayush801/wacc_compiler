@@ -17,10 +17,11 @@ public class SyntaxErrorListener extends BaseErrorListener {
   }
 
   @Override
-  public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
-      int charPositionInLine, String msg, RecognitionException e) {
+  public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
+      int line, int charPositionInLine, String msg, RecognitionException e) {
 
-    errors.add(new WaccSyntaxError(recognizer, offendingSymbol, line, charPositionInLine, msg, e));
+    errors.add(new WaccSyntaxError(recognizer, offendingSymbol, line,
+        charPositionInLine, msg, e));
   }
 
   public List<WaccError> getErrors() {

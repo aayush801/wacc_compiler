@@ -1,7 +1,7 @@
 package middleware.ast_nodes.statement_ast;
 
 import errors.semantic_errors.Undefined;
-import errors.semantic_errors.expressionNotFound;
+import errors.semantic_errors.ExpressionNotFound;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.TYPE;
@@ -84,7 +84,7 @@ public class LHSAssignAST extends StatementAST {
       // If not stored as a TYPE (e.g. a function is stored as an IDENTIFIER),
       // this is a mismatched type error.
       if (!(obj instanceof TYPE)) {
-        addError(new expressionNotFound(ctx, obj));
+        addError(new ExpressionNotFound(ctx, obj));
         return;
       }
 
