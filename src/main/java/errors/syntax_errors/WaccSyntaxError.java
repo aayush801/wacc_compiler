@@ -9,8 +9,8 @@ public class WaccSyntaxError extends WaccError {
 
   private final String msg;
 
-  public WaccSyntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
-      int line, int charPositionInLine, String msg, RecognitionException e) {
+  public WaccSyntaxError(Object offendingSymbol, int line,
+      int charPositionInLine, String msg) {
     super(line, charPositionInLine, offendingSymbol.toString());
     this.msg = msg;
   }

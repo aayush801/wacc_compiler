@@ -70,8 +70,7 @@ public class SyntacticParser extends WaccParserBaseVisitor<Boolean> {
       listener.syntaxError(null, ctx.getText(), ctx.getStart().getLine(),
           ctx.getStart().getCharPositionInLine(),
           "is badly formatted (either it has a badly defined sign or it is too"
-              + " large for a 32-bit signed integer",
-          null);
+              + " large for a 32-bit signed integer", null);
     }
     return null;
   }

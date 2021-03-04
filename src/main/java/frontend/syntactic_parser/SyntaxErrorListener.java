@@ -20,8 +20,8 @@ public class SyntaxErrorListener extends BaseErrorListener {
   public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
       int line, int charPositionInLine, String msg, RecognitionException e) {
 
-    errors.add(new WaccSyntaxError(recognizer, offendingSymbol, line,
-        charPositionInLine, msg, e));
+    errors.add(
+        new WaccSyntaxError(offendingSymbol, line, charPositionInLine, msg));
   }
 
   public List<WaccError> getErrors() {
