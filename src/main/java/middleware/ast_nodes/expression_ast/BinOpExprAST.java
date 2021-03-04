@@ -60,23 +60,28 @@ public class BinOpExprAST extends ExpressionAST {
 
   // Check that leftType and rightType are both either INTs or CHARS.
   // If this holds, then check that the types match.
-  private void checkComparableParams(IDENTIFIER leftType, IDENTIFIER rightType) {
+  private void checkComparableParams(IDENTIFIER leftType,
+      IDENTIFIER rightType) {
 
-    boolean leftIntOrChar = leftType instanceof INT || leftType instanceof CHAR;
-    boolean rightIntOrChar = rightType instanceof INT || rightType instanceof CHAR;
+    boolean leftIntOrChar
+        = leftType instanceof INT || leftType instanceof CHAR;
+    boolean rightIntOrChar
+        = rightType instanceof INT || rightType instanceof CHAR;
 
     boolean error = false;
 
     if (!leftIntOrChar) {
 
-      addError(new MismatchedTypes(leftExprAST.ctx, leftType, new INT(), new CHAR()));
+      addError(new MismatchedTypes(leftExprAST.ctx, leftType, new INT(),
+          new CHAR()));
       error = true;
 
     }
 
     if (!rightIntOrChar) {
 
-      addError(new MismatchedTypes(rightExprAST.ctx, rightType, new INT(), new CHAR()));
+      addError(new MismatchedTypes(rightExprAST.ctx, rightType, new INT(),
+          new CHAR()));
       error = true;
 
     }
