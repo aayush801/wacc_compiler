@@ -12,18 +12,29 @@ public class DataLabel extends Label {
   private final String data;
 
   public DataLabel(String data) {
+
     super("msg_" + INDEX++);
+
     this.data = data;
+
   }
 
   public int getWordLength() {
+
     int numEscapedChars = 0;
+
     for (int i = 0; i < data.length() - 1; i++) {
+
       if (data.charAt(i) == '\\') {
+
         if (escapedChars.contains(data.charAt(i + 1))) {
+
           numEscapedChars++;
+
         }
+
       }
+
     }
 
     return data.length() - 2 - numEscapedChars;

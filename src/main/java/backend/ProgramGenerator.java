@@ -26,13 +26,13 @@ public class ProgramGenerator {
   public final LinkRegister LR = new LinkRegister();
   public final StackPointer SP = new StackPointer();
   private final Set<DataLabel> dataSection = new LinkedHashSet<>();
-  private final Set<TextLabel> textSection = new LinkedHashSet<>();
   private final Set<CodeLabel> codeSection = new LinkedHashSet<>();
 
   // stores a set dependency functions which are hard coded
   private final Set<PrimitiveLabel> primitives = new LinkedHashSet<>();
 
   public ProgramGenerator() {
+
     // only use registers from 4 onwards
     for (int i = 4; i <= 12; i++) {
 
@@ -48,12 +48,6 @@ public class ProgramGenerator {
 
   }
 
-
-  public void addText(TextLabel label) {
-
-    textSection.add(label);
-
-  }
 
   public void addCode(CodeLabel label) {
 
@@ -117,9 +111,6 @@ public class ProgramGenerator {
   public String toString() {
     StringBuilder builder = new StringBuilder();
 
-    // TODO: Remove the hardcoding.
-//    this.addPrimitive(PrintFunctions.printString(this));
-
     // add .data section (if there is one)
     if (!dataSection.isEmpty()) {
       builder.append(".data\n\n");
@@ -128,9 +119,8 @@ public class ProgramGenerator {
 
     builder.append("\n");
 
-    // add .text section
-    builder.append(".text\n\n");
-    textSection.forEach(builder::append);
+    // add .text section (label)
+    builder.append(".text\n");
 
     builder.append("\n");
 
@@ -141,24 +131,27 @@ public class ProgramGenerator {
     // imported functions are added after code section
     primitives.forEach(builder::append);
 
-    // TODO: Remove the hardcoding.
-//    builder.append(RuntimeError.printRuntimeErrorCheck(this));
-
     return builder.toString();
   }
 
   public void pushLR(List<Instruction> instructions) {
+
     //    PUSH {lr}
     instructions.add(0, new Push(LR));
-    // decrements stack pointer and free pointer by 4 bytes
+
+    // decrements stack pointer and free pointer by 4bytes
     SP.push(new VARIABLE(new INT()));
+
   }
 
 
   public void popPC(List<Instruction> instructions) {
+
     //		POP {pc}
     instructions.add(new Pop(PC));
+
     // increments stack pointer and free pointer by 4 bytes
     SP.pop(new VARIABLE(new INT()));
+
   }
 }

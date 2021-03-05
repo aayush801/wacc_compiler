@@ -7,4 +7,5 @@ public class TextLabel extends Label {
   public TextLabel(String name) {
     super(name);
   }
+
 }

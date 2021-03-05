@@ -1,36 +1,15 @@
 package backend;
 
-import backend.instructions.Branch;
-import backend.instructions.Compare;
-import backend.instructions.ConditionCode;
-import backend.instructions.EOC;
-import backend.instructions.Instruction;
-import backend.instructions.Load;
-import backend.instructions.Move;
-import backend.instructions.Store;
-import backend.instructions.addr_modes.Address;
-import backend.instructions.addr_modes.ImmediateAddress;
-import backend.instructions.addr_modes.ImmediateOffset;
-import backend.instructions.addr_modes.ZeroOffset;
-import backend.instructions.arithmetic.Arithmetic;
-import backend.instructions.arithmetic.ArithmeticOpcode;
-import backend.instructions.stack_instructions.LabelledInstruction;
-import backend.instructions.stack_instructions.Pop;
-import backend.instructions.stack_instructions.Push;
-import backend.labels.code.CodeLabel;
-import backend.labels.code.FunctionLabel;
-import backend.labels.code.PrimitiveLabel;
+import backend.instructions.*;
+import backend.instructions.addr_modes.*;
+import backend.instructions.arithmetic.*;
+import backend.instructions.stack_instructions.*;
+import backend.labels.code.*;
 import backend.labels.data.DataLabel;
 import backend.operands.ImmediateChar;
 import backend.operands.ImmediateNum;
-import backend.operands.ImmediateNumASR;
-import backend.operands.ImmediateNumLSL;
-import backend.primitive_functions.BinOpChecks;
-import backend.primitive_functions.FreeFunction;
-import backend.primitive_functions.PairElemNullAccessCheck;
-import backend.primitive_functions.PrintArrayBoundsChecks;
-import backend.primitive_functions.PrintFunctions;
-import backend.primitive_functions.ReadFunctions;
+import backend.operands.ImmediateShift;
+import backend.primitive_functions.*;
 import backend.registers.Register;
 import backend.registers.StackPointer;
 import errors.semantic_errors.NotAFunction;
@@ -39,12 +18,7 @@ import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.STACK_OBJECT;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
-import frontend.identifier_objects.basic_types.ARRAY;
-import frontend.identifier_objects.basic_types.BOOL;
-import frontend.identifier_objects.basic_types.CHAR;
-import frontend.identifier_objects.basic_types.INT;
-import frontend.identifier_objects.basic_types.PAIR;
-import frontend.identifier_objects.basic_types.STR;
+import frontend.identifier_objects.basic_types.*;
 import java.util.ArrayList;
 import java.util.List;
 import middleware.ExpressionAST;
@@ -90,7 +64,6 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
   private final ProgramGenerator program = new ProgramGenerator();
   private SymbolTable funcScope;
-  private final int WORD_SIZE = 4;
 
   @Override
   public String toString() {
@@ -115,6 +88,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     // add exit code 0 on successful exit
     instructions.add(new Load(Register.R0, new Address("0")));
+
     program.popPC(instructions);
     instructions.add(new EOC());
 
@@ -133,7 +107,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     // Calculate size of heap space required.
     int length = array.getExpressionASTList().size();
     int elementSize = array.getArrayObj().getType().getSize();
-    int size = length * elementSize + WORD_SIZE;
+    int size = length * elementSize + TYPES.WORD_SIZE;
 
     ret.add(new Load(Register.R0, new ImmediateAddress(size)));
 
@@ -152,7 +126,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       ret.addAll(e.accept(this));
       ret.add(new Store(ConditionCode.NONE, target,
           new ImmediateOffset(destination,
-              new ImmediateNum(WORD_SIZE + i * elementSize)),
+              new ImmediateNum(TYPES.WORD_SIZE + i * elementSize)),
           array.getArrayObj().getType().getSize()));
     }
 
@@ -210,14 +184,14 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       program.addPrimitive(arrayBoundsPrimitive);
 
       ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target,
-          new ImmediateNum(WORD_SIZE), false));
+          new ImmediateNum(TYPES.WORD_SIZE), false));
 
       if (arrayElem.type instanceof CHAR || arrayElem.type instanceof BOOL) {
         ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target, index,
             false));
       } else {
         ret.add(new Arithmetic(ArithmeticOpcode.ADD, target, target,
-            new ImmediateNumLSL(index, 2), false));
+            new ImmediateShift(index, 2, true), false));
       }
 
     }
@@ -249,14 +223,12 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
       // push LHS value onto stack.
       instructions.add(new Push(Rn));
-      // program.SP.decrement(4);
 
       // Proceed to translate RHS with the same registers.
       instructions.addAll(binOpExpr.getRightExprAST().accept(this));
 
       // Retreive LHS from the stack.
       instructions.add(new Pop(Rm));
-      // program.SP.increment(4);
 
     } else {
       // Translate RHS like normal.
@@ -297,7 +269,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
             new Arithmetic(ArithmeticOpcode.SMULL, Rn, Rm, Rn, Rm,
                 accumulator));
 
-        instructions.add(new Compare(Rm, new ImmediateNumASR(Rn, 31)));
+        instructions.add(new Compare(Rm, new ImmediateShift(Rn, 31, false)));
 
         // check for overflow error
         primitiveLabel = BinOpChecks.printOverflowCheck(program);
@@ -619,7 +591,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     List<Instruction> instructions = new ArrayList<>();
 
     // Allocate memory for two address, one for each element of the pair
-    instructions.add(new Load(Register.R0, new ImmediateAddress(8)));
+    instructions.add(new Load(Register.R0, new ImmediateAddress(TYPES.WORD_SIZE*2)));
     instructions.add(new Branch("malloc", true));
 
     Register pairAddress = program.registers.remove(0);
@@ -651,7 +623,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     // Storing address to value of second element in the second word of pair
     instructions.add(
         new Store(Register.R0,
-            new ImmediateOffset(pairAddress, new ImmediateNum(WORD_SIZE))));
+            new ImmediateOffset(pairAddress, new ImmediateNum(TYPES.WORD_SIZE))));
 
     program.registers.add(0, pairAddress);
 
@@ -687,7 +659,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     // Load appropriate address into target.
     ret.add(new Load(target, new ImmediateOffset(target,
-        new ImmediateNum(pairElem.isFirstElem() ? 0 : WORD_SIZE))));
+        new ImmediateNum(pairElem.isFirstElem() ? 0 : TYPES.WORD_SIZE))));
 
     return ret;
   }

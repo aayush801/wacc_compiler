@@ -7,8 +7,7 @@ public class Load extends Instruction {
 
   private final Register Rn;
   private final AddressingMode addressingMode;
-
-  private int size = 4;
+  private int size = TYPES.WORD_SIZE;
 
   public Load(Register Rn, AddressingMode addressingMode, int size) {
     this(ConditionCode.NONE, Rn, addressingMode, size);
@@ -38,7 +37,7 @@ public class Load extends Instruction {
   public String toString() {
 
     return "LDR"
-        + (size == 1 ? "SB" : "")
+        + (size == TYPES.BYTE_SIZE ? "SB" : "")
         + code + " " + Rn + ", " + addressingMode;
 
   }

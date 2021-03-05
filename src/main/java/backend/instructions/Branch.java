@@ -22,13 +22,7 @@ public class Branch extends Instruction {
 
   @Override
   public String toString() {
-    checkIfRuntimeErrorBranch();
     return "B" + (isLinkFlagSet ? "L" : "") + getFlags() + " " + label;
   }
 
-  private void checkIfRuntimeErrorBranch() {
-    if (label.equals("p_throw_runtime_error")) {
-      //ProgramGenerator.setCheckRuntimeError();
-    }
-  }
 }

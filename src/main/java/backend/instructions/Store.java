@@ -2,12 +2,13 @@ package backend.instructions;
 
 import backend.instructions.addr_modes.AddressingMode;
 import backend.registers.Register;
+import frontend.identifier_objects.TYPE;
 
 public class Store extends Instruction {
 
   private final Register Rs;
   private final AddressingMode addressingMode;
-  private int size = 4; // size in bytes
+  private int size = TYPES.WORD_SIZE;
 
   public Store(Register Rs, AddressingMode addressingMode, int size) {
     this(ConditionCode.NONE, Rs, addressingMode, size);
@@ -36,7 +37,7 @@ public class Store extends Instruction {
   @Override
   public String toString() {
     String mnemonic = "STR";
-    if (size == 1) {
+    if (size == TYPES.BYTE_SIZE) {
       mnemonic += "B";
     }
     return mnemonic + " " + Rs + ", " + addressingMode;

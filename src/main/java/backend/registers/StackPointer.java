@@ -16,34 +16,47 @@ public class StackPointer extends Register {
     super(13);
   }
 
-  public int push(STACK_OBJECT varObj) {
+  public void push(STACK_OBJECT varObj) {
+    // decrement free pts by variable size
     freePtr -= varObj.getType().getSize();
     varObj.setStackAddress(freePtr);
+
+    // if the free ptr is below the stack ptr
+    // then decrement stack ptr aswell
     if (freePtr <= stackPtr) {
+
       stackPtr = freePtr;
+
     }
-    return freePtr;
+
   }
 
-  public int pop(STACK_OBJECT varObj) {
+  public void pop(STACK_OBJECT varObj) {
     int popSize = varObj.getType().getSize();
+
+    // if the fre ptr sits at the same level
+    // as the stack ptr, then increment both pointers
     if (freePtr == stackPtr) {
+
       stackPtr += popSize;
+
     }
+
     freePtr += popSize;
-    return freePtr;
   }
 
   public List<Instruction> decrement(int size) {
     stackPtr -= size;
     List<Instruction> instructions = new ArrayList<>();
 
+    // decrement the stack pointer in batches of the largest immediate instruction size
     for (; size > ImmediateNum.MAX_SIZE; size -= ImmediateNum.MAX_SIZE) {
       instructions.add(
           new Arithmetic(ArithmeticOpcode.SUB, this, this,
               new ImmediateNum(ImmediateNum.MAX_SIZE), false));
     }
 
+    // decrement the stack pointer by the overflow size of the stack
     if (size >= 0) {
       instructions.add(
           new Arithmetic(ArithmeticOpcode.SUB, this, this,
@@ -60,12 +73,14 @@ public class StackPointer extends Register {
 
     List<Instruction> instructions = new ArrayList<>();
 
+    // increment the stack pointer in batches of the largest immediate instruction size
     for (; size > ImmediateNum.MAX_SIZE; size -= ImmediateNum.MAX_SIZE) {
       instructions.add(
           new Arithmetic(ArithmeticOpcode.ADD, this, this,
               new ImmediateNum(ImmediateNum.MAX_SIZE), false));
     }
 
+    // increment the stack pointer by the overflow size of the stack
     if (size >= 0) {
       instructions.add(
           new Arithmetic(ArithmeticOpcode.ADD, this, this,
