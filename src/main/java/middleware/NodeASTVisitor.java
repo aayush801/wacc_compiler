@@ -15,7 +15,9 @@ import middleware.ast_nodes.pair_ast.PairElemAST;
 import middleware.ast_nodes.prog_ast.ProgAST;
 import middleware.ast_nodes.statement_ast.AssignmentAST;
 import middleware.ast_nodes.statement_ast.BeginAST;
+import middleware.ast_nodes.statement_ast.BreakAST;
 import middleware.ast_nodes.statement_ast.ChainedStatementAST;
+import middleware.ast_nodes.statement_ast.ContinueAST;
 import middleware.ast_nodes.statement_ast.DoWhileAST;
 import middleware.ast_nodes.statement_ast.ExitAST;
 import middleware.ast_nodes.statement_ast.ForAST;
@@ -91,6 +93,10 @@ public abstract class NodeASTVisitor<T> {
   public abstract T visit(DoWhileAST doWhileLoop);
 
   public abstract T visit(ForAST forLoop);
+
+  public abstract T visit(ContinueAST forLoop);
+
+  public abstract T visit(BreakAST forLoop);
 
   public abstract T visit(NodeASTList<NodeAST> nodeList);
 

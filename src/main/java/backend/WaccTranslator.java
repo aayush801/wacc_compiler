@@ -41,7 +41,9 @@ import middleware.ast_nodes.pair_ast.PairElemAST;
 import middleware.ast_nodes.prog_ast.ProgAST;
 import middleware.ast_nodes.statement_ast.AssignmentAST;
 import middleware.ast_nodes.statement_ast.BeginAST;
+import middleware.ast_nodes.statement_ast.BreakAST;
 import middleware.ast_nodes.statement_ast.ChainedStatementAST;
+import middleware.ast_nodes.statement_ast.ContinueAST;
 import middleware.ast_nodes.statement_ast.DoWhileAST;
 import middleware.ast_nodes.statement_ast.ExitAST;
 import middleware.ast_nodes.statement_ast.ForAST;
@@ -1055,6 +1057,11 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     Register destination = program.registers.get(0);
     List<Instruction> instructions = new ArrayList<>();
 
+    LabelledInstruction startLabel = new LabelledInstruction();
+    LabelledInstruction endLabel = new LabelledInstruction();
+    program.addLoopLabels(startLabel.getLabel(), endLabel.getLabel());
+    instructions.add(startLabel);
+
     LabelledInstruction conditionLabel = new LabelledInstruction();
     LabelledInstruction body = new LabelledInstruction();
 
@@ -1081,6 +1088,9 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     instructions.add(new Compare(destination, ImmediateNum.ONE));
     instructions.add(new Branch(ConditionCode.EQ, body.getLabel(), false));
 
+    instructions.add(endLabel);
+    program.popLoopLabels();
+
     return instructions;
   }
 
@@ -1094,6 +1104,11 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     Register destination = program.registers.get(0);
     List<Instruction> instructions = new ArrayList<>();
+
+    LabelledInstruction startLabel = new LabelledInstruction();
+    LabelledInstruction endLabel = new LabelledInstruction();
+    program.addLoopLabels(startLabel.getLabel(), endLabel.getLabel());
+    instructions.add(startLabel);
 
     LabelledInstruction conditionLabel = new LabelledInstruction();
     LabelledInstruction bodyLabel = new LabelledInstruction();
@@ -1128,6 +1143,23 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     instructions.add(
         new Branch(ConditionCode.EQ, bodyLabel.getLabel(), false));
 
+    instructions.add(endLabel);
+    program.popLoopLabels();
+
+    return instructions;
+  }
+
+  @Override
+  public List<Instruction> visit(ContinueAST continueStat) {
+    List<Instruction> instructions = new ArrayList<>();
+    instructions.add(new Branch(program.getLoopStartLabel()));
+    return instructions;
+  }
+
+  @Override
+  public List<Instruction> visit(BreakAST breakAST) {
+    List<Instruction> instructions = new ArrayList<>();
+    instructions.add(new Branch(program.getLoopEndLabel()));
     return instructions;
   }
 

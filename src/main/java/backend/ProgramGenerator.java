@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import javafx.util.Pair;
 import middleware.symbol_table.SymbolTable;
 
 public class ProgramGenerator {
@@ -27,7 +28,7 @@ public class ProgramGenerator {
   public final StackPointer SP = new StackPointer();
   private final Set<DataLabel> dataSection = new LinkedHashSet<>();
   private final Set<CodeLabel> codeSection = new LinkedHashSet<>();
-
+  private final List<Pair<String, String>> loopLabels = new ArrayList<>();
   // stores a set dependency functions which are hard coded
   private final Set<PrimitiveLabel> primitives = new LinkedHashSet<>();
 
@@ -153,5 +154,21 @@ public class ProgramGenerator {
     // increments stack pointer and free pointer by 4 bytes
     SP.pop(new VARIABLE(new INT()));
 
+  }
+
+  public void addLoopLabels(String start, String end) {
+    loopLabels.add(new Pair<>(start, end));
+  }
+
+  public String getLoopStartLabel() {
+    return loopLabels.get(loopLabels.size() - 1).getKey();
+  }
+
+  public String getLoopEndLabel() {
+    return loopLabels.get(loopLabels.size() - 1).getValue();
+  }
+
+  public void popLoopLabels() {
+    loopLabels.remove(loopLabels.size() - 1);
   }
 }
