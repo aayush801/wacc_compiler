@@ -9,75 +9,15 @@ import middleware.ast_nodes.StatementAST;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class WhileAST extends StatementAST {
+public class WhileAST extends ForAST {
 
-  private final ExpressionAST expressionAST;
-  private final StatementAST statementAST;
-  private SymbolTable scopeST;
-  private final boolean isDoWhile;
-
-  public WhileAST(ParserRuleContext ctx, ExpressionAST expressionAST,
-      StatementAST statementAST, boolean isDoWhile) {
-    super(ctx);
-    this.expressionAST = expressionAST;
-    this.statementAST = statementAST;
-    this.isDoWhile = isDoWhile;
+  public WhileAST(ParserRuleContext ctx, ExpressionAST condition,
+      StatementAST body, boolean isDoWhile) {
+    super(ctx, new SkipAST(ctx), condition, new SkipAST(ctx), body, isDoWhile);
   }
 
-  public WhileAST(ParserRuleContext ctx, ExpressionAST expressionAST,
+  public WhileAST(ParserRuleContext ctx, ExpressionAST condition,
       StatementAST statementAST) {
-    this(ctx, expressionAST, statementAST, false);
+    this(ctx, condition, statementAST, false);
   }
-
-  public boolean isDoWhile() {
-    return isDoWhile;
-  }
-
-  @Override
-  public void check() {
-    // check the expression
-    expressionAST.check();
-    IDENTIFIER type = expressionAST.getType();
-
-    if (type == null) {
-      // error has occurred elsewhere
-      return;
-    }
-
-    // verify that the condition expression is a boolean.
-    if (!(type instanceof BOOL)) {
-
-      addError(new MismatchedTypes(
-          expressionAST.ctx, type, new BOOL())
-      );
-
-      return;
-
-    }
-
-    // expression valid, now check the statement inside the body.
-    // create a new scope(symbol table) for the statement.
-    scopeST = ST = new SymbolTable(ST);
-    statementAST.check();
-    ST = ST.getEncSymTable();
-
-  }
-
-  public SymbolTable getScope() {
-    return scopeST;
-  }
-
-  public ExpressionAST getExpressionAST() {
-    return expressionAST;
-  }
-
-  public StatementAST getStatementAST() {
-    return statementAST;
-  }
-
-  @Override
-  public <T> T accept(NodeASTVisitor<? extends T> visitor) {
-    return visitor.visit(this);
-  }
-
 }

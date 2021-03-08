@@ -230,7 +230,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       // Proceed to translate RHS with the same registers.
       instructions.addAll(binOpExpr.getRightExprAST().accept(this));
 
-      // Retreive LHS from the stack.
+      // Retrieve LHS from the stack.
       instructions.add(new Pop(Rm));
 
     } else {
@@ -247,8 +247,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     switch (binOpExpr.getOperator()) {
       // ARITHMETIC Operators
       case "+":
-        instructions.add
-            (new Arithmetic(ArithmeticOpcode.ADD, Rn, Rn, Rm, true,
+        instructions.add(
+            new Arithmetic(ArithmeticOpcode.ADD, Rn, Rn, Rm, true,
                 accumulator));
 
         // check for overflow error
@@ -257,6 +257,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
             primitiveLabel.getLabelName(), true));
 
         break;
+
       case "-":
         instructions.add(new Arithmetic(ArithmeticOpcode.SUB, Rn, Rn, Rm,
             true, accumulator));
@@ -267,6 +268,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
             new Branch(ConditionCode.VS, primitiveLabel.getLabelName(), true));
 
         break;
+
       case "*":
         instructions.add(
             new Arithmetic(ArithmeticOpcode.SMULL, Rn, Rm, Rn, Rm,
@@ -279,6 +281,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
         instructions.add(new Branch(ConditionCode.NE,
             primitiveLabel.getLabelName(), true));
         break;
+
       case "%":
         instructions.add(new Move(Register.R0, Rn));
         instructions.add(new Move(Register.R1, Rm));
@@ -290,6 +293,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
         instructions.add(new Branch("__aeabi_idivmod", true));
         instructions.add(new Move(Rn, Register.R1));
         break;
+
       case "/":
         instructions.add(new Move(Register.R0, Rn));
         instructions.add(new Move(Register.R1, Rm));
@@ -302,43 +306,53 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
         instructions.add(new Move(Rn, Register.R0));
         break;
       // EQUATABLE Operators
+
       case "==":
         instructions.add(new Compare(Rn, Rm));
         instructions.add(new Move(ConditionCode.EQ, Rn, TRUE, false));
         instructions.add(new Move(ConditionCode.NE, Rn, FALSE, false));
         break;
+
       case "!=":
         instructions.add(new Compare(Rn, Rm));
         instructions.add(new Move(ConditionCode.NE, Rn, TRUE, false));
         instructions.add(new Move(ConditionCode.EQ, Rn, FALSE, false));
         break;
+
       // COMPARABLE Operators
       case ">":
         instructions.add(new Compare(Rn, Rm));
         instructions.add(new Move(ConditionCode.GT, Rn, TRUE, false));
         instructions.add(new Move(ConditionCode.LE, Rn, FALSE, false));
         break;
+
       case "<":
         instructions.add(new Compare(Rn, Rm));
         instructions.add(new Move(ConditionCode.LT, Rn, TRUE, false));
         instructions.add(new Move(ConditionCode.GE, Rn, FALSE, false));
         break;
+
       case ">=":
         instructions.add(new Compare(Rn, Rm));
         instructions.add(new Move(ConditionCode.GE, Rn, TRUE, false));
         instructions.add(new Move(ConditionCode.LT, Rn, FALSE, false));
         break;
+
       case "<=":
         instructions.add(new Compare(Rn, Rm));
         instructions.add(new Move(ConditionCode.LE, Rn, TRUE, false));
         instructions.add(new Move(ConditionCode.GT, Rn, FALSE, false));
         break;
+
       // BOOLEAN Operators
+      case "&":
       case "&&":
         // false removes the S, add if needed.
         instructions.add(new Arithmetic(ArithmeticOpcode.AND, Rn, Rn, Rm, false,
             accumulator));
         break;
+
+      case "|":
       case "||":
         instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, Rm, false,
             accumulator));
@@ -594,7 +608,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     List<Instruction> instructions = new ArrayList<>();
 
     // Allocate memory for two address, one for each element of the pair
-    instructions.add(new Load(Register.R0, new ImmediateAddress(TYPES.WORD_SIZE*2)));
+    instructions.add(new Load(Register.R0, new ImmediateAddress(TYPES.WORD_SIZE * 2)));
     instructions.add(new Branch("malloc", true));
 
     Register pairAddress = program.registers.remove(0);
@@ -1039,57 +1053,12 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     return instructions;
   }
 
-
-  public List<Instruction> visit(WhileAST whileLoop) {
-    SymbolTable scopeST = whileLoop.getScope();
-    StatementAST statementAST = whileLoop.getStatementAST();
-    ExpressionAST conditionExpr = whileLoop.getExpressionAST();
-    Register destination = program.registers.get(0);
-    List<Instruction> instructions = new ArrayList<>();
-
-    LabelledInstruction startLabel = new LabelledInstruction();
-    LabelledInstruction endLabel = new LabelledInstruction();
-    program.addLoopLabels(startLabel.getLabel(), endLabel.getLabel());
-    instructions.add(startLabel);
-
-    LabelledInstruction conditionLabel = new LabelledInstruction();
-    LabelledInstruction body = new LabelledInstruction();
-
-    if (!whileLoop.isDoWhile())
-      instructions.add(new Branch(conditionLabel.getLabel()));
-
-    // translate rest of code statement
-    instructions.add(body);
-
-    // save the stack state in the symbol table
-    scopeST.saveStackState(program.SP);
-
-    instructions.addAll(program.allocateStackSpace(scopeST));
-    instructions.addAll(statementAST.accept(this));
-    instructions.addAll(program.deallocateStackSpace(scopeST));
-
-    // save the stack state in the symbol table
-    scopeST.restoreStackState(program.SP);
-
-    // translate expression for loop (variance)
-    instructions.add(conditionLabel);
-    instructions.addAll(conditionExpr.accept(this));
-
-    instructions.add(new Compare(destination, ImmediateNum.ONE));
-    instructions.add(new Branch(ConditionCode.EQ, body.getLabel(), false));
-
-    instructions.add(endLabel);
-    program.popLoopLabels();
-
-    return instructions;
-  }
-
   @Override
   public List<Instruction> visit(ForAST forLoop) {
     SymbolTable scopeST = forLoop.getScope();
     StatementAST loopBody = forLoop.getBody();
     StatementAST initialisation = forLoop.getInitialisation();
-    ExpressionAST condition = forLoop.getExpressionAST();
+    ExpressionAST condition = forLoop.getCondition();
     StatementAST afterthought = forLoop.getAfterthought();
 
     Register destination = program.registers.get(0);
@@ -1106,7 +1075,9 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     // Initialisation
     instructions.addAll(initialisation.accept(this));
 
-    instructions.add(new Branch(conditionLabel.getLabel()));
+    if (!forLoop.isDoWhile()) {
+      instructions.add(new Branch(conditionLabel.getLabel()));
+    }
 
     // translate rest of code statement
     instructions.add(bodyLabel);

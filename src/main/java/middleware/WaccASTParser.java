@@ -197,19 +197,21 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   @Override
   public StatementAST visitWhileDo(WhileDoContext ctx) {
     // return a new WhileAST.
-    return new WhileAST(ctx, visitExpr(ctx.expr()), (StatementAST) visit(ctx.stat()), false);
+    return new WhileAST(ctx, visitExpr(ctx.expr()), (StatementAST) visit(ctx.stat()));
   }
 
   @Override
   public StatementAST visitDoWhile(DoWhileContext ctx) {
     // return a new WhileAST.
-    return new WhileAST(ctx, visitExpr(ctx.expr()), (StatementAST) visit(ctx.stat()), true);
+    return new WhileAST(ctx, visitExpr(ctx.expr()),
+        (StatementAST) visit(ctx.stat()), true);
   }
 
   @Override
   public ForAST visitForLoop(ForLoopContext ctx) {
-    return new ForAST(ctx, (StatementAST) visit(ctx.stat(0)), visitExpr(ctx.expr()),
-        (StatementAST) visit(ctx.stat(1)), (StatementAST) visit(ctx.stat(2)));
+    return new ForAST(ctx, (StatementAST) visit(ctx.stat(0)),
+        visitExpr(ctx.expr()), (StatementAST) visit(ctx.stat(1)),
+        (StatementAST) visit(ctx.stat(2)));
   }
 
   @Override

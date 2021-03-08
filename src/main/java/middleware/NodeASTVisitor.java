@@ -87,8 +87,6 @@ public abstract class NodeASTVisitor<T> {
 
   public abstract T visit(VariableDeclarationAST variableDeclaration);
 
-  public abstract T visit(WhileAST whileLoop);
-
   public abstract T visit(ForAST forLoop);
 
   public abstract T visit(ContinueAST forLoop);

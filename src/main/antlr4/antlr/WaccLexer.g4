@@ -61,7 +61,6 @@ THEN: 'then' ;
 ELSE: 'else' ;
 END_IF: 'fi' ;
 END_FOR: 'rof';
-
 CONTINUE : 'continue' ;
 BREAK : 'break' ;
 
@@ -70,6 +69,7 @@ OPEN_PARENTHESES: '(' ;
 CLOSE_PARENTHESES: ')' ;
 OPEN_SQUARE_BRACKET: '[' ;
 CLOSE_SQUARE_BRACKET: ']' ;
+STAR : '*' ;
 
 //binary operators
 PLUS: '+' ;
@@ -85,6 +85,9 @@ EQ: '==' ;
 NEQ: '!=' ;
 AND: '&&' ;
 OR: '||' ;
+BITWISE_AND : '&' ;
+BITWISE_OR : '|' ;
+INVERT : '~';
 
 //unary operators
 NOT: '!';

@@ -38,6 +38,7 @@ stat:
     CLOSE_PARENTHESES stat END_FOR        #forLoop
   | BEGIN stat END                        #beginStat
   | stat SEPERATOR stat                   #seperateStat
+  | type STAR IDENT EQUALS assignRHS      #assignPointer
 ;
 
 
@@ -89,13 +90,13 @@ expr:
   | expr binaryOperator=(PLUS | MINUS) expr
   | expr binaryOperator=(GT | GTE | LT | LTE) expr
   | expr binaryOperator=(EQ | NEQ) expr
-  | expr binaryOperator=AND expr
-  | expr binaryOperator=OR expr
+  | expr binaryOperator=(AND | BITWISE_AND) expr
+  | expr binaryOperator=(OR | BITWISE_OR) expr
   | OPEN_PARENTHESES expr CLOSE_PARENTHESES
 ;
 
 //unary operators
-unaryOperator: NOT | MINUS | LENGTH | ORD | CHR ;
+unaryOperator: NOT | MINUS | LENGTH | ORD | CHR | INVERT | STAR ;
 
 //arrays
 arrayElem: IDENT (OPEN_SQUARE_BRACKET expr CLOSE_SQUARE_BRACKET)+ ;
