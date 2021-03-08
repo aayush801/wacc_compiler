@@ -42,7 +42,9 @@ import middleware.ast_nodes.prog_ast.ProgAST;
 import middleware.ast_nodes.statement_ast.AssignmentAST;
 import middleware.ast_nodes.statement_ast.BeginAST;
 import middleware.ast_nodes.statement_ast.ChainedStatementAST;
+import middleware.ast_nodes.statement_ast.DoWhileAST;
 import middleware.ast_nodes.statement_ast.ExitAST;
+import middleware.ast_nodes.statement_ast.ForAST;
 import middleware.ast_nodes.statement_ast.FreeAST;
 import middleware.ast_nodes.statement_ast.IfElseAST;
 import middleware.ast_nodes.statement_ast.LHSAssignAST;
@@ -1038,16 +1040,26 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
   @Override
   public List<Instruction> visit(WhileAST whileLoop) {
+    return whileLoop(whileLoop, false);
+  }
+
+  @Override
+  public List<Instruction> visit(DoWhileAST doWhileLoop) {
+    return whileLoop(doWhileLoop, true);
+  }
+
+  public List<Instruction> whileLoop(WhileAST whileLoop, boolean isDoWhile) {
     SymbolTable scopeST = whileLoop.getScope();
     StatementAST statementAST = whileLoop.getStatementAST();
-    ExpressionAST expressionAST = whileLoop.getExpressionAST();
+    ExpressionAST conditionExpr = whileLoop.getExpressionAST();
     Register destination = program.registers.get(0);
     List<Instruction> instructions = new ArrayList<>();
 
-    LabelledInstruction rest = new LabelledInstruction();
+    LabelledInstruction conditionLabel = new LabelledInstruction();
     LabelledInstruction body = new LabelledInstruction();
 
-    instructions.add(new Branch(rest.getLabel()));
+    if (!isDoWhile)
+      instructions.add(new Branch(conditionLabel.getLabel()));
 
     // translate rest of code statement
     instructions.add(body);
@@ -1063,8 +1075,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     scopeST.restoreStackState(program.SP);
 
     // translate expression for loop (variance)
-    instructions.add(rest);
-    instructions.addAll(expressionAST.accept(this));
+    instructions.add(conditionLabel);
+    instructions.addAll(conditionExpr.accept(this));
 
     instructions.add(new Compare(destination, ImmediateNum.ONE));
     instructions.add(new Branch(ConditionCode.EQ, body.getLabel(), false));
@@ -1072,6 +1084,52 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     return instructions;
   }
 
+  @Override
+  public List<Instruction> visit(ForAST forLoop) {
+    SymbolTable scopeST = forLoop.getScope();
+    StatementAST loopBody = forLoop.getBody();
+    StatementAST initialisation = forLoop.getInitialisation();
+    ExpressionAST condition = forLoop.getExpressionAST();
+    StatementAST afterthought = forLoop.getAfterthought();
+
+    Register destination = program.registers.get(0);
+    List<Instruction> instructions = new ArrayList<>();
+
+    LabelledInstruction conditionLabel = new LabelledInstruction();
+    LabelledInstruction bodyLabel = new LabelledInstruction();
+
+    // Initialisation
+    instructions.addAll(initialisation.accept(this));
+
+    instructions.add(new Branch(conditionLabel.getLabel()));
+
+    // translate rest of code statement
+    instructions.add(bodyLabel);
+
+    // save the stack state in the symbol table
+    scopeST.saveStackState(program.SP);
+
+    instructions.addAll(program.allocateStackSpace(scopeST));
+    instructions.addAll(loopBody.accept(this));
+
+    // Adding afterthought after loop body
+    instructions.addAll(afterthought.accept(this));
+
+    instructions.addAll(program.deallocateStackSpace(scopeST));
+
+    // save the stack state in the symbol table
+    scopeST.restoreStackState(program.SP);
+
+    // translate expression for loop (variance)
+    instructions.add(conditionLabel);
+    instructions.addAll(condition.accept(this));
+
+    instructions.add(new Compare(destination, ImmediateNum.ONE));
+    instructions.add(
+        new Branch(ConditionCode.EQ, bodyLabel.getLabel(), false));
+
+    return instructions;
+  }
 
   /**
    * DO NOT OVERRIDE

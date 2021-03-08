@@ -12,10 +12,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 public class IfElseAST extends StatementAST {
 
   private final ExpressionAST expressionAST;
-  private final StatementAST firstStatAST;
-  private final StatementAST secondStatAST;
-  private SymbolTable ST1;
-  private SymbolTable ST2;
+  private final StatementAST firstStatAST, secondStatAST;
+  private SymbolTable ST1, ST2;
 
   public IfElseAST(ParserRuleContext ctx, ExpressionAST expressionAST,
       StatementAST firstStatAST, StatementAST secondStatAST) {

@@ -31,8 +31,12 @@ stat:
   | PRINT_LINE expr                       #printlnCall
   | IF expr THEN stat ELSE stat END_IF    #ifThenElse
   | WHILE expr DO stat END_WHILE          #whileDo
+  | DO stat WHILE expr                    #doWhile
+  | FOR stat SEPARATOR expr SEPARATATOR stat DO stat DONE #forLoop
   | BEGIN stat END                        #beginStat
   | stat SEPERATOR stat                   #seperateStat
+  | BREAK                                 #breakStat
+  | CONTINUE                              #continueStat
 ;
 
 //typings

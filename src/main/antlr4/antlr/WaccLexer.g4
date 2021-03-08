@@ -53,12 +53,16 @@ PRINT_LINE: 'println' ;
 
 //conditional keywords
 WHILE: 'while' ;
+FOR : 'for' ;
 DO: 'do' ;
-END_WHILE: 'done' ;
+DONE : 'done' ;
+END_WHILE: DONE ;
 IF: 'if' ;
 THEN: 'then' ;
 ELSE: 'else' ;
 END_IF: 'fi' ;
+CONTINUE : 'continue' ;
+BREAK : 'break' ;
 
 //brackets
 OPEN_PARENTHESES: '(' ;
