@@ -56,11 +56,12 @@ WHILE: 'while' ;
 FOR : 'for' ;
 DO: 'do' ;
 DONE : 'done' ;
-END_WHILE: DONE ;
 IF: 'if' ;
 THEN: 'then' ;
 ELSE: 'else' ;
 END_IF: 'fi' ;
+END_FOR: 'rof';
+
 CONTINUE : 'continue' ;
 BREAK : 'break' ;
 

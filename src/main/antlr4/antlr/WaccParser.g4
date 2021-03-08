@@ -30,7 +30,14 @@ stat:
   | PRINT expr                            #printCall
   | PRINT_LINE expr                       #printlnCall
   | IF expr THEN stat ELSE stat END_IF    #ifThenElse
-  | WHILE expr DO stat END_WHILE          #whileDo
+  | WHILE expr DO stat DONE               #whileDo
+  | DO stat WHILE expr DONE               #doWhile
+  | FOR OPEN_PARENTHESES
+      (type IDENT EQUALS assignRHS)?
+      SEPERATOR expr
+      SEPERATOR (assignLHS EQUALS assignRHS)
+      CLOSE_PARENTHESES
+      stat END_FOR                        #forLoop
   | BEGIN stat END                        #beginStat
   | stat SEPERATOR stat                   #seperateStat
 ;
