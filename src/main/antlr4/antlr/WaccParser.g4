@@ -21,7 +21,7 @@ argList: expr (COMMA expr)* ;
 //statements
 stat:
     SKIP_STATEMENT                        #skipStat
-  | type IDENT EQUALS assignRHS           #assignIdent
+  | type (STAR)* IDENT EQUALS assignRHS   #assignIdent
   | assignLHS EQUALS assignRHS            #assignVars
   | READ assignLHS                        #readCall
   | FREE expr                             #freeCall
@@ -38,7 +38,6 @@ stat:
     CLOSE_PARENTHESES stat END_FOR        #forLoop
   | BEGIN stat END                        #beginStat
   | stat SEPERATOR stat                   #seperateStat
-  | type STAR IDENT EQUALS assignRHS      #assignPointer
 ;
 
 
