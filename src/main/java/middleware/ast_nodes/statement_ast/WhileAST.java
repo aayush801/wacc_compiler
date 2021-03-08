@@ -14,12 +14,23 @@ public class WhileAST extends StatementAST {
   private final ExpressionAST expressionAST;
   private final StatementAST statementAST;
   private SymbolTable scopeST;
+  private final boolean isDoWhile;
 
   public WhileAST(ParserRuleContext ctx, ExpressionAST expressionAST,
-      StatementAST statementAST) {
+      StatementAST statementAST, boolean isDoWhile) {
     super(ctx);
     this.expressionAST = expressionAST;
     this.statementAST = statementAST;
+    this.isDoWhile = isDoWhile;
+  }
+
+  public WhileAST(ParserRuleContext ctx, ExpressionAST expressionAST,
+      StatementAST statementAST) {
+    this(ctx, expressionAST, statementAST, false);
+  }
+
+  public boolean isDoWhile() {
+    return isDoWhile;
   }
 
   @Override

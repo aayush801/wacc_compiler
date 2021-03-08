@@ -1,0 +1,10 @@
+begin
+  int x = 4;
+  do
+    x = x + 2;
+    println x
+  while
+      x < 3
+  done;
+  println x
+end

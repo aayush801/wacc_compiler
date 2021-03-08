@@ -44,7 +44,6 @@ import middleware.ast_nodes.statement_ast.BeginAST;
 import middleware.ast_nodes.statement_ast.BreakAST;
 import middleware.ast_nodes.statement_ast.ChainedStatementAST;
 import middleware.ast_nodes.statement_ast.ContinueAST;
-import middleware.ast_nodes.statement_ast.DoWhileAST;
 import middleware.ast_nodes.statement_ast.ExitAST;
 import middleware.ast_nodes.statement_ast.ForAST;
 import middleware.ast_nodes.statement_ast.FreeAST;
@@ -1040,17 +1039,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     return instructions;
   }
 
-  @Override
+
   public List<Instruction> visit(WhileAST whileLoop) {
-    return whileLoop(whileLoop, false);
-  }
-
-  @Override
-  public List<Instruction> visit(DoWhileAST doWhileLoop) {
-    return whileLoop(doWhileLoop, true);
-  }
-
-  public List<Instruction> whileLoop(WhileAST whileLoop, boolean isDoWhile) {
     SymbolTable scopeST = whileLoop.getScope();
     StatementAST statementAST = whileLoop.getStatementAST();
     ExpressionAST conditionExpr = whileLoop.getExpressionAST();
@@ -1065,7 +1055,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     LabelledInstruction conditionLabel = new LabelledInstruction();
     LabelledInstruction body = new LabelledInstruction();
 
-    if (!isDoWhile)
+    if (!whileLoop.isDoWhile())
       instructions.add(new Branch(conditionLabel.getLabel()));
 
     // translate rest of code statement

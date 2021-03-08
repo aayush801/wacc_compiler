@@ -32,15 +32,14 @@ stat:
   | IF expr THEN stat ELSE stat END_IF    #ifThenElse
   | WHILE expr DO stat DONE               #whileDo
   | DO stat WHILE expr DONE               #doWhile
-  | FOR OPEN_PARENTHESES
-      (type IDENT EQUALS assignRHS)?
-      SEPERATOR expr
-      SEPERATOR (assignLHS EQUALS assignRHS)
-      CLOSE_PARENTHESES
-      stat END_FOR                        #forLoop
+  | FOR OPEN_PARENTHESES stat?
+      SEPERATOR expr?
+      SEPERATOR stat?
+    CLOSE_PARENTHESES stat END_FOR        #forLoop
   | BEGIN stat END                        #beginStat
   | stat SEPERATOR stat                   #seperateStat
 ;
+
 
 //typings
 type:

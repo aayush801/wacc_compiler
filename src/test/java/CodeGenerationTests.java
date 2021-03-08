@@ -23,6 +23,17 @@ public class CodeGenerationTests {
   }
 
   @Test
+  public void testForLoop() throws IOException {
+    String instruction =
+        "begin " +
+            "for(int x = 0; x < 3; x = x + 1)\n" +
+            "print x\n"+
+            "rof" +
+            "end";
+    checkSourceCode(instruction);
+  }
+
+  @Test
   public void testComments() throws IOException {
     String instruction =
         "begin \n"

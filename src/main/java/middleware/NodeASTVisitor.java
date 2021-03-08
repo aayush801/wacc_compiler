@@ -18,7 +18,6 @@ import middleware.ast_nodes.statement_ast.BeginAST;
 import middleware.ast_nodes.statement_ast.BreakAST;
 import middleware.ast_nodes.statement_ast.ChainedStatementAST;
 import middleware.ast_nodes.statement_ast.ContinueAST;
-import middleware.ast_nodes.statement_ast.DoWhileAST;
 import middleware.ast_nodes.statement_ast.ExitAST;
 import middleware.ast_nodes.statement_ast.ForAST;
 import middleware.ast_nodes.statement_ast.FreeAST;
@@ -89,8 +88,6 @@ public abstract class NodeASTVisitor<T> {
   public abstract T visit(VariableDeclarationAST variableDeclaration);
 
   public abstract T visit(WhileAST whileLoop);
-
-  public abstract T visit(DoWhileAST doWhileLoop);
 
   public abstract T visit(ForAST forLoop);
 

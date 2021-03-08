@@ -12,8 +12,10 @@ import antlr.WaccParser.BaseTypeContext;
 import antlr.WaccParser.BeginStatContext;
 import antlr.WaccParser.BoolLiterContext;
 import antlr.WaccParser.CharLiterContext;
+import antlr.WaccParser.DoWhileContext;
 import antlr.WaccParser.ExitCallContext;
 import antlr.WaccParser.ExprContext;
+import antlr.WaccParser.ForLoopContext;
 import antlr.WaccParser.FreeCallContext;
 import antlr.WaccParser.FuncCallContext;
 import antlr.WaccParser.FuncDeclContext;
@@ -63,6 +65,7 @@ import middleware.ast_nodes.statement_ast.AssignmentAST;
 import middleware.ast_nodes.statement_ast.BeginAST;
 import middleware.ast_nodes.statement_ast.ChainedStatementAST;
 import middleware.ast_nodes.statement_ast.ExitAST;
+import middleware.ast_nodes.statement_ast.ForAST;
 import middleware.ast_nodes.statement_ast.FreeAST;
 import middleware.ast_nodes.statement_ast.IfElseAST;
 import middleware.ast_nodes.statement_ast.LHSAssignAST;
@@ -194,8 +197,19 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   @Override
   public StatementAST visitWhileDo(WhileDoContext ctx) {
     // return a new WhileAST.
-    return new WhileAST(ctx, visitExpr(ctx.expr()),
-        (StatementAST) visit(ctx.stat()));
+    return new WhileAST(ctx, visitExpr(ctx.expr()), (StatementAST) visit(ctx.stat()), false);
+  }
+
+  @Override
+  public StatementAST visitDoWhile(DoWhileContext ctx) {
+    // return a new WhileAST.
+    return new WhileAST(ctx, visitExpr(ctx.expr()), (StatementAST) visit(ctx.stat()), true);
+  }
+
+  @Override
+  public ForAST visitForLoop(ForLoopContext ctx) {
+    return new ForAST(ctx, (StatementAST) visit(ctx.stat(0)), visitExpr(ctx.expr()),
+        (StatementAST) visit(ctx.stat(1)), (StatementAST) visit(ctx.stat(2)));
   }
 
   @Override
