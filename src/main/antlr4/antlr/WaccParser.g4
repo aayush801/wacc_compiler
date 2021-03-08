@@ -21,7 +21,7 @@ argList: expr (COMMA expr)* ;
 //statements
 stat:
     SKIP_STATEMENT                        #skipStat
-  | type (STAR)* IDENT EQUALS assignRHS   #assignIdent
+  | type IDENT EQUALS assignRHS   #assignIdent
   | assignLHS EQUALS assignRHS            #assignVars
   | READ assignLHS                        #readCall
   | FREE expr                             #freeCall
@@ -43,9 +43,10 @@ stat:
 
 //typings
 type:
-  baseType
+  baseType STAR*
   | pairType
   | arrayType
+
 ;
 
 //base types
