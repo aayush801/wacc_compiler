@@ -137,6 +137,10 @@ public class UnaryOpExprAST extends ExpressionAST {
         checkOrdParam(exprType);
         break;
       // Unrecognized Operator
+      case "~":
+        break;
+      case "*":
+        break;
       default:
         addError(new NotAFunction(ctx));
         break;

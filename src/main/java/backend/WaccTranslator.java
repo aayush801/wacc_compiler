@@ -507,6 +507,10 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
         }
         break;
       // Unrecognized Operator
+      case "~":
+        break;
+      case "*":
+        break;
       default:
         unaryOpExpr.addError(new NotAFunction(unaryOpExpr.getCtx()));
         break;
