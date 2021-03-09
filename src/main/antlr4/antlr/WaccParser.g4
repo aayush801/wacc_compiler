@@ -43,10 +43,10 @@ stat:
 
 //typings
 type:
-  baseType STAR*
+  baseType
   | pairType
   | arrayType
-
+  | pointerType
 ;
 
 //base types
@@ -60,11 +60,15 @@ baseType:
 // array initialisation type
 arrayType : (baseType | pairType) (OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET)+;
 
+// pointer
+pointerType : baseType STAR+ ;
+
 //left hand side assignment
 assignLHS:
   IDENT
   | arrayElem
   | pairElem
+  | pointerValue
 ;
 
 //right hand side assignment
@@ -101,6 +105,9 @@ unaryOperator: NOT | MINUS | LENGTH | ORD | CHR | INVERT | STAR ;
 //arrays
 arrayElem: IDENT (OPEN_SQUARE_BRACKET expr CLOSE_SQUARE_BRACKET)+ ;
 array: OPEN_SQUARE_BRACKET (expr (COMMA expr)*)? CLOSE_SQUARE_BRACKET ;
+
+//pointer
+pointerValue : STAR expr ;
 
 //pairs
 pairType: PAIR_TYPE OPEN_PARENTHESES pairElemType COMMA pairElemType CLOSE_PARENTHESES ;

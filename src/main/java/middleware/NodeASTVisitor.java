@@ -34,6 +34,7 @@ import middleware.ast_nodes.types_ast.ArrayTypeAST;
 import middleware.ast_nodes.types_ast.BaseTypeAST;
 import middleware.ast_nodes.types_ast.PairElemTypeAST;
 import middleware.ast_nodes.types_ast.PairTypeAST;
+import middleware.ast_nodes.types_ast.PointerTypeAST;
 
 public abstract class NodeASTVisitor<T> {
 
@@ -106,4 +107,6 @@ public abstract class NodeASTVisitor<T> {
   public abstract T visit(PairTypeAST pairType);
 
   public abstract T visit(PairElemTypeAST pairElemType);
+
+  public abstract  T visit(PointerTypeAST pointerType);
 }

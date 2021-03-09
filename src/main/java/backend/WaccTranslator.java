@@ -60,6 +60,7 @@ import middleware.ast_nodes.types_ast.ArrayTypeAST;
 import middleware.ast_nodes.types_ast.BaseTypeAST;
 import middleware.ast_nodes.types_ast.PairElemTypeAST;
 import middleware.ast_nodes.types_ast.PairTypeAST;
+import middleware.ast_nodes.types_ast.PointerTypeAST;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -467,6 +468,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
             destination, ImmediateNum.ONE, false);
         instructions.add(not);
         break;
+
       // NEGATE Operator
       case "-":
         Instruction negate = new Arithmetic(ArithmeticOpcode.RSB, destination,
@@ -479,8 +481,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
             new Branch(ConditionCode.VS, overflowError.getLabelName(),
                 true));
         program.addPrimitive(overflowError);
-
         break;
+
       // LENGTH Operator
       case "len":
         Instruction loadVal = new Load(destination,
@@ -491,6 +493,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       case "chr":
         break;
       // ORD Operator
+
       case "ord":
         if (expr.isIdentifier()) {
           IdentifierAST ident = (IdentifierAST) expr;
@@ -506,11 +509,20 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
           return ret;
         }
         break;
-      // Unrecognized Operator
+
+        // Invert bits using XOR
       case "~":
+        program.registers.remove(0);
+        instructions.add(new Arithmetic(ArithmeticOpcode.EOR, destination,
+            destination, new ImmediateNum(Integer.MAX_VALUE), false));
         break;
+
+        // Dereference pointer by loading value at stored address
       case "*":
+        instructions.add(new Load(destination, new ZeroOffset(destination)));
         break;
+
+      // Unrecognized Operator
       default:
         unaryOpExpr.addError(new NotAFunction(unaryOpExpr.getCtx()));
         break;
@@ -1164,6 +1176,11 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
   @Override
   public List<Instruction> visit(PairElemTypeAST pairElemType) {
+    return null;
+  }
+
+  @Override
+  public List<Instruction> visit(PointerTypeAST pointerType) {
     return null;
   }
 }

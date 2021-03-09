@@ -16,13 +16,15 @@ public class ArrayTypeAST extends TypeAST {
   private BaseTypeAST baseTypeAST;
   private PairTypeAST pairTypeAST;
 
-  public ArrayTypeAST(ParserRuleContext ctx, int dimensions, PairTypeAST pairTypeAST) {
+  public ArrayTypeAST(ParserRuleContext ctx, int dimensions,
+      PairTypeAST pairTypeAST) {
     super(ctx);
     this.dimensions = dimensions;
     this.pairTypeAST = pairTypeAST;
   }
 
-  public ArrayTypeAST(ParserRuleContext ctx, int dimensions, BaseTypeAST baseTypeAST) {
+  public ArrayTypeAST(ParserRuleContext ctx, int dimensions,
+      BaseTypeAST baseTypeAST) {
     super(ctx);
     this.dimensions = dimensions;
     this.baseTypeAST = baseTypeAST;

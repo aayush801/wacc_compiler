@@ -29,6 +29,7 @@ import antlr.WaccParser.PairLiterContext;
 import antlr.WaccParser.PairTypeContext;
 import antlr.WaccParser.ParamContext;
 import antlr.WaccParser.ParamListContext;
+import antlr.WaccParser.PointerTypeContext;
 import antlr.WaccParser.PrintCallContext;
 import antlr.WaccParser.PrintlnCallContext;
 import antlr.WaccParser.ProgContext;
@@ -80,6 +81,7 @@ import middleware.ast_nodes.types_ast.ArrayTypeAST;
 import middleware.ast_nodes.types_ast.BaseTypeAST;
 import middleware.ast_nodes.types_ast.PairElemTypeAST;
 import middleware.ast_nodes.types_ast.PairTypeAST;
+import middleware.ast_nodes.types_ast.PointerTypeAST;
 
 public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
@@ -306,6 +308,15 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
           visitPairType(ctx.pairType()));
     }
   }
+
+  @Override
+  public PointerTypeAST visitPointerType(PointerTypeContext ctx) {
+      // case for base type.
+      return new PointerTypeAST(ctx, ctx.STAR().size(),
+          visitBaseType(ctx.baseType()));
+  }
+
+
 
   @Override
   public LHSAssignAST visitAssignLHS(AssignLHSContext ctx) {

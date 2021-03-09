@@ -12,7 +12,5 @@ public abstract class TypeAST extends NodeAST {
     super(ctx);
   }
 
-  public TYPE getType() {
-    return null;
-  }
+  public abstract TYPE getType();
 }
