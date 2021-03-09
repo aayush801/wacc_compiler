@@ -8,6 +8,8 @@ public class Arithmetic extends Instruction {
 
   private final Register Rd, Rn;
   private final backend.operands.Operand operand;
+
+
   private final ArithmeticOpcode opcode;
   private backend.operands.Operand operand1;
   private boolean registerSave = false;
@@ -35,6 +37,23 @@ public class Arithmetic extends Instruction {
       Operand operand, boolean setConditionCodes, boolean registerSave) {
     this(opcode, Rd, Rn, operand, setConditionCodes);
     this.registerSave = registerSave;
+  }
+
+
+  public Register getRd() {
+    return Rd;
+  }
+
+  public Register getRn() {
+    return Rn;
+  }
+
+  public Operand getOperand() {
+    return operand;
+  }
+
+  public ArithmeticOpcode getOpcode() {
+    return opcode;
   }
 
   @Override

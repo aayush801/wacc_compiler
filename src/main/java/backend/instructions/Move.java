@@ -22,6 +22,14 @@ public class Move extends Instruction {
     setFlags(flags);
   }
 
+  public Register getRd() {
+    return Rd;
+  }
+
+  public backend.operands.Operand getOperand() {
+    return Operand;
+  }
+
 
   @Override
   public String toString() {

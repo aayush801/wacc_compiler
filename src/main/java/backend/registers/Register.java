@@ -23,4 +23,13 @@ public class Register extends Operand {
   public String toString() {
     return "r" + number;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof Register) {
+      return number == ((Register) o).number;
+    }
+
+    return false;
+  }
 }

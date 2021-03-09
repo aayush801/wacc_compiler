@@ -38,6 +38,10 @@ stat:
     CLOSE_PARENTHESES stat END_FOR        #forLoop
   | BEGIN stat END                        #beginStat
   | stat SEPERATOR stat                   #seperateStat
+  | CLASS IDENT (EXTENDS IDENT)?
+      (VISIBILITY stat)*
+      (VISIBILITY funcDecl)*
+    DONE                                  #classDef
 ;
 
 

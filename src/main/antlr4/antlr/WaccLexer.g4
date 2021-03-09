@@ -110,6 +110,14 @@ NEWPAIR: 'newpair' ;
 PAIR_FIRST: 'fst' ;
 PAIR_SECOND: 'snd' ;
 
+
+//class
+CLASS : 'class' ;
+EXTENDS : 'extends' ;
+PUBLIC : 'public' ;
+PRIVATE : 'private' ;
+VISIBILITY : PUBLIC | PRIVATE ;
+
 NULL: 'null' ;
 
 //character/string set
