@@ -65,7 +65,7 @@ baseType:
 arrayType : (baseType | pairType) (OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET)+;
 
 // pointer
-pointerType : baseType STAR+ ;
+pointerType : baseType MULTIPLY+ ;
 
 //left hand side assignment
 assignLHS:
@@ -104,14 +104,14 @@ expr:
 ;
 
 //unary operators
-unaryOperator: NOT | MINUS | LENGTH | ORD | CHR | INVERT | STAR ;
+unaryOperator: NOT | MINUS | LENGTH | ORD | CHR | INVERT | MULTIPLY ;
 
 //arrays
 arrayElem: IDENT (OPEN_SQUARE_BRACKET expr CLOSE_SQUARE_BRACKET)+ ;
 array: OPEN_SQUARE_BRACKET (expr (COMMA expr)*)? CLOSE_SQUARE_BRACKET ;
 
 //pointer
-pointerValue : STAR expr ;
+pointerValue : MULTIPLY expr ;
 
 //pairs
 pairType: PAIR_TYPE OPEN_PARENTHESES pairElemType COMMA pairElemType CLOSE_PARENTHESES ;

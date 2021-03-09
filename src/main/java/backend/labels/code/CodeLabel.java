@@ -3,25 +3,34 @@ package backend.labels.code;
 import backend.instructions.Instruction;
 import backend.instructions.stack_instructions.LabelledInstruction;
 import backend.labels.Label;
+import extension.WaccCodeOptimiser;
 import java.util.List;
 
 public class CodeLabel extends Label {
 
-  protected final List<Instruction> instructions;
+  protected List<Instruction> instructions;
 
   public CodeLabel(String name, List<Instruction> instructions) {
     super(name);
     this.instructions = instructions;
   }
 
+  public List<Instruction> optimised() {
+
+    return WaccCodeOptimiser.optimise(instructions);
+
+  }
+
 
   @Override
   public String toString() {
+
     StringBuilder builder = new StringBuilder(name);
 
     builder.append(": \n");
 
-    instructions.forEach(i -> {
+    // optimise instructions at the machine level
+    optimised().forEach(i -> {
 
           if (!(i instanceof LabelledInstruction)) {
 

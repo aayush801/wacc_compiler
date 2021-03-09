@@ -28,7 +28,7 @@ public class CodeGenerationTests {
         "begin " +
             "for(int x = 0; x < 3; x = x + 1)\n" +
             "print x\n"+
-            "rof" +
+            "rof\n" +
             "end";
     checkSourceCode(instruction);
   }

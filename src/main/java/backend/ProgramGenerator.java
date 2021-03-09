@@ -11,12 +11,14 @@ import backend.registers.LinkRegister;
 import backend.registers.ProgramCounter;
 import backend.registers.Register;
 import backend.registers.StackPointer;
+import extension.WaccCodeOptimiser;
 import frontend.identifier_objects.VARIABLE;
 import frontend.identifier_objects.basic_types.INT;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import middleware.symbol_table.SymbolTable;
 
 public class ProgramGenerator {
@@ -171,7 +173,7 @@ public class ProgramGenerator {
     loopLabels.remove(loopLabels.size() - 1);
   }
 
-  class LabelPair {
+  static class LabelPair {
 
     private final String fst, snd;
 

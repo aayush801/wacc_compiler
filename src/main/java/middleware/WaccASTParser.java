@@ -199,7 +199,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   @Override
   public StatementAST visitWhileDo(WhileDoContext ctx) {
     // return a new WhileAST.
-    return new WhileAST(ctx, visitExpr(ctx.expr()), (StatementAST) visit(ctx.stat()));
+    return new WhileAST(ctx, visitExpr(ctx.expr()), (StatementAST) visit(ctx.stat()), false);
   }
 
   @Override
@@ -312,7 +312,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   @Override
   public PointerTypeAST visitPointerType(PointerTypeContext ctx) {
       // case for base type.
-      return new PointerTypeAST(ctx, ctx.STAR().size(),
+      return new PointerTypeAST(ctx, ctx.MULTIPLY().size(),
           visitBaseType(ctx.baseType()));
   }
 

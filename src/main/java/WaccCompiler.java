@@ -4,7 +4,9 @@ import antlr.WaccLexer;
 import antlr.WaccParser;
 import antlr.WaccParser.ProgContext;
 import backend.WaccTranslator;
+import backend.instructions.Instruction;
 import errors.WaccError;
+import extension.WaccCodeOptimiser;
 import frontend.syntactic_parser.SyntacticParser;
 import frontend.syntactic_parser.SyntaxErrorListener;
 import java.io.ByteArrayInputStream;
@@ -141,6 +143,7 @@ public class WaccCompiler {
     return codeGenerator.toString();
 
   }
+
 
   public String getSourceCode() {
     return sourceCode;

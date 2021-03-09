@@ -9,11 +9,11 @@ import java.util.List;
 
 public class WaccCodeOptimiser {
 
-  public List<Instruction> optimise(List<Instruction> instructions) {
+  public static List<Instruction> optimise(List<Instruction> instructions) {
     return peep(instructions);
   }
 
-  private List<Instruction> peep(List<Instruction> instructions) {
+  private static List<Instruction> peep(List<Instruction> instructions) {
     List<Instruction> improved = new ArrayList<>();
     for (Instruction instruction : instructions) {
 
@@ -26,18 +26,18 @@ public class WaccCodeOptimiser {
     return improved;
   }
 
-  private boolean isRedundant(Instruction instruction) {
+  private static boolean isRedundant(Instruction instruction) {
     if (instruction instanceof Move) {
       return isRedundant((Move) instruction);
     }
     return false;
   }
 
-  private boolean isRedundant(Move mov) {
+  private static boolean isRedundant(Move mov) {
     return mov.getRd().equals(mov.getOperand());
   }
 
-  private boolean isRedundant(Arithmetic instruction) {
+  private static boolean isRedundant(Arithmetic instruction) {
     // If operand register is destination
     if (instruction.getRd().equals(instruction.getRn())) {
       switch (instruction.getOpcode()) {

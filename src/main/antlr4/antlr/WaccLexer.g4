@@ -69,7 +69,6 @@ OPEN_PARENTHESES: '(' ;
 CLOSE_PARENTHESES: ')' ;
 OPEN_SQUARE_BRACKET: '[' ;
 CLOSE_SQUARE_BRACKET: ']' ;
-STAR : '*' ;
 
 //binary operators
 PLUS: '+' ;

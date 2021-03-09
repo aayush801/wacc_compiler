@@ -1071,12 +1071,32 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
   @Override
   public List<Instruction> visit(ForAST forLoop) {
-    SymbolTable scopeST = forLoop.getScope();
-    StatementAST loopBody = forLoop.getBody();
     StatementAST initialisation = forLoop.getInitialisation();
-    ExpressionAST condition = forLoop.getCondition();
-    StatementAST afterthought = forLoop.getAfterthought();
 
+    List<Instruction> instructions = new ArrayList<>();
+
+    LabelledInstruction startLabel = new LabelledInstruction();
+    LabelledInstruction endLabel = new LabelledInstruction();
+    program.addLoopLabels(startLabel.getLabel(), endLabel.getLabel());
+    instructions.add(startLabel);
+
+    // Initialisation
+    instructions.addAll(initialisation.accept(this));
+
+    // generate loop body and condition
+    instructions.addAll(visit((WhileAST) forLoop));
+
+    instructions.add(endLabel);
+    program.popLoopLabels();
+
+    return instructions;
+  }
+
+
+  public List<Instruction> visit(WhileAST whileLoop) {
+    SymbolTable scopeST = whileLoop.getScope();
+    StatementAST statementAST = whileLoop.getStatementAST();
+    ExpressionAST conditionExpr = whileLoop.getConditionAST();
     Register destination = program.registers.get(0);
     List<Instruction> instructions = new ArrayList<>();
 
@@ -1086,27 +1106,19 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     instructions.add(startLabel);
 
     LabelledInstruction conditionLabel = new LabelledInstruction();
-    LabelledInstruction bodyLabel = new LabelledInstruction();
+    LabelledInstruction body = new LabelledInstruction();
 
-    // Initialisation
-    instructions.addAll(initialisation.accept(this));
-
-    if (!forLoop.isDoWhile()) {
+    if (!whileLoop.isDoWhile())
       instructions.add(new Branch(conditionLabel.getLabel()));
-    }
 
     // translate rest of code statement
-    instructions.add(bodyLabel);
+    instructions.add(body);
 
     // save the stack state in the symbol table
     scopeST.saveStackState(program.SP);
 
     instructions.addAll(program.allocateStackSpace(scopeST));
-    instructions.addAll(loopBody.accept(this));
-
-    // Adding afterthought after loop body
-    instructions.addAll(afterthought.accept(this));
-
+    instructions.addAll(statementAST.accept(this));
     instructions.addAll(program.deallocateStackSpace(scopeST));
 
     // save the stack state in the symbol table
@@ -1114,17 +1126,17 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     // translate expression for loop (variance)
     instructions.add(conditionLabel);
-    instructions.addAll(condition.accept(this));
+    instructions.addAll(conditionExpr.accept(this));
 
     instructions.add(new Compare(destination, ImmediateNum.ONE));
-    instructions.add(
-        new Branch(ConditionCode.EQ, bodyLabel.getLabel(), false));
+    instructions.add(new Branch(ConditionCode.EQ, body.getLabel(), false));
 
     instructions.add(endLabel);
     program.popLoopLabels();
 
     return instructions;
   }
+
 
   @Override
   public List<Instruction> visit(ContinueAST continueStat) {
