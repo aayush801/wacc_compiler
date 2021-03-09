@@ -22,7 +22,7 @@ public class PointerTypeAST extends TypeAST {
   @Override
   public void check() {
     typeAST.check();
-    pointerObj = new POINTER(typeAST.getType(), level);
+    pointerObj = new POINTER(typeAST.getType());
   }
 
   @Override

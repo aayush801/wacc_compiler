@@ -5,13 +5,20 @@ import backend.registers.Register;
 
 public class Move extends Instruction {
 
-  private final Register Rd;
-  private final Operand Operand;
+  protected final Register Rd;
+  protected final Operand Operand;
+  private boolean isNegated = false;
 
   public Move(Register Rd, Operand Operand) {
-    super();
     this.Rd = Rd;
     this.Operand = Operand;
+  }
+
+
+  public Move(Register Rd, Operand Operand, boolean isNegated) {
+    this.Rd = Rd;
+    this.Operand = Operand;
+    this.isNegated = isNegated;
   }
 
   public Move(ConditionCode code, Register Rd, Operand Operand,
@@ -20,6 +27,10 @@ public class Move extends Instruction {
     this.Rd = Rd;
     this.Operand = Operand;
     setFlags(flags);
+  }
+
+  public boolean isNegated() {
+    return isNegated;
   }
 
   public Register getRd() {
@@ -33,6 +44,6 @@ public class Move extends Instruction {
 
   @Override
   public String toString() {
-    return "MOV" + getFlags() + " " + Rd + ", " + Operand;
+    return ((isNegated) ? "MVN" : "MOV") + getFlags() + " " + Rd + ", " + Operand;
   }
 }

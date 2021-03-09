@@ -153,6 +153,8 @@ public class BinOpExprAST extends ExpressionAST {
       case "*":
       case "%":
       case "/":
+      case "&":
+      case "|":
         checkArithmeticParams(leftType, rightType);
         break;
       // EQUATABLE Operators

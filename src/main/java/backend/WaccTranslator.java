@@ -1,24 +1,50 @@
 package backend;
 
-import backend.instructions.*;
-import backend.instructions.addr_modes.*;
-import backend.instructions.arithmetic.*;
-import backend.instructions.stack_instructions.*;
-import backend.labels.code.*;
+import backend.instructions.Branch;
+import backend.instructions.Compare;
+import backend.instructions.ConditionCode;
+import backend.instructions.EOC;
+import backend.instructions.Instruction;
+import backend.instructions.Load;
+import backend.instructions.Move;
+import backend.instructions.Store;
+import backend.instructions.TYPES;
+import backend.instructions.addr_modes.Address;
+import backend.instructions.addr_modes.ImmediateAddress;
+import backend.instructions.addr_modes.ImmediateOffset;
+import backend.instructions.addr_modes.ZeroOffset;
+import backend.instructions.arithmetic.Arithmetic;
+import backend.instructions.arithmetic.ArithmeticOpcode;
+import backend.instructions.stack_instructions.LabelledInstruction;
+import backend.instructions.stack_instructions.Pop;
+import backend.instructions.stack_instructions.Push;
+import backend.labels.code.CodeLabel;
+import backend.labels.code.FunctionLabel;
+import backend.labels.code.PrimitiveLabel;
 import backend.labels.data.DataLabel;
 import backend.operands.ImmediateChar;
 import backend.operands.ImmediateNum;
 import backend.operands.ImmediateShift;
-import backend.primitive_functions.*;
+import backend.primitive_functions.BinOpChecks;
+import backend.primitive_functions.FreeFunction;
+import backend.primitive_functions.PairElemNullAccessCheck;
+import backend.primitive_functions.PrintArrayBoundsChecks;
+import backend.primitive_functions.PrintFunctions;
+import backend.primitive_functions.ReadFunctions;
 import backend.registers.Register;
 import backend.registers.StackPointer;
-import errors.semantic_errors.NotAFunction;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.PARAM;
+import frontend.identifier_objects.POINTER;
 import frontend.identifier_objects.STACK_OBJECT;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
-import frontend.identifier_objects.basic_types.*;
+import frontend.identifier_objects.basic_types.ARRAY;
+import frontend.identifier_objects.basic_types.BOOL;
+import frontend.identifier_objects.basic_types.CHAR;
+import frontend.identifier_objects.basic_types.INT;
+import frontend.identifier_objects.basic_types.PAIR;
+import frontend.identifier_objects.basic_types.STR;
 import java.util.ArrayList;
 import java.util.List;
 import middleware.ExpressionAST;
@@ -455,7 +481,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
   @Override
   public List<Instruction> visit(UnaryOpExprAST unaryOpExpr) {
     // evaluate expression.
-    Register destination = program.registers.get(0);
+    Register exprReg = program.registers.get(0);
     List<Instruction> instructions = unaryOpExpr.getExpr().accept(this);
 
     ExpressionAST expr = unaryOpExpr.getExpr();
@@ -464,15 +490,15 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     switch (unaryOpExpr.getOperator()) {
       // NOT Operator
       case "!":
-        Instruction not = new Arithmetic(ArithmeticOpcode.EOR, destination,
-            destination, ImmediateNum.ONE, false);
+        Instruction not = new Arithmetic(ArithmeticOpcode.EOR, exprReg,
+            exprReg, ImmediateNum.ONE, false);
         instructions.add(not);
         break;
 
       // NEGATE Operator
       case "-":
-        Instruction negate = new Arithmetic(ArithmeticOpcode.RSB, destination,
-            destination, ImmediateNum.ZERO, true);
+        Instruction negate = new Arithmetic(ArithmeticOpcode.RSB, exprReg,
+            exprReg, ImmediateNum.ZERO, true);
         instructions.add(negate);
 
         // check for overflow error
@@ -483,17 +509,30 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
         program.addPrimitive(overflowError);
         break;
 
+      // Reference pointer by loading value at stored address
+      case "&":
+        if (expr.isIdentifier()) {
+          IdentifierAST ident = (IdentifierAST) expr;
+          VARIABLE varObj = (VARIABLE) scopeST.lookupAll(ident.getIdentifier());
+
+        // calculate offset
+        int offset = program.SP.calculateOffset(varObj.getStackAddress());
+
+        instructions.add(new Move(exprReg, program.SP));
+
+        instructions.add(new Arithmetic(ArithmeticOpcode.ADD, exprReg, exprReg, new ImmediateNum(offset), false));
+        }
+        break;
       // LENGTH Operator
       case "len":
-        Instruction loadVal = new Load(destination,
-            new ImmediateOffset(destination, ImmediateNum.ZERO));
+        Instruction loadVal = new Load(exprReg,
+            new ImmediateOffset(exprReg, ImmediateNum.ZERO));
         instructions.add(loadVal);
         break;
       // CHR Operator
       case "chr":
         break;
       // ORD Operator
-
       case "ord":
         if (expr.isIdentifier()) {
           IdentifierAST ident = (IdentifierAST) expr;
@@ -502,30 +541,22 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
           // calculate offset
           int offset = program.SP.calculateOffset(varObj.getStackAddress());
 
-          List<Instruction> ret = new ArrayList<>();
-          ret.add(
-              new Load(destination, new ImmediateOffset(program.SP,
+          instructions.add(
+              new Load(exprReg, new ImmediateOffset(program.SP,
                   new ImmediateNum(offset)), 1));
-          return ret;
         }
         break;
 
-        // Invert bits using XOR
+      // Invert bits using XOR
       case "~":
-        program.registers.remove(0);
-        instructions.add(new Arithmetic(ArithmeticOpcode.EOR, destination,
-            destination, new ImmediateNum(Integer.MAX_VALUE), false));
+        instructions.add(new Move(exprReg, exprReg, true));
         break;
-
-        // Dereference pointer by loading value at stored address
+      // Dereference pointer by loading value at stored address
       case "*":
-        instructions.add(new Load(destination, new ZeroOffset(destination)));
+        instructions.add(new Load(exprReg, new ZeroOffset(exprReg)));
         break;
-
-      // Unrecognized Operator
       default:
-        unaryOpExpr.addError(new NotAFunction(unaryOpExpr.getCtx()));
-        break;
+        System.out.println("unary operation " + unaryOpExpr.getOperator() + "not handled");
     }
     return instructions;
 
@@ -840,7 +871,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
       primitiveLabel = PrintFunctions.printBool(program);
 
-    } else if (type instanceof ARRAY || type instanceof PAIR) {
+    } else if (type instanceof ARRAY || type instanceof PAIR || type instanceof POINTER) {
 
       if (type instanceof ARRAY) {
 
@@ -1108,8 +1139,9 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     LabelledInstruction conditionLabel = new LabelledInstruction();
     LabelledInstruction body = new LabelledInstruction();
 
-    if (!whileLoop.isDoWhile())
+    if (!whileLoop.isDoWhile()) {
       instructions.add(new Branch(conditionLabel.getLabel()));
+    }
 
     // translate rest of code statement
     instructions.add(body);

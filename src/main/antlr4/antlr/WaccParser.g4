@@ -21,7 +21,7 @@ argList: expr (COMMA expr)* ;
 //statements
 stat:
     SKIP_STATEMENT                        #skipStat
-  | type IDENT EQUALS assignRHS   #assignIdent
+  | type IDENT EQUALS assignRHS           #assignIdent
   | assignLHS EQUALS assignRHS            #assignVars
   | READ assignLHS                        #readCall
   | FREE expr                             #freeCall
@@ -104,7 +104,7 @@ expr:
 ;
 
 //unary operators
-unaryOperator: NOT | MINUS | LENGTH | ORD | CHR | INVERT | MULTIPLY ;
+unaryOperator: NOT | MINUS | LENGTH | ORD | CHR | INVERT | MULTIPLY | BITWISE_AND ;
 
 //arrays
 arrayElem: IDENT (OPEN_SQUARE_BRACKET expr CLOSE_SQUARE_BRACKET)+ ;

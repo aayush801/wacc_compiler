@@ -18,7 +18,7 @@ public class WaccCodeOptimiser {
     for (Instruction instruction : instructions) {
 
       // Register move to itself is ignored
-      if (!isRedundant(instruction)) {
+      if (!isRedundantMove(instruction)) {
         improved.add(instruction);
       }
     }
@@ -26,18 +26,20 @@ public class WaccCodeOptimiser {
     return improved;
   }
 
-  private static boolean isRedundant(Instruction instruction) {
+  private static boolean isRedundantMove(Instruction instruction) {
     if (instruction instanceof Move) {
-      return isRedundant((Move) instruction);
+      return isRedundantMove((Move) instruction);
+    }else if(instruction instanceof Arithmetic) {
+      return isRedundantArithmetic((Arithmetic) instruction);
     }
     return false;
   }
 
-  private static boolean isRedundant(Move mov) {
-    return mov.getRd().equals(mov.getOperand());
+  private static boolean isRedundantMove(Move mov) {
+    return !mov.isNegated() && mov.getRd().equals(mov.getOperand());
   }
 
-  private static boolean isRedundant(Arithmetic instruction) {
+  private static boolean isRedundantArithmetic(Arithmetic instruction) {
     // If operand register is destination
     if (instruction.getRd().equals(instruction.getRn())) {
       switch (instruction.getOpcode()) {

@@ -2,8 +2,7 @@ package middleware.ast_nodes.expression_ast;
 
 import errors.semantic_errors.MismatchedTypes;
 import errors.semantic_errors.NotAFunction;
-import errors.semantic_errors.ExpressionNotFound;
-import frontend.identifier_objects.IDENTIFIER;
+import frontend.identifier_objects.POINTER;
 import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.basic_types.ARRAY;
 import frontend.identifier_objects.basic_types.BOOL;
@@ -40,7 +39,7 @@ public class UnaryOpExprAST extends ExpressionAST {
 
   /* ================== OPERATION PARAMETER TYPING CHECKS ================== */
 
-  private void checkNotParam(IDENTIFIER exprType) {
+  private void checkNotParam(TYPE exprType) {
 
     if (!(exprType instanceof BOOL)) {
 
@@ -51,7 +50,7 @@ public class UnaryOpExprAST extends ExpressionAST {
     type = new BOOL();
   }
 
-  private void checkNegateParam(IDENTIFIER exprType) {
+  private void checkNegateParam(TYPE exprType) {
 
     if (!(exprType instanceof INT)) {
 
@@ -62,7 +61,7 @@ public class UnaryOpExprAST extends ExpressionAST {
     type = new INT();
   }
 
-  private void checkLengthParam(IDENTIFIER exprType) {
+  private void checkLengthParam(TYPE exprType) {
 
     if (!(exprType instanceof ARRAY)) {
 
@@ -73,7 +72,7 @@ public class UnaryOpExprAST extends ExpressionAST {
     type = new INT();
   }
 
-  private void checkChrParam(IDENTIFIER exprType) {
+  private void checkChrParam(TYPE exprType) {
 
     if (!(exprType instanceof INT)) {
 
@@ -84,7 +83,7 @@ public class UnaryOpExprAST extends ExpressionAST {
     type = new CHAR();
   }
 
-  private void checkOrdParam(IDENTIFIER exprType) {
+  private void checkOrdParam(TYPE exprType) {
 
     if (!(exprType instanceof CHAR)) {
 
@@ -95,6 +94,32 @@ public class UnaryOpExprAST extends ExpressionAST {
     type = new INT();
   }
 
+  private void checkInvertParam(TYPE exprType) {
+
+    if (!(exprType instanceof INT)) {
+
+      addError(new MismatchedTypes(ctx, exprType, new INT()));
+
+    }
+
+    type = new INT();
+  }
+
+  private void checkDereferenceParam(TYPE exprType) {
+
+    type = new POINTER(exprType);
+
+  }
+
+
+  private void checkReferenceParam(TYPE exprType) {
+
+    type = new POINTER(exprType);
+
+  }
+
+
+
   /* ========================================================================= */
 
 
@@ -103,15 +128,10 @@ public class UnaryOpExprAST extends ExpressionAST {
 
     scopeST = ST;
     expr.check();
-    IDENTIFIER exprType = expr.getType();
+    TYPE exprType = expr.getType();
 
     if (exprType == null) {
       // error occurred elsewhere
-      return;
-    }
-
-    if (!(exprType instanceof TYPE)) {
-      addError(new ExpressionNotFound(ctx, exprType));
       return;
     }
 
@@ -136,16 +156,22 @@ public class UnaryOpExprAST extends ExpressionAST {
       case "ord":
         checkOrdParam(exprType);
         break;
-      // Unrecognized Operator
       case "~":
+        checkInvertParam(exprType);
         break;
       case "*":
+        checkDereferenceParam(exprType);
         break;
+      case "&":
+        checkReferenceParam(exprType);
+        break;
+      // Unrecognized Operator
       default:
         addError(new NotAFunction(ctx));
         break;
     }
   }
+
 
   @Override
   public <T> T accept(NodeASTVisitor<? extends T> visitor) {
