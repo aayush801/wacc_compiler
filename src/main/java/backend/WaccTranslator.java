@@ -248,6 +248,41 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     // we go until r12 in our case, they do pushing when they get to r10 for some reason.
     List<Instruction> instructions = binOpExpr.getLeftExprAST().accept(this);
 
+    String operator = binOpExpr.getOperator();
+
+    // Short-circuit evaluation
+    if (operator.equals("and") || operator.equals("or")) {
+      LabelledInstruction afterCheck = new LabelledInstruction();
+      ImmediateNum checkValue = ImmediateNum.ZERO;
+      if (operator.equals("or"))
+        checkValue = ImmediateNum.ONE;
+
+      // Check left side
+      instructions.add(new Compare(Rn, checkValue));
+      instructions.add(
+          new Move(ConditionCode.EQ,  Rn, checkValue, false));
+      // If value matches then no need to evaluate the right side, just jump over it
+      instructions.add(
+          new Branch(ConditionCode.EQ, afterCheck.getLabel(), false));
+      // If left side is not sufficient then check right expression
+      program.registers.remove(0);
+      // Result is stored in Rd
+      instructions.addAll(binOpExpr.getRightExprAST().accept(this));
+      // Check Rd
+      instructions.add(new Compare(Rm, ImmediateNum.ZERO));
+      // If it's false then move 0 into destination
+      instructions.add(
+          new Move(ConditionCode.EQ, Rn, ImmediateNum.ZERO, false));
+      // Otherwise move 1 into destination
+      instructions.add(
+          new Move(ConditionCode.NE, Rn, ImmediateNum.ONE, false));
+      // Replace the register that was removed
+      program.registers.add(0, Rn);
+      // To skip over evaluating right side
+      instructions.add(afterCheck);
+      return instructions;
+    }
+
     if (accumulator) {
       // go into register saving mode.
 
@@ -384,6 +419,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
         instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, Rm, false,
             accumulator));
         break;
+
       // Unrecognized Operator
       default:
         break;

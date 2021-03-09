@@ -14,7 +14,6 @@ public class Move extends Instruction {
     this.Operand = Operand;
   }
 
-
   public Move(Register Rd, Operand Operand, boolean isNegated) {
     this.Rd = Rd;
     this.Operand = Operand;

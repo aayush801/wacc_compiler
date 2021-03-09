@@ -98,8 +98,8 @@ expr:
   | expr binaryOperator=(PLUS | MINUS) expr
   | expr binaryOperator=(GT | GTE | LT | LTE) expr
   | expr binaryOperator=(EQ | NEQ) expr
-  | expr binaryOperator=(AND | BITWISE_AND) expr
-  | expr binaryOperator=(OR | BITWISE_OR) expr
+  | expr binaryOperator=(AND | BITWISE_AND | LAZY_AND) expr
+  | expr binaryOperator=(OR | BITWISE_OR | LAZY_OR) expr
   | OPEN_PARENTHESES expr CLOSE_PARENTHESES
 ;
 

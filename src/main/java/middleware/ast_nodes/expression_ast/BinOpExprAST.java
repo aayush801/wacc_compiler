@@ -170,6 +170,8 @@ public class BinOpExprAST extends ExpressionAST {
         checkComparableParams(leftType, rightType);
         break;
       // BOOLEAN Operators
+      case "and":
+      case "or":
       case "&&":
       case "||":
         checkBoolLogicParams(leftType, rightType);

@@ -84,6 +84,8 @@ EQ: '==' ;
 NEQ: '!=' ;
 AND: '&&' ;
 OR: '||' ;
+LAZY_AND : 'and' ;
+LAZY_OR : 'or' ;
 BITWISE_AND : '&' ;
 BITWISE_OR : '|' ;
 INVERT : '~';
