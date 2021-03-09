@@ -91,7 +91,7 @@ expr:
   | pairLiter
   | strLiter
   | charLiter
-  | identifier
+  | MULTIPLY* identifier
   | arrayElem
   | unaryOperator expr
   | expr binaryOperator=(DIVIDE | MULTIPLY | MOD) expr
@@ -104,7 +104,7 @@ expr:
 ;
 
 //unary operators
-unaryOperator: NOT | MINUS | LENGTH | ORD | CHR | INVERT | MULTIPLY | BITWISE_AND ;
+unaryOperator: NOT | MINUS | LENGTH | ORD | CHR | INVERT | BITWISE_AND ;
 
 //arrays
 arrayElem: IDENT (OPEN_SQUARE_BRACKET expr CLOSE_SQUARE_BRACKET)+ ;
