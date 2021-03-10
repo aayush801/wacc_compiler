@@ -42,6 +42,7 @@ import frontend.identifier_objects.VARIABLE;
 import frontend.identifier_objects.basic_types.ARRAY;
 import frontend.identifier_objects.basic_types.BOOL;
 import frontend.identifier_objects.basic_types.CHAR;
+import frontend.identifier_objects.basic_types.FLOAT;
 import frontend.identifier_objects.basic_types.INT;
 import frontend.identifier_objects.basic_types.PAIR;
 import frontend.identifier_objects.basic_types.STR;
@@ -88,7 +89,7 @@ import middleware.ast_nodes.types_ast.BaseTypeAST;
 import middleware.ast_nodes.types_ast.PairElemTypeAST;
 import middleware.ast_nodes.types_ast.PairTypeAST;
 import middleware.ast_nodes.types_ast.PointerTypeAST;
-import middleware.symbol_table.SymbolTable;
+import middleware.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {

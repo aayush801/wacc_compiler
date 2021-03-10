@@ -10,7 +10,7 @@ import middleware.NodeASTVisitor;
 import middleware.ast_nodes.NodeASTList;
 import middleware.ast_nodes.StatementAST;
 import middleware.ast_nodes.TypeAST;
-import middleware.symbol_table.SymbolTable;
+import middleware.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class FunctionDeclarationAST extends NodeAST {

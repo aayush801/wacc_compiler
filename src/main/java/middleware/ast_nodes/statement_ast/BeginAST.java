@@ -2,7 +2,7 @@ package middleware.ast_nodes.statement_ast;
 
 import middleware.NodeASTVisitor;
 import middleware.ast_nodes.StatementAST;
-import middleware.symbol_table.SymbolTable;
+import middleware.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class BeginAST extends StatementAST {

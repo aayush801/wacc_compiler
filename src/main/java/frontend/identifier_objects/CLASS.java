@@ -1,6 +1,6 @@
 package frontend.identifier_objects;
 
-import middleware.symbol_table.SymbolTable;
+import middleware.SymbolTable;
 
 public class CLASS extends TYPE {
 

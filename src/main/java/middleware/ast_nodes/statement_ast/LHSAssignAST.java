@@ -12,7 +12,7 @@ import middleware.ast_nodes.StatementAST;
 import middleware.ast_nodes.arrays_ast.ArrayElemAST;
 import middleware.ast_nodes.pair_ast.PairElemAST;
 import middleware.ast_nodes.pointers_ast.PointerElemAST;
-import middleware.symbol_table.SymbolTable;
+import middleware.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class LHSAssignAST extends StatementAST {

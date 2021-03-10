@@ -7,7 +7,7 @@ import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
 import middleware.ExpressionAST;
 import middleware.NodeASTVisitor;
-import middleware.symbol_table.SymbolTable;
+import middleware.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class IdentifierAST extends ExpressionAST {

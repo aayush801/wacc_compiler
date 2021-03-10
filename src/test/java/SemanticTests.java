@@ -11,8 +11,8 @@ public class SemanticTests {
 
   public void check(String instruction, boolean b) throws IOException {
     WaccCompiler compiler = new WaccCompiler(instruction);
-    //compiler.parseSemantics(compiler.parseSyntactics());
-    //assertThat(compiler.hasErrors(), is(b));
+    compiler.parseSemantics(compiler.parseSyntactics());
+    assertThat(compiler.hasErrors(), is(b));
 
     if (compiler.compile() == ErrorCode.SEMANTIC_ERROR) {
       System.out.println(compiler.getErrors());

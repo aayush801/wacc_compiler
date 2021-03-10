@@ -6,7 +6,7 @@ import frontend.identifier_objects.basic_types.BOOL;
 import middleware.ExpressionAST;
 import middleware.NodeASTVisitor;
 import middleware.ast_nodes.StatementAST;
-import middleware.symbol_table.SymbolTable;
+import middleware.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class WhileAST extends StatementAST {

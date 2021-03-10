@@ -5,7 +5,6 @@ import errors.semantic_errors.WaccSemanticError;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
 import java.util.List;
-import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public abstract class NodeAST implements NodeASTInterface {

@@ -8,7 +8,7 @@ import middleware.ast_nodes.arrays_ast.ArrayAST;
 import middleware.ast_nodes.function_ast.FunctionCallAST;
 import middleware.ast_nodes.pair_ast.NewPairAST;
 import middleware.ast_nodes.pair_ast.PairElemAST;
-import middleware.symbol_table.SymbolTable;
+import middleware.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class RHSAssignAST extends StatementAST {

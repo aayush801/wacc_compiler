@@ -6,7 +6,7 @@ import middleware.NodeAST;
 import middleware.NodeASTVisitor;
 import middleware.ast_nodes.StatementAST;
 import middleware.ast_nodes.function_ast.FunctionDeclarationAST;
-import middleware.symbol_table.SymbolTable;
+import middleware.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class ClassDefinitionAST extends NodeAST {

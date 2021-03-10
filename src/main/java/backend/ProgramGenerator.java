@@ -6,20 +6,17 @@ import backend.instructions.stack_instructions.Push;
 import backend.labels.code.CodeLabel;
 import backend.labels.code.PrimitiveLabel;
 import backend.labels.data.DataLabel;
-import backend.labels.text.TextLabel;
 import backend.registers.LinkRegister;
 import backend.registers.ProgramCounter;
 import backend.registers.Register;
 import backend.registers.StackPointer;
-import extension.WaccCodeOptimiser;
 import frontend.identifier_objects.VARIABLE;
 import frontend.identifier_objects.basic_types.INT;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import middleware.symbol_table.SymbolTable;
+import middleware.SymbolTable;
 
 public class ProgramGenerator {
 

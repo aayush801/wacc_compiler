@@ -2,7 +2,7 @@ package frontend.identifier_objects;
 
 import java.util.ArrayList;
 import java.util.List;
-import middleware.symbol_table.SymbolTable;
+import middleware.SymbolTable;
 
 public class FUNCTION extends IDENTIFIER {
 

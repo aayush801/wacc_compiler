@@ -1,4 +1,4 @@
-package middleware.symbol_table;
+package middleware;
 
 import backend.registers.StackPointer;
 import frontend.identifier_objects.IDENTIFIER;
@@ -6,6 +6,7 @@ import frontend.identifier_objects.TYPE;
 import frontend.identifier_objects.VARIABLE;
 import frontend.identifier_objects.basic_types.BOOL;
 import frontend.identifier_objects.basic_types.CHAR;
+import frontend.identifier_objects.basic_types.FLOAT;
 import frontend.identifier_objects.basic_types.INT;
 import frontend.identifier_objects.basic_types.PAIR;
 import frontend.identifier_objects.basic_types.STR;
@@ -51,6 +52,7 @@ public class SymbolTable {
     PAIR pairType = new PAIR();
     BOOL boolType = new BOOL();
     VOID voidType = new VOID();
+    FLOAT floatType = new FLOAT();
 
     // add literals to symbol table
     st.add("int", intType);
@@ -59,6 +61,7 @@ public class SymbolTable {
     st.add("pair", pairType);
     st.add("bool", boolType);
     st.add("void", voidType);
+    st.add("float", floatType);
 
     return st;
   }

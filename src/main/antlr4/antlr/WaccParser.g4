@@ -63,7 +63,6 @@ baseType:
   | BOOL_TYPE
   | CHAR_TYPE
   | STRING_TYPE
-  | FLOAT_TYPE
   | VOID_TYPE
 ;
 
@@ -98,7 +97,6 @@ expr:
   | pairLiter
   | strLiter
   | charLiter
-  | floatLiter
   | identifier
   | arrayElem
   | unaryOperator expr

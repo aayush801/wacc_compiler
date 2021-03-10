@@ -111,7 +111,6 @@ EQUALS: '=' ;
 
 //integers
 INTEGER: DIGIT+ ;
-FLOAT: DIGIT+ DOT DIGIT+ ;
 
 //boolean values
 TRUE: 'true';
