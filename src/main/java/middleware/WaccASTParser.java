@@ -550,7 +550,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
     // Return a new progAST node.
     return new ClassDefinitionAST(ctx, ctx.IDENT(0).getText(),
-        (StatementAST) visit(ctx.stat().get(0)),
+        (StatementAST) visit(ctx.stat(0)),
         (List<FunctionDeclarationAST>) functionDeclASTS);
   }
 
