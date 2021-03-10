@@ -59,6 +59,7 @@ baseType:
   | BOOL_TYPE
   | CHAR_TYPE
   | STRING_TYPE
+  | FLOAT_TYPE
 ;
 
 // array initialisation type
@@ -91,6 +92,7 @@ expr:
   | pairLiter
   | strLiter
   | charLiter
+  | floatLiter
   | MULTIPLY* identifier
   | arrayElem
   | unaryOperator expr
@@ -101,6 +103,7 @@ expr:
   | expr binaryOperator=(AND | BITWISE_AND | LAZY_AND) expr
   | expr binaryOperator=(OR | BITWISE_OR | LAZY_OR) expr
   | OPEN_PARENTHESES expr CLOSE_PARENTHESES
+  | IDENT DOT IDENT
 ;
 
 //unary operators
@@ -130,5 +133,7 @@ intLiter: (PLUS | MINUS)? INTEGER;
 boolLiter: TRUE | FALSE ;
 pairLiter: NULL;
 strLiter: STRING;
+floatLiter : (PLUS | MINUS)? FLOAT ;
 charLiter: CHARACTER;
+
 identifier: IDENT;

@@ -58,14 +58,17 @@ public class Arithmetic extends Instruction {
 
   @Override
   public String toString() {
-    boolean operand1Exists = operand1 != null;
 
-    return opcode + (flags ? "S" : "") + " " +
-        (!registerSave ?
-            Rd + ", " + Rn + ", " + operand +
-                (operand1Exists ? ", " + operand1 : "") :
-            (operand1Exists ?
-                Rd + ", " + Rn + ", " + operand1 + ", " + operand :
-                Rd + ", " + operand + ", " + Rn));
+    return opcode + (flags ? "S" : "") + " " + operandString();
+  }
+
+  protected String operandString() {
+    boolean operand1Exists = operand1 != null;
+    return !registerSave ?
+        Rd + ", " + Rn + ", " + operand +
+            (operand1Exists ? ", " + operand1 : "") :
+        (operand1Exists ?
+            Rd + ", " + Rn + ", " + operand1 + ", " + operand :
+            Rd + ", " + operand + ", " + Rn);
   }
 }

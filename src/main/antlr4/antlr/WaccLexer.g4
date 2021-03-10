@@ -28,13 +28,16 @@ COMMA : ',' ;
 // statement seperator
 SEPERATOR: ';' ;
 
+DOT : '.' ;
+
+
 // types
 STRING_TYPE: 'string';
 CHAR_TYPE: 'char';
 BOOL_TYPE: 'bool' ;
 INT_TYPE: 'int' ;
 PAIR_TYPE: 'pair' ;
-
+FLOAT_TYPE: 'float' ;
 
 //prog keywords
 BEGIN: 'begin';
@@ -101,6 +104,7 @@ EQUALS: '=' ;
 
 //integers
 INTEGER: DIGIT+ ;
+FLOAT: DIGIT+ DOT DIGIT+ ;
 
 //boolean values
 TRUE: 'true';
