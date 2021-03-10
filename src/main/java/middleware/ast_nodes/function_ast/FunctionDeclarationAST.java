@@ -76,7 +76,7 @@ public class FunctionDeclarationAST extends NodeAST {
       ST = ST.getEncSymTable();
     }
   }
-  
+
   @Override
   public void check() {
     if (!checkFunctionAndGetReturnType()) {
