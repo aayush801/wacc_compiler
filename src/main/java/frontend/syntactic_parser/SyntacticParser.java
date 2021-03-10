@@ -28,10 +28,10 @@ public class SyntacticParser extends WaccParserBaseVisitor<Boolean> {
   public Boolean visitFuncDecl(WaccParser.FuncDeclContext ctx) {
     Boolean statHasReturn = visit(ctx.stat());
     if (!statHasReturn) {
-      listener.syntaxError(null, ctx.IDENT().getText(),
+      listener.syntaxError(null, ctx.identifier().getText(),
           ctx.getStart().getLine(),
           ctx.getStart().getCharPositionInLine(),
-          "Function " + ctx.IDENT().getText() +
+          "Function " + ctx.identifier().getText() +
               " is not ended with a return or an exit statement.", null);
     }
     return visitChildren(ctx);

@@ -112,7 +112,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
       return new FunctionDeclarationAST(
           ctx,
           visitType(ctx.type()),
-          ctx.IDENT().getText(),
+          ctx.identifier().getText(),
           visitParamList(ctx.paramList()),
           (StatementAST) visit(ctx.stat()));
 
@@ -123,7 +123,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
       return new FunctionDeclarationAST(
           ctx,
           visitType(ctx.type()),
-          ctx.IDENT().getText(),
+          ctx.identifier().getText(),
           new NodeASTList<>(ctx),
           (StatementAST) visit(ctx.stat()));
     }
@@ -143,13 +143,13 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     }
 
     // return a new FunctionCallAST.
-    return new FunctionCallAST(ctx, ctx.IDENT().getText(), actuals);
+    return new FunctionCallAST(ctx, ctx.identifier().getText(), actuals);
   }
 
   @Override
   public ParamAST visitParam(ParamContext ctx) {
     // return a new ParamAST.
-    return new ParamAST(ctx, visitType(ctx.type()), ctx.IDENT().getText());
+    return new ParamAST(ctx, visitType(ctx.type()), ctx.identifier().getText());
   }
 
   @Override
@@ -193,7 +193,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   public StatementAST visitAssignIdent(AssignIdentContext ctx) {
     // return a new VariableDeclarationAST.
     return new VariableDeclarationAST(ctx, visitType(ctx.type()),
-        ctx.IDENT().getText(), visitAssignRHS(ctx.assignRHS()));
+        ctx.identifier().getText(), visitAssignRHS(ctx.assignRHS()));
   }
 
   @Override
@@ -312,7 +312,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   @Override
   public PointerTypeAST visitPointerType(PointerTypeContext ctx) {
       // case for base type.
-      return new PointerTypeAST(ctx, ctx.MULTIPLY().size(),
+      return new PointerTypeAST(ctx, ctx.STAR().size(),
           visitBaseType(ctx.baseType()));
   }
 
@@ -323,8 +323,8 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // Check what the type of AssignLHS is, and create new LHSAssignAST
     // by calling the appropriate constructor.
 
-    if (ctx.IDENT() != null) {
-      return new LHSAssignAST(ctx, ctx.IDENT().getText());
+    if (ctx.identifier() != null) {
+      return new LHSAssignAST(ctx, ctx.identifier().getText());
     }
     if (ctx.arrayElem() != null) {
       ArrayElemAST arrayElemAST = visitArrayElem(ctx.arrayElem());
@@ -413,7 +413,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
         );
 
     // return a new ArrayElemAST.
-    return new ArrayElemAST(ctx, ctx.IDENT().getText(), exprs);
+    return new ArrayElemAST(ctx, ctx.identifier().getText(), exprs);
   }
 
   @Override

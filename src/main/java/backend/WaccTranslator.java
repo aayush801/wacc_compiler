@@ -251,11 +251,11 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     String operator = binOpExpr.getOperator();
 
     // Short-circuit evaluation
-    if (operator.equals("and") || operator.equals("or")) {
+    if (operator.equals("&&") || operator.equals("||")) {
+
       LabelledInstruction afterCheck = new LabelledInstruction();
-      ImmediateNum checkValue = ImmediateNum.ZERO;
-      if (operator.equals("or"))
-        checkValue = ImmediateNum.ONE;
+
+      ImmediateNum checkValue = operator.equals("||") ? ImmediateNum.ONE : ImmediateNum.ZERO;
 
       // Check left side
       instructions.add(new Compare(Rn, checkValue));
@@ -280,6 +280,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       program.registers.add(0, Rn);
       // To skip over evaluating right side
       instructions.add(afterCheck);
+
       return instructions;
     }
 
@@ -306,7 +307,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     ImmediateNum FALSE = ImmediateNum.ZERO;
 
     PrimitiveLabel primitiveLabel = null;
-    switch (binOpExpr.getOperator()) {
+    switch (operator) {
       // ARITHMETIC Operators
       case "+":
         instructions.add(
@@ -408,14 +409,12 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
       // BOOLEAN Operators
       case "&":
-      case "&&":
         // false removes the S, add if needed.
         instructions.add(new Arithmetic(ArithmeticOpcode.AND, Rn, Rn, Rm, false,
             accumulator));
         break;
 
       case "|":
-      case "||":
         instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, Rm, false,
             accumulator));
         break;

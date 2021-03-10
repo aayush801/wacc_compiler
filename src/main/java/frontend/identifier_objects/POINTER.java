@@ -19,6 +19,10 @@ public class POINTER extends TYPE {
     return 4;
   }
 
+  public TYPE getType() {
+    return type;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (o instanceof POINTER) {

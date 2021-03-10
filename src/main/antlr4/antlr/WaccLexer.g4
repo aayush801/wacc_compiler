@@ -56,14 +56,20 @@ PRINT_LINE: 'println' ;
 
 //conditional keywords
 WHILE: 'while' ;
-FOR : 'for' ;
 DO: 'do' ;
 DONE : 'done' ;
 IF: 'if' ;
 THEN: 'then' ;
 ELSE: 'else' ;
 END_IF: 'fi' ;
+
+//extension
+//for loop
+FOR : 'for' ;
 END_FOR: 'rof';
+
+//extension
+//loop breaks
 CONTINUE : 'continue' ;
 BREAK : 'break' ;
 
@@ -76,7 +82,7 @@ CLOSE_SQUARE_BRACKET: ']' ;
 //binary operators
 PLUS: '+' ;
 MINUS: '-' ;
-MULTIPLY: '*' ;
+STAR: '*' ;
 DIVIDE: '/' ;
 MOD: '%' ;
 GT: '>' ;
@@ -87,8 +93,8 @@ EQ: '==' ;
 NEQ: '!=' ;
 AND: '&&' ;
 OR: '||' ;
-LAZY_AND : 'and' ;
-LAZY_OR : 'or' ;
+
+//extension
 BITWISE_AND : '&' ;
 BITWISE_OR : '|' ;
 INVERT : '~';
@@ -116,6 +122,7 @@ PAIR_FIRST: 'fst' ;
 PAIR_SECOND: 'snd' ;
 
 
+//extension
 //class
 CLASS : 'class' ;
 EXTENDS : 'extends' ;

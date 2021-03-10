@@ -8,11 +8,11 @@ options {
 prog: BEGIN (funcDecl)* stat END EOF ;
 
 //function
-funcDecl: type IDENT OPEN_PARENTHESES paramList? CLOSE_PARENTHESES IS stat END ;
-funcCall: CALL IDENT OPEN_PARENTHESES argList? CLOSE_PARENTHESES;
+funcDecl: type identifier OPEN_PARENTHESES paramList? CLOSE_PARENTHESES IS stat END ;
+funcCall: CALL identifier OPEN_PARENTHESES argList? CLOSE_PARENTHESES;
 
 //parameters
-param: type IDENT;
+param: type identifier;
 paramList: param (COMMA param)*;
 
 //argument list
@@ -21,7 +21,7 @@ argList: expr (COMMA expr)* ;
 //statements
 stat:
     SKIP_STATEMENT                        #skipStat
-  | type IDENT EQUALS assignRHS           #assignIdent
+  | type identifier EQUALS assignRHS      #assignIdent
   | assignLHS EQUALS assignRHS            #assignVars
   | READ assignLHS                        #readCall
   | FREE expr                             #freeCall
@@ -66,14 +66,15 @@ baseType:
 arrayType : (baseType | pairType) (OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET)+;
 
 // pointer
-pointerType : baseType MULTIPLY+ ;
+pointerType : baseType STAR+ ;
+pointerAddress : STAR+ identifier ;
 
 //left hand side assignment
 assignLHS:
-  IDENT
+  identifier
   | arrayElem
   | pairElem
-  | pointerValue
+  | pointerAddress
 ;
 
 //right hand side assignment
@@ -93,28 +94,27 @@ expr:
   | strLiter
   | charLiter
   | floatLiter
-  | MULTIPLY* identifier
+  | identifier
   | arrayElem
   | unaryOperator expr
-  | expr binaryOperator=(DIVIDE | MULTIPLY | MOD) expr
+  | expr binaryOperator=(DIVIDE | STAR | MOD) expr
   | expr binaryOperator=(PLUS | MINUS) expr
   | expr binaryOperator=(GT | GTE | LT | LTE) expr
   | expr binaryOperator=(EQ | NEQ) expr
-  | expr binaryOperator=(AND | BITWISE_AND | LAZY_AND) expr
-  | expr binaryOperator=(OR | BITWISE_OR | LAZY_OR) expr
+  | expr binaryOperator=(AND | BITWISE_AND) expr
+  | expr binaryOperator=(OR | BITWISE_OR) expr
   | OPEN_PARENTHESES expr CLOSE_PARENTHESES
-  | IDENT DOT IDENT
+  | identifier DOT identifier
 ;
 
 //unary operators
-unaryOperator: NOT | MINUS | LENGTH | ORD | CHR | INVERT | BITWISE_AND ;
+unaryOperator: NOT | MINUS | LENGTH | ORD | CHR | INVERT | BITWISE_AND | STAR;
 
 //arrays
-arrayElem: IDENT (OPEN_SQUARE_BRACKET expr CLOSE_SQUARE_BRACKET)+ ;
+arrayElem: identifier (OPEN_SQUARE_BRACKET expr CLOSE_SQUARE_BRACKET)+ ;
 array: OPEN_SQUARE_BRACKET (expr (COMMA expr)*)? CLOSE_SQUARE_BRACKET ;
 
-//pointer
-pointerValue : MULTIPLY expr ;
+
 
 //pairs
 pairType: PAIR_TYPE OPEN_PARENTHESES pairElemType COMMA pairElemType CLOSE_PARENTHESES ;
@@ -135,5 +135,4 @@ pairLiter: NULL;
 strLiter: STRING;
 floatLiter : (PLUS | MINUS)? FLOAT ;
 charLiter: CHARACTER;
-
 identifier: IDENT;
