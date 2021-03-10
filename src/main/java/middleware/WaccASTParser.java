@@ -336,7 +336,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
     if (ctx.arrayElem() != null) {
       ArrayElemAST arrayElemAST = visitArrayElem(ctx.arrayElem());
-      arrayElemAST.setDereference(false);
+      arrayElemAST.setLHS();
       return new LHSAssignAST(ctx, arrayElemAST);
     }
 
@@ -345,7 +345,9 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     }
 
     if(ctx.pointerElem() != null){
-      return new LHSAssignAST(ctx, visitPointerElem(ctx.pointerElem()));
+      PointerElemAST pointerElemAST = visitPointerElem(ctx.pointerElem());
+      pointerElemAST.setLHS();
+      return new LHSAssignAST(ctx, pointerElemAST);
     }
 
     return null;
@@ -359,22 +361,26 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     if (ctx.expr() != null) {
       return new RHSAssignAST(ctx, visitExpr(ctx.expr()));
     }
+
     if (ctx.array() != null) {
       return new RHSAssignAST(ctx, visitArray(ctx.array()));
 
     }
+
     if (ctx.newPair() != null) {
       return new RHSAssignAST(ctx, visitNewPair(ctx.newPair()));
 
     }
+
     if (ctx.pairElem() != null) {
       return new RHSAssignAST(ctx, visitPairElem(ctx.pairElem()));
 
     }
+
     if (ctx.funcCall() != null) {
       return new RHSAssignAST(ctx, visitFuncCall(ctx.funcCall()));
-
     }
+
     return null;
   }
 
@@ -404,6 +410,10 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
     if (ctx.arrayElem() != null) {
       return visitArrayElem(ctx.arrayElem());
+    }
+
+    if (ctx.pointerElem() != null) {
+      return visitPointerElem(ctx.pointerElem());
     }
 
     // in this case, could be a literal, an ident, or null.

@@ -97,6 +97,7 @@ expr:
   | identifier
   | arrayElem
   | unaryOperator expr
+  | pointerElem
   | expr binaryOperator=(DIVIDE | STAR | MOD) expr
   | expr binaryOperator=(PLUS | MINUS) expr
   | expr binaryOperator=(GT | GTE | LT | LTE) expr
@@ -108,7 +109,7 @@ expr:
 ;
 
 //unary operators
-unaryOperator: NOT | MINUS | LENGTH | ORD | CHR | INVERT | BITWISE_AND | STAR;
+unaryOperator: NOT | MINUS | LENGTH | ORD | CHR | INVERT | BITWISE_AND ;
 
 //arrays
 arrayElem: identifier (OPEN_SQUARE_BRACKET expr CLOSE_SQUARE_BRACKET)+ ;

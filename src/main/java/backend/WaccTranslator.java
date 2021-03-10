@@ -229,8 +229,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     program.registers.add(0, target);
 
-    // if arrayElemAST requires dereference
-    if (arrayElem.isRequiresDereference()) {
+    // if arrayElemAST requires dereference (is RHS)
+    if (!arrayElem.isLHS()) {
       ret.add(new Load(ConditionCode.NONE, target, new ZeroOffset(target),
           arrayElem.type.getSize()));
     }
@@ -588,10 +588,6 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       // Invert bits using XOR
       case "~":
         instructions.add(new Move(exprReg, exprReg, true));
-        break;
-      // Dereference pointer by loading value at stored address
-      case "*":
-        instructions.add(new Load(exprReg, new ZeroOffset(exprReg)));
         break;
       default:
         System.out.println("unary operation " + unaryOpExpr.getOperator() + "not handled");
@@ -1224,9 +1220,10 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
   @Override
   public List<Instruction> visit(PointerElemAST pointerElem) {
-    List<Instruction> instructions = new ArrayList<>();
+    List<Instruction> ret = new ArrayList<>();
+    // target is where we store the pointer to the heap entry.
     Register destination = program.registers.get(0);
-
+    // setting target to point to the array we want to index.
     STACK_OBJECT stackObj = (STACK_OBJECT) pointerElem.getScopeST()
         .lookupAll(pointerElem.getPointerName());
 
@@ -1237,18 +1234,20 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     }
 
     int offset = program.SP.calculateOffset(stackObj.getStackAddress());
-    instructions.add(new Arithmetic(ArithmeticOpcode.ADD, destination, new StackPointer(),
+    ret.add(new Arithmetic(ArithmeticOpcode.ADD, destination, new StackPointer(),
         new ImmediateNum(offset), false));
 
+    // if pointer is used on RHS then we want the value at at the address
+    // so another iteration of dereference is added
+    int dereferenceIter = pointerElem.isLHS() ? 0 : 1;
+
     // dereferences the pointer by no. of stars e.g. **s = 2
-    for (int i = 0; i < pointerElem.getLevel(); i++) {
-      instructions.add(new Load(ConditionCode.NONE, destination, new ZeroOffset(destination),
+    for (int i = 0; i < pointerElem.getLevel() + dereferenceIter; i++) {
+      ret.add(new Load(ConditionCode.NONE, destination, new ZeroOffset(destination),
           pointerElem.getType().getSize()));
     }
 
-    // at this point **s is in reg destination
-
-    return instructions;
+    return ret;
   }
 
 

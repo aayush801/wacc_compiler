@@ -105,22 +105,6 @@ public class UnaryOpExprAST extends ExpressionAST {
     type = new INT();
   }
 
-  private void checkDereferenceParam(TYPE exprType) {
-
-    if (!(exprType instanceof POINTER)) {
-
-      addError(new MismatchedTypes(ctx, exprType, new POINTER(new TYPE())));
-
-      type = new TYPE();
-
-      return;
-    }
-
-    type = ((POINTER) exprType).getType();
-
-  }
-
-
   private void checkReferenceParam(TYPE exprType) {
 
     type = new POINTER(exprType);
@@ -167,9 +151,6 @@ public class UnaryOpExprAST extends ExpressionAST {
         break;
       case "~":
         checkInvertParam(exprType);
-        break;
-      case "*":
-        checkDereferenceParam(exprType);
         break;
       case "&":
         checkReferenceParam(exprType);

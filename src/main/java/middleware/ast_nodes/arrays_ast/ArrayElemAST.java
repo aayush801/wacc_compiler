@@ -23,7 +23,7 @@ public class ArrayElemAST extends ExpressionAST {
   private final NodeASTList<ExpressionAST> expressionASTS;
   public TYPE type;
   private SymbolTable scopeST;
-  private boolean requiresDereference = true;
+  private boolean isLHS = false;
 
   public ArrayElemAST(ParserRuleContext ctx, String arrayName,
       NodeASTList<ExpressionAST> expressionASTS) {
@@ -32,8 +32,13 @@ public class ArrayElemAST extends ExpressionAST {
     this.expressionASTS = expressionASTS;
   }
 
-  public boolean isRequiresDereference() {
-    return requiresDereference;
+
+  public void setLHS() {
+    this.isLHS = true;
+  }
+
+  public boolean isLHS() {
+    return isLHS;
   }
 
   public SymbolTable getScopeST() {
@@ -48,9 +53,6 @@ public class ArrayElemAST extends ExpressionAST {
     return expressionASTS;
   }
 
-  public void setDereference(boolean requiresDereference) {
-    this.requiresDereference = requiresDereference;
-  }
 
   public TYPE getType() {
     return type;

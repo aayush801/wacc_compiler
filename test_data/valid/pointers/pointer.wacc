@@ -4,6 +4,6 @@ begin
   int **z = &y;
   println **z;
   **z = 7;
-  println *z;
+  println **z + x;
   println x
 end

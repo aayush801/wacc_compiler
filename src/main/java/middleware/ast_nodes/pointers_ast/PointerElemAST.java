@@ -6,15 +6,17 @@ import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.POINTER;
 import frontend.identifier_objects.STACK_OBJECT;
 import frontend.identifier_objects.TYPE;
-import middleware.NodeAST;
+import middleware.ExpressionAST;
 import middleware.NodeASTVisitor;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class PointerElemAST extends NodeAST {
+public class PointerElemAST extends ExpressionAST {
 
   private final int level;
   private final String pointerName;
+  private boolean isLHS = false;
+
   private TYPE typeObj;
   private SymbolTable scopeST;
 
@@ -77,8 +79,16 @@ public class PointerElemAST extends NodeAST {
     return pointerName;
   }
 
+  public void setLHS() {
+    this.isLHS = true;
+  }
+
+  public boolean isLHS() {
+    return isLHS;
+  }
+
   @Override
   public <T> T accept(NodeASTVisitor<? extends T> visitor) {
-    return null;
+    return visitor.visit(this);
   }
 }
