@@ -11,6 +11,7 @@ import middleware.NodeASTVisitor;
 import middleware.ast_nodes.StatementAST;
 import middleware.ast_nodes.arrays_ast.ArrayElemAST;
 import middleware.ast_nodes.pair_ast.PairElemAST;
+import middleware.ast_nodes.pointers_ast.PointerElemAST;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -19,6 +20,7 @@ public class LHSAssignAST extends StatementAST {
   private String identifier;
   private ArrayElemAST arrayElemAST;
   private PairElemAST pairElemAST;
+  private PointerElemAST pointerElemAST;
 
   private int offsetIdent;
   private boolean isChar;
@@ -43,6 +45,12 @@ public class LHSAssignAST extends StatementAST {
   public LHSAssignAST(ParserRuleContext ctx, PairElemAST pairElemAST) {
     super(ctx);
     this.pairElemAST = pairElemAST;
+  }
+
+  // For when LHSAssign is a pointerElem.
+  public LHSAssignAST(ParserRuleContext ctx, PointerElemAST pointerElemAST) {
+    super(ctx);
+    this.pointerElemAST = pointerElemAST;
   }
 
   // Basic type getter.
@@ -125,6 +133,20 @@ public class LHSAssignAST extends StatementAST {
 
     }
 
+    if (pointerElemAST != null) {
+      // For when LHSAssign is a pairElem.
+
+      // Verify that the pairElem is valid.
+      pointerElemAST.check();
+
+      if (pointerElemAST.getType() != null) {
+        // pairElem is of a valid type, sp get the type of the pairElem,
+        // and set the type.
+        type = pointerElemAST.getType();
+      }
+
+    }
+
   }
 
   public String getIdentifier() {
@@ -158,6 +180,10 @@ public class LHSAssignAST extends StatementAST {
 
   public PairElemAST getPairElemAST() {
     return pairElemAST;
+  }
+
+  public PointerElemAST getPointerElemAST() {
+    return pointerElemAST;
   }
 
   @Override

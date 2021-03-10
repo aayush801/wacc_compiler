@@ -12,6 +12,7 @@ import middleware.ast_nodes.function_ast.FunctionDeclarationAST;
 import middleware.ast_nodes.function_ast.ParamAST;
 import middleware.ast_nodes.pair_ast.NewPairAST;
 import middleware.ast_nodes.pair_ast.PairElemAST;
+import middleware.ast_nodes.pointers_ast.PointerElemAST;
 import middleware.ast_nodes.prog_ast.ProgAST;
 import middleware.ast_nodes.statement_ast.AssignmentAST;
 import middleware.ast_nodes.statement_ast.BeginAST;
@@ -111,4 +112,6 @@ public abstract class NodeASTVisitor<T> {
   public abstract T visit(PairElemTypeAST pairElemType);
 
   public abstract  T visit(PointerTypeAST pointerType);
+
+  public abstract  T visit(PointerElemAST pointerElem);
 }

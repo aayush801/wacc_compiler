@@ -1,5 +1,9 @@
 begin
   int x = 5;
   int *y = &x;
-  println y
+  int **z = &y;
+  println **z;
+  **z = 7;
+  println *z;
+  println x
 end

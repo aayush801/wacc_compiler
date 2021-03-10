@@ -29,6 +29,7 @@ import antlr.WaccParser.PairLiterContext;
 import antlr.WaccParser.PairTypeContext;
 import antlr.WaccParser.ParamContext;
 import antlr.WaccParser.ParamListContext;
+import antlr.WaccParser.PointerElemContext;
 import antlr.WaccParser.PointerTypeContext;
 import antlr.WaccParser.PrintCallContext;
 import antlr.WaccParser.PrintlnCallContext;
@@ -61,6 +62,7 @@ import middleware.ast_nodes.function_ast.FunctionDeclarationAST;
 import middleware.ast_nodes.function_ast.ParamAST;
 import middleware.ast_nodes.pair_ast.NewPairAST;
 import middleware.ast_nodes.pair_ast.PairElemAST;
+import middleware.ast_nodes.pointers_ast.PointerElemAST;
 import middleware.ast_nodes.prog_ast.ProgAST;
 import middleware.ast_nodes.statement_ast.AssignmentAST;
 import middleware.ast_nodes.statement_ast.BeginAST;
@@ -316,6 +318,11 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
           visitBaseType(ctx.baseType()));
   }
 
+  @Override
+  public PointerElemAST visitPointerElem(PointerElemContext ctx) {
+    // case for base type.
+    return new PointerElemAST(ctx, ctx.STAR().size(), ctx.identifier().getText());
+  }
 
 
   @Override
@@ -326,14 +333,21 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     if (ctx.identifier() != null) {
       return new LHSAssignAST(ctx, ctx.identifier().getText());
     }
+
     if (ctx.arrayElem() != null) {
       ArrayElemAST arrayElemAST = visitArrayElem(ctx.arrayElem());
       arrayElemAST.setDereference(false);
       return new LHSAssignAST(ctx, arrayElemAST);
     }
+
     if (ctx.pairElem() != null) {
       return new LHSAssignAST(ctx, visitPairElem(ctx.pairElem()));
     }
+
+    if(ctx.pointerElem() != null){
+      return new LHSAssignAST(ctx, visitPointerElem(ctx.pointerElem()));
+    }
+
     return null;
   }
 

@@ -9,20 +9,30 @@ import org.antlr.v4.runtime.ParserRuleContext;
 public class PointerTypeAST extends TypeAST {
 
   private final int level;
-  public POINTER pointerObj;
-  private TypeAST typeAST;
+  private final TypeAST typeAST;
 
-  public PointerTypeAST(ParserRuleContext ctx, int dimensions,
+  public POINTER pointerObj;
+
+  public PointerTypeAST(ParserRuleContext ctx, int level,
       TypeAST baseTypeAST) {
     super(ctx);
-    this.level = dimensions;
+    this.level = level;
     this.typeAST = baseTypeAST;
   }
 
   @Override
   public void check() {
     typeAST.check();
+
     pointerObj = new POINTER(typeAST.getType());
+
+    // recursively encapsulate pointer object
+    // when multiple stars are used
+    for (int i = 0; i < level - 1; i++) {
+
+      pointerObj = new POINTER(pointerObj);
+
+    }
   }
 
   @Override

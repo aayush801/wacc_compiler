@@ -67,14 +67,14 @@ arrayType : (baseType | pairType) (OPEN_SQUARE_BRACKET CLOSE_SQUARE_BRACKET)+;
 
 // pointer
 pointerType : baseType STAR+ ;
-pointerAddress : STAR+ identifier ;
+pointerElem : STAR+ identifier ;
 
 //left hand side assignment
 assignLHS:
   identifier
   | arrayElem
   | pairElem
-  | pointerAddress
+  | pointerElem
 ;
 
 //right hand side assignment

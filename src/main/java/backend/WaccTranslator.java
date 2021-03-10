@@ -64,6 +64,7 @@ import middleware.ast_nodes.function_ast.FunctionDeclarationAST;
 import middleware.ast_nodes.function_ast.ParamAST;
 import middleware.ast_nodes.pair_ast.NewPairAST;
 import middleware.ast_nodes.pair_ast.PairElemAST;
+import middleware.ast_nodes.pointers_ast.PointerElemAST;
 import middleware.ast_nodes.prog_ast.ProgAST;
 import middleware.ast_nodes.statement_ast.AssignmentAST;
 import middleware.ast_nodes.statement_ast.BeginAST;
@@ -260,7 +261,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       // Check left side
       instructions.add(new Compare(Rn, checkValue));
       instructions.add(
-          new Move(ConditionCode.EQ,  Rn, checkValue, false));
+          new Move(ConditionCode.EQ, Rn, checkValue, false));
       // If value matches then no need to evaluate the right side, just jump over it
       instructions.add(
           new Branch(ConditionCode.EQ, afterCheck.getLabel(), false));
@@ -550,12 +551,14 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
           IdentifierAST ident = (IdentifierAST) expr;
           VARIABLE varObj = (VARIABLE) scopeST.lookupAll(ident.getIdentifier());
 
-        // calculate offset
-        int offset = program.SP.calculateOffset(varObj.getStackAddress());
+          // calculate offset
+          int offset = program.SP.calculateOffset(varObj.getStackAddress());
 
-        instructions.add(new Move(exprReg, program.SP));
+          instructions.add(new Move(exprReg, program.SP));
 
-        instructions.add(new Arithmetic(ArithmeticOpcode.ADD, exprReg, exprReg, new ImmediateNum(offset), false));
+          instructions.add(
+              new Arithmetic(ArithmeticOpcode.ADD, exprReg, exprReg, new ImmediateNum(offset),
+                  false));
         }
         break;
       // LENGTH Operator
@@ -1003,10 +1006,10 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
   public List<Instruction> visit(LHSAssignAST lhs) {
 
     // where the thing we need to store will be.
-    Register targetReg = program.registers.remove(0);
+    Register reservedReg = program.registers.remove(0);
 
     // get the registers that are free.
-    Register indexReg = program.registers.get(0);
+    Register freeReg = program.registers.get(0);
 
     List<Instruction> ret = new ArrayList<>();
 
@@ -1028,7 +1031,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       lhs.setOffset(offset);
 
       TYPE type = varStackObj.getType();
-      ret.add(new Store(ConditionCode.NONE, targetReg,
+      ret.add(new Store(ConditionCode.NONE, reservedReg,
           new ImmediateOffset(program.SP, new ImmediateNum(offset)), type.getSize()));
 
       lhs.setIsChar(type instanceof CHAR);
@@ -1040,7 +1043,9 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
       TYPE type = arrayElemAST.getType();
       ret.addAll(visit(arrayElemAST));
-      ret.add(new Store(targetReg, new ZeroOffset(indexReg), type.getSize()));
+
+      // store by reference
+      ret.add(new Store(reservedReg, new ZeroOffset(freeReg), type.getSize()));
     }
 
     // case when LHS is a pairElem
@@ -1049,10 +1054,23 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
       TYPE type = pairElemAST.getType();
       ret.addAll(visit(pairElemAST));
-      ret.add(new Store(targetReg, new ZeroOffset(indexReg), type.getSize()));
+
+      // store by reference
+      ret.add(new Store(reservedReg, new ZeroOffset(freeReg), type.getSize()));
     }
 
-    program.registers.add(0, targetReg);
+    // case when LHS is a pointerElem
+    if (lhs.getPointerElemAST() != null) {
+      PointerElemAST pointerElemAST = lhs.getPointerElemAST();
+
+      TYPE type = pointerElemAST.getType();
+      ret.addAll(visit(pointerElemAST));
+
+      // store by reference
+      ret.add(new Store(reservedReg, new ZeroOffset(freeReg), type.getSize()));
+    }
+
+    program.registers.add(0, reservedReg);
 
     return ret;
   }
@@ -1204,6 +1222,35 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     return instructions;
   }
 
+  @Override
+  public List<Instruction> visit(PointerElemAST pointerElem) {
+    List<Instruction> instructions = new ArrayList<>();
+    Register destination = program.registers.get(0);
+
+    STACK_OBJECT stackObj = (STACK_OBJECT) pointerElem.getScopeST()
+        .lookupAll(pointerElem.getPointerName());
+
+    if (!stackObj.isLive()) {
+      // if the object is not live yet, then we must be referencing an even older declaration
+      stackObj = (STACK_OBJECT) pointerElem.getScopeST().getEncSymTable()
+          .lookupAll(pointerElem.getPointerName());
+    }
+
+    int offset = program.SP.calculateOffset(stackObj.getStackAddress());
+    instructions.add(new Arithmetic(ArithmeticOpcode.ADD, destination, new StackPointer(),
+        new ImmediateNum(offset), false));
+
+    // dereferences the pointer by no. of stars e.g. **s = 2
+    for (int i = 0; i < pointerElem.getLevel(); i++) {
+      instructions.add(new Load(ConditionCode.NONE, destination, new ZeroOffset(destination),
+          pointerElem.getType().getSize()));
+    }
+
+    // at this point **s is in reg destination
+
+    return instructions;
+  }
+
 
   @Override
   public List<Instruction> visit(ContinueAST continueStat) {
@@ -1262,4 +1309,6 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
   public List<Instruction> visit(PointerTypeAST pointerType) {
     return null;
   }
+
+
 }
