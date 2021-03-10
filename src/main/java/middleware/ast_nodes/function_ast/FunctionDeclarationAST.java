@@ -1,19 +1,15 @@
 package middleware.ast_nodes.function_ast;
 
 import errors.semantic_errors.DuplicateIdentifier;
-import errors.semantic_errors.MissingReturnStatement;
 import errors.semantic_errors.Undefined;
 import frontend.identifier_objects.FUNCTION;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.TYPE;
-import frontend.identifier_objects.basic_types.VOID;
 import middleware.NodeAST;
 import middleware.NodeASTVisitor;
 import middleware.ast_nodes.NodeASTList;
 import middleware.ast_nodes.StatementAST;
 import middleware.ast_nodes.TypeAST;
-import middleware.ast_nodes.statement_ast.ChainedStatementAST;
-import middleware.ast_nodes.statement_ast.ReturnAST;
 import middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -77,23 +73,10 @@ public class FunctionDeclarationAST extends NodeAST {
     if (funcObj != null) {
       ST = funcObj.getST();
       statementAST.check();
-      
-      if (!(typeAST.getType() instanceof VOID)
-          && !hasReturnStatement(statementAST)) {
-        addError(new MissingReturnStatement(ctx));
-      }
-
       ST = ST.getEncSymTable();
     }
   }
-
-  private boolean hasReturnStatement(StatementAST stat) {
-    while (stat instanceof ChainedStatementAST) {
-      stat = ((ChainedStatementAST) stat).statementAST2;
-    }
-    return stat instanceof ReturnAST;
-  }
-
+  
   @Override
   public void check() {
     if (!checkFunctionAndGetReturnType()) {
