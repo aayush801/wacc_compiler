@@ -85,7 +85,6 @@ public class StackPointer extends Register {
       instructions.add(
           new Arithmetic(ArithmeticOpcode.ADD, this, this,
               new ImmediateNum(size), false));
-
     }
 
     return instructions;

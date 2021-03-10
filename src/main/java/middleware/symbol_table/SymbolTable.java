@@ -9,6 +9,7 @@ import frontend.identifier_objects.basic_types.CHAR;
 import frontend.identifier_objects.basic_types.INT;
 import frontend.identifier_objects.basic_types.PAIR;
 import frontend.identifier_objects.basic_types.STR;
+import frontend.identifier_objects.basic_types.VOID;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,6 +50,7 @@ public class SymbolTable {
     CHAR charType = new CHAR(0, 255);
     PAIR pairType = new PAIR();
     BOOL boolType = new BOOL();
+    VOID voidType = new VOID();
 
     // add literals to symbol table
     st.add("int", intType);
@@ -56,6 +58,7 @@ public class SymbolTable {
     st.add("char", charType);
     st.add("pair", pairType);
     st.add("bool", boolType);
+    st.add("void", voidType);
 
     return st;
   }

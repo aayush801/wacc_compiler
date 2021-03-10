@@ -1,5 +1,6 @@
 package middleware;
 
+import antlr.WaccParser;
 import antlr.WaccParser.ArgListContext;
 import antlr.WaccParser.ArrayContext;
 import antlr.WaccParser.ArrayElemContext;
@@ -12,6 +13,7 @@ import antlr.WaccParser.BaseTypeContext;
 import antlr.WaccParser.BeginStatContext;
 import antlr.WaccParser.BoolLiterContext;
 import antlr.WaccParser.CharLiterContext;
+import antlr.WaccParser.ClassDefContext;
 import antlr.WaccParser.DoWhileContext;
 import antlr.WaccParser.ExitCallContext;
 import antlr.WaccParser.ExprContext;
@@ -47,6 +49,7 @@ import frontend.identifier_objects.basic_types.CHAR;
 import frontend.identifier_objects.basic_types.INT;
 import frontend.identifier_objects.basic_types.PAIR;
 import frontend.identifier_objects.basic_types.STR;
+import java.util.List;
 import java.util.stream.Collectors;
 import middleware.ast_nodes.NodeASTList;
 import middleware.ast_nodes.StatementAST;
@@ -67,6 +70,7 @@ import middleware.ast_nodes.prog_ast.ProgAST;
 import middleware.ast_nodes.statement_ast.AssignmentAST;
 import middleware.ast_nodes.statement_ast.BeginAST;
 import middleware.ast_nodes.statement_ast.ChainedStatementAST;
+import middleware.ast_nodes.statement_ast.ClassDefinitionAST;
 import middleware.ast_nodes.statement_ast.ExitAST;
 import middleware.ast_nodes.statement_ast.ForAST;
 import middleware.ast_nodes.statement_ast.FreeAST;
@@ -201,7 +205,8 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   @Override
   public StatementAST visitWhileDo(WhileDoContext ctx) {
     // return a new WhileAST.
-    return new WhileAST(ctx, visitExpr(ctx.expr()), (StatementAST) visit(ctx.stat()), false);
+    return new WhileAST(ctx, visitExpr(ctx.expr()),
+        (StatementAST) visit(ctx.stat()), false);
   }
 
   @Override
@@ -529,6 +534,25 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   }
 
   // ==========================================================================
+
+  @Override
+  public NodeAST visitClassDef(ClassDefContext ctx) {
+
+    // Make a list of functionASTs for all functions declared in the program.
+    // Do this by calling visitFuncDecl on all function declarations in ctx.
+    NodeASTList<FunctionDeclarationAST> functionDeclASTS =
+        new NodeASTList<>(
+            ctx,
+            ctx.funcDecl().stream()
+                .map(this::visitFuncDecl)
+                .collect(Collectors.toList())
+        );
+
+    // Return a new progAST node.
+    return new ClassDefinitionAST(ctx, ctx.IDENT().get(0).getText(),
+        (StatementAST) visit(ctx.stat().get(0)),
+        (List<FunctionDeclarationAST>) functionDeclASTS);
+  }
 
 
 }

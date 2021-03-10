@@ -38,6 +38,7 @@ BOOL_TYPE: 'bool' ;
 INT_TYPE: 'int' ;
 PAIR_TYPE: 'pair' ;
 FLOAT_TYPE: 'float' ;
+VOID_TYPE: 'void' ;
 
 //prog keywords
 BEGIN: 'begin';
@@ -129,6 +130,7 @@ EXTENDS : 'extends' ;
 PUBLIC : 'public' ;
 PRIVATE : 'private' ;
 VISIBILITY : PUBLIC | PRIVATE ;
+NEW : 'new' ;
 
 NULL: 'null' ;
 

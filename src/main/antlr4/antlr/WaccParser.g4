@@ -21,7 +21,8 @@ argList: expr (COMMA expr)* ;
 //statements
 stat:
     SKIP_STATEMENT                        #skipStat
-  | type identifier EQUALS assignRHS      #assignIdent
+  | VISIBILITY? type identifier
+                    EQUALS assignRHS      #assignIdent
   | assignLHS EQUALS assignRHS            #assignVars
   | READ assignLHS                        #readCall
   | FREE expr                             #freeCall
@@ -38,11 +39,14 @@ stat:
     CLOSE_PARENTHESES stat END_FOR        #forLoop
   | BEGIN stat END                        #beginStat
   | stat SEPERATOR stat                   #seperateStat
-  | CLASS IDENT (EXTENDS IDENT)?
-      (VISIBILITY stat)*
-      (VISIBILITY funcDecl)*
+  | CLASS IDENT
+      stat
+      constructor?
+      funcDecl*
     DONE                                  #classDef
 ;
+
+constructor: IDENT argList IS stat END ;
 
 
 //typings
@@ -60,6 +64,7 @@ baseType:
   | CHAR_TYPE
   | STRING_TYPE
   | FLOAT_TYPE
+  | VOID_TYPE
 ;
 
 // array initialisation type
@@ -106,6 +111,7 @@ expr:
   | expr binaryOperator=(OR | BITWISE_OR) expr
   | OPEN_PARENTHESES expr CLOSE_PARENTHESES
   | identifier DOT identifier
+  | NEW IDENTIFIER argList
 ;
 
 //unary operators

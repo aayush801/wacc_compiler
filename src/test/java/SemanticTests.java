@@ -72,4 +72,16 @@ public class SemanticTests {
             "end\n";
     check(instruction, true);
   }
+
+  @Test
+  public void noReturnStatement() throws IOException {
+    String instruction =
+        "begin\n "
+            + "int func() is\n"
+            + "  int x = 5\n"
+            + "end\n"
+            + "print 5"
+            + "end\n";
+    check(instruction, true);
+  }
 }

@@ -17,7 +17,6 @@ public class BeginAST extends StatementAST {
 
   @Override
   public void check() {
-
     // Create new symbol table(scope) for the statement.
     scopeST = ST = new SymbolTable(ST);
 
