@@ -1,11 +1,12 @@
 package wacc.extension.wacc_ide;
 
 import wacc.extension.wacc_ide.WaccIDE.Controller;
-import java.awt.Font;
-import javax.swing.*;
 
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -142,6 +143,7 @@ public class View extends JFrame implements ActionListener {
                     ioException.printStackTrace();
                 }
 
+
                 // Reset caret/cursor
                 currentPane.setCaretPosition(offset);
             }
@@ -214,8 +216,6 @@ public class View extends JFrame implements ActionListener {
         switch (ae) {
             // Open
             case "Open":
-
-
                 // Determine if the user wants to save file.
                 save = saveFirst();
 
@@ -268,32 +268,41 @@ public class View extends JFrame implements ActionListener {
 
         JFrame parent = new JFrame();
 
-        public class View implements Updatable {
+        int n = JOptionPane.showConfirmDialog(
+                parent,
+                "Do you want to save the current file?",
+                "",
+                JOptionPane.YES_NO_OPTION);
 
-            private final Controller controller;
+        return n == 0;
 
-            public View(Controller controller) {
-                this.controller = controller;
-            }
-
-            private void display() {
-                JFrame frame = new JFrame("WIDE");
-
-                frame.setSize(300, 300);
-                JEditorPane editorPane = new JEditorPane();
-                editorPane.setFont(new Font("Consolas", 3, 30));
-                frame.add(editorPane);
-                frame.setVisible(true);
-
-            }
-        }
-        return false;
     }
 
+    private void saveFile(JFileChooser jfc) {
+        returnValue = jfc.showSaveDialog(null);
+        try {
+            File f = new File(jfc.getSelectedFile().getAbsolutePath());
 
-            public JTextPane getPane() {
-                return currentPane;
-            }
+            JPanel jPanel = getjPanel(f.getName() + "        ", currentPane);
+            int index = tabs.indexOf(currentPane);
+            jtp.setTabComponentAt(index, jPanel);
 
+            FileWriter out = new FileWriter(f);
+            out.write(currentPane.getText());
+            out.close();
+        } catch (FileNotFoundException ex) {
+            Component f = null;
+            JOptionPane.showMessageDialog(f, "File not found.");
+        } catch (IOException ex) {
+            Component f = null;
+            JOptionPane.showMessageDialog(f, "Error.");
         }
+    }
+
+    public JTextPane getPane() {
+        return currentPane;
+    }
+}
+
+
 

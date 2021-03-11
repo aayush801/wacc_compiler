@@ -6,11 +6,13 @@ import java.awt.event.ActionListener;
 public class WaccIDE {
 
   private final View view = new View(new Controller());
-  private final Model model = new Model();
+  private final Model model;
 
   public WaccIDE() {
-    model.addObserver(view);
+    model = new Model(view);
   }
+
+
 
   class Controller implements ActionListener {
 

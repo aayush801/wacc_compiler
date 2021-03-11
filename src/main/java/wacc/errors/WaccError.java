@@ -31,6 +31,9 @@ public abstract class WaccError extends BaseErrorListener {
     code = code.substring(0, position) + "->" + code.substring(position);
   }
 
+  public int getLineNo() {
+    return lineNo;
+  }
 
   public abstract String getErrorMessage();
 
