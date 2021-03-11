@@ -850,6 +850,16 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
   @Override
   public List<Instruction> visit(IfElseAST ifElse) {
+    // If the condition is a literal then only generate code for one branch
+    if (ifElse.getExpressionAST() instanceof LiteralsAST) {
+      String boolLiter = ifElse.getExpressionAST().getCtx().getText();
+      if (ifElse.getExpressionAST().getCtx().getText().equals("false")) {
+        return ifElse.getSecondStatAST().accept(this);
+
+      } else if (boolLiter.equals("true")) {
+        return ifElse.getFirstStatAST().accept(this);
+      }
+    }
 
     List<Register> registers = program.registers;
     Register destination = registers.get(0);
@@ -1177,6 +1187,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     // Initialisation
     instructions.addAll(initialisation.accept(this));
 
+
     // generate loop body and condition
     instructions.addAll(visit((WhileAST) forLoop));
 
@@ -1191,6 +1202,14 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     SymbolTable scopeST = whileLoop.getScope();
     StatementAST statementAST = whileLoop.getStatementAST();
     ExpressionAST conditionExpr = whileLoop.getConditionAST();
+
+    // Loop is never executed if condition is false so no code needs to be generated
+    if (conditionExpr instanceof LiteralsAST) {
+      if (conditionExpr.getCtx().getText().equals("false")) {
+        return new ArrayList<>();
+      }
+    }
+
     Register destination = program.registers.get(0);
     List<Instruction> instructions = new ArrayList<>();
 

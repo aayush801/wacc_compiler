@@ -783,4 +783,17 @@ public class CodeGenerationTests {
     checkSourceCode(instruction);
   }
 
+  @Test
+  public void falseLoop() throws IOException {
+    String instruction =
+        "begin\n"
+            + "if false then\n"
+            + "int x = 5\n"
+            + "else\n"
+            + "int x = 6\n"
+            + "fi\n"
+            + "end";
+    checkSourceCode(instruction);
+  }
+
 }
