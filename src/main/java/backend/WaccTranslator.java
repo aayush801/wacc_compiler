@@ -33,6 +33,7 @@ import backend.primitive_functions.PrintFunctions;
 import backend.primitive_functions.ReadFunctions;
 import backend.registers.Register;
 import backend.registers.StackPointer;
+import frontend.identifier_objects.CLASS;
 import frontend.identifier_objects.IDENTIFIER;
 import frontend.identifier_objects.PARAM;
 import frontend.identifier_objects.POINTER;
@@ -56,6 +57,8 @@ import middleware.ast_nodes.StatementAST;
 import middleware.ast_nodes.TypeAST;
 import middleware.ast_nodes.arrays_ast.ArrayAST;
 import middleware.ast_nodes.arrays_ast.ArrayElemAST;
+import middleware.ast_nodes.class_ast.MethodCallAST;
+import middleware.ast_nodes.class_ast.NewObjectAST;
 import middleware.ast_nodes.expression_ast.BinOpExprAST;
 import middleware.ast_nodes.expression_ast.IdentifierAST;
 import middleware.ast_nodes.expression_ast.LiteralsAST;
@@ -71,6 +74,7 @@ import middleware.ast_nodes.statement_ast.AssignmentAST;
 import middleware.ast_nodes.statement_ast.BeginAST;
 import middleware.ast_nodes.statement_ast.BreakAST;
 import middleware.ast_nodes.statement_ast.ChainedStatementAST;
+import middleware.ast_nodes.statement_ast.ClassDefinitionAST;
 import middleware.ast_nodes.statement_ast.ContinueAST;
 import middleware.ast_nodes.statement_ast.ExitAST;
 import middleware.ast_nodes.statement_ast.ForAST;
@@ -604,6 +608,15 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     List<Instruction> instructions = new ArrayList<>();
 
     NodeASTList<ParamAST> paramASTList = functionDeclaration.getParamASTList();
+
+    if (program.inClass()) {
+      PARAM paramObj = new PARAM(program.getClassScope());
+
+      // push paramObj onto the virtual stack
+      program.SP.push(paramObj);
+      paramObj.setLive(true);
+    }
+
     // implicitly adds parameters to the stack
     for (int i = paramASTList.size() - 1; i >= 0; i--) {
       paramASTList.get(i).accept(this);
@@ -730,8 +743,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
   }
 
   // helper method
-  private void allocateAndStorePairElemToMemory(List<Instruction> instructions, Register pairElem,
-      int typeSize) {
+  private void allocateAndStorePairElemToMemory(List<Instruction> instructions,
+      Register pairElem, int typeSize) {
 
     instructions.add(new Load(Register.R0, new ImmediateAddress(typeSize)));
 
@@ -1251,10 +1264,31 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     return ret;
   }
 
+  @Override
+  public List<Instruction> visit(ClassDefinitionAST classDef) {
+    CLASS classObj = classDef.getClassObj();
+    program.setClass(classObj);
+
+    program.resetClass();
+
+    return new ArrayList<>();
+  }
+
+  @Override
+  public List<Instruction> visit(NewObjectAST newObjectAST) {
+    return null;
+  }
+
+  @Override
+  public List<Instruction> visit(MethodCallAST classDef) {
+    return null;
+  }
+
 
   @Override
   public List<Instruction> visit(ContinueAST continueStat) {
     List<Instruction> instructions = new ArrayList<>();
+    // Jumps back to the start of the loop
     instructions.add(new Branch(program.getLoopStartLabel()));
     return instructions;
   }
@@ -1262,6 +1296,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
   @Override
   public List<Instruction> visit(BreakAST breakAST) {
     List<Instruction> instructions = new ArrayList<>();
+    // Jumps over to the end of the loop
     instructions.add(new Branch(program.getLoopEndLabel()));
     return instructions;
   }
@@ -1276,13 +1311,10 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     List<Instruction> instructions = new ArrayList<>();
 
     for (NodeAST node : nodeList.getASTList()) {
-
       instructions.addAll(visit(node));
-
     }
 
     return instructions;
-
   }
 
   @Override

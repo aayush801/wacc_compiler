@@ -3,6 +3,8 @@ package middleware;
 import middleware.ast_nodes.NodeASTList;
 import middleware.ast_nodes.arrays_ast.ArrayAST;
 import middleware.ast_nodes.arrays_ast.ArrayElemAST;
+import middleware.ast_nodes.class_ast.MethodCallAST;
+import middleware.ast_nodes.class_ast.NewObjectAST;
 import middleware.ast_nodes.expression_ast.BinOpExprAST;
 import middleware.ast_nodes.expression_ast.IdentifierAST;
 import middleware.ast_nodes.expression_ast.LiteralsAST;
@@ -18,6 +20,7 @@ import middleware.ast_nodes.statement_ast.AssignmentAST;
 import middleware.ast_nodes.statement_ast.BeginAST;
 import middleware.ast_nodes.statement_ast.BreakAST;
 import middleware.ast_nodes.statement_ast.ChainedStatementAST;
+import middleware.ast_nodes.statement_ast.ClassDefinitionAST;
 import middleware.ast_nodes.statement_ast.ContinueAST;
 import middleware.ast_nodes.statement_ast.ExitAST;
 import middleware.ast_nodes.statement_ast.ForAST;
@@ -114,4 +117,11 @@ public abstract class NodeASTVisitor<T> {
   public abstract  T visit(PointerTypeAST pointerType);
 
   public abstract  T visit(PointerElemAST pointerElem);
+
+  public abstract T visit(ClassDefinitionAST classDef);
+
+  public abstract T visit(NewObjectAST newObjectAST);
+
+  public abstract T visit(MethodCallAST classDef);
+
 }

@@ -24,6 +24,8 @@ import antlr.WaccParser.FuncDeclContext;
 import antlr.WaccParser.IdentifierContext;
 import antlr.WaccParser.IfThenElseContext;
 import antlr.WaccParser.IntLiterContext;
+import antlr.WaccParser.MethodCallContext;
+import antlr.WaccParser.NewObjectContext;
 import antlr.WaccParser.NewPairContext;
 import antlr.WaccParser.PairElemContext;
 import antlr.WaccParser.PairElemTypeContext;
@@ -49,6 +51,7 @@ import frontend.identifier_objects.basic_types.CHAR;
 import frontend.identifier_objects.basic_types.INT;
 import frontend.identifier_objects.basic_types.PAIR;
 import frontend.identifier_objects.basic_types.STR;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import middleware.ast_nodes.NodeASTList;
@@ -56,6 +59,8 @@ import middleware.ast_nodes.StatementAST;
 import middleware.ast_nodes.TypeAST;
 import middleware.ast_nodes.arrays_ast.ArrayAST;
 import middleware.ast_nodes.arrays_ast.ArrayElemAST;
+import middleware.ast_nodes.class_ast.MethodCallAST;
+import middleware.ast_nodes.class_ast.NewObjectAST;
 import middleware.ast_nodes.expression_ast.BinOpExprAST;
 import middleware.ast_nodes.expression_ast.IdentifierAST;
 import middleware.ast_nodes.expression_ast.LiteralsAST;
@@ -88,6 +93,7 @@ import middleware.ast_nodes.types_ast.BaseTypeAST;
 import middleware.ast_nodes.types_ast.PairElemTypeAST;
 import middleware.ast_nodes.types_ast.PairTypeAST;
 import middleware.ast_nodes.types_ast.PointerTypeAST;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
@@ -428,6 +434,21 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
       return (ExpressionAST) obj;
     }
 
+    return null;
+  }
+
+  @Override
+  public NewObjectAST visitNewObject(NewObjectContext ctx) {
+    IdentifierContext identifier = ctx.identifier();
+    ArgListContext argList = ctx.argList();
+
+    List<ExpressionAST> actuals = new ArrayList<>();
+    return new NewObjectAST(ctx, identifier.getText(),
+        new NodeASTList<ExpressionAST>(ctx, actuals));
+  }
+
+  @Override
+  public MethodCallAST visitMethodCall(MethodCallContext ctx) {
     return null;
   }
 

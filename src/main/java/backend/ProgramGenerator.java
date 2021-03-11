@@ -10,6 +10,7 @@ import backend.registers.LinkRegister;
 import backend.registers.ProgramCounter;
 import backend.registers.Register;
 import backend.registers.StackPointer;
+import frontend.identifier_objects.CLASS;
 import frontend.identifier_objects.VARIABLE;
 import frontend.identifier_objects.basic_types.INT;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class ProgramGenerator {
   private final List<LabelPair> loopLabels = new ArrayList<>();
   // stores a set dependency functions which are hard coded
   private final Set<PrimitiveLabel> primitives = new LinkedHashSet<>();
+  private CLASS classScope = null;
 
   public ProgramGenerator() {
 
@@ -186,5 +188,20 @@ public class ProgramGenerator {
     public String getSnd() {
       return snd;
     }
+  }
+
+  public void setClass(CLASS classObj) {
+    classScope = classObj;
+  }
+
+  public boolean inClass() {
+    return classScope != null;
+  }
+
+  public CLASS getClassScope() {
+    return classScope;
+  }
+  public void resetClass() {
+    classScope = null;
   }
 }

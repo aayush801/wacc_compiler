@@ -41,13 +41,9 @@ stat:
   | stat SEPERATOR stat                   #seperateStat
   | CLASS IDENT
       stat
-      constructor?
       funcDecl*
     DONE                                  #classDef
 ;
-
-constructor: IDENT argList IS stat END ;
-
 
 //typings
 type:
@@ -88,6 +84,8 @@ assignRHS:
   | newPair
   | pairElem
   | funcCall
+  | newObject
+  | methodCall
 ;
 
 //expressions
@@ -109,8 +107,11 @@ expr:
   | expr binaryOperator=(OR | BITWISE_OR) expr
   | OPEN_PARENTHESES expr CLOSE_PARENTHESES
   | identifier DOT identifier
-  | NEW IDENTIFIER argList
 ;
+
+//classes
+newObject: NEW identifier OPEN_PARENTHESES argList? CLOSE_PARENTHESES ;
+methodCall: identifier DOT identifier OPEN_PARENTHESES argList? CLOSE_PARENTHESES ;
 
 //unary operators
 unaryOperator: NOT | MINUS | LENGTH | ORD | CHR | INVERT | BITWISE_AND ;
