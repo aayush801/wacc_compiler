@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import org.junit.Test;
+import wacc.ErrorCode;
+import wacc.WaccCompiler;
 
 public class WaccValidTests {
 
@@ -23,7 +25,7 @@ public class WaccValidTests {
         if (child.isFile()) {
           System.out.println("==============================================");
           System.out.println(child.getName());
-          compiler = new WaccCompiler(new FileInputStream(child));
+          compiler = new WaccCompiler(child);
           errorCode = compiler.compile();
 
           if (errorCode != ErrorCode.SUCCESS) {
@@ -81,6 +83,12 @@ public class WaccValidTests {
   @Test
   public void if_statement_tests() throws IOException {
     String base = "test_data/valid/if/";
+    files_checker(base);
+  }
+
+  @Test
+  public void importTests() throws IOException {
+    String base = "test_data/valid/import/";
     files_checker(base);
   }
 

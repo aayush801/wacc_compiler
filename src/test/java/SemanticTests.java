@@ -3,6 +3,8 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import org.junit.Test;
+import wacc.ErrorCode;
+import wacc.WaccCompiler;
 
 // import ANTLR's runtime libraries
 // import antlr package

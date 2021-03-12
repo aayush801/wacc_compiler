@@ -5,8 +5,15 @@ options {
 }
 
 // EOF indicates that the program must consume to the end of the input.
-prog: IMPORT |
-  BEGIN (funcDecl)* stat END EOF ;
+prog:
+  imports? BEGIN (funcDecl)* stat END EOF ;
+
+//wacc.extension
+//imported files
+imports:
+  IMPORT identifier
+  | imports SEPERATOR imports
+;
 
 //function
 funcDecl: type identifier OPEN_PARENTHESES paramList? CLOSE_PARENTHESES IS stat END ;

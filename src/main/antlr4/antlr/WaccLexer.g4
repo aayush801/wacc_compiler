@@ -64,12 +64,12 @@ THEN: 'then' ;
 ELSE: 'else' ;
 END_IF: 'fi' ;
 
-//extension
+//wacc.extension
 //for loop
 FOR : 'for' ;
 END_FOR: 'rof';
 
-//extension
+//wacc.extension
 //loop breaks
 CONTINUE : 'continue' ;
 BREAK : 'break' ;
@@ -95,7 +95,7 @@ NEQ: '!=' ;
 AND: '&&' ;
 OR: '||' ;
 
-//extension
+//wacc.extension
 BITWISE_AND : '&' ;
 BITWISE_OR : '|' ;
 INVERT : '~';
@@ -122,7 +122,7 @@ PAIR_FIRST: 'fst' ;
 PAIR_SECOND: 'snd' ;
 
 
-//extension
+//wacc.extension
 //class
 CLASS : 'class' ;
 EXTENDS : 'extends' ;
@@ -133,8 +133,9 @@ NEW : 'new' ;
 
 NULL: 'null' ;
 
-//extension
-IMPORT: 'import' STRING;
+//wacc.extension
+// import statement
+IMPORT: 'import';
 
 //character/string set
 fragment CHAR:  ~[\\'"] | ('\\' ESCAPED_CHAR);

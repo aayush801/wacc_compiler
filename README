@@ -29,7 +29,7 @@ in debugging you lexer and parser (more details below).
 
 > compile <
 
-The compile script should be edited to provide a frontend interface to your WACC
+The compile script should be edited to provide a wacc.frontend interface to your WACC
 main. You are free to change the language used in this script, but do not
 change its name (more details below).
 

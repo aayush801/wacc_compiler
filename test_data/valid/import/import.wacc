@@ -1,0 +1,7 @@
+import lib;
+import wacc
+
+begin
+  int x = call f(true);
+  println x
+end
