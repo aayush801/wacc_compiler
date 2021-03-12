@@ -1,16 +1,55 @@
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import middleware.NodeAST;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 public class CodeGenerationTests {
 
-  private void checkSourceCode(String instruction) throws IOException {
+  private void checkSourceCode(String instruction, String expected, int exitCode)
+      throws IOException {
     WaccCompiler compiler = new WaccCompiler(instruction);
+    String sourceCode = compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
 
-    NodeAST tree = compiler.parseSemantics(compiler.parseSyntactics());
-    String sourceCode = compiler.translateCode(tree);
+    File file = new File("temp.s");
 
-    System.out.println(sourceCode);
+    FileWriter writer = new FileWriter(file);
+
+    writer.write(sourceCode);
+    writer.close();
+
+    Runtime runtime = Runtime.getRuntime();
+    Process compileSourceProcess = runtime
+        .exec("arm-linux-gnueabi-gcc -o EXEName -mcpu=arm1176jzf-s -mtune=arm1176jzf-s temp.s");
+
+    try {
+      compileSourceProcess.waitFor();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+
+    Process execWacc = runtime.exec("qemu-arm -L /usr/arm-linux-gnueabi/ EXEName");
+    InputStream inputStream = execWacc.getInputStream();
+
+    try {
+      execWacc.waitFor();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+
+    file.deleteOnExit();
+
+    String text = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
+
+    assertThat(text, containsString(expected));
+    assertThat(execWacc.exitValue(), is(exitCode));
+
   }
 
   @Test
@@ -19,7 +58,7 @@ public class CodeGenerationTests {
         "begin " +
             "exit -1" +
             "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 255);
   }
 
   @Test
@@ -27,10 +66,11 @@ public class CodeGenerationTests {
     String instruction =
         "begin " +
             "for(int x = 0; x < 3; x = x + 1)\n" +
-            "print x\n"+
+            "print x\n" +
             "rof\n" +
             "end";
-    checkSourceCode(instruction);
+    String expected = "012";
+    checkSourceCode(instruction, expected, 0);
   }
 
   @Test
@@ -40,7 +80,7 @@ public class CodeGenerationTests {
             + "  # I can write stuff on a comment line\n"
             + "  skip \n"
             + "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -57,7 +97,7 @@ public class CodeGenerationTests {
             + "  int x = fst p;\n"
             + "  println x\n"
             + "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -67,7 +107,7 @@ public class CodeGenerationTests {
             + "  char[] s = ['h','i','!'];\n"
             + "  println s\n"
             + "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -78,7 +118,7 @@ public class CodeGenerationTests {
             + "  int y = 2 ; \n"
             + "  int z = x + y \n"
             + "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -93,7 +133,7 @@ public class CodeGenerationTests {
             + "  end ;\n"
             + "  println x \n"
             + "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -103,7 +143,7 @@ public class CodeGenerationTests {
         "    int z = 0 ;\n" +
         "    int y = x\n" +
         "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -113,7 +153,7 @@ public class CodeGenerationTests {
         "    int z = 1 ;\n" +
         "    int y = x + z\n" +
         "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
 
@@ -124,7 +164,7 @@ public class CodeGenerationTests {
         "    int z = x ;\n" +
         "    x = 2\n" +
         "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -133,7 +173,7 @@ public class CodeGenerationTests {
         "    int x = 0 ;\n" +
         "    int z = -x\n" +
         "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -142,7 +182,7 @@ public class CodeGenerationTests {
         "    int x = 0 ;\n" +
         "    bool z = !true\n" +
         "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -153,7 +193,7 @@ public class CodeGenerationTests {
         "    int y = ord x;\n" +
         "    y = ord 'a'\n" +
         "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -164,7 +204,7 @@ public class CodeGenerationTests {
         "    char y = chr 3;\n" +
         "    y = chr 4\n" +
         "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -173,7 +213,7 @@ public class CodeGenerationTests {
         "  int[] x = [2, 3] ;\n" +
         "  int y = len x\n" +
         "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -181,7 +221,7 @@ public class CodeGenerationTests {
     String instruction = "begin\n" +
         "  bool x = 2 != 3\n" +
         "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -205,7 +245,7 @@ public class CodeGenerationTests {
         + "\n"
         + "  int s = call f(8) \n"
         + "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -213,7 +253,7 @@ public class CodeGenerationTests {
     String instruction = "begin " +
         "   int[] x = [1, 3]" +
         "end\n";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -221,7 +261,7 @@ public class CodeGenerationTests {
     String instruction = "begin " +
         "   char[] x = ['c', 'a', 't']\n" +
         "end\n";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -231,7 +271,7 @@ public class CodeGenerationTests {
         "  int[] y = x ;\n" +
         "  x = [7, 3]\n" +
         "end\n";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -260,7 +300,7 @@ public class CodeGenerationTests {
         + "  done ;\n"
         + "  println \"}\"\n"
         + "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -268,9 +308,9 @@ public class CodeGenerationTests {
     String instruction = "begin  " +
         "int[] x = [1, 3] ;\n" +
         "int z = 3 ;\n" +
-        "  x[0+2] = 3" +
+        "  x[0+2] = 3\n" +
         "end\n";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 255);
   }
 
   @Test
@@ -282,7 +322,7 @@ public class CodeGenerationTests {
         + "  println c[0][2] ;\n"
         + "  println c[1][0]\n"
         + "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -313,7 +353,7 @@ public class CodeGenerationTests {
         + "  print result ;\n"
         + "  println \"...\"\n"
         + "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -322,7 +362,7 @@ public class CodeGenerationTests {
         "char[] x = ['c', 'a', 't'] ;\n" +
         "  x[0+2] = 'g'" +
         "end\n";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -332,19 +372,9 @@ public class CodeGenerationTests {
         "  int a = x[1] ;" +
         "  x[0] = x[1]" +
         "end\n";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
-  @Test
-  public void testReadInt() throws IOException {
-    String instruction = "begin\n" +
-        "  int x = 1 ;\n" +
-        "  println \"enter an integer to echo\";\n" +
-        "  read x ;\n" +
-        "  println x\n" +
-        "  end";
-    checkSourceCode(instruction);
-  }
 
   @Test
   public void testPrintRef() throws IOException {
@@ -355,19 +385,9 @@ public class CodeGenerationTests {
         + "  println c[0][2] ;\n"
         + "  println c[1][0]\n"
         + "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "3", 0);
   }
 
-  @Test
-  public void testReadChar() throws IOException {
-    String instruction = "begin\n" +
-        "\tchar c = '\\0' ;\n" +
-        "    println \"enter a character to echo\";\n" +
-        "\tread c ;\n" +
-        "\tprintln c \n" +
-        "end";
-    checkSourceCode(instruction);
-  }
 
   @Test
   public void testPrintArray() throws IOException {
@@ -390,7 +410,7 @@ public class CodeGenerationTests {
         + "  done ;\n"
         + "  println \"}\"\n"
         + "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -406,7 +426,7 @@ public class CodeGenerationTests {
         "  fi ;\n" +
         "  free a\n" +
         "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -415,7 +435,7 @@ public class CodeGenerationTests {
         "  pair(int, char) p = newpair(10, 'a') ;\n" +
         "  int x = fst p\n" +
         "          end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -424,7 +444,7 @@ public class CodeGenerationTests {
         "  pair(int, char) p = newpair(10, 'a') ;\n" +
         "  char x = snd p\n" +
         "          end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -433,7 +453,7 @@ public class CodeGenerationTests {
         "  pair(int, char) p = newpair(10, 'a') ;\n" +
         "  snd p = 'c'\n" +
         "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -444,7 +464,7 @@ public class CodeGenerationTests {
         "  bool b3 = b1 && b2 ;\n" +
         "  println b3\n" +
         "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -454,7 +474,7 @@ public class CodeGenerationTests {
         "  int y = -2 ;\n" +
         "  println x / y\n" +
         "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -464,7 +484,7 @@ public class CodeGenerationTests {
         "  int y = 3 ;\n" +
         "  println x % y\n" +
         "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -475,7 +495,7 @@ public class CodeGenerationTests {
             + "\tint y = 0 ;\n"
             + "\tprint x / y\n"
             + "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 255);
   }
 
   @Test
@@ -487,7 +507,7 @@ public class CodeGenerationTests {
         "  exit x\n" +
         "\n" +
         "  end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 89);
   }
 
   @Test
@@ -506,7 +526,7 @@ public class CodeGenerationTests {
         "  exit a + b + c + d + e + f + g + h + i\n" +
         "\n" +
         "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 153);
   }
 
   @Test
@@ -519,7 +539,7 @@ public class CodeGenerationTests {
             + "  println a || true ;\n"
             + "  println b || false\n"
             + "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -538,7 +558,7 @@ public class CodeGenerationTests {
         "  exit a + b + c + d + e + f + g + h + i\n" +
         "\n" +
         "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 153);
   }
 
   @Test
@@ -562,7 +582,7 @@ public class CodeGenerationTests {
         "  done ;\n" +
         "  println \"}\"\n" +
         "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -573,32 +593,7 @@ public class CodeGenerationTests {
         "  p = null ;\n" +
         "  println p\n" +
         "end";
-    checkSourceCode(instruction);
-  }
-
-  @Test
-  public void testReadPair() throws IOException {
-    String instruction = "begin\n" +
-        "\tpair(char, int) p = newpair('\\0', 0) ;\n" +
-        "\tprint \"Please enter the first element (char): \" ;\n" +
-        "  \tchar c = '0';\n" +
-        "\tread c ;\n" +
-        "  \tfst p = c ;\n" +
-        "\tprint \"Please enter the second element (int): \" ;\n" +
-        "\tint i = 0 ;\n" +
-        "\tread i ;\n" +
-        "\tsnd p = i ;\n" +
-        "\t# Clear the value for c and i\n" +
-        "\tc = '\\0' ;\n" +
-        "\ti = -1 ;\n" +
-        "\tprint \"The first element was \" ;\n" +
-        "\tc = fst p ;\n" +
-        "\tprintln c ;\n" +
-        "\tprint \"The second element was \" ;\n" +
-        "\ti = snd p ;\n" +
-        "\tprintln i \n" +
-        "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -606,7 +601,7 @@ public class CodeGenerationTests {
     String instruction = "begin\n" +
         "  println null\n" +
         "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -622,7 +617,7 @@ public class CodeGenerationTests {
         "  print r ;\n" +
         "  println \")\"\n" +
         "  end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -735,25 +730,7 @@ public class CodeGenerationTests {
         + "  println x # int\n"
         + "\n"
         + "end";
-    checkSourceCode(instruction);
-  }
-
-  @Test
-  public void testReadNull1() throws IOException {
-    String instruction = "begin\n" +
-        "\tpair(int, int) p = null ;\n" +
-        "\tread fst p\n" +
-        "end";
-    checkSourceCode(instruction);
-  }
-
-  @Test
-  public void testReadNull2() throws IOException {
-    String instruction = "begin\n" +
-        "\tpair(int, int) p = null ;\n" +
-        "\tread snd p\n" +
-        "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
   @Test
@@ -769,7 +746,8 @@ public class CodeGenerationTests {
         "  x = x * 1000 ; #err here?\n" +
         "  println x \n" +
         "end";
-    checkSourceCode(instruction);
+    String expected = "OverflowError: the result is too small/large to store in a 4-byte signed-integer.";
+    checkSourceCode(instruction, expected, 255);
   }
 
   @Test
@@ -780,7 +758,7 @@ public class CodeGenerationTests {
         "  exit x\n" +
         "\n" +
         "  end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 255);
   }
 
   @Test
@@ -793,7 +771,7 @@ public class CodeGenerationTests {
             + "int x = 6\n"
             + "fi\n"
             + "end";
-    checkSourceCode(instruction);
+    checkSourceCode(instruction, "", 0);
   }
 
 }
