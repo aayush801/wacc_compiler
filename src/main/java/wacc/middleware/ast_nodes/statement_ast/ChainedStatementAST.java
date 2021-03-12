@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.statement_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.ast_nodes.StatementAST;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -8,9 +10,9 @@ public class ChainedStatementAST extends StatementAST {
 
   public final StatementAST statementAST1, statementAST2;
 
-  public ChainedStatementAST(ParserRuleContext ctx, StatementAST statementAST1,
+  public ChainedStatementAST(List<WaccError> errors, ParserRuleContext ctx, StatementAST statementAST1,
       StatementAST statementAST2) {
-    super(ctx);
+    super(errors, ctx);
     this.statementAST1 = statementAST1;
     this.statementAST2 = statementAST2;
   }

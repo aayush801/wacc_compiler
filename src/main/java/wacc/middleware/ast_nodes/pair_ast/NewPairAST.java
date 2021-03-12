@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.pair_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.MismatchedTypes;
 import wacc.frontend.identifier_objects.TYPE;
 import wacc.frontend.identifier_objects.basic_types.PAIR;
@@ -13,9 +15,9 @@ public class NewPairAST extends NodeAST {
   private final ExpressionAST fstExpr, sndExpr;
   private PAIR pair;
 
-  public NewPairAST(ParserRuleContext ctx, ExpressionAST fstExpr,
+  public NewPairAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST fstExpr,
       ExpressionAST sndExpr) {
-    super(ctx);
+    super(errors, ctx);
     this.fstExpr = fstExpr;
     this.sndExpr = sndExpr;
   }

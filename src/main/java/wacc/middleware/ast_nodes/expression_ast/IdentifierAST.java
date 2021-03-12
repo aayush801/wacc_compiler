@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.expression_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.Undefined;
 import wacc.frontend.identifier_objects.IDENTIFIER;
 import wacc.frontend.identifier_objects.PARAM;
@@ -16,8 +18,8 @@ public class IdentifierAST extends ExpressionAST {
   private TYPE type;
   private SymbolTable scopeST;
 
-  public IdentifierAST(ParserRuleContext ctx, String identifier) {
-    super(ctx);
+  public IdentifierAST(List<WaccError> errors,ParserRuleContext ctx, String identifier) {
+    super(errors, ctx);
     this.identifier = identifier;
   }
 

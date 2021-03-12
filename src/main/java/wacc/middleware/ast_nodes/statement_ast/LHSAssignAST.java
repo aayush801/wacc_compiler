@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.statement_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.Undefined;
 import wacc.errors.semantic_errors.ExpressionNotFound;
 import wacc.frontend.identifier_objects.IDENTIFIER;
@@ -30,26 +32,26 @@ public class LHSAssignAST extends StatementAST {
   private SymbolTable scopeST;
 
   // For when LHSAssign is an IDENT.
-  public LHSAssignAST(ParserRuleContext ctx, String identifier) {
-    super(ctx);
+  public LHSAssignAST(List<WaccError> errors, ParserRuleContext ctx, String identifier) {
+    super(errors, ctx);
     this.identifier = identifier;
   }
 
   // For when LHSAssign is an arrayElem.
-  public LHSAssignAST(ParserRuleContext ctx, ArrayElemAST arrayElemAST) {
-    super(ctx);
+  public LHSAssignAST(List<WaccError> errors, ParserRuleContext ctx, ArrayElemAST arrayElemAST) {
+    super(errors, ctx);
     this.arrayElemAST = arrayElemAST;
   }
 
   // For when LHSAssign is a pairElem.
-  public LHSAssignAST(ParserRuleContext ctx, PairElemAST pairElemAST) {
-    super(ctx);
+  public LHSAssignAST(List<WaccError> errors, ParserRuleContext ctx, PairElemAST pairElemAST) {
+    super(errors, ctx);
     this.pairElemAST = pairElemAST;
   }
 
   // For when LHSAssign is a pointerElem.
-  public LHSAssignAST(ParserRuleContext ctx, PointerElemAST pointerElemAST) {
-    super(ctx);
+  public LHSAssignAST(List<WaccError> errors, ParserRuleContext ctx, PointerElemAST pointerElemAST) {
+    super(errors, ctx);
     this.pointerElemAST = pointerElemAST;
   }
 

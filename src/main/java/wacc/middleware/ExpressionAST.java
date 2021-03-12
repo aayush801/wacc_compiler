@@ -1,6 +1,8 @@
 package wacc.middleware;
 
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.frontend.identifier_objects.TYPE;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -9,8 +11,8 @@ public abstract class ExpressionAST extends NodeAST {
 
   protected TYPE type;
 
-  public ExpressionAST(ParserRuleContext ctx) {
-    super(ctx);
+  public ExpressionAST(List<WaccError> errors, ParserRuleContext ctx) {
+    super(errors, ctx);
   }
 
   @Override

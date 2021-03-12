@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.statement_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.ast_nodes.StatementAST;
 import wacc.middleware.SymbolTable;
@@ -10,8 +12,8 @@ public class BeginAST extends StatementAST {
   private final StatementAST statementAST;
   private SymbolTable scopeST;
 
-  public BeginAST(ParserRuleContext ctx, StatementAST statementAST) {
-    super(ctx);
+  public BeginAST(List<WaccError> errors, ParserRuleContext ctx, StatementAST statementAST) {
+    super(errors, ctx);
     this.statementAST = statementAST;
   }
 

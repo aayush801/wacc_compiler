@@ -11,8 +11,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 public abstract class TypeAST extends NodeAST {
 
 
-  public TypeAST(ParserRuleContext ctx, List<WaccError> errors) {
-    super(ctx, errors);
+  public TypeAST(List<WaccError> errors, ParserRuleContext ctx) {
+    super(errors, ctx);
   }
 
   public abstract TYPE getType();

@@ -1,13 +1,15 @@
 package wacc.middleware.ast_nodes.statement_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.middleware.NodeAST;
 import wacc.middleware.NodeASTVisitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class ContinueAST extends NodeAST {
 
-  public ContinueAST(ParserRuleContext ctx) {
-    super(ctx);
+  public ContinueAST(List<WaccError> errors, ParserRuleContext ctx) {
+    super(errors, ctx);
   }
 
   @Override

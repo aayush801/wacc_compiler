@@ -1,9 +1,11 @@
 package wacc.middleware.ast_nodes.statement_ast;
 
+import wacc.errors.WaccError;
 import wacc.frontend.identifier_objects.CLASS;
 import java.util.List;
 import wacc.middleware.NodeAST;
 import wacc.middleware.NodeASTVisitor;
+import wacc.middleware.ast_nodes.NodeASTList;
 import wacc.middleware.ast_nodes.StatementAST;
 import wacc.middleware.ast_nodes.function_ast.FunctionDeclarationAST;
 import wacc.middleware.SymbolTable;
@@ -13,13 +15,13 @@ public class ClassDefinitionAST extends NodeAST {
 
   private final String name;
   private final StatementAST fields;
-  private final List<FunctionDeclarationAST> methods;
+  private final NodeASTList<FunctionDeclarationAST> methods;
   private CLASS classObj;
   private SymbolTable scopeST;
 
-  public ClassDefinitionAST(ParserRuleContext ctx, String name,
-      StatementAST fields, List<FunctionDeclarationAST> methods) {
-    super(ctx);
+  public ClassDefinitionAST(List<WaccError> errors, ParserRuleContext ctx, String name,
+      StatementAST fields, NodeASTList<FunctionDeclarationAST> methods) {
+    super(errors, ctx);
     this.name = name;
     this.fields = fields;
     this.methods = methods;
@@ -33,7 +35,7 @@ public class ClassDefinitionAST extends NodeAST {
     return fields;
   }
 
-  public List<FunctionDeclarationAST> getMethods() {
+  public NodeASTList<FunctionDeclarationAST> getMethods() {
     return methods;
   }
 

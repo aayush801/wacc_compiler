@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import wacc.ErrorCode;
 import wacc.WaccCompiler;
 
 public class CodeGenerationTests {
@@ -16,7 +17,15 @@ public class CodeGenerationTests {
   private void checkSourceCode(String instruction, String expected, int exitCode)
       throws IOException {
     WaccCompiler compiler = new WaccCompiler(instruction);
-    String sourceCode = compiler.translateCode(compiler.parseSemantics(compiler.parseSyntactics()));
+    ErrorCode errorCode = compiler.compile();
+
+    if(errorCode != ErrorCode.SUCCESS){
+      compiler.getErrors().forEach(System.out::println);
+    }
+
+    assertThat(errorCode, is(ErrorCode.SUCCESS));
+
+    String sourceCode = compiler.getSourceCode();
 
     File file = new File("temp.s");
 

@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.arrays_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.MismatchedTypes;
 import wacc.errors.semantic_errors.Undefined;
 import wacc.frontend.identifier_objects.IDENTIFIER;
@@ -25,9 +27,9 @@ public class ArrayElemAST extends ExpressionAST {
   private SymbolTable scopeST;
   private boolean isLHS = false;
 
-  public ArrayElemAST(ParserRuleContext ctx, String arrayName,
+  public ArrayElemAST(List<WaccError> errors,ParserRuleContext ctx, String arrayName,
       NodeASTList<ExpressionAST> expressionASTS) {
-    super(ctx);
+    super(errors, ctx);
     this.arrayName = arrayName;
     this.expressionASTS = expressionASTS;
   }

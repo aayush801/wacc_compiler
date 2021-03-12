@@ -30,6 +30,7 @@ public class WaccCompiler {
   private final SyntaxErrorListener syntaxErrorListener
       = new SyntaxErrorListener(errors);
   private String sourceCode;
+  private String filename = "default";
   private Path relativePath;
 
   public WaccCompiler(String instructions) throws IOException {
@@ -39,6 +40,7 @@ public class WaccCompiler {
   public WaccCompiler(File file) throws IOException {
     this(new FileInputStream(file));
     this.relativePath = Paths.get(file.getAbsolutePath()).getParent();
+    this.filename = file.getName();
   }
 
   public WaccCompiler(InputStream inputStream) throws IOException {
@@ -53,9 +55,6 @@ public class WaccCompiler {
 
     parser.removeErrorListeners();
     parser.addErrorListener(syntaxErrorListener);
-
-    SyntaxErrorListener.setSyntacticErrors(errors);
-    NodeAST.setSemanticErrors(errors);
 
     inputStream.close();
   }
@@ -108,7 +107,7 @@ public class WaccCompiler {
   }
 
   public NodeAST parseSemantics(ProgContext parseTree) {
-    WaccASTParser semanticParser = new WaccASTParser(relativePath);
+    WaccASTParser semanticParser = new WaccASTParser(filename, relativePath, errors);
 
     NodeAST tree = semanticParser.visit(parseTree);
 

@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.expression_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.frontend.identifier_objects.TYPE;
 import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeASTVisitor;
@@ -9,8 +11,8 @@ public class LiteralsAST extends ExpressionAST {
 
   private final TYPE type;
 
-  public LiteralsAST(ParserRuleContext ctx, TYPE type) {
-    super(ctx);
+  public LiteralsAST(List<WaccError> errors,ParserRuleContext ctx, TYPE type) {
+    super(errors, ctx);
     this.type = type;
   }
 

@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.statement_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.MismatchedTypes;
 import wacc.frontend.identifier_objects.IDENTIFIER;
 import wacc.frontend.identifier_objects.TYPE;
@@ -13,8 +15,8 @@ public class AssignmentAST extends StatementAST {
   private final LHSAssignAST LHS;
   private final RHSAssignAST RHS;
 
-  public AssignmentAST(ParserRuleContext ctx, LHSAssignAST LHS, RHSAssignAST RHS) {
-    super(ctx);
+  public AssignmentAST(List<WaccError> errors, ParserRuleContext ctx, LHSAssignAST LHS, RHSAssignAST RHS) {
+    super(errors, ctx);
     this.LHS = LHS;
     this.RHS = RHS;
   }

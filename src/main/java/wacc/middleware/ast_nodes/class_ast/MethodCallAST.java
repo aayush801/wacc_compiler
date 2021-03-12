@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.class_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.ast_nodes.NodeASTList;
@@ -10,9 +12,9 @@ public class MethodCallAST extends ExpressionAST {
   private final String object, funcName;
   private final NodeASTList<ExpressionAST> actuals;
 
-  public MethodCallAST(ParserRuleContext ctx, String object, String funcName,
+  public MethodCallAST(List<WaccError> errors, ParserRuleContext ctx, String object, String funcName,
       NodeASTList<ExpressionAST> actuals) {
-    super(ctx);
+    super(errors, ctx);
     this.object = object;
     this.funcName = funcName;
     this.actuals = actuals;

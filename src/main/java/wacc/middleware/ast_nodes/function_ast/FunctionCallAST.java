@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.function_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.InvalidArguments;
 import wacc.errors.semantic_errors.MismatchedTypes;
 import wacc.errors.semantic_errors.Undefined;
@@ -18,9 +20,9 @@ public class FunctionCallAST extends NodeAST {
   private final NodeASTList<ExpressionAST> actuals;
   private FUNCTION funcObj;
 
-  public FunctionCallAST(ParserRuleContext ctx, String funcName,
+  public FunctionCallAST(List<WaccError> errors,ParserRuleContext ctx, String funcName,
       NodeASTList<ExpressionAST> actuals) {
-    super(ctx);
+    super(errors, ctx);
     this.funcName = funcName;
     this.actuals = actuals;
   }

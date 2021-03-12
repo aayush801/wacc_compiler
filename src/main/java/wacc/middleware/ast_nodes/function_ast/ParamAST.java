@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.function_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.DuplicateIdentifier;
 import wacc.frontend.identifier_objects.IDENTIFIER;
 import wacc.frontend.identifier_objects.PARAM;
@@ -15,8 +17,8 @@ public class ParamAST extends NodeAST {
   private final String paramName;
   private PARAM paramObj;
 
-  public ParamAST(ParserRuleContext ctx, TypeAST typeAST, String paramName) {
-    super(ctx);
+  public ParamAST(List<WaccError> errors,ParserRuleContext ctx, TypeAST typeAST, String paramName) {
+    super(errors, ctx);
     this.typeAST = typeAST;
     this.paramName = paramName;
   }

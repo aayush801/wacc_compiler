@@ -1,7 +1,6 @@
 package wacc.middleware;
 
 import wacc.errors.WaccError;
-import wacc.errors.semantic_errors.WaccSemanticError;
 import wacc.frontend.identifier_objects.IDENTIFIER;
 import wacc.frontend.identifier_objects.TYPE;
 import java.util.List;
@@ -14,11 +13,11 @@ public abstract class NodeAST implements NodeASTInterface {
   // Initially this is set to the top level symbol table.
   protected static SymbolTable ST;
 
-  private List<WaccError> errors;
+  protected List<WaccError> errors;
 
   public ParserRuleContext ctx;
 
-  public NodeAST(ParserRuleContext ctx, List<WaccError> errors) {
+  public NodeAST(List<WaccError> errors, ParserRuleContext ctx) {
     this.ctx = ctx;
     this.errors = errors;
   }

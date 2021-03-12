@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.statement_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.MismatchedTypes;
 import wacc.frontend.identifier_objects.IDENTIFIER;
 import wacc.frontend.identifier_objects.basic_types.BOOL;
@@ -15,9 +17,9 @@ public class IfElseAST extends StatementAST {
   private final StatementAST firstStatAST, secondStatAST;
   private SymbolTable ST1, ST2;
 
-  public IfElseAST(ParserRuleContext ctx, ExpressionAST expressionAST,
+  public IfElseAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST expressionAST,
       StatementAST firstStatAST, StatementAST secondStatAST) {
-    super(ctx);
+    super(errors, ctx);
     this.expressionAST = expressionAST;
     this.firstStatAST = firstStatAST;
     this.secondStatAST = secondStatAST;

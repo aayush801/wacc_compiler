@@ -1,5 +1,4 @@
-import lib;
-import wacc
+import lib
 
 begin
   int x = call f(true);

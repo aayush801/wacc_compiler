@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.statement_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.MismatchedTypes;
 import wacc.frontend.identifier_objects.IDENTIFIER;
 import wacc.frontend.identifier_objects.basic_types.INT;
@@ -12,8 +14,8 @@ public class ExitAST extends StatementAST {
 
   private final ExpressionAST expressionAST;
 
-  public ExitAST(ParserRuleContext ctx, ExpressionAST expressionAST) {
-    super(ctx);
+  public ExitAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST expressionAST) {
+    super(errors, ctx);
     this.expressionAST = expressionAST;
   }
 

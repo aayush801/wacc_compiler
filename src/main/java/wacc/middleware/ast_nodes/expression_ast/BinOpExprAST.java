@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.expression_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.MismatchedTypes;
 import wacc.errors.semantic_errors.NotAFunction;
 import wacc.frontend.identifier_objects.IDENTIFIER;
@@ -15,9 +17,9 @@ public class BinOpExprAST extends ExpressionAST {
   private final ExpressionAST leftExprAST, rightExprAST;
   private final String operator;
 
-  public BinOpExprAST(ParserRuleContext ctx, ExpressionAST leftExprAST,
+  public BinOpExprAST(List<WaccError> errors,ParserRuleContext ctx, ExpressionAST leftExprAST,
       String operator, ExpressionAST rightExprAST) {
-    super(ctx);
+    super(errors, ctx);
     this.leftExprAST = leftExprAST;
     this.rightExprAST = rightExprAST;
     this.operator = operator;

@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.function_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.DuplicateIdentifier;
 import wacc.errors.semantic_errors.Undefined;
 import wacc.frontend.identifier_objects.FUNCTION;
@@ -21,10 +23,10 @@ public class FunctionDeclarationAST extends NodeAST {
   private final StatementAST statementAST;
   public FUNCTION funcObj;
 
-  public FunctionDeclarationAST(ParserRuleContext ctx, TypeAST typeAST,
+  public FunctionDeclarationAST(List<WaccError> errors, ParserRuleContext ctx, TypeAST typeAST,
       String funcName, NodeASTList<ParamAST> paramASTList,
       StatementAST statementAST) {
-    super(ctx);
+    super(errors, ctx);
     this.typeAST = typeAST;
     this.funcName = funcName;
     this.paramASTList = paramASTList;

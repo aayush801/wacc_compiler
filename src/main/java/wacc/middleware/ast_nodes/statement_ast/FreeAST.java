@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.statement_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.MismatchedTypes;
 import wacc.frontend.identifier_objects.IDENTIFIER;
 import wacc.frontend.identifier_objects.basic_types.PAIR;
@@ -12,8 +14,8 @@ public class FreeAST extends StatementAST {
 
   private final ExpressionAST expr;
 
-  public FreeAST(ParserRuleContext ctx, ExpressionAST expr) {
-    super(ctx);
+  public FreeAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST expr) {
+    super(errors, ctx);
     this.expr = expr;
   }
 

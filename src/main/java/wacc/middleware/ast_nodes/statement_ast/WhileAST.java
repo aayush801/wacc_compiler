@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.statement_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.MismatchedTypes;
 import wacc.frontend.identifier_objects.IDENTIFIER;
 import wacc.frontend.identifier_objects.basic_types.BOOL;
@@ -16,17 +18,17 @@ public class WhileAST extends StatementAST {
   private SymbolTable scopeST;
   private final boolean isDoWhile;
 
-  public WhileAST(ParserRuleContext ctx, ExpressionAST conditionAST,
+  public WhileAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST conditionAST,
       StatementAST body, boolean isDoWhile) {
-    super(ctx);
+    super(errors, ctx);
     this.conditionAST = conditionAST;
     this.bodyAST = body;
     this.isDoWhile = isDoWhile;
   }
 
-  public WhileAST(ParserRuleContext ctx, ExpressionAST conditionAST,
+  public WhileAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST conditionAST,
       StatementAST bodyAST) {
-    this(ctx, conditionAST, bodyAST, false);
+    this(errors, ctx, conditionAST, bodyAST, false);
   }
 
   public boolean isDoWhile() {

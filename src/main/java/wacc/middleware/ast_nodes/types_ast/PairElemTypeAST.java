@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.types_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.Undefined;
 import wacc.frontend.identifier_objects.TYPE;
 import wacc.frontend.identifier_objects.basic_types.PAIR;
@@ -17,18 +19,18 @@ public class PairElemTypeAST extends NodeAST {
   private String pairName;
   private TYPE type;
 
-  public PairElemTypeAST(ParserRuleContext ctx, BaseTypeAST baseTypeAST) {
-    super(ctx);
+  public PairElemTypeAST(List<WaccError> errors, ParserRuleContext ctx, BaseTypeAST baseTypeAST) {
+    super(errors, ctx);
     this.baseTypeAST = baseTypeAST;
   }
 
-  public PairElemTypeAST(ParserRuleContext ctx, ArrayTypeAST arrayTypeAST) {
-    super(ctx);
+  public PairElemTypeAST(List<WaccError> errors, ParserRuleContext ctx, ArrayTypeAST arrayTypeAST) {
+    super(errors, ctx);
     this.arrayTypeAST = arrayTypeAST;
   }
 
-  public PairElemTypeAST(ParserRuleContext ctx, String pairname) {
-    super(ctx);
+  public PairElemTypeAST(List<WaccError> errors, ParserRuleContext ctx, String pairname) {
+    super(errors, ctx);
     this.pairName = pairname;
   }
 

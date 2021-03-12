@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.types_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.frontend.identifier_objects.TYPE;
 import wacc.frontend.identifier_objects.basic_types.ARRAY;
 import wacc.middleware.NodeASTVisitor;
@@ -16,16 +18,16 @@ public class ArrayTypeAST extends TypeAST {
   private BaseTypeAST baseTypeAST;
   private PairTypeAST pairTypeAST;
 
-  public ArrayTypeAST(ParserRuleContext ctx, int dimensions,
+  public ArrayTypeAST(List<WaccError> errors, ParserRuleContext ctx, int dimensions,
       PairTypeAST pairTypeAST) {
-    super(ctx);
+    super(errors, ctx);
     this.dimensions = dimensions;
     this.pairTypeAST = pairTypeAST;
   }
 
-  public ArrayTypeAST(ParserRuleContext ctx, int dimensions,
+  public ArrayTypeAST(List<WaccError> errors, ParserRuleContext ctx, int dimensions,
       BaseTypeAST baseTypeAST) {
-    super(ctx);
+    super(errors, ctx);
     this.dimensions = dimensions;
     this.baseTypeAST = baseTypeAST;
   }

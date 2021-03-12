@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.pointers_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.MismatchedTypes;
 import wacc.errors.semantic_errors.Undefined;
 import wacc.frontend.identifier_objects.IDENTIFIER;
@@ -20,8 +22,8 @@ public class PointerElemAST extends ExpressionAST {
   private TYPE typeObj;
   private SymbolTable scopeST;
 
-  public PointerElemAST(ParserRuleContext ctx, int level, String pointerName) {
-    super(ctx);
+  public PointerElemAST(List<WaccError> errors, ParserRuleContext ctx, int level, String pointerName) {
+    super(errors, ctx);
     this.level = level;
     this.pointerName = pointerName;
   }

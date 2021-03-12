@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.expression_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.MismatchedTypes;
 import wacc.errors.semantic_errors.NotAFunction;
 import wacc.frontend.identifier_objects.POINTER;
@@ -19,8 +21,8 @@ public class UnaryOpExprAST extends ExpressionAST {
   private final String operator;
   private SymbolTable scopeST;
 
-  public UnaryOpExprAST(ParserRuleContext ctx, ExpressionAST expr, String operator) {
-    super(ctx);
+  public UnaryOpExprAST(List<WaccError> errors,ParserRuleContext ctx, ExpressionAST expr, String operator) {
+    super(errors, ctx);
     this.expr = expr;
     this.operator = operator;
   }

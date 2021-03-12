@@ -6,8 +6,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 import wacc.WaccCompiler;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.DuplicateIdentifier;
 import wacc.errors.semantic_errors.ImportBroken;
 import wacc.errors.semantic_errors.ImportNotFound;
@@ -20,15 +22,15 @@ import wacc.middleware.ast_nodes.prog_ast.ProgAST;
 
 public class ImportAST extends NodeAST {
   private String filename;
-  private String relativePath;
+  private Path relativePath;
   private IMPORT importObj;
   private ProgAST progAST;
 
-  public ImportAST(ParserRuleContext ctx, String filename, Path relativePath) {
-    super(ctx);
+  public ImportAST(List<WaccError> errors, ParserRuleContext ctx, String filename, Path relativePath) {
+    super(errors, ctx);
     // removes .wacc ext from filename
     this.filename = filename.replace(".wacc", "");
-    this.relativePath = relativePath == null ? "" : relativePath.toString();
+    this.relativePath = relativePath;
     ;
   }
 
@@ -41,7 +43,6 @@ public class ImportAST extends NodeAST {
       addError(new DuplicateIdentifier(ctx));
       return;
     }
-
 
     // check if the imported file is a wacc file
     String filepath = relativePath + "/" + filename + ".wacc";
@@ -69,7 +70,7 @@ public class ImportAST extends NodeAST {
     }
 
     // build up ast tree for imported prog
-    WaccASTParser semanticParser = new WaccASTParser(Paths.get(filename).getParent());
+    WaccASTParser semanticParser = new WaccASTParser(filename, relativePath, errors);
     progAST = (ProgAST) semanticParser.visit(parseTree);
 
     importObj = new IMPORT();

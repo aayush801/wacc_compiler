@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.class_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.ast_nodes.NodeASTList;
@@ -10,9 +12,9 @@ public class NewObjectAST extends ExpressionAST {
   private final String className;
   private final NodeASTList<ExpressionAST> actuals;
 
-  public NewObjectAST(ParserRuleContext ctx, String className,
+  public NewObjectAST(List<WaccError> errors,ParserRuleContext ctx, String className,
       NodeASTList<ExpressionAST> actuals) {
-    super(ctx);
+    super(errors, ctx);
     this.className = className;
     this.actuals = actuals;
   }

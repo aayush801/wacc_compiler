@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.statement_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.frontend.identifier_objects.TYPE;
 import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeASTVisitor;
@@ -13,8 +15,8 @@ public class PrintAST extends StatementAST {
   private final boolean newLine;
   private TYPE type;
 
-  public PrintAST(ParserRuleContext ctx, ExpressionAST expr, boolean newLine) {
-    super(ctx);
+  public PrintAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST expr, boolean newLine) {
+    super(errors, ctx);
     this.expr = expr;
     this.newLine = newLine;
   }

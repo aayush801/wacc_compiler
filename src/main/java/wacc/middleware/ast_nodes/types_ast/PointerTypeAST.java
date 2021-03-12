@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.types_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.frontend.identifier_objects.POINTER;
 import wacc.frontend.identifier_objects.TYPE;
 import wacc.middleware.NodeASTVisitor;
@@ -13,9 +15,9 @@ public class PointerTypeAST extends TypeAST {
 
   public POINTER pointerObj;
 
-  public PointerTypeAST(ParserRuleContext ctx, int level,
+  public PointerTypeAST(List<WaccError> errors,ParserRuleContext ctx, int level,
       TypeAST baseTypeAST) {
-    super(ctx);
+    super(errors, ctx);
     this.level = level;
     this.typeAST = baseTypeAST;
   }

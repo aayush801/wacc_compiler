@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.statement_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.ast_nodes.StatementAST;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -10,8 +12,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 public class SkipAST extends StatementAST {
 
 
-  public SkipAST(ParserRuleContext ctx) {
-    super(ctx);
+  public SkipAST(List<WaccError> errors, ParserRuleContext ctx) {
+    super(errors, ctx);
   }
 
   @Override

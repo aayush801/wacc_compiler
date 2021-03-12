@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.statement_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.frontend.identifier_objects.TYPE;
 import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeASTVisitor;
@@ -23,32 +25,32 @@ public class RHSAssignAST extends StatementAST {
   private TYPE type;
 
   // RHS Assign is an expression.
-  public RHSAssignAST(ParserRuleContext ctx, ExpressionAST expressionAST) {
-    super(ctx);
+  public RHSAssignAST(List<WaccError> errors,ParserRuleContext ctx, ExpressionAST expressionAST) {
+    super(errors, ctx);
     this.expressionAST = expressionAST;
   }
 
   // RHS Assign is an array.
-  public RHSAssignAST(ParserRuleContext ctx, ArrayAST arrayAST) {
-    super(ctx);
+  public RHSAssignAST(List<WaccError> errors,ParserRuleContext ctx, ArrayAST arrayAST) {
+    super(errors, ctx);
     this.arrayAST = arrayAST;
   }
 
   // RHS Assign is a newpair.
-  public RHSAssignAST(ParserRuleContext ctx, NewPairAST newPairAST) {
-    super(ctx);
+  public RHSAssignAST(List<WaccError> errors,ParserRuleContext ctx, NewPairAST newPairAST) {
+    super(errors, ctx);
     this.newPairAST = newPairAST;
   }
 
   // RHS Assign is a pairElem.
-  public RHSAssignAST(ParserRuleContext ctx, PairElemAST pairElemAST) {
-    super(ctx);
+  public RHSAssignAST(List<WaccError> errors,ParserRuleContext ctx, PairElemAST pairElemAST) {
+    super(errors, ctx);
     this.pairElemAST = pairElemAST;
   }
 
   // RHS Assign is a function call.
-  public RHSAssignAST(ParserRuleContext ctx, FunctionCallAST functionCallAST) {
-    super(ctx);
+  public RHSAssignAST(List<WaccError> errors,ParserRuleContext ctx, FunctionCallAST functionCallAST) {
+    super(errors, ctx);
     this.functionCallAST = functionCallAST;
   }
 

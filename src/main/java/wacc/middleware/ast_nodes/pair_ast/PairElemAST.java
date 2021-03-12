@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.pair_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.MismatchedTypes;
 import wacc.frontend.identifier_objects.IDENTIFIER;
 import wacc.frontend.identifier_objects.TYPE;
@@ -15,8 +17,8 @@ public class PairElemAST extends NodeAST {
   private final boolean isFirstElem;
   private TYPE type;
 
-  public PairElemAST(ParserRuleContext ctx, ExpressionAST exprAST, boolean isFirstElem) {
-    super(ctx);
+  public PairElemAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST exprAST, boolean isFirstElem) {
+    super(errors, ctx);
     this.exprAST = exprAST;
     this.isFirstElem = isFirstElem;
   }

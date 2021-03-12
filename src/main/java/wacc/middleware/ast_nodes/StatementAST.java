@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.middleware.NodeAST;
 import org.antlr.v4.runtime.ParserRuleContext;
 
@@ -7,7 +9,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
  */
 public abstract class StatementAST extends NodeAST {
 
-  public StatementAST(ParserRuleContext ctx) {
-    super(ctx);
+  public StatementAST(List<WaccError> errors, ParserRuleContext ctx) {
+    super(errors, ctx);
   }
 }

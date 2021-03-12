@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.statement_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.DuplicateIdentifier;
 import wacc.errors.semantic_errors.MismatchedTypes;
 import wacc.frontend.identifier_objects.FUNCTION;
@@ -18,9 +20,9 @@ public class VariableDeclarationAST extends StatementAST {
   private final RHSAssignAST rhsAssignAST;
   public VARIABLE varObj;
 
-  public VariableDeclarationAST(ParserRuleContext ctx, TypeAST typeAST,
+  public VariableDeclarationAST(List<WaccError> errors, ParserRuleContext ctx, TypeAST typeAST,
       String varName, RHSAssignAST rhsAssignAST) {
-    super(ctx);
+    super(errors, ctx);
     this.typeAST = typeAST;
     this.varName = varName;
     this.rhsAssignAST = rhsAssignAST;

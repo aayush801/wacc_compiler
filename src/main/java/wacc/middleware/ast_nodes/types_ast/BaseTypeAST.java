@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.types_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.MismatchedTypes;
 import wacc.errors.semantic_errors.Undefined;
 import wacc.frontend.identifier_objects.IDENTIFIER;
@@ -16,8 +18,8 @@ public class BaseTypeAST extends TypeAST {
   String typeName;
   private TYPE type;
 
-  public BaseTypeAST(ParserRuleContext ctx, String typename) {
-    super(ctx);
+  public BaseTypeAST(List<WaccError> errors, ParserRuleContext ctx, String typename) {
+    super(errors, ctx);
     this.typeName = typename;
   }
 

@@ -1,6 +1,9 @@
 package wacc.middleware.ast_nodes.prog_ast;
 
+import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
+import wacc.errors.WaccError;
+import wacc.frontend.identifier_objects.IMPORT;
 import wacc.middleware.NodeAST;
 import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.SymbolTable;
@@ -14,25 +17,34 @@ import wacc.middleware.ast_nodes.statement_ast.ChainedStatementAST;
 
 public class ProgAST extends NodeAST {
 
+  private final NodeASTList<ImportAST> importASTS;
   private final NodeASTList<FunctionDeclarationAST> functionDeclarationASTS;
   private StatementAST statementAST;
-  private SymbolTable scopeST;
-  private NodeASTList<ImportAST> importASTS;
 
-  public ProgAST(
+  private String filename;
+
+  private SymbolTable scopeST;
+
+
+  public ProgAST(List<WaccError> errors,
       ParserRuleContext ctx,
+      String filename,
       NodeASTList<ImportAST> importASTS,
       NodeASTList<FunctionDeclarationAST> functionDeclarationASTS,
       StatementAST statementAST) {
-    super(ctx);
+    super(errors, ctx);
     this.functionDeclarationASTS = functionDeclarationASTS;
     this.statementAST = statementAST;
     this.importASTS = importASTS;
+    this.filename = filename.replace(".wacc", "");
   }
 
   @Override
   public void check() {
     scopeST = ST = SymbolTable.TopSymbolTable();
+
+    // add current file as the global import
+    ST.add(filename, new IMPORT());
 
     // Go through all imported statements and record them in the top symbol table
     for (ImportAST importAST : importASTS) {
@@ -47,7 +59,7 @@ public class ProgAST extends NodeAST {
 
         // append the statement bodies together using a chained statement
         statementAST =
-            new ChainedStatementAST(statementAST.ctx, statementAST, importedProg.getStatementAST());
+            new ChainedStatementAST(errors, statementAST.ctx, statementAST, importedProg.getStatementAST());
       }
     }
 

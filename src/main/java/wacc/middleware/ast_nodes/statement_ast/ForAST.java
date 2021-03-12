@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.statement_ast;
 
+import java.util.List;
+import wacc.errors.WaccError;
 import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.ast_nodes.StatementAST;
@@ -9,9 +11,9 @@ public class ForAST extends WhileAST {
 
   private final StatementAST initialisation;
 
-  public ForAST(ParserRuleContext ctx, StatementAST initialisation,
+  public ForAST(List<WaccError> errors, ParserRuleContext ctx, StatementAST initialisation,
       ExpressionAST condition, StatementAST afterthought, StatementAST body) {
-    super(ctx, condition, new ChainedStatementAST(ctx, body, afterthought));
+    super(errors, ctx, condition, new ChainedStatementAST(errors, ctx, body, afterthought));
     this.initialisation = initialisation;
   }
 
