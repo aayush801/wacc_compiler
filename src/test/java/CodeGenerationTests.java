@@ -43,21 +43,22 @@ public class CodeGenerationTests {
       e.printStackTrace();
     }
 
+    File exec = new File("EXEName");
+    exec.deleteOnExit();
     file.deleteOnExit();
 
     String text = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
 
     assertThat(text, containsString(expected));
     assertThat(execWacc.exitValue(), is(exitCode));
-
   }
 
   @Test
   public void testUndefined() throws IOException {
     String instruction =
-        "begin " +
-            "exit -1" +
-            "end";
+        "begin \n" +
+            "exit -1\n" +
+            "end \n";
     checkSourceCode(instruction, "", 255);
   }
 

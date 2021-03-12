@@ -133,6 +133,9 @@ NEW : 'new' ;
 
 NULL: 'null' ;
 
+//extension
+IMPORT: 'import' STRING;
+
 //character/string set
 fragment CHAR:  ~[\\'"] | ('\\' ESCAPED_CHAR);
 STRING: '"' CHAR* '"' ;
