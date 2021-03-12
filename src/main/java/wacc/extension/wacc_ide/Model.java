@@ -14,16 +14,14 @@ import java.util.List;
 public class Model {
 
   private final List<View> views = new ArrayList<>();
+  private List<Integer> offsets = new ArrayList<>();
+  private List<Integer> errorLines = new ArrayList<>();
+  List<WaccError> errors = new ArrayList<>();
+
 
   public Model(View view) {
     views.add(view);
   }
-
-  // TODO:
-  // Tabs
-  // Grey out unused variables - later
-  // Run the code lol
-  // Actual error messages i.e. hover? Or put in a box elsewhere
 
   public Void check(KeyEvent key) throws IOException, BadLocationException {
 
@@ -34,11 +32,11 @@ public class Model {
     WaccCompiler compiler = new WaccCompiler(text);
 
     // Run syntax and semantic checks.
-    List<WaccError> errors = compiler.getErrors();
+    errors = compiler.getErrors();
 
     compiler.parseSemantics(compiler.parseSyntactics());
 
-    List<Integer> errorLines = new ArrayList<>();
+    errorLines = new ArrayList<>();
 
     // First get the lines where errors occur
     for (WaccError error : errors) {
@@ -51,7 +49,11 @@ public class Model {
     int offset = 0;
     String[] lines = text.split("\n");
 
+    offsets = new ArrayList<>();
+
     for (int line = 1; line <= lines.length; line++) {
+
+      offsets.add(offset);
 
       String codeLine = lines[line - 1];
 
@@ -61,18 +63,45 @@ public class Model {
 
       Color color = errorLines.contains(line) ? Color.RED : Color.BLACK;
 
-      AttributeSet aset = sc
-          .addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color);
+      AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color);
 
       aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
 
       // Only add newline if not last line.
-      document.insertString(offset, codeLine + ((line == lines.length) ? "" : "\n"), aset);
+      document.insertString(offset, codeLine + ((line == lines.length) ? "" : "\n") , aset);
 
-      offset += codeLine.length() + 1;
+      offset += codeLine.length() + 1 ;
     }
-    return null;
+    return null ;
   }
 
-}
+  public String checkPosError(int pos) {
 
+    int i;
+
+    for (i = 0; i < offsets.size(); i++) {
+      if (i == offsets.size() - 1) {
+        break;
+      }
+      Integer curr = offsets.get(i);
+      Integer next = offsets.get(i+1);
+      if (pos >= curr && pos < next) {
+        break;
+      }
+    }
+
+    // line number is i now
+    System.out.println("i: " + i);
+
+    System.out.println(errorLines);
+    if (errorLines.contains(i + 1)) {
+      System.out.println("hi");
+      for (WaccError error : errors) {
+        if (error.getLineNo() == i+1) {
+          return error.toString();
+        }
+      }
+    }
+    return "";
+  }
+}

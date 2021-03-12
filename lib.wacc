@@ -1,0 +1,12 @@
+
+begin
+  int f(bool b) is
+    if b
+    then
+      return 1
+    else
+      return 0
+    fi
+  end
+  skip
+end

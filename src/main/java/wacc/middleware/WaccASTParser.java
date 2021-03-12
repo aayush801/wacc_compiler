@@ -1,5 +1,4 @@
 package wacc.middleware;
-
 import antlr.WaccParser;
 import antlr.WaccParser.ArgListContext;
 import antlr.WaccParser.ArrayContext;
