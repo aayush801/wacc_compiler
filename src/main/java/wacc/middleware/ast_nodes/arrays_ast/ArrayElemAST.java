@@ -21,14 +21,14 @@ public class ArrayElemAST extends ExpressionAST {
 
 
   private final String arrayName;
-
   private final NodeASTList<ExpressionAST> expressionASTS;
   public TYPE type;
   private SymbolTable scopeST;
   private boolean isLHS = false;
 
-  public ArrayElemAST(List<WaccError> errors,ParserRuleContext ctx, String arrayName,
-      NodeASTList<ExpressionAST> expressionASTS) {
+  public ArrayElemAST(List<WaccError> errors,ParserRuleContext ctx,
+      String arrayName, NodeASTList<ExpressionAST> expressionASTS) {
+
     super(errors, ctx);
     this.arrayName = arrayName;
     this.expressionASTS = expressionASTS;

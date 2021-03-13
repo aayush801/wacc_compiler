@@ -18,7 +18,8 @@ public class BaseTypeAST extends TypeAST {
   String typeName;
   private TYPE type;
 
-  public BaseTypeAST(List<WaccError> errors, ParserRuleContext ctx, String typename) {
+  public BaseTypeAST(List<WaccError> errors, ParserRuleContext ctx,
+      String typename) {
     super(errors, ctx);
     this.typeName = typename;
   }

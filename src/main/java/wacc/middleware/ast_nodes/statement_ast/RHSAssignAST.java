@@ -25,31 +25,36 @@ public class RHSAssignAST extends StatementAST {
   private TYPE type;
 
   // RHS Assign is an expression.
-  public RHSAssignAST(List<WaccError> errors,ParserRuleContext ctx, ExpressionAST expressionAST) {
+  public RHSAssignAST(List<WaccError> errors, ParserRuleContext ctx,
+      ExpressionAST expressionAST) {
     super(errors, ctx);
     this.expressionAST = expressionAST;
   }
 
   // RHS Assign is an array.
-  public RHSAssignAST(List<WaccError> errors,ParserRuleContext ctx, ArrayAST arrayAST) {
+  public RHSAssignAST(List<WaccError> errors, ParserRuleContext ctx,
+      ArrayAST arrayAST) {
     super(errors, ctx);
     this.arrayAST = arrayAST;
   }
 
   // RHS Assign is a newpair.
-  public RHSAssignAST(List<WaccError> errors,ParserRuleContext ctx, NewPairAST newPairAST) {
+  public RHSAssignAST(List<WaccError> errors, ParserRuleContext ctx,
+      NewPairAST newPairAST) {
     super(errors, ctx);
     this.newPairAST = newPairAST;
   }
 
   // RHS Assign is a pairElem.
-  public RHSAssignAST(List<WaccError> errors,ParserRuleContext ctx, PairElemAST pairElemAST) {
+  public RHSAssignAST(List<WaccError> errors, ParserRuleContext ctx,
+      PairElemAST pairElemAST) {
     super(errors, ctx);
     this.pairElemAST = pairElemAST;
   }
 
   // RHS Assign is a function call.
-  public RHSAssignAST(List<WaccError> errors,ParserRuleContext ctx, FunctionCallAST functionCallAST) {
+  public RHSAssignAST(List<WaccError> errors, ParserRuleContext ctx,
+      FunctionCallAST functionCallAST) {
     super(errors, ctx);
     this.functionCallAST = functionCallAST;
   }

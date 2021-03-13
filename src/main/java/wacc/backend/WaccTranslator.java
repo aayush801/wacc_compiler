@@ -478,29 +478,28 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
   public List<Instruction> visit(LiteralsAST literal) {
     Register destination = program.registers.get(0);
     Instruction instruction = null;
-
-    ParserRuleContext ctx = literal.getCtx();
     TYPE type = literal.getType();
 
+    final String text = literal.getText();
     if (type instanceof INT) {
-      int n = Integer.parseInt(literal.getCtx().getText());
+      int n = Integer.parseInt(text);
       instruction = new Load(destination, new ImmediateAddress(n));
 
     } else if (type instanceof BOOL) {
       int n = 0;
-      if (ctx.getText().equals("true")) {
+      if (text.equals("true")) {
         n = 1;
       }
       instruction = new Move(destination, new ImmediateNum(n));
 
     } else if (type instanceof CHAR) {
       // getting the final char of the text will implicitly solve escape char issues
-      char c = ctx.getText().charAt(ctx.getText().length() - 2);
+      char c = text.charAt(text.length() - 2);
       instruction = new Move(destination, new ImmediateChar(c));
 
     } else if (type instanceof STR) {
       // add string to data section
-      DataLabel dataLabel = new DataLabel(ctx.getText());
+      DataLabel dataLabel = new DataLabel(text);
       program.addData(dataLabel);
       instruction = new Load(destination, new Address(dataLabel.getLabelName()));
 

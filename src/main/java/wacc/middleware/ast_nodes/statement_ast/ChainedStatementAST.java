@@ -10,8 +10,8 @@ public class ChainedStatementAST extends StatementAST {
 
   public final StatementAST statementAST1, statementAST2;
 
-  public ChainedStatementAST(List<WaccError> errors, ParserRuleContext ctx, StatementAST statementAST1,
-      StatementAST statementAST2) {
+  public ChainedStatementAST(List<WaccError> errors, ParserRuleContext ctx,
+      StatementAST statementAST1, StatementAST statementAST2) {
     super(errors, ctx);
     this.statementAST1 = statementAST1;
     this.statementAST2 = statementAST2;

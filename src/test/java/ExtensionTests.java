@@ -11,6 +11,8 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import wacc.ErrorCode;
 import wacc.WaccCompiler;
+import wacc.errors.WaccError;
+import wacc.errors.semantic_errors.WaccSemanticError;
 
 public class ExtensionTests {
 
@@ -128,6 +130,25 @@ public class ExtensionTests {
     System.out.println(compiler.compile());
     System.out.println(compiler.getSourceCode());
   }
+
+  @Test
+  public void foreachLoop() throws IOException {
+    String prog =
+        "begin\n"
+            + "int[] array = [1, 2, 3];"
+            + "int sum = 0;"
+            + "foreach int x in array\n"
+            + "   sum = sum + x\n"
+            + "rof\n"
+            + "end";
+    WaccCompiler compiler = new WaccCompiler(prog);
+    System.out.println(compiler.compile());
+    for (WaccError e : compiler.getErrors()) {
+      System.out.println(e);
+    }
+    System.out.println(compiler.getSourceCode());
+  }
+
 
   @Test
   public void testMalloc() throws IOException {

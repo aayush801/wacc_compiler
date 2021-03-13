@@ -32,25 +32,29 @@ public class LHSAssignAST extends StatementAST {
   private SymbolTable scopeST;
 
   // For when LHSAssign is an IDENT.
-  public LHSAssignAST(List<WaccError> errors, ParserRuleContext ctx, String identifier) {
+  public LHSAssignAST(List<WaccError> errors, ParserRuleContext ctx,
+      String identifier) {
     super(errors, ctx);
     this.identifier = identifier;
   }
 
   // For when LHSAssign is an arrayElem.
-  public LHSAssignAST(List<WaccError> errors, ParserRuleContext ctx, ArrayElemAST arrayElemAST) {
+  public LHSAssignAST(List<WaccError> errors, ParserRuleContext ctx,
+      ArrayElemAST arrayElemAST) {
     super(errors, ctx);
     this.arrayElemAST = arrayElemAST;
   }
 
   // For when LHSAssign is a pairElem.
-  public LHSAssignAST(List<WaccError> errors, ParserRuleContext ctx, PairElemAST pairElemAST) {
+  public LHSAssignAST(List<WaccError> errors, ParserRuleContext ctx,
+      PairElemAST pairElemAST) {
     super(errors, ctx);
     this.pairElemAST = pairElemAST;
   }
 
   // For when LHSAssign is a pointerElem.
-  public LHSAssignAST(List<WaccError> errors, ParserRuleContext ctx, PointerElemAST pointerElemAST) {
+  public LHSAssignAST(List<WaccError> errors, ParserRuleContext ctx,
+      PointerElemAST pointerElemAST) {
     super(errors, ctx);
     this.pointerElemAST = pointerElemAST;
   }

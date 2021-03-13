@@ -20,8 +20,8 @@ public class VariableDeclarationAST extends StatementAST {
   private final RHSAssignAST rhsAssignAST;
   public VARIABLE varObj;
 
-  public VariableDeclarationAST(List<WaccError> errors, ParserRuleContext ctx, TypeAST typeAST,
-      String varName, RHSAssignAST rhsAssignAST) {
+  public VariableDeclarationAST(List<WaccError> errors, ParserRuleContext ctx,
+      TypeAST typeAST, String varName, RHSAssignAST rhsAssignAST) {
     super(errors, ctx);
     this.typeAST = typeAST;
     this.varName = varName;

@@ -17,7 +17,8 @@ public class NodeASTList<T> extends NodeAST implements Iterable<T> {
   // contains basic functions that process the list.
   // used for function parameter checking, among others.
 
-  public NodeASTList(List<WaccError> errors, ParserRuleContext ctx, List<T> ASTList) {
+  public NodeASTList(List<WaccError> errors, ParserRuleContext ctx,
+      List<T> ASTList) {
     super(errors, ctx);
     this.ASTList = ASTList;
   }

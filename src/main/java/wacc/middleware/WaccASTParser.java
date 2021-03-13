@@ -49,11 +49,14 @@ import antlr.WaccParser.StrLiterContext;
 import antlr.WaccParser.TypeContext;
 import antlr.WaccParser.WhileDoContext;
 import antlr.WaccParserBaseVisitor;
+import java.beans.Expression;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import wacc.errors.WaccError;
+import wacc.frontend.identifier_objects.TYPE;
 import wacc.frontend.identifier_objects.basic_types.BOOL;
 import wacc.frontend.identifier_objects.basic_types.CHAR;
 import wacc.frontend.identifier_objects.basic_types.INT;
@@ -271,6 +274,71 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
         (StatementAST) visit(ctx.stat(1)),
         (StatementAST) visit(ctx.stat(2)));
   }
+
+  @Override
+  public ForAST visitForEachLoop(WaccParser.ForEachLoopContext ctx) {
+    // type
+    TypeAST typeAST = visitType(ctx.type());
+    // var
+    String variableName = ctx.identifier(0).getText();
+    // array
+    String arrayName = ctx.identifier(1).getText();
+
+    // int i = 0
+    VariableDeclarationAST indexDeclaration =
+        new VariableDeclarationAST(semanticErrors, ctx,
+            new BaseTypeAST(semanticErrors, ctx, "int"),
+            "i",
+            new RHSAssignAST(semanticErrors, ctx,
+                new LiteralsAST(semanticErrors, ctx, "0", new INT())));
+    // type var = array[0]
+    VariableDeclarationAST elementDeclaration =
+        new VariableDeclarationAST(semanticErrors, ctx, typeAST, variableName,
+            new RHSAssignAST(semanticErrors, ctx,
+                new ArrayElemAST(semanticErrors, ctx, arrayName,
+                    new NodeASTList<>(semanticErrors, ctx,
+                        new ArrayList<>(
+                            Arrays.asList((new LiteralsAST(semanticErrors, ctx,
+                                "0", new INT()))))))));
+    // i = i + 1
+    AssignmentAST indexIncrement =
+        new AssignmentAST(semanticErrors, ctx,
+            new LHSAssignAST(semanticErrors, ctx, "i"),
+            new RHSAssignAST(semanticErrors, ctx,
+                new BinOpExprAST(semanticErrors, ctx,
+                    new IdentifierAST(semanticErrors, ctx, "i"),
+                    "+", new LiteralsAST(semanticErrors, ctx, "1",
+                    new INT()))));
+    // var = array[i]
+    VariableDeclarationAST elementUpdate =
+        new VariableDeclarationAST(semanticErrors, ctx, typeAST, variableName,
+            new RHSAssignAST(semanticErrors, ctx,
+                new ArrayElemAST(semanticErrors, ctx, arrayName,
+                    new NodeASTList<>(semanticErrors, ctx,
+                        new ArrayList<>(
+                            Arrays.asList(
+                                new IdentifierAST(semanticErrors, ctx,
+                                    "i")))))));
+    // (int i = 0; type var = array[0])
+    ChainedStatementAST initialisation =
+        new ChainedStatementAST(semanticErrors, ctx, indexDeclaration,
+            elementDeclaration);
+    // i < len array
+    BinOpExprAST condition =
+        new BinOpExprAST(semanticErrors, ctx,
+            new IdentifierAST(semanticErrors, ctx, "i"),
+            "<",
+            new UnaryOpExprAST(semanticErrors, ctx,
+                new IdentifierAST(semanticErrors, ctx, arrayName), "len"));
+    // (i = i + 1; var = array[i])
+    ChainedStatementAST afterthought =
+        new ChainedStatementAST(semanticErrors, ctx, indexIncrement,
+            elementUpdate);
+    // For loop
+    return new ForAST(semanticErrors, ctx, initialisation, condition,
+        afterthought, (StatementAST) visit(ctx.stat()));
+  }
+
 
   @Override
   public SizeOfAST visitSizeOfCall(SizeOfCallContext ctx) {

@@ -17,8 +17,8 @@ public class BinOpExprAST extends ExpressionAST {
   private final ExpressionAST leftExprAST, rightExprAST;
   private final String operator;
 
-  public BinOpExprAST(List<WaccError> errors,ParserRuleContext ctx, ExpressionAST leftExprAST,
-      String operator, ExpressionAST rightExprAST) {
+  public BinOpExprAST(List<WaccError> errors,ParserRuleContext ctx,
+      ExpressionAST leftExprAST, String operator, ExpressionAST rightExprAST) {
     super(errors, ctx);
     this.leftExprAST = leftExprAST;
     this.rightExprAST = rightExprAST;

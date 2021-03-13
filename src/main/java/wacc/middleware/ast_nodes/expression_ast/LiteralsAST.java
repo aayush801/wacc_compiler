@@ -10,10 +10,21 @@ import org.antlr.v4.runtime.ParserRuleContext;
 public class LiteralsAST extends ExpressionAST {
 
   private final TYPE type;
+  private String text;
 
-  public LiteralsAST(List<WaccError> errors,ParserRuleContext ctx, TYPE type) {
+  public LiteralsAST(List<WaccError> errors, ParserRuleContext ctx,
+      String text, TYPE type) {
     super(errors, ctx);
     this.type = type;
+    this.text = text;
+  }
+
+  public LiteralsAST(List<WaccError> errors, ParserRuleContext ctx, TYPE type) {
+    this(errors, ctx, ctx.getText(), type);
+  }
+
+  public String getText() {
+    return text;
   }
 
   @Override

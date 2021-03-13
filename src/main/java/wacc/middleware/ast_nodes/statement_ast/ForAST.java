@@ -11,9 +11,11 @@ public class ForAST extends WhileAST {
 
   private final StatementAST initialisation;
 
-  public ForAST(List<WaccError> errors, ParserRuleContext ctx, StatementAST initialisation,
-      ExpressionAST condition, StatementAST afterthought, StatementAST body) {
-    super(errors, ctx, condition, new ChainedStatementAST(errors, ctx, body, afterthought));
+  public ForAST(List<WaccError> errors, ParserRuleContext ctx,
+      StatementAST initialisation, ExpressionAST condition,
+      StatementAST afterthought, StatementAST body) {
+    super(errors, ctx, condition,
+        new ChainedStatementAST(errors, ctx, body, afterthought));
     this.initialisation = initialisation;
   }
 

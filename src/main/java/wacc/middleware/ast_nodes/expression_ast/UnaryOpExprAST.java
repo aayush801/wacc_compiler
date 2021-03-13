@@ -21,8 +21,8 @@ public class UnaryOpExprAST extends ExpressionAST {
   private final String operator;
   private SymbolTable scopeST;
 
-  public UnaryOpExprAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST expr,
-      String operator) {
+  public UnaryOpExprAST(List<WaccError> errors, ParserRuleContext ctx,
+      ExpressionAST expr, String operator) {
     super(errors, ctx);
     this.expr = expr;
     this.operator = operator;

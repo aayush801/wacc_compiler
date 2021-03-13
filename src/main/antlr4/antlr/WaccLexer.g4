@@ -72,6 +72,8 @@ END_IF: 'fi' ;
 //for loop
 FOR : 'for' ;
 END_FOR: 'rof';
+FOR_EACH: 'foreach' ;
+IN: 'in' ;
 
 //wacc.extension
 //loop breaks

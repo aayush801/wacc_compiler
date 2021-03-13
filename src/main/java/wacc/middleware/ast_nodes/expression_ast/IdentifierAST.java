@@ -18,7 +18,8 @@ public class IdentifierAST extends ExpressionAST {
   private TYPE type;
   private SymbolTable scopeST;
 
-  public IdentifierAST(List<WaccError> errors,ParserRuleContext ctx, String identifier) {
+  public IdentifierAST(List<WaccError> errors, ParserRuleContext ctx,
+      String identifier) {
     super(errors, ctx);
     this.identifier = identifier;
   }

@@ -47,6 +47,8 @@ stat:
       SEPERATOR expr?
       SEPERATOR stat?
     CLOSE_PARENTHESES stat END_FOR        #forLoop
+  | FOR_EACH type identifier IN identifier
+      stat END_FOR                        #forEachLoop
   | BEGIN stat END                        #beginStat
   | stat SEPERATOR stat                   #seperateStat
   | CLASS IDENT
