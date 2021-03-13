@@ -64,10 +64,8 @@ public class WaccCompiler {
     ProgContext parseTree = parseSyntactics();
 
     if (hasErrors()) {
-
       // we don't do semantic analysis if syntax fails
       return ErrorCode.SYNTAX_ERROR;
-
     }
 
     NodeAST ASTtree = parseSemantics(parseTree);
@@ -80,51 +78,39 @@ public class WaccCompiler {
     sourceCode = translateCode(ASTtree);
 
     if (hasErrors()) {
-
       return ErrorCode.FAIL;
-
     }
 
     return ErrorCode.SUCCESS;
-
   }
 
   public ProgContext parseSyntactics() {
 
     SyntacticParser syntacticParser = new SyntacticParser(syntaxErrorListener);
-
     ProgContext parseTree = parser.prog();
 
     // only do further syntax analysis if tokenization passed
     if (!syntaxErrorListener.hasErrors()) {
-
       syntacticParser.visit(parseTree);
-
     }
 
     return parseTree;
-
   }
 
   public NodeAST parseSemantics(ProgContext parseTree) {
     WaccASTParser semanticParser = new WaccASTParser(filename, relativePath, errors);
 
     NodeAST tree = semanticParser.visit(parseTree);
-
     tree.check();
 
     return tree;
-
   }
 
   public String translateCode(NodeAST ASTtree) {
-
     WaccTranslator codeGenerator = new WaccTranslator();
-
     codeGenerator.visit(ASTtree);
 
     return codeGenerator.toString();
-
   }
 
 
@@ -137,10 +123,6 @@ public class WaccCompiler {
   }
 
   public boolean hasErrors() {
-
     return !errors.isEmpty();
-
   }
-
-
 }

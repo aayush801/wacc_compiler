@@ -123,5 +123,4 @@ public abstract class NodeASTVisitor<T> {
   public abstract T visit(NewObjectAST newObjectAST);
 
   public abstract T visit(MethodCallAST classDef);
-
 }

@@ -30,6 +30,8 @@ SEPERATOR: ';' ;
 
 DOT : '.' ;
 
+COLON: ':' ;
+DEFAULT: 'default' ;
 
 // types
 STRING_TYPE: 'string';
@@ -136,6 +138,10 @@ NULL: 'null' ;
 //wacc.extension
 // import statement
 IMPORT: 'import';
+
+// switch statement
+SWITCH: 'switch' ;
+CASE: 'case' ;
 
 //character/string set
 fragment CHAR:  ~[\\'"] | ('\\' ESCAPED_CHAR);

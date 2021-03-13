@@ -1,5 +1,6 @@
 package wacc.middleware;
 
+import antlr.WaccParser;
 import antlr.WaccParser.ArgListContext;
 import antlr.WaccParser.ArrayContext;
 import antlr.WaccParser.ArrayElemContext;
@@ -575,7 +576,8 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // Do this by calling visitFuncDecl on all function declarations in ctx.
     NodeASTList<FunctionDeclarationAST> functionDeclASTS =
         new NodeASTList<>(semanticErrors,
-            ctx, ctx.funcDecl().stream().map(this::visitFuncDecl).collect(Collectors.toList()));
+            ctx, ctx.funcDecl().stream()
+            .map(this::visitFuncDecl).collect(Collectors.toList()));
 
     // Return a new progAST node.
     return new ClassDefinitionAST(semanticErrors,
@@ -583,5 +585,40 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
         ctx.IDENT().getText(),
         (StatementAST) visit(ctx.stat()),
         functionDeclASTS);
+  }
+
+  @Override
+  public IfElseAST visitSwitchStat(WaccParser.SwitchStatContext ctx) {
+    List<ExpressionAST> cases =
+        ctx.expr().stream()
+            .map(this::visitExpr)
+            .collect(Collectors.toList());
+
+    ExpressionAST expression = cases.remove(0);
+
+    List<StatementAST> statements =
+        ctx.stat().stream()
+            .map(s -> (StatementAST) visit(s))
+            .collect(Collectors.toList());
+
+    boolean hasDefault = ctx.DEFAULT() != null;
+
+    StatementAST statementAST = new SkipAST(semanticErrors, ctx);
+    // If the switch statement has a default case then the final else will be the final statement
+    if (hasDefault) {
+      statementAST = statements.remove(statements.size() - 1);
+    }
+
+    // Going through each case bottom-up
+    for (int i = statements.size() - 1; i >= 0; i--) {
+      // Checks if the expression is equal to current case
+      // If they match then the corresponding statement is executed
+      // Otherwise all the other cases will get checked in the else block
+      statementAST = new IfElseAST(semanticErrors, ctx,
+          new BinOpExprAST(null, ctx, expression,
+              "==", cases.get(i)),
+          statements.get(i), statementAST);
+    }
+    return (IfElseAST) statementAST;
   }
 }

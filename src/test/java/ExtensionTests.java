@@ -13,7 +13,9 @@ import wacc.ErrorCode;
 import wacc.WaccCompiler;
 
 public class ExtensionTests {
-  private void runAndCheckProgram(String instructions, String expected, int exitCode) throws IOException {
+
+  private void runAndCheckProgram(String instructions, String expected, int exitCode)
+      throws IOException {
     checkSourceCode(new WaccCompiler(instructions), expected, exitCode);
   }
 
@@ -26,14 +28,15 @@ public class ExtensionTests {
 
     ErrorCode errorCode = compiler.compile();
 
-    if(errorCode != ErrorCode.SUCCESS){
+    if (errorCode != ErrorCode.SUCCESS) {
       compiler.getErrors().forEach(System.out::println);
     }
 
     assertThat(errorCode, is(ErrorCode.SUCCESS));
 
     String sourceCode = compiler.getSourceCode();
-
+    //ffff
+    System.out.println(sourceCode);
     File file = new File("temp.s");
 
     FileWriter writer = new FileWriter(file);
@@ -107,5 +110,23 @@ public class ExtensionTests {
     runAndCheckProgram(importFile, "1", 0);
     libFile.deleteOnExit();
     importFile.deleteOnExit();
+  }
+
+  @Test
+  public void switchStatement() throws IOException {
+    String prog =
+        "begin\n"
+            + "switch 1 "
+            + "case 1:\n"
+            + "print 1\n"
+            + "case 2:\n"
+            + "print 2\n"
+            + "default:\n"
+            + "print 3\n"
+            + "done\n"
+            + "end";
+    WaccCompiler compiler = new WaccCompiler(prog);
+    System.out.println(compiler.compile());
+    System.out.println(compiler.getSourceCode());
   }
 }

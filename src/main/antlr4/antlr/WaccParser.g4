@@ -51,6 +51,10 @@ stat:
       stat
       funcDecl*
     DONE                                  #classDef
+  | SWITCH expr
+      (CASE expr COLON stat)+
+      (DEFAULT COLON stat)?
+    DONE                                  #switchStat
 ;
 
 //typings
