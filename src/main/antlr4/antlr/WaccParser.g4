@@ -40,6 +40,7 @@ stat:
   | EXIT expr                             #exitStat
   | RETURN expr                           #returnStat
   | IF expr THEN stat ELSE stat END_IF    #ifThenElse
+  | IF expr THEN stat END_IF              #ifThen
   | WHILE expr DO stat DONE               #whileDo
   | DO stat WHILE expr DONE               #doWhile
   | FOR OPEN_PARENTHESES stat?
@@ -53,7 +54,7 @@ stat:
       funcDecl*
     DONE                                  #classDef
   | SWITCH expr
-      (CASE expr COLON stat)+
+      (CASE expr COLON stat)*
       (DEFAULT COLON stat)?
     DONE                                  #switchStat
 ;

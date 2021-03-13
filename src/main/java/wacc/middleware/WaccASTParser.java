@@ -235,6 +235,13 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   }
 
   @Override
+  public IfElseAST visitIfThen(WaccParser.IfThenContext ctx) {
+    return new IfElseAST(semanticErrors, ctx, visitExpr(ctx.expr()),
+        (StatementAST) visit(ctx.stat()), new SkipAST(semanticErrors, ctx));
+  }
+
+
+  @Override
   public StatementAST visitAssignIdent(AssignIdentContext ctx) {
     // return a new VariableDeclarationAST.
     return new VariableDeclarationAST(semanticErrors,
