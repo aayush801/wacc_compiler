@@ -1,6 +1,7 @@
 package wacc.middleware.ast_nodes.expression_ast;
 
 import java.util.List;
+import org.antlr.v4.runtime.ParserRuleContext;
 import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.MismatchedTypes;
 import wacc.errors.semantic_errors.NotAFunction;
@@ -13,7 +14,6 @@ import wacc.frontend.identifier_objects.basic_types.INT;
 import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.SymbolTable;
-import org.antlr.v4.runtime.ParserRuleContext;
 
 public class UnaryOpExprAST extends ExpressionAST {
 
@@ -21,7 +21,8 @@ public class UnaryOpExprAST extends ExpressionAST {
   private final String operator;
   private SymbolTable scopeST;
 
-  public UnaryOpExprAST(List<WaccError> errors,ParserRuleContext ctx, ExpressionAST expr, String operator) {
+  public UnaryOpExprAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST expr,
+      String operator) {
     super(errors, ctx);
     this.expr = expr;
     this.operator = operator;
@@ -113,6 +114,16 @@ public class UnaryOpExprAST extends ExpressionAST {
 
   }
 
+  // malloc takes the size of the struct/type and returns
+  // a pointer to the struct/var on the heap
+  private void checkMallocParam(TYPE exprType) {
+
+    if (!(exprType instanceof INT)) {
+      addError(new MismatchedTypes(ctx, exprType, new INT()));
+    }
+
+    type = new POINTER(new TYPE());
+  }
 
 
   /* ========================================================================= */
@@ -157,13 +168,15 @@ public class UnaryOpExprAST extends ExpressionAST {
       case "&":
         checkReferenceParam(exprType);
         break;
-      // Unrecognized Operator
+      case "malloc":
+        checkMallocParam(exprType);
+        break;
+        // Unrecognized Operator
       default:
         addError(new NotAFunction(ctx));
         break;
     }
   }
-
 
   @Override
   public <T> T accept(NodeASTVisitor<? extends T> visitor) {

@@ -14,7 +14,7 @@ import antlr.WaccParser.BoolLiterContext;
 import antlr.WaccParser.CharLiterContext;
 import antlr.WaccParser.ClassDefContext;
 import antlr.WaccParser.DoWhileContext;
-import antlr.WaccParser.ExitCallContext;
+import antlr.WaccParser.ExitStatContext;
 import antlr.WaccParser.ExprContext;
 import antlr.WaccParser.ForLoopContext;
 import antlr.WaccParser.FreeCallContext;
@@ -24,6 +24,7 @@ import antlr.WaccParser.IdentifierContext;
 import antlr.WaccParser.IfThenElseContext;
 import antlr.WaccParser.ImportsContext;
 import antlr.WaccParser.IntLiterContext;
+import antlr.WaccParser.MallocCallContext;
 import antlr.WaccParser.MethodCallContext;
 import antlr.WaccParser.NewObjectContext;
 import antlr.WaccParser.NewPairContext;
@@ -39,8 +40,9 @@ import antlr.WaccParser.PrintCallContext;
 import antlr.WaccParser.PrintlnCallContext;
 import antlr.WaccParser.ProgContext;
 import antlr.WaccParser.ReadCallContext;
-import antlr.WaccParser.ReturnCallContext;
+import antlr.WaccParser.ReturnStatContext;
 import antlr.WaccParser.SeperateStatContext;
+import antlr.WaccParser.SizeOfCallContext;
 import antlr.WaccParser.SkipStatContext;
 import antlr.WaccParser.StrLiterContext;
 import antlr.WaccParser.TypeContext;
@@ -66,6 +68,7 @@ import wacc.middleware.ast_nodes.class_ast.NewObjectAST;
 import wacc.middleware.ast_nodes.expression_ast.BinOpExprAST;
 import wacc.middleware.ast_nodes.expression_ast.IdentifierAST;
 import wacc.middleware.ast_nodes.expression_ast.LiteralsAST;
+import wacc.middleware.ast_nodes.expression_ast.SizeOfAST;
 import wacc.middleware.ast_nodes.expression_ast.UnaryOpExprAST;
 import wacc.middleware.ast_nodes.function_ast.FunctionCallAST;
 import wacc.middleware.ast_nodes.function_ast.FunctionDeclarationAST;
@@ -215,7 +218,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   }
 
   @Override
-  public ReturnAST visitReturnCall(ReturnCallContext ctx) {
+  public ReturnAST visitReturnStat(ReturnStatContext ctx) {
     // return a new ReturnAST.
     return new ReturnAST(semanticErrors, ctx, visitExpr(ctx.expr()));
   }
@@ -262,6 +265,15 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   }
 
   @Override
+  public SizeOfAST visitSizeOfCall(SizeOfCallContext ctx) {
+    if(ctx.type() != null) {
+      return new SizeOfAST(semanticErrors, ctx, visitType(ctx.type()));
+    } else {
+      return new SizeOfAST(semanticErrors, ctx, visitExpr(ctx.expr()));
+    }
+  }
+
+  @Override
   public StatementAST visitFreeCall(FreeCallContext ctx) {
     // return a new FreeAST.
     return new FreeAST(semanticErrors, ctx, visitExpr(ctx.expr()));
@@ -280,7 +292,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   }
 
   @Override
-  public StatementAST visitExitCall(ExitCallContext ctx) {
+  public StatementAST visitExitStat(ExitStatContext ctx) {
     // return a new ExitAST.
     return new ExitAST(semanticErrors, ctx, visitExpr(ctx.expr()));
   }
@@ -445,7 +457,11 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
       return visitPointerElem(ctx.pointerElem());
     }
 
-    // in this case, could be a literal, an ident, or null.
+    if(ctx.sizeOfCall() != null){
+      return visitSizeOfCall(ctx.sizeOfCall());
+    }
+
+    // in this case, could be a literal, an ident,or null.
     Object obj = visitChildren(ctx);
 
     if (obj instanceof LiteralsAST || obj instanceof IdentifierAST) {

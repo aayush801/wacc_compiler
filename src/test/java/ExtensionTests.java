@@ -34,6 +34,8 @@ public class ExtensionTests {
 
     String sourceCode = compiler.getSourceCode();
 
+    //System.out.println(sourceCode);
+
     File file = new File("temp.s");
 
     FileWriter writer = new FileWriter(file);
@@ -107,5 +109,33 @@ public class ExtensionTests {
     runAndCheckProgram(importFile, "1", 0);
     libFile.deleteOnExit();
     importFile.deleteOnExit();
+  }
+
+
+  @Test
+  public void testMalloc() throws IOException {
+
+    String instructions =
+        "begin\n"
+            + "  int *x = malloc(4); \n"
+            + "  *x = 4; \n"
+            + "  print *x;\n"
+            + "  print ',';\n"
+            + "  *x = 8; \n"
+            + "  print *x\n"
+        + "end";
+
+    runAndCheckProgram(instructions, "4,8", 0);
+  }
+
+  @Test
+  public void testPair() throws IOException {
+
+    String instructions =
+        "begin\n"
+            + "  pair(int, int) p = newpair(10, 3)\n"
+            + "end";
+
+    runAndCheckProgram(instructions, "", 0);
   }
 }

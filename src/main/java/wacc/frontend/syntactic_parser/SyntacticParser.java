@@ -49,12 +49,12 @@ public class SyntacticParser extends WaccParserBaseVisitor<Boolean> {
 
 
   @Override
-  public Boolean visitReturnCall(WaccParser.ReturnCallContext ctx) {
+  public Boolean visitReturnStat(WaccParser.ReturnStatContext ctx) {
     return true;
   }
 
   @Override
-  public Boolean visitExitCall(WaccParser.ExitCallContext ctx) {
+  public Boolean visitExitStat(WaccParser.ExitStatContext ctx) {
     return true;
   }
   /* ======================== END ============================== */

@@ -8,6 +8,7 @@ import wacc.middleware.ast_nodes.class_ast.NewObjectAST;
 import wacc.middleware.ast_nodes.expression_ast.BinOpExprAST;
 import wacc.middleware.ast_nodes.expression_ast.IdentifierAST;
 import wacc.middleware.ast_nodes.expression_ast.LiteralsAST;
+import wacc.middleware.ast_nodes.expression_ast.SizeOfAST;
 import wacc.middleware.ast_nodes.expression_ast.UnaryOpExprAST;
 import wacc.middleware.ast_nodes.function_ast.FunctionCallAST;
 import wacc.middleware.ast_nodes.function_ast.FunctionDeclarationAST;
@@ -89,6 +90,8 @@ public abstract class NodeASTVisitor<T> {
   public abstract T visit(RHSAssignAST rhs);
 
   public abstract T visit(SkipAST skip);
+
+  public abstract T visit(SizeOfAST sizeOf);
 
   public abstract T visit(VariableDeclarationAST variableDeclaration);
 
