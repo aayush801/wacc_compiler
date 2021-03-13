@@ -35,8 +35,7 @@ public class ExtensionTests {
     assertThat(errorCode, is(ErrorCode.SUCCESS));
 
     String sourceCode = compiler.getSourceCode();
-    //ffff
-    System.out.println(sourceCode);
+
     File file = new File("temp.s");
 
     FileWriter writer = new FileWriter(file);
@@ -128,5 +127,32 @@ public class ExtensionTests {
     WaccCompiler compiler = new WaccCompiler(prog);
     System.out.println(compiler.compile());
     System.out.println(compiler.getSourceCode());
+  }
+
+  @Test
+  public void testMalloc() throws IOException {
+
+    String instructions =
+        "begin\n"
+            + "  int *x = malloc(4); \n"
+            + "  *x = 4; \n"
+            + "  print *x;\n"
+            + "  print ',';\n"
+            + "  *x = 8; \n"
+            + "  print *x\n"
+        + "end";
+
+    runAndCheckProgram(instructions, "4,8", 0);
+  }
+
+  @Test
+  public void testPair() throws IOException {
+
+    String instructions =
+        "begin\n"
+            + "  pair(int, int) p = newpair(10, 3)\n"
+            + "end";
+
+    runAndCheckProgram(instructions, "", 0);
   }
 }

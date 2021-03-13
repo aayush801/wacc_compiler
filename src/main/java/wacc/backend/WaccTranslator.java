@@ -1,5 +1,8 @@
 package wacc.backend;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.antlr.v4.runtime.ParserRuleContext;
 import wacc.backend.instructions.Branch;
 import wacc.backend.instructions.Compare;
 import wacc.backend.instructions.ConditionCode;
@@ -46,11 +49,10 @@ import wacc.frontend.identifier_objects.basic_types.CHAR;
 import wacc.frontend.identifier_objects.basic_types.INT;
 import wacc.frontend.identifier_objects.basic_types.PAIR;
 import wacc.frontend.identifier_objects.basic_types.STR;
-import java.util.ArrayList;
-import java.util.List;
 import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeAST;
 import wacc.middleware.NodeASTVisitor;
+import wacc.middleware.SymbolTable;
 import wacc.middleware.ast_nodes.NodeASTList;
 import wacc.middleware.ast_nodes.StatementAST;
 import wacc.middleware.ast_nodes.TypeAST;
@@ -61,6 +63,7 @@ import wacc.middleware.ast_nodes.class_ast.NewObjectAST;
 import wacc.middleware.ast_nodes.expression_ast.BinOpExprAST;
 import wacc.middleware.ast_nodes.expression_ast.IdentifierAST;
 import wacc.middleware.ast_nodes.expression_ast.LiteralsAST;
+import wacc.middleware.ast_nodes.expression_ast.SizeOfAST;
 import wacc.middleware.ast_nodes.expression_ast.UnaryOpExprAST;
 import wacc.middleware.ast_nodes.function_ast.FunctionCallAST;
 import wacc.middleware.ast_nodes.function_ast.FunctionDeclarationAST;
@@ -92,8 +95,6 @@ import wacc.middleware.ast_nodes.types_ast.BaseTypeAST;
 import wacc.middleware.ast_nodes.types_ast.PairElemTypeAST;
 import wacc.middleware.ast_nodes.types_ast.PairTypeAST;
 import wacc.middleware.ast_nodes.types_ast.PointerTypeAST;
-import wacc.middleware.SymbolTable;
-import org.antlr.v4.runtime.ParserRuleContext;
 
 public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
@@ -558,6 +559,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
           // calculate offset
           int offset = program.SP.calculateOffset(varObj.getStackAddress());
 
+          // save stack pointer
           instructions.add(new Move(exprReg, program.SP));
 
           instructions.add(
@@ -568,7 +570,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       // LENGTH Operator
       case "len":
         Instruction loadVal = new Load(exprReg,
-            new ImmediateOffset(exprReg, ImmediateNum.ZERO));
+            new ZeroOffset(exprReg));
         instructions.add(loadVal);
         break;
       // CHR Operator
@@ -592,6 +594,17 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       // Invert bits using XOR
       case "~":
         instructions.add(new Move(exprReg, exprReg, true));
+        break;
+      // allocate memory on the heap
+      case "malloc":
+        // exprReg is the register that stores the no. of bytes of memory that needs to be allocated
+        instructions.add(new Move(Register.R0, exprReg));
+
+        // allocate the memory on the heap
+        instructions.add(new Branch("malloc", true));
+
+        // store the heap address in the dest register
+        instructions.add(new Move(exprReg, Register.R0));
         break;
       default:
         System.out.println("unary operation " + unaryOpExpr.getOperator() + "not handled");
@@ -717,7 +730,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     // Allocate memory for first element of the pair based on the size of the type
     int fstSize = newPair.getPair().getFirst().getSize();
-    allocateAndStorePairElemToMemory(instructions, pairElem, fstSize);
+    storeToHeap(instructions, pairElem, fstSize);
 
     // Store the address of the first element into the first word of the pair
     instructions.add(new Store(Register.R0, new ZeroOffset(pairAddress)));
@@ -729,7 +742,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     // Allocate memory for second element of the pair based on the size of the type
     int sndSize = newPair.getPair().getSecond().getSize();
-    allocateAndStorePairElemToMemory(instructions, pairElem, sndSize);
+    storeToHeap(instructions, pairElem, sndSize);
 
     // Storing address to value of second element in the second word of pair
     instructions.add(
@@ -742,15 +755,15 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
   }
 
   // helper method
-  private void allocateAndStorePairElemToMemory(List<Instruction> instructions,
-      Register pairElem, int typeSize) {
+  private void storeToHeap(List<Instruction> instructions,
+      Register destination, int typeSize) {
 
     instructions.add(new Load(Register.R0, new ImmediateAddress(typeSize)));
 
     instructions.add(new Branch("malloc", true));
 
     // Store the value of the pair element at the given address
-    instructions.add(new Store(pairElem, new ZeroOffset(Register.R0), typeSize));
+    instructions.add(new Store(destination, new ZeroOffset(Register.R0), typeSize));
   }
 
   @Override
@@ -1150,6 +1163,17 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
   }
 
   @Override
+  public List<Instruction> visit(SizeOfAST sizeOf) {
+    Register destination = program.registers.get(0);
+    List<Instruction> ret = new ArrayList<>();
+
+    // store the size of the type/struct/var in the destination register
+    ret.add(new Load(destination, new ImmediateAddress(sizeOf.getSize())));
+
+    return ret;
+  }
+
+  @Override
   public List<Instruction> visit(VariableDeclarationAST variableDeclaration) {
     RHSAssignAST rhsAssignAST = variableDeclaration.getRhsAssignAST();
     VARIABLE varObj = variableDeclaration.getVarObj();
@@ -1185,7 +1209,6 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     // Initialisation
     instructions.addAll(initialisation.accept(this));
-
 
     // generate loop body and condition
     instructions.addAll(visit((WhileAST) forLoop));

@@ -33,11 +33,12 @@ stat:
                     EQUALS assignRHS      #assignIdent
   | assignLHS EQUALS assignRHS            #assignVars
   | READ assignLHS                        #readCall
+  | MALLOC expr                           #mallocCall
   | FREE expr                             #freeCall
-  | RETURN expr                           #returnCall
-  | EXIT expr                             #exitCall
   | PRINT expr                            #printCall
   | PRINT_LINE expr                       #printlnCall
+  | EXIT expr                             #exitStat
+  | RETURN expr                           #returnStat
   | IF expr THEN stat ELSE stat END_IF    #ifThenElse
   | WHILE expr DO stat DONE               #whileDo
   | DO stat WHILE expr DONE               #doWhile
@@ -97,7 +98,6 @@ assignRHS:
   | pairElem
   | funcCall
   | newObject
-  | methodCall
 ;
 
 //expressions
@@ -110,6 +110,7 @@ expr:
   | identifier
   | arrayElem
   | unaryOperator expr
+  | sizeOfCall
   | pointerElem
   | expr binaryOperator=(DIVIDE | STAR | MOD) expr
   | expr binaryOperator=(PLUS | MINUS) expr
@@ -126,7 +127,7 @@ newObject: NEW identifier OPEN_PARENTHESES argList? CLOSE_PARENTHESES ;
 methodCall: identifier DOT identifier OPEN_PARENTHESES argList? CLOSE_PARENTHESES ;
 
 //unary operators
-unaryOperator: NOT | MINUS | LENGTH | ORD | CHR | INVERT | BITWISE_AND ;
+unaryOperator: NOT | MINUS | LENGTH | ORD | CHR | INVERT | BITWISE_AND | MALLOC;
 
 //arrays
 arrayElem: identifier (OPEN_SQUARE_BRACKET expr CLOSE_SQUARE_BRACKET)+ ;
@@ -147,6 +148,7 @@ pairElem:
 ;
 newPair: NEWPAIR OPEN_PARENTHESES expr COMMA expr CLOSE_PARENTHESES;
 
+//literals
 intLiter: (PLUS | MINUS)? INTEGER;
 boolLiter: TRUE | FALSE ;
 pairLiter: NULL;
@@ -154,3 +156,7 @@ strLiter: STRING;
 floatLiter : (PLUS | MINUS)? FLOAT ;
 charLiter: CHARACTER;
 identifier: IDENT;
+
+
+//sizeofcall
+sizeOfCall: SIZE_OF (expr | type | OPEN_PARENTHESES type CLOSE_PARENTHESES);

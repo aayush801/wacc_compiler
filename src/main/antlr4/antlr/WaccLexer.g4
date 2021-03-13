@@ -48,14 +48,16 @@ END: 'end' ;
 RETURN: 'return' ;
 CALL: 'call';
 EXIT: 'exit' ;
-
-//stat descriptors
 SKIP_STATEMENT : 'skip' ;
 IS: 'is';
+
+//primtive functions
 READ: 'read' ;
 FREE: 'free' ;
 PRINT: 'print' ;
 PRINT_LINE: 'println' ;
+MALLOC: 'malloc';
+SIZE_OF: 'size_of';
 
 //conditional keywords
 WHILE: 'while' ;
@@ -135,8 +137,8 @@ NEW : 'new' ;
 
 NULL: 'null' ;
 
-//wacc.extension
-// import statement
+//extension
+//import statement
 IMPORT: 'import';
 
 // switch statement

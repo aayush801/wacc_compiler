@@ -39,7 +39,9 @@ public class ReadAST extends StatementAST {
         addError(new MismatchedTypes(ctx, type, new INT(), new CHAR()));
 
       }
+
     }
+
   }
 
   @Override
