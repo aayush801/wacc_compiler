@@ -7,7 +7,7 @@ import wacc.backend.registers.Register;
 public class Arithmetic extends Instruction {
 
   private final Register Rd, Rn;
-  private final wacc.backend.operands.Operand operand;
+  private final Operand operand;
 
 
   private final ArithmeticOpcode opcode;

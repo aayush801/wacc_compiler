@@ -14,7 +14,8 @@ public class FreeAST extends StatementAST {
 
   private final ExpressionAST expr;
 
-  public FreeAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST expr) {
+  public FreeAST(List<WaccError> errors, ParserRuleContext ctx,
+      ExpressionAST expr) {
     super(errors, ctx);
     this.expr = expr;
   }

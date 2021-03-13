@@ -19,12 +19,14 @@ public class PairElemTypeAST extends NodeAST {
   private String pairName;
   private TYPE type;
 
-  public PairElemTypeAST(List<WaccError> errors, ParserRuleContext ctx, BaseTypeAST baseTypeAST) {
+  public PairElemTypeAST(List<WaccError> errors, ParserRuleContext ctx,
+      BaseTypeAST baseTypeAST) {
     super(errors, ctx);
     this.baseTypeAST = baseTypeAST;
   }
 
-  public PairElemTypeAST(List<WaccError> errors, ParserRuleContext ctx, ArrayTypeAST arrayTypeAST) {
+  public PairElemTypeAST(List<WaccError> errors, ParserRuleContext ctx,
+      ArrayTypeAST arrayTypeAST) {
     super(errors, ctx);
     this.arrayTypeAST = arrayTypeAST;
   }

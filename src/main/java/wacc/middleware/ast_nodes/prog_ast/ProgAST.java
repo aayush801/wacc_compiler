@@ -20,16 +20,12 @@ public class ProgAST extends NodeAST {
   private final NodeASTList<ImportAST> importASTS;
   private final NodeASTList<FunctionDeclarationAST> functionDeclarationASTS;
   private StatementAST statementAST;
-
   private String filename;
-
   private SymbolTable scopeST;
 
 
-  public ProgAST(List<WaccError> errors,
-      ParserRuleContext ctx,
-      String filename,
-      NodeASTList<ImportAST> importASTS,
+  public ProgAST(List<WaccError> errors, ParserRuleContext ctx,
+      String filename, NodeASTList<ImportAST> importASTS,
       NodeASTList<FunctionDeclarationAST> functionDeclarationASTS,
       StatementAST statementAST) {
     super(errors, ctx);
@@ -55,11 +51,12 @@ public class ProgAST extends NodeAST {
 
       if (importedProg != null) {
         // add the import functions to funcDeclrList
-        functionDeclarationASTS.addAll(importedProg.getFunctionDeclarationASTS());
+        functionDeclarationASTS.addAll(
+            importedProg.getFunctionDeclarationASTS());
 
         // append the statement bodies together using a chained statement
-        statementAST =
-            new ChainedStatementAST(errors, statementAST.ctx, statementAST, importedProg.getStatementAST());
+        statementAST = new ChainedStatementAST(errors, statementAST.ctx,
+            statementAST, importedProg.getStatementAST());
       }
     }
 

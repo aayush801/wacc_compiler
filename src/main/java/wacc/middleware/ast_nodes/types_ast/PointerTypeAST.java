@@ -25,15 +25,12 @@ public class PointerTypeAST extends TypeAST {
   @Override
   public void check() {
     typeAST.check();
-
     pointerObj = new POINTER(typeAST.getType());
 
     // recursively encapsulate pointer object
     // when multiple stars are used
     for (int i = 0; i < level - 1; i++) {
-
       pointerObj = new POINTER(pointerObj);
-
     }
   }
 

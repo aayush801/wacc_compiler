@@ -17,7 +17,8 @@ public class PairElemAST extends NodeAST {
   private final boolean isFirstElem;
   private TYPE type;
 
-  public PairElemAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST exprAST, boolean isFirstElem) {
+  public PairElemAST(List<WaccError> errors, ParserRuleContext ctx,
+      ExpressionAST exprAST, boolean isFirstElem) {
     super(errors, ctx);
     this.exprAST = exprAST;
     this.isFirstElem = isFirstElem;
@@ -45,7 +46,8 @@ public class PairElemAST extends NodeAST {
 
     if (!(exprType instanceof PAIR)) {
 
-      addError(new MismatchedTypes(ctx, exprType, new PAIR(new TYPE(), new TYPE())));
+      addError(
+          new MismatchedTypes(ctx, exprType, new PAIR(new TYPE(), new TYPE())));
 
       return;
 

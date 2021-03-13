@@ -19,7 +19,7 @@ public class CodeGenerationTests {
     WaccCompiler compiler = new WaccCompiler(instruction);
     ErrorCode errorCode = compiler.compile();
 
-    if(errorCode != ErrorCode.SUCCESS){
+    if (errorCode != ErrorCode.SUCCESS) {
       compiler.getErrors().forEach(System.out::println);
     }
 
@@ -36,7 +36,8 @@ public class CodeGenerationTests {
 
     Runtime runtime = Runtime.getRuntime();
     Process compileSourceProcess = runtime
-        .exec("arm-linux-gnueabi-gcc -o EXEName -mcpu=arm1176jzf-s -mtune=arm1176jzf-s temp.s");
+        .exec("arm-linux-gnueabi-gcc -o EXEName -mcpu=arm1176jzf-s "
+            + "-mtune=arm1176jzf-s temp.s");
 
     try {
       compileSourceProcess.waitFor();
@@ -44,7 +45,8 @@ public class CodeGenerationTests {
       e.printStackTrace();
     }
 
-    Process execWacc = runtime.exec("qemu-arm -L /usr/arm-linux-gnueabi/ EXEName");
+    Process execWacc = runtime
+        .exec("qemu-arm -L /usr/arm-linux-gnueabi/ EXEName");
     InputStream inputStream = execWacc.getInputStream();
 
     try {

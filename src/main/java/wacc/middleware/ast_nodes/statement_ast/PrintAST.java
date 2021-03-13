@@ -15,7 +15,8 @@ public class PrintAST extends StatementAST {
   private final boolean newLine;
   private TYPE type;
 
-  public PrintAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST expr, boolean newLine) {
+  public PrintAST(List<WaccError> errors, ParserRuleContext ctx,
+      ExpressionAST expr, boolean newLine) {
     super(errors, ctx);
     this.expr = expr;
     this.newLine = newLine;

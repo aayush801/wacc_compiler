@@ -43,7 +43,6 @@ public class ParamAST extends NodeAST {
         ST.add(paramName, paramObj);
       }
     }
-
   }
 
   @Override

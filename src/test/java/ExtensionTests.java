@@ -16,17 +16,18 @@ import wacc.errors.semantic_errors.WaccSemanticError;
 
 public class ExtensionTests {
 
-  private void runAndCheckProgram(String instructions, String expected, int exitCode)
-      throws IOException {
+  private void runAndCheckProgram(String instructions, String expected,
+      int exitCode) throws IOException {
     checkSourceCode(new WaccCompiler(instructions), expected, exitCode);
   }
 
-  private void runAndCheckProgram(File file, String expected, int exitCode) throws IOException {
+  private void runAndCheckProgram(File file, String expected, int exitCode)
+      throws IOException {
     checkSourceCode(new WaccCompiler(file), expected, exitCode);
   }
 
-  private void checkSourceCode(WaccCompiler compiler, String expected, int exitCode)
-      throws IOException {
+  private void checkSourceCode(WaccCompiler compiler, String expected,
+      int exitCode) throws IOException {
 
     ErrorCode errorCode = compiler.compile();
 
@@ -47,7 +48,8 @@ public class ExtensionTests {
 
     Runtime runtime = Runtime.getRuntime();
     Process compileSourceProcess = runtime
-        .exec("arm-linux-gnueabi-gcc -o EXEName -mcpu=arm1176jzf-s -mtune=arm1176jzf-s temp.s");
+        .exec("arm-linux-gnueabi-gcc -o EXEName -mcpu=arm1176jzf-s "
+            + "-mtune=arm1176jzf-s temp.s");
 
     try {
       compileSourceProcess.waitFor();
@@ -55,7 +57,8 @@ public class ExtensionTests {
       e.printStackTrace();
     }
 
-    Process execWacc = runtime.exec("qemu-arm -L /usr/arm-linux-gnueabi/ EXEName");
+    Process execWacc = runtime
+        .exec("qemu-arm -L /usr/arm-linux-gnueabi/ EXEName");
     InputStream inputStream = execWacc.getInputStream();
 
     try {

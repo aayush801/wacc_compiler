@@ -303,6 +303,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // Loop variable
     String loopVariable = "i";
     if (variableName.equals(loopVariable)) {
+      // To avoid clash with variable
       loopVariable = "j";
     }
     // int i = 0
@@ -337,10 +338,9 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
             new RHSAssignAST(semanticErrors, ctx,
                 new ArrayElemAST(semanticErrors, ctx, arrayName,
                     new NodeASTList<>(semanticErrors, ctx,
-                        new ArrayList<>(
-                            Arrays.asList(
-                                new IdentifierAST(semanticErrors, ctx,
-                                    loopVariable)))))));
+                        new ArrayList<>(Arrays.asList(
+                            new IdentifierAST(semanticErrors, ctx, loopVariable
+                            )))))));
     // (int i = 0; type var = array[0])
     ChainedStatementAST initialisation =
         new ChainedStatementAST(semanticErrors, ctx, indexDeclaration,
@@ -364,12 +364,12 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
             new UnaryOpExprAST(semanticErrors, ctx,
                 new IdentifierAST(semanticErrors, ctx, arrayName), "len"));
 
+    // Only enter loop if array is non-empty
     return new IfElseAST(semanticErrors, ctx, entryCheck,
         new ForAST(semanticErrors, ctx, initialisation, indexBoundCheck,
             afterthought, (StatementAST) visit(ctx.stat())),
         new SkipAST(semanticErrors, ctx));
   }
-
 
   @Override
   public SizeOfAST visitSizeOfCall(SizeOfCallContext ctx) {
@@ -408,7 +408,8 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   public StatementAST visitSeperateStat(SeperateStatContext ctx) {
     // return a new ChainedStatementAST.
     return new ChainedStatementAST(semanticErrors,
-        ctx, (StatementAST) visit(ctx.stat(0)), (StatementAST) visit(ctx.stat(1)));
+        ctx, (StatementAST) visit(ctx.stat(0)),
+        (StatementAST) visit(ctx.stat(1)));
   }
 
   @Override
@@ -432,8 +433,8 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   @Override
   public StatementAST visitAssignVars(AssignVarsContext ctx) {
     // return a new AssignmentAST.
-    return new AssignmentAST(semanticErrors, ctx, visitAssignLHS(ctx.assignLHS()),
-        visitAssignRHS(ctx.assignRHS()));
+    return new AssignmentAST(semanticErrors, ctx,
+        visitAssignLHS(ctx.assignLHS()), visitAssignRHS(ctx.assignRHS()));
   }
 
   @Override
@@ -456,15 +457,15 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
       // case for base type.
 
       // return new ArrayTypeAST.
-      return new ArrayTypeAST(semanticErrors, ctx, ctx.OPEN_SQUARE_BRACKET().size(),
-          visitBaseType(ctx.baseType()));
+      return new ArrayTypeAST(semanticErrors, ctx,
+          ctx.OPEN_SQUARE_BRACKET().size(), visitBaseType(ctx.baseType()));
 
     } else {
       // case for base type.
 
       // return new ArrayTypeAST.
-      return new ArrayTypeAST(semanticErrors, ctx, ctx.OPEN_SQUARE_BRACKET().size(),
-          visitPairType(ctx.pairType()));
+      return new ArrayTypeAST(semanticErrors, ctx,
+          ctx.OPEN_SQUARE_BRACKET().size(), visitPairType(ctx.pairType()));
     }
   }
 
@@ -478,7 +479,8 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   @Override
   public PointerElemAST visitPointerElem(PointerElemContext ctx) {
     // case for base type.
-    return new PointerElemAST(semanticErrors, ctx, ctx.STAR().size(), ctx.identifier().getText());
+    return new PointerElemAST(semanticErrors, ctx, ctx.STAR().size(),
+        ctx.identifier().getText());
   }
 
   @Override
@@ -487,7 +489,8 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // by calling the appropriate constructor.
 
     if (ctx.identifier() != null) {
-      return new LHSAssignAST(semanticErrors, ctx, ctx.identifier().getText());
+      return new LHSAssignAST(semanticErrors, ctx,
+          ctx.identifier().getText());
     }
 
     if (ctx.arrayElem() != null) {
@@ -497,7 +500,8 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     }
 
     if (ctx.pairElem() != null) {
-      return new LHSAssignAST(semanticErrors, ctx, visitPairElem(ctx.pairElem()));
+      return new LHSAssignAST(semanticErrors, ctx,
+          visitPairElem(ctx.pairElem()));
     }
 
     if (ctx.pointerElem() != null) {
@@ -523,15 +527,18 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     }
 
     if (ctx.newPair() != null) {
-      return new RHSAssignAST(semanticErrors, ctx, visitNewPair(ctx.newPair()));
+      return new RHSAssignAST(semanticErrors, ctx,
+          visitNewPair(ctx.newPair()));
     }
 
     if (ctx.pairElem() != null) {
-      return new RHSAssignAST(semanticErrors, ctx, visitPairElem(ctx.pairElem()));
+      return new RHSAssignAST(semanticErrors, ctx,
+          visitPairElem(ctx.pairElem()));
     }
 
     if (ctx.funcCall() != null) {
-      return new RHSAssignAST(semanticErrors, ctx, visitFuncCall(ctx.funcCall()));
+      return new RHSAssignAST(semanticErrors, ctx,
+          visitFuncCall(ctx.funcCall()));
     }
 
     return null;
@@ -544,7 +551,8 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
     if (ctx.binaryOperator != null) {
       return new BinOpExprAST(semanticErrors,
-          ctx, visitExpr(ctx.expr(0)), ctx.binaryOperator.getText(), visitExpr(ctx.expr(1)));
+          ctx, visitExpr(ctx.expr(0)), ctx.binaryOperator.getText(),
+          visitExpr(ctx.expr(1)));
     }
 
     if (ctx.unaryOperator() != null) {
@@ -593,7 +601,9 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // Make a list of ExpressionAST for each element of the array.
     NodeASTList<ExpressionAST> exprs =
         new NodeASTList<>(semanticErrors,
-            ctx, ctx.expr().stream().map(this::visitExpr).collect(Collectors.toList()));
+            ctx, ctx.expr().stream()
+            .map(this::visitExpr)
+            .collect(Collectors.toList()));
 
     // return a new ArrayElemAST.
     return new ArrayElemAST(semanticErrors, ctx, ctx.identifier().getText(), exprs);
@@ -604,7 +614,9 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // Make a list of ExpressionAST for each element of the array.
     NodeASTList<ExpressionAST> exprs =
         new NodeASTList<>(semanticErrors,
-            ctx, ctx.expr().stream().map(this::visitExpr).collect(Collectors.toList()));
+            ctx, ctx.expr().stream()
+            .map(this::visitExpr)
+            .collect(Collectors.toList()));
 
     // return a new ArrayAST.
     return new ArrayAST(semanticErrors, ctx, exprs);
@@ -614,8 +626,9 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   public PairTypeAST visitPairType(PairTypeContext ctx) {
 
     // return a new PairTypeAST.
-    return new PairTypeAST(semanticErrors,
-        ctx, visitPairElemType(ctx.pairElemType(0)), visitPairElemType(ctx.pairElemType(1)));
+    return new PairTypeAST(semanticErrors, ctx,
+        visitPairElemType(ctx.pairElemType(0)),
+        visitPairElemType(ctx.pairElemType(1)));
   }
 
   @Override
@@ -643,13 +656,15 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   public PairElemAST visitPairElem(PairElemContext ctx) {
     // return a new PairElemAST.
     // If operation is a first, pass index of 0, otherwise 1.
-    return new PairElemAST(semanticErrors, ctx, visitExpr(ctx.expr()), ctx.PAIR_FIRST() != null);
+    return new PairElemAST(semanticErrors, ctx, visitExpr(ctx.expr()),
+        ctx.PAIR_FIRST() != null);
   }
 
   @Override
   public NewPairAST visitNewPair(NewPairContext ctx) {
     // return a new NewPairAST.
-    return new NewPairAST(semanticErrors, ctx, visitExpr(ctx.expr(0)), visitExpr(ctx.expr(1)));
+    return new NewPairAST(semanticErrors, ctx, visitExpr(ctx.expr(0)),
+        visitExpr(ctx.expr(1)));
   }
 
   // ================= visiting Literals and Identifier ==========================

@@ -18,15 +18,15 @@ public class ArrayTypeAST extends TypeAST {
   private BaseTypeAST baseTypeAST;
   private PairTypeAST pairTypeAST;
 
-  public ArrayTypeAST(List<WaccError> errors, ParserRuleContext ctx, int dimensions,
-      PairTypeAST pairTypeAST) {
+  public ArrayTypeAST(List<WaccError> errors, ParserRuleContext ctx,
+      int dimensions, PairTypeAST pairTypeAST) {
     super(errors, ctx);
     this.dimensions = dimensions;
     this.pairTypeAST = pairTypeAST;
   }
 
-  public ArrayTypeAST(List<WaccError> errors, ParserRuleContext ctx, int dimensions,
-      BaseTypeAST baseTypeAST) {
+  public ArrayTypeAST(List<WaccError> errors, ParserRuleContext ctx,
+      int dimensions, BaseTypeAST baseTypeAST) {
     super(errors, ctx);
     this.dimensions = dimensions;
     this.baseTypeAST = baseTypeAST;

@@ -13,46 +13,35 @@ public class Main {
     WaccCompiler compiler = null;
 
     if (args.length == 0) {
-
       Scanner scanner = new Scanner(System.in);
-
       StringBuilder instructions = new StringBuilder();
 
       int lineNo = 0;
 
       System.out.println("Welcome to the WACC command line!");
-
       System.out.print(lineNo + " > ");
 
       while (scanner.hasNextLine()) {
-
         System.out.print(++lineNo + " > ");
-
         instructions.append(scanner.nextLine());
-
       }
 
       scanner.close();
 
       compiler = new WaccCompiler(instructions.toString());
-
     }
 
     if (args.length == 1) {
-
       // .wacc file path is given as first argument
       File waccFile = new File(args[0]);
       if (waccFile.isFile()) {
-
         compiler = new WaccCompiler(waccFile);
-        System.out.println("Compiling " + FilenameUtils.getBaseName(args[0]) + " ...");
-
+        System.out.println("Compiling "
+            + FilenameUtils.getBaseName(args[0]) + " ...");
       } else {
-
-        throw new IllegalArgumentException("WACC compiler requires a .wacc file to compile");
-
+        throw new IllegalArgumentException(
+            "WACC compiler requires a .wacc file to compile");
       }
-
     }
 
     assert compiler != null;
@@ -70,19 +59,12 @@ public class Main {
 
       /* CONVERT SOURCE CODE TO COMMAND LINE OUTPUT OR SOURCE CODE FILE */
       if (args.length == 0) {
-
         printSourceCode(sourceCode);
-
       } else {
-
         writeSourceCode(args[0], sourceCode);
-
       }
-
     }
-
     System.exit(errorCode.code());
-
   }
 
   private static void writeSourceCode(String waccPath, String sourceCode)

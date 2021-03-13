@@ -73,29 +73,21 @@ public class BinOpExprAST extends ExpressionAST {
     boolean error = false;
 
     if (!leftIntOrChar) {
-
       addError(new MismatchedTypes(leftExprAST.ctx, leftType, new INT(),
           new CHAR()));
       error = true;
-
     }
 
     if (!rightIntOrChar) {
-
       addError(new MismatchedTypes(rightExprAST.ctx, rightType, new INT(),
           new CHAR()));
       error = true;
-
     }
 
     if (!error) {
-
       if (!isCompatible(leftType, rightType)) {
-
         addError(new MismatchedTypes(ctx, rightType, leftType));
-
       }
-
     }
 
     type = new BOOL();
@@ -107,15 +99,11 @@ public class BinOpExprAST extends ExpressionAST {
     boolean rightIsBool = rightType instanceof BOOL;
 
     if (!leftIsBool) {
-
       addError(new MismatchedTypes(leftExprAST.ctx, new BOOL(), leftType));
-
     }
 
     if (!rightIsBool) {
-
       addError(new MismatchedTypes(rightExprAST.ctx, new BOOL(), rightType));
-
     }
 
     type = new BOOL();
@@ -123,11 +111,8 @@ public class BinOpExprAST extends ExpressionAST {
 
   // Check that lef type and right type are type compatible.
   private void checkEquatableParams(IDENTIFIER leftType, IDENTIFIER rightType) {
-
     if (!isCompatible(leftType, rightType)) {
-
       addError(new MismatchedTypes(ctx, rightType, leftType));
-
     }
 
     type = new BOOL();

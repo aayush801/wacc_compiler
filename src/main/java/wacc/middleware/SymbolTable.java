@@ -20,7 +20,6 @@ public class SymbolTable {
   private final SymbolTable encSymTable;
   private final LinkedHashMap<String, IDENTIFIER> dict;
   protected TYPE scopeReturnType = null;
-
   int stackPtr = 0, freePtr = 0;
 
   public SymbolTable() {

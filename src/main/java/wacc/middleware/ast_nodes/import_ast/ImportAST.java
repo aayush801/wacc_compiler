@@ -21,12 +21,14 @@ import wacc.middleware.WaccASTParser;
 import wacc.middleware.ast_nodes.prog_ast.ProgAST;
 
 public class ImportAST extends NodeAST {
+
   private String filename;
   private Path relativePath;
   private IMPORT importObj;
   private ProgAST progAST;
 
-  public ImportAST(List<WaccError> errors, ParserRuleContext ctx, String filename, Path relativePath) {
+  public ImportAST(List<WaccError> errors, ParserRuleContext ctx,
+      String filename, Path relativePath) {
     super(errors, ctx);
     // removes .wacc ext from filename
     this.filename = filename.replace(".wacc", "");

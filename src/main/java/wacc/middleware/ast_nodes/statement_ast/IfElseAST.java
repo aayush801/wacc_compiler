@@ -17,8 +17,9 @@ public class IfElseAST extends StatementAST {
   private final StatementAST firstStatAST, secondStatAST;
   private SymbolTable ST1, ST2;
 
-  public IfElseAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST expressionAST,
-      StatementAST firstStatAST, StatementAST secondStatAST) {
+  public IfElseAST(List<WaccError> errors, ParserRuleContext ctx,
+      ExpressionAST expressionAST, StatementAST firstStatAST,
+      StatementAST secondStatAST) {
     super(errors, ctx);
     this.expressionAST = expressionAST;
     this.firstStatAST = firstStatAST;

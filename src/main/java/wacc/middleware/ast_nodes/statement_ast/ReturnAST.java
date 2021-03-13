@@ -15,7 +15,8 @@ public class ReturnAST extends StatementAST {
   private final ExpressionAST expressionAST;
   private TYPE type;
 
-  public ReturnAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST expressionAST) {
+  public ReturnAST(List<WaccError> errors, ParserRuleContext ctx,
+      ExpressionAST expressionAST) {
     super(errors, ctx);
     this.expressionAST = expressionAST;
   }

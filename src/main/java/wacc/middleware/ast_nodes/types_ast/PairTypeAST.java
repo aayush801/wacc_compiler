@@ -12,12 +12,11 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class PairTypeAST extends TypeAST {
 
-  private final PairElemTypeAST pairElemType1;
-  private final PairElemTypeAST pairElemType2;
+  private final PairElemTypeAST pairElemType1, pairElemType2;
   private TYPE type;
 
-  public PairTypeAST(List<WaccError> errors, ParserRuleContext ctx, PairElemTypeAST pairElemType1,
-      PairElemTypeAST pairElemType2) {
+  public PairTypeAST(List<WaccError> errors, ParserRuleContext ctx,
+      PairElemTypeAST pairElemType1, PairElemTypeAST pairElemType2) {
     super(errors, ctx);
     this.pairElemType1 = pairElemType1;
     this.pairElemType2 = pairElemType2;

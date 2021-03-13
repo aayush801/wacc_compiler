@@ -14,7 +14,8 @@ public class ReadAST extends StatementAST {
 
   private final LHSAssignAST LHS;
 
-  public ReadAST(List<WaccError> errors, ParserRuleContext ctx, LHSAssignAST LHS) {
+  public ReadAST(List<WaccError> errors, ParserRuleContext ctx,
+      LHSAssignAST LHS) {
     super(errors, ctx);
     this.LHS = LHS;
   }

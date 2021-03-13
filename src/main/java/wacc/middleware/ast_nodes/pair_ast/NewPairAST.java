@@ -15,8 +15,8 @@ public class NewPairAST extends NodeAST {
   private final ExpressionAST fstExpr, sndExpr;
   private PAIR pair;
 
-  public NewPairAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST fstExpr,
-      ExpressionAST sndExpr) {
+  public NewPairAST(List<WaccError> errors, ParserRuleContext ctx,
+      ExpressionAST fstExpr, ExpressionAST sndExpr) {
     super(errors, ctx);
     this.fstExpr = fstExpr;
     this.sndExpr = sndExpr;

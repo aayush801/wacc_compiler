@@ -22,7 +22,8 @@ public class PointerElemAST extends ExpressionAST {
   private TYPE typeObj;
   private SymbolTable scopeST;
 
-  public PointerElemAST(List<WaccError> errors, ParserRuleContext ctx, int level, String pointerName) {
+  public PointerElemAST(List<WaccError> errors, ParserRuleContext ctx, int level,
+      String pointerName) {
     super(errors, ctx);
     this.level = level;
     this.pointerName = pointerName;

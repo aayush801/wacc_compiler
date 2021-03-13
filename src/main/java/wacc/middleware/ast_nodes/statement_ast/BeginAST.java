@@ -12,7 +12,8 @@ public class BeginAST extends StatementAST {
   private final StatementAST statementAST;
   private SymbolTable scopeST;
 
-  public BeginAST(List<WaccError> errors, ParserRuleContext ctx, StatementAST statementAST) {
+  public BeginAST(List<WaccError> errors, ParserRuleContext ctx,
+      StatementAST statementAST) {
     super(errors, ctx);
     this.statementAST = statementAST;
   }
