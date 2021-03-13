@@ -12,8 +12,6 @@ public class WaccIDE {
     model = new Model(view);
   }
 
-
-
   class Controller implements ActionListener {
 
     @Override

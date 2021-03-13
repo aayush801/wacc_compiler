@@ -29,8 +29,7 @@ argList: expr (COMMA expr)* ;
 //statements
 stat:
     SKIP_STATEMENT                        #skipStat
-  | VISIBILITY? type identifier
-                    EQUALS assignRHS      #assignIdent
+  | type identifier EQUALS assignRHS      #assignIdent
   | assignLHS EQUALS assignRHS            #assignVars
   | READ assignLHS                        #readCall
   | MALLOC expr                           #mallocCall
@@ -51,10 +50,11 @@ stat:
       stat END_FOR                        #forEachLoop
   | BEGIN stat END                        #beginStat
   | stat SEPERATOR stat                   #seperateStat
-  | CLASS IDENT
-      stat
-      funcDecl*
+  | CLASS identifier
+      fields?
+      methodDecl*
     DONE                                  #classDef
+  | methodCall                            #methodCallStat
   | SWITCH expr
       (CASE expr COLON stat)*
       (DEFAULT COLON stat)?
@@ -127,6 +127,12 @@ expr:
 
 //classes
 newObject: NEW identifier OPEN_PARENTHESES argList? CLOSE_PARENTHESES ;
+fields:
+    VISIBILITY stat
+  | fields SEPARATOR fields
+;
+
+methodDecl: VISIBILITY funcDecl ;
 methodCall: identifier DOT identifier OPEN_PARENTHESES argList? CLOSE_PARENTHESES ;
 
 //unary operators

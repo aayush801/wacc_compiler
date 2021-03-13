@@ -4,19 +4,15 @@ import wacc.middleware.SymbolTable;
 
 public class CLASS extends TYPE {
 
-  private SymbolTable ST;
+  private final SymbolTable scopeST;
 
-  public CLASS(String name, SymbolTable symbolTable) {
+  public CLASS(String name, SymbolTable scopeST) {
     super(name);
-    setST(symbolTable);
+    this.scopeST = scopeST;
   }
 
-  public SymbolTable getST() {
-    return ST;
+  @Override
+  public boolean equals(Object o) {
+    return o instanceof CLASS && name.equals(((CLASS) o).getName());
   }
-
-  public void setST(SymbolTable ST) {
-    this.ST = ST;
-  }
-
 }

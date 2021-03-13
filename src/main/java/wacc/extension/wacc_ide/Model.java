@@ -61,16 +61,17 @@ public class Model {
 
       Color color = errorLines.contains(line) ? Color.RED : Color.BLACK;
 
-      AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color);
+      AttributeSet aset = sc
+          .addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color);
 
       aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
 
       // Only add newline if not last line.
-      document.insertString(offset, codeLine + ((line == lines.length) ? "" : "\n") , aset);
+      document.insertString(offset, codeLine + ((line == lines.length) ? "" : "\n"), aset);
 
-      offset += codeLine.length() + 1 ;
+      offset += codeLine.length() + 1;
     }
-    return null ;
+    return null;
   }
 
 }

@@ -25,8 +25,6 @@ import antlr.WaccParser.IdentifierContext;
 import antlr.WaccParser.IfThenElseContext;
 import antlr.WaccParser.ImportsContext;
 import antlr.WaccParser.IntLiterContext;
-import antlr.WaccParser.MallocCallContext;
-import antlr.WaccParser.MethodCallContext;
 import antlr.WaccParser.NewObjectContext;
 import antlr.WaccParser.NewPairContext;
 import antlr.WaccParser.PairElemContext;
@@ -49,14 +47,12 @@ import antlr.WaccParser.StrLiterContext;
 import antlr.WaccParser.TypeContext;
 import antlr.WaccParser.WhileDoContext;
 import antlr.WaccParserBaseVisitor;
-import java.beans.Expression;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import wacc.errors.WaccError;
-import wacc.frontend.identifier_objects.TYPE;
 import wacc.frontend.identifier_objects.basic_types.BOOL;
 import wacc.frontend.identifier_objects.basic_types.CHAR;
 import wacc.frontend.identifier_objects.basic_types.INT;
@@ -67,8 +63,9 @@ import wacc.middleware.ast_nodes.StatementAST;
 import wacc.middleware.ast_nodes.TypeAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayElemAST;
-import wacc.middleware.ast_nodes.class_ast.MethodCallAST;
-import wacc.middleware.ast_nodes.class_ast.NewObjectAST;
+import wacc.middleware.ast_nodes.statement_ast.class_ast.MethodCallAST;
+import wacc.middleware.ast_nodes.statement_ast.class_ast.MethodDeclarationAST;
+import wacc.middleware.ast_nodes.statement_ast.class_ast.NewObjectAST;
 import wacc.middleware.ast_nodes.expression_ast.BinOpExprAST;
 import wacc.middleware.ast_nodes.expression_ast.IdentifierAST;
 import wacc.middleware.ast_nodes.expression_ast.LiteralsAST;
@@ -85,9 +82,9 @@ import wacc.middleware.ast_nodes.prog_ast.ProgAST;
 import wacc.middleware.ast_nodes.statement_ast.AssignmentAST;
 import wacc.middleware.ast_nodes.statement_ast.BeginAST;
 import wacc.middleware.ast_nodes.statement_ast.ChainedStatementAST;
-import wacc.middleware.ast_nodes.statement_ast.ClassDefinitionAST;
+import wacc.middleware.ast_nodes.statement_ast.class_ast.ClassDefinitionAST;
 import wacc.middleware.ast_nodes.statement_ast.ExitAST;
-import wacc.middleware.ast_nodes.statement_ast.ForAST;
+import wacc.middleware.ast_nodes.statement_ast.loop_ast.ForAST;
 import wacc.middleware.ast_nodes.statement_ast.FreeAST;
 import wacc.middleware.ast_nodes.statement_ast.IfElseAST;
 import wacc.middleware.ast_nodes.statement_ast.LHSAssignAST;
@@ -97,7 +94,7 @@ import wacc.middleware.ast_nodes.statement_ast.ReadAST;
 import wacc.middleware.ast_nodes.statement_ast.ReturnAST;
 import wacc.middleware.ast_nodes.statement_ast.SkipAST;
 import wacc.middleware.ast_nodes.statement_ast.VariableDeclarationAST;
-import wacc.middleware.ast_nodes.statement_ast.WhileAST;
+import wacc.middleware.ast_nodes.statement_ast.loop_ast.WhileAST;
 import wacc.middleware.ast_nodes.types_ast.ArrayTypeAST;
 import wacc.middleware.ast_nodes.types_ast.BaseTypeAST;
 import wacc.middleware.ast_nodes.types_ast.PairElemTypeAST;
@@ -110,7 +107,8 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   private final List<WaccError> semanticErrors;
   private final String filename;
 
-  public WaccASTParser(String filename, Path relativePath, List<WaccError> semanticErrors) {
+  public WaccASTParser(String filename, Path relativePath,
+      List<WaccError> semanticErrors) {
     this.relativePath = relativePath;
     this.semanticErrors = semanticErrors;
     this.filename = filename;
@@ -123,7 +121,9 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // Do this by calling visitFuncDecl on all function declarations in ctx.
     NodeASTList<FunctionDeclarationAST> functionDeclASTS =
         new NodeASTList<>(semanticErrors,
-            ctx, ctx.funcDecl().stream().map(this::visitFuncDecl).collect(Collectors.toList()));
+            ctx, ctx.funcDecl().stream()
+            .map(this::visitFuncDecl)
+            .collect(Collectors.toList()));
 
     NodeASTList<ImportAST> importASTS = new NodeASTList<>(semanticErrors, ctx);
     if (ctx.imports() != null) {
@@ -140,8 +140,9 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     NodeASTList<ImportAST> importASTS = new NodeASTList<>(semanticErrors, ctx);
 
     if (ctx.identifier() != null) {
-      importASTS.add(new ImportAST(semanticErrors, ctx.identifier(), ctx.identifier().getText(),
-          relativePath));
+      importASTS.add(
+          new ImportAST(semanticErrors, ctx.identifier(),
+              ctx.identifier().getText(), relativePath));
     } else {
       importASTS.addAll(visitImports(ctx.imports(0)));
       importASTS.addAll(visitImports(ctx.imports(1)));
@@ -250,6 +251,22 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     return new VariableDeclarationAST(semanticErrors,
         ctx, visitType(ctx.type()), ctx.identifier().getText(), visitAssignRHS(ctx.assignRHS()));
   }
+  /*
+  @Override
+  public AssignmentAST visitBinOpAssign(WaccParser.BinOpAssignContext ctx) {
+    String operator = ctx.BINARY_OPERATOR_ASSIGN().getText().substring(0,
+        ctx.BINARY_OPERATOR_ASSIGN().getText().length() - 1);
+    String var = ctx.assignLHS().getText();
+    AssignmentAST assignmentAST =
+        new AssignmentAST(semanticErrors, ctx,
+            new LHSAssignAST(semanticErrors, ctx, var),
+            new RHSAssignAST(semanticErrors, ctx,
+                new BinOpExprAST(semanticErrors, ctx,
+                    new IdentifierAST(semanticErrors, ctx, var), operator,
+                    visitExpr(ctx.expr()))));
+    return assignmentAST;
+  }
+  */
 
   @Override
   public StatementAST visitWhileDo(WhileDoContext ctx) {
@@ -276,19 +293,23 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   }
 
   @Override
-  public ForAST visitForEachLoop(WaccParser.ForEachLoopContext ctx) {
+  public IfElseAST visitForEachLoop(WaccParser.ForEachLoopContext ctx) {
     // type
     TypeAST typeAST = visitType(ctx.type());
     // var
     String variableName = ctx.identifier(0).getText();
     // array
     String arrayName = ctx.identifier(1).getText();
-
+    // Loop variable
+    String loopVariable = "i";
+    if (variableName.equals(loopVariable)) {
+      loopVariable = "j";
+    }
     // int i = 0
     VariableDeclarationAST indexDeclaration =
         new VariableDeclarationAST(semanticErrors, ctx,
             new BaseTypeAST(semanticErrors, ctx, "int"),
-            "i",
+            loopVariable,
             new RHSAssignAST(semanticErrors, ctx,
                 new LiteralsAST(semanticErrors, ctx, "0", new INT())));
     // type var = array[0]
@@ -303,30 +324,31 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // i = i + 1
     AssignmentAST indexIncrement =
         new AssignmentAST(semanticErrors, ctx,
-            new LHSAssignAST(semanticErrors, ctx, "i"),
+            new LHSAssignAST(semanticErrors, ctx, loopVariable),
             new RHSAssignAST(semanticErrors, ctx,
                 new BinOpExprAST(semanticErrors, ctx,
-                    new IdentifierAST(semanticErrors, ctx, "i"),
+                    new IdentifierAST(semanticErrors, ctx, loopVariable),
                     "+", new LiteralsAST(semanticErrors, ctx, "1",
                     new INT()))));
     // var = array[i]
-    VariableDeclarationAST elementUpdate =
-        new VariableDeclarationAST(semanticErrors, ctx, typeAST, variableName,
+    AssignmentAST elementUpdate =
+        new AssignmentAST(semanticErrors, ctx,
+            new LHSAssignAST(semanticErrors, ctx, variableName),
             new RHSAssignAST(semanticErrors, ctx,
                 new ArrayElemAST(semanticErrors, ctx, arrayName,
                     new NodeASTList<>(semanticErrors, ctx,
                         new ArrayList<>(
                             Arrays.asList(
                                 new IdentifierAST(semanticErrors, ctx,
-                                    "i")))))));
+                                    loopVariable)))))));
     // (int i = 0; type var = array[0])
     ChainedStatementAST initialisation =
         new ChainedStatementAST(semanticErrors, ctx, indexDeclaration,
             elementDeclaration);
     // i < len array
-    BinOpExprAST condition =
+    BinOpExprAST indexBoundCheck =
         new BinOpExprAST(semanticErrors, ctx,
-            new IdentifierAST(semanticErrors, ctx, "i"),
+            new IdentifierAST(semanticErrors, ctx, loopVariable),
             "<",
             new UnaryOpExprAST(semanticErrors, ctx,
                 new IdentifierAST(semanticErrors, ctx, arrayName), "len"));
@@ -334,9 +356,18 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     ChainedStatementAST afterthought =
         new ChainedStatementAST(semanticErrors, ctx, indexIncrement,
             elementUpdate);
-    // For loop
-    return new ForAST(semanticErrors, ctx, initialisation, condition,
-        afterthought, (StatementAST) visit(ctx.stat()));
+    // if len array > 0
+    BinOpExprAST entryCheck =
+        new BinOpExprAST(semanticErrors, ctx,
+            new LiteralsAST(semanticErrors, ctx, "0", new INT()),
+            "<",
+            new UnaryOpExprAST(semanticErrors, ctx,
+                new IdentifierAST(semanticErrors, ctx, arrayName), "len"));
+
+    return new IfElseAST(semanticErrors, ctx, entryCheck,
+        new ForAST(semanticErrors, ctx, initialisation, indexBoundCheck,
+            afterthought, (StatementAST) visit(ctx.stat())),
+        new SkipAST(semanticErrors, ctx));
   }
 
 
@@ -553,13 +584,8 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     ArgListContext argList = ctx.argList();
 
     List<ExpressionAST> actuals = new ArrayList<>();
-    return new NewObjectAST(semanticErrors,
-        ctx, identifier.getText(), new NodeASTList<>(semanticErrors, ctx, actuals));
-  }
-
-  @Override
-  public MethodCallAST visitMethodCall(MethodCallContext ctx) {
-    return null;
+    return new NewObjectAST(semanticErrors, ctx, identifier.getText(),
+        new NodeASTList<>(semanticErrors, ctx, actuals));
   }
 
   @Override
@@ -659,23 +685,50 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   }
 
   // ==========================================================================
+  @Override
+  public MethodCallAST visitMethodCall(WaccParser.MethodCallContext ctx) {
+
+    // check whether the function call has any arguments.
+    NodeASTList<ExpressionAST> actuals;
+    if (ctx.argList() != null) {
+      // arguments present, so check them.
+      actuals = visitArgList(ctx.argList());
+    } else {
+      // no arguments, just set actuals to an empty list.
+      actuals = new NodeASTList<>(semanticErrors, ctx);
+    }
+
+    // return a new FunctionCallAST.
+    return new MethodCallAST(semanticErrors, ctx, ctx.identifier(0).getText(),
+        new FunctionCallAST(semanticErrors, ctx, ctx.identifier(1).getText(), actuals));
+  }
 
   @Override
-  public NodeAST visitClassDef(ClassDefContext ctx) {
+  public MethodDeclarationAST visitMethodDecl(WaccParser.MethodDeclContext ctx) {
+    FunctionDeclarationAST func = visitFuncDecl(ctx.funcDecl());
+    Visibility visibility = Visibility.PUBLIC;
+    if (ctx.VISIBILITY().getText().equals("private")) {
+      visibility = Visibility.PRIVATE;
+    }
 
+    return new MethodDeclarationAST(semanticErrors, ctx, func, visibility);
+  }
+
+  @Override
+  public ClassDefinitionAST visitClassDef(ClassDefContext ctx) {
     // Make a list of functionASTs for all functions declared in the program.
     // Do this by calling visitFuncDecl on all function declarations in ctx.
-    NodeASTList<FunctionDeclarationAST> functionDeclASTS =
-        new NodeASTList<>(semanticErrors,
-            ctx, ctx.funcDecl().stream()
-            .map(this::visitFuncDecl).collect(Collectors.toList()));
+    NodeASTList<MethodDeclarationAST> methodDeclASTS =
+        new NodeASTList<>(semanticErrors, ctx,
+            ctx.methodDecl().stream()
+            .map(this::visitMethodDecl).collect(Collectors.toList()));
 
     // Return a new progAST node.
     return new ClassDefinitionAST(semanticErrors,
         ctx,
-        ctx.IDENT().getText(),
-        (StatementAST) visit(ctx.stat()),
-        functionDeclASTS);
+        ctx.identifier().getText(),
+        (StatementAST) visit(ctx.fields()),
+        methodDeclASTS);
   }
 
   @Override

@@ -23,8 +23,8 @@ public class FunctionDeclarationAST extends NodeAST {
   private final StatementAST statementAST;
   public FUNCTION funcObj;
 
-  public FunctionDeclarationAST(List<WaccError> errors, ParserRuleContext ctx, TypeAST typeAST,
-      String funcName, NodeASTList<ParamAST> paramASTList,
+  public FunctionDeclarationAST(List<WaccError> errors, ParserRuleContext ctx,
+      TypeAST typeAST, String funcName, NodeASTList<ParamAST> paramASTList,
       StatementAST statementAST) {
     super(errors, ctx);
     this.typeAST = typeAST;

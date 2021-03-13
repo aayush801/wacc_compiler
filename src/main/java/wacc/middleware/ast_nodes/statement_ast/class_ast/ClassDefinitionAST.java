@@ -1,4 +1,4 @@
-package wacc.middleware.ast_nodes.statement_ast;
+package wacc.middleware.ast_nodes.statement_ast.class_ast;
 
 import wacc.errors.WaccError;
 import wacc.frontend.identifier_objects.CLASS;
@@ -15,12 +15,13 @@ public class ClassDefinitionAST extends NodeAST {
 
   private final String name;
   private final StatementAST fields;
-  private final NodeASTList<FunctionDeclarationAST> methods;
+  private final NodeASTList<MethodDeclarationAST> methods;
   private CLASS classObj;
   private SymbolTable scopeST;
 
-  public ClassDefinitionAST(List<WaccError> errors, ParserRuleContext ctx, String name,
-      StatementAST fields, NodeASTList<FunctionDeclarationAST> methods) {
+  public ClassDefinitionAST(List<WaccError> errors, ParserRuleContext ctx,
+      String name, StatementAST fields,
+      NodeASTList<MethodDeclarationAST> methods) {
     super(errors, ctx);
     this.name = name;
     this.fields = fields;
@@ -35,7 +36,7 @@ public class ClassDefinitionAST extends NodeAST {
     return fields;
   }
 
-  public NodeASTList<FunctionDeclarationAST> getMethods() {
+  public NodeASTList<MethodDeclarationAST> getMethods() {
     return methods;
   }
 
@@ -51,12 +52,12 @@ public class ClassDefinitionAST extends NodeAST {
     // Check that the statement inside the begin block is valid.
     fields.check();
 
-    for (FunctionDeclarationAST func : methods) {
+    for (MethodDeclarationAST func : methods) {
       func.check();
     }
 
     // Now go through the actual function bodies.
-    for (FunctionDeclarationAST func : methods) {
+    for (MethodDeclarationAST func : methods) {
       func.checkStatement();
     }
 

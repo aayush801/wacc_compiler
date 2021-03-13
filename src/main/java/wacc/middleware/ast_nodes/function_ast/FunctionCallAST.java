@@ -20,8 +20,8 @@ public class FunctionCallAST extends NodeAST {
   private final NodeASTList<ExpressionAST> actuals;
   private FUNCTION funcObj;
 
-  public FunctionCallAST(List<WaccError> errors,ParserRuleContext ctx, String funcName,
-      NodeASTList<ExpressionAST> actuals) {
+  public FunctionCallAST(List<WaccError> errors,ParserRuleContext ctx,
+      String funcName, NodeASTList<ExpressionAST> actuals) {
     super(errors, ctx);
     this.funcName = funcName;
     this.actuals = actuals;

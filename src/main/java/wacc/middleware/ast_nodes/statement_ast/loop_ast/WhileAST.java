@@ -1,4 +1,4 @@
-package wacc.middleware.ast_nodes.statement_ast;
+package wacc.middleware.ast_nodes.statement_ast.loop_ast;
 
 import java.util.List;
 import wacc.errors.WaccError;

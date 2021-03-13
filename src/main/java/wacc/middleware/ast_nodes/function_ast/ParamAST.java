@@ -17,7 +17,8 @@ public class ParamAST extends NodeAST {
   private final String paramName;
   private PARAM paramObj;
 
-  public ParamAST(List<WaccError> errors,ParserRuleContext ctx, TypeAST typeAST, String paramName) {
+  public ParamAST(List<WaccError> errors,ParserRuleContext ctx, TypeAST typeAST,
+      String paramName) {
     super(errors, ctx);
     this.typeAST = typeAST;
     this.paramName = paramName;

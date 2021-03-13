@@ -106,6 +106,9 @@ BITWISE_AND : '&' ;
 BITWISE_OR : '|' ;
 INVERT : '~';
 
+//binary opeators
+BINARY_OPERATOR: (PLUS | MINUS | STAR | DIVIDE) ;
+
 //unary operators
 NOT: '!';
 LENGTH: 'len';

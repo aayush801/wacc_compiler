@@ -1,4 +1,4 @@
-package wacc.middleware.ast_nodes.class_ast;
+package wacc.middleware.ast_nodes.statement_ast.class_ast;
 
 import java.util.List;
 import wacc.errors.WaccError;
@@ -7,17 +7,21 @@ import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.ast_nodes.NodeASTList;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class MethodCallAST extends ExpressionAST {
+public class NewObjectAST extends ExpressionAST {
 
-  private final String object, funcName;
+  private final String className;
   private final NodeASTList<ExpressionAST> actuals;
 
-  public MethodCallAST(List<WaccError> errors, ParserRuleContext ctx, String object, String funcName,
-      NodeASTList<ExpressionAST> actuals) {
+  public NewObjectAST(List<WaccError> errors,ParserRuleContext ctx,
+      String className, NodeASTList<ExpressionAST> actuals) {
     super(errors, ctx);
-    this.object = object;
-    this.funcName = funcName;
+    this.className = className;
     this.actuals = actuals;
+  }
+
+  @Override
+  public void check() {
+
   }
 
   @Override
