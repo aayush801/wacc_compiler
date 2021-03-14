@@ -251,12 +251,12 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     return new VariableDeclarationAST(semanticErrors,
         ctx, visitType(ctx.type()), ctx.identifier().getText(), visitAssignRHS(ctx.assignRHS()));
   }
-  /*
+
   @Override
   public AssignmentAST visitBinOpAssign(WaccParser.BinOpAssignContext ctx) {
-    String operator = ctx.BINARY_OPERATOR_ASSIGN().getText().substring(0,
-        ctx.BINARY_OPERATOR_ASSIGN().getText().length() - 1);
-    String var = ctx.assignLHS().getText();
+    String op = ctx.op.getText();
+    String operator = op.substring(0, op.length() - 1);
+    String var = ctx.identifier().getText();
     AssignmentAST assignmentAST =
         new AssignmentAST(semanticErrors, ctx,
             new LHSAssignAST(semanticErrors, ctx, var),
@@ -264,9 +264,10 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
                 new BinOpExprAST(semanticErrors, ctx,
                     new IdentifierAST(semanticErrors, ctx, var), operator,
                     visitExpr(ctx.expr()))));
+
     return assignmentAST;
   }
-  */
+
 
   @Override
   public StatementAST visitWhileDo(WhileDoContext ctx) {

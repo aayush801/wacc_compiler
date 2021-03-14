@@ -11,7 +11,7 @@ import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.ast_nodes.NodeASTList;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class ArrayAST extends NodeAST {
+public class ArrayAST extends ExpressionAST {
 
 
   private final NodeASTList<ExpressionAST> expressionASTList;

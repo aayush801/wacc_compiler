@@ -152,6 +152,21 @@ public class ExtensionTests {
     System.out.println(compiler.getSourceCode());
   }
 
+  @Test
+  public void binOpAssign() throws IOException {
+    String prog =
+        "begin\n"
+            + "int[] array = [1, 2, 3];"
+            + "int sum = 0;"
+            + "sum += 4\n"
+            + "end";
+    WaccCompiler compiler = new WaccCompiler(prog);
+    System.out.println(compiler.compile());
+    for (WaccError e : compiler.getErrors()) {
+      System.out.println(e);
+    }
+    System.out.println(compiler.getSourceCode());
+  }
 
   @Test
   public void testMalloc() throws IOException {

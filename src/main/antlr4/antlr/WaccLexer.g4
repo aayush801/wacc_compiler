@@ -100,6 +100,7 @@ EQ: '==' ;
 NEQ: '!=' ;
 AND: '&&' ;
 OR: '||' ;
+CONCATENATE: '++' ;
 
 //wacc.extension
 BITWISE_AND : '&' ;
@@ -117,6 +118,16 @@ CHR: 'chr' ;
 
 //assignment operator
 EQUALS: '=' ;
+INCREMENT_BY: '+=' ;
+DECREMENT_BY: '-=' ;
+MULTIPLY_BY: '*=' ;
+DIVIDE_BY: '/=' ;
+AND_BY : '&&=' ;
+OR_BY : '||=' ;
+BITWISE_AND_BY: '&=' ;
+BITWISE_OR_BY: '|=' ;
+MOD_BY: '%=' ;
+BINARY_OPERATOR_ASSIGN: INCREMENT_BY | MULTIPLY_BY | DIVIDE_BY | DECREMENT_BY;
 
 //integers
 INTEGER: DIGIT+ ;

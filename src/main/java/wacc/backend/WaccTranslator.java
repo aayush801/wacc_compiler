@@ -162,7 +162,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       ret.add(new Store(ConditionCode.NONE, target,
           new ImmediateOffset(destination,
               new ImmediateNum(TYPES.WORD_SIZE + i * elementSize)),
-          array.getArrayObj().getType().getSize()));
+          elementSize));
     }
 
     program.registers.add(0, destination);
@@ -424,6 +424,37 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
             accumulator));
         break;
 
+        //MARK
+      case "++":
+        // size of left array in RO
+        instructions.add(new Load(Register.R0, new ZeroOffset(Rn)));
+        instructions.add(new Load(Register.R1, new ZeroOffset(Rm)));
+        // calculating total size in R0
+        instructions.add(new Arithmetic(ArithmeticOpcode.ADD, Register.R0,
+            Register.R0, Register.R1, true));
+        instructions.add(new Arithmetic(ArithmeticOpcode.SUB, Register.R0,
+            Register.R0, new ImmediateNum(-4), true));
+
+        Register destination = Rn;
+
+        // Add malloc instruction.
+        instructions.add(new Branch("malloc", true));
+
+        // Store result from malloc in destination.
+        instructions.add(new Move(destination, Register.R0));
+
+        Register target = program.registers.get(0);
+
+        program.registers.add(0, destination);
+
+        // Store size of array on the starting address of the heap entry.
+        instructions.add(new Move(target, Register.R0));
+
+        // storing address of the array.
+        instructions.add(new Store(target, new ZeroOffset(destination)));
+
+
+        break;
       // Unrecognized Operator
       default:
         break;
@@ -1115,21 +1146,15 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     FunctionCallAST functionCallAST = rhs.getFunctionCallAST();
 
     if (expressionAST != null) {
-
       return expressionAST.accept(this);
-
     }
 
     if (arrayAST != null) {
-
       return arrayAST.accept(this);
-
     }
 
     if (newPairAST != null) {
-
       return newPairAST.accept(this);
-
     }
 
     if (pairElemAST != null) {

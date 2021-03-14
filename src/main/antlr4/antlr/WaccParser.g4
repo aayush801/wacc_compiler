@@ -26,10 +26,17 @@ paramList: param (COMMA param)*;
 //argument list
 argList: expr (COMMA expr)* ;
 
+
+assignment: '=' | INCREMENT ;
 //statements
 stat:
     SKIP_STATEMENT                        #skipStat
   | type identifier EQUALS assignRHS      #assignIdent
+  | identifier
+    op=(INCREMENT_BY | MULTIPLY_BY |
+        DIVIDE_BY | DECREMENT_BY | AND_BY
+        | OR_BY | BITWISE_AND_BY |
+        BITWISE_OR_BY | MOD_BY)  expr    #binOpAssign
   | assignLHS EQUALS assignRHS            #assignVars
   | READ assignLHS                        #readCall
   | MALLOC expr                           #mallocCall
@@ -111,11 +118,12 @@ expr:
   | strLiter
   | charLiter
   | identifier
+  | array
   | arrayElem
   | unaryOperator expr
   | sizeOfCall
   | pointerElem
-  | expr binaryOperator=(DIVIDE | STAR | MOD) expr
+  | expr binaryOperator=(DIVIDE | STAR | MOD | CONCATENATE) expr
   | expr binaryOperator=(PLUS | MINUS) expr
   | expr binaryOperator=(GT | GTE | LT | LTE) expr
   | expr binaryOperator=(EQ | NEQ) expr
@@ -162,7 +170,6 @@ intLiter: (PLUS | MINUS)? INTEGER;
 boolLiter: TRUE | FALSE ;
 pairLiter: NULL;
 strLiter: STRING;
-floatLiter : (PLUS | MINUS)? FLOAT ;
 charLiter: CHARACTER;
 identifier: IDENT;
 
