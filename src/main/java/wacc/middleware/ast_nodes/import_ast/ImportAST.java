@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 import wacc.WaccCompiler;
@@ -13,6 +12,7 @@ import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.DuplicateIdentifier;
 import wacc.errors.semantic_errors.ImportBroken;
 import wacc.errors.semantic_errors.ImportNotFound;
+import wacc.errors.semantic_errors.InvalidImport;
 import wacc.frontend.identifier_objects.IDENTIFIER;
 import wacc.frontend.identifier_objects.IMPORT;
 import wacc.middleware.NodeAST;
@@ -22,8 +22,8 @@ import wacc.middleware.ast_nodes.prog_ast.ProgAST;
 
 public class ImportAST extends NodeAST {
 
-  private String filename;
-  private Path relativePath;
+  private final String filename;
+  private final Path relativePath;
   private IMPORT importObj;
   private ProgAST progAST;
 
@@ -42,6 +42,16 @@ public class ImportAST extends NodeAST {
     IDENTIFIER obj = ST.lookupAll(filename);
 
     if (obj != null) {
+      // if trying to import current file
+      if (obj instanceof IMPORT) {
+        if (((IMPORT) obj).getFilename().equals("MAIN")) {
+          addError(new ImportNotFound(ctx, filename));
+          return;
+        }
+        // if the file has already been imported then ignore it
+        return;
+      }
+      // if the import name is clashing with another object
       addError(new DuplicateIdentifier(ctx));
       return;
     }
@@ -50,7 +60,7 @@ public class ImportAST extends NodeAST {
     String filepath = relativePath + "/" + filename + ".wacc";
     File importedFile = new File(filepath);
     if (!importedFile.isFile()) {
-      addError(new ImportNotFound(ctx, filepath));
+      addError(new InvalidImport(ctx, filepath));
       return;
     }
 
@@ -75,7 +85,7 @@ public class ImportAST extends NodeAST {
     WaccASTParser semanticParser = new WaccASTParser(filename, relativePath, errors);
     progAST = (ProgAST) semanticParser.visit(parseTree);
 
-    importObj = new IMPORT();
+    importObj = new IMPORT(filename);
 
     // add imported filename to keywords
     ST.add(filename, importObj);

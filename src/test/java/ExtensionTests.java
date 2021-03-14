@@ -99,7 +99,7 @@ public class ExtensionTests {
     libWriter.close();
 
     // write file that imports lib
-    File importFile = new File("import.wacc");
+    File importFile = new File("importLib.wacc");
     FileWriter importWriter = new FileWriter(importFile);
     String importProg =
         "import lib\n"

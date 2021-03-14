@@ -40,7 +40,7 @@ public class ProgAST extends NodeAST {
     scopeST = ST = SymbolTable.TopSymbolTable();
 
     // add current file as the global import
-    ST.add(filename, new IMPORT());
+    ST.add(filename, new IMPORT("MAIN"));
 
     // Go through all imported statements and record them in the top symbol table
     for (ImportAST importAST : importASTS) {
