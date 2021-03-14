@@ -305,7 +305,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     }
 
     final int MAX_IMMEDIATE = 256;
-    if (isIntLiteral && !operator.equals("*") && n < MAX_IMMEDIATE) {
+    if (false && isIntLiteral && !operator.equals("*") && n < MAX_IMMEDIATE) {
       operand2 = new ImmediateNum(n);
     } else {
       if (accumulator) {
@@ -435,13 +435,13 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       // BOOLEAN Operators
       case "&":
         // false removes the S, add if needed.
-        instructions.add(new Arithmetic(ArithmeticOpcode.AND, Rn, Rn, operand2, false,
-            accumulator));
+        instructions.add(new Arithmetic(ArithmeticOpcode.AND, Rn, Rn, operand2,
+            false, accumulator));
         break;
 
       case "|":
-        instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, operand2, false,
-            accumulator));
+        instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, operand2,
+            false, accumulator));
         break;
       // Unrecognized Operator
       default:
