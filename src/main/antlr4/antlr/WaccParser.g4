@@ -118,7 +118,6 @@ expr:
   | strLiter
   | charLiter
   | identifier
-  | array
   | arrayElem
   | unaryOperator expr
   | sizeOfCall

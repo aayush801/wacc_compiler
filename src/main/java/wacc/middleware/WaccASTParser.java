@@ -249,7 +249,8 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   public StatementAST visitAssignIdent(AssignIdentContext ctx) {
     // return a new VariableDeclarationAST.
     return new VariableDeclarationAST(semanticErrors,
-        ctx, visitType(ctx.type()), ctx.identifier().getText(), visitAssignRHS(ctx.assignRHS()));
+        ctx, visitType(ctx.type()), ctx.identifier().getText(),
+        visitAssignRHS(ctx.assignRHS()));
   }
 
   @Override
