@@ -17,7 +17,7 @@ import wacc.backend.instructions.addr_modes.ImmediateOffset;
 import wacc.backend.instructions.addr_modes.ZeroOffset;
 import wacc.backend.instructions.arithmetic.Arithmetic;
 import wacc.backend.instructions.arithmetic.ArithmeticOpcode;
-import wacc.backend.instructions.stack_instructions.Label;
+import wacc.backend.instructions.stack_instructions.DefineLabel;
 import wacc.backend.instructions.stack_instructions.Pop;
 import wacc.backend.instructions.stack_instructions.Push;
 import wacc.backend.labels.code.CodeLabel;
@@ -259,7 +259,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     // Short-circuit evaluation
     if (operator.equals("&&") || operator.equals("||")) {
 
-      Label afterCheck = Label.getUnusedLabel();
+      DefineLabel afterCheck = DefineLabel.getUnusedLabel();
 
       ImmediateNum checkValue = operator.equals("||") ?
           ImmediateNum.ONE : ImmediateNum.ZERO;
@@ -897,8 +897,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     instructions.add(new Compare(destination, ImmediateNum.ZERO));
 
-    Label body = Label.getUnusedLabel();
-    Label rest = Label.getUnusedLabel();
+    DefineLabel body = DefineLabel.getUnusedLabel();
+    DefineLabel rest = DefineLabel.getUnusedLabel();
 
     instructions.add(new Branch(ConditionCode.EQ, body.getName(), false));
 
@@ -1213,8 +1213,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     List<Instruction> instructions = new ArrayList<>();
 
-    Label startLabel = Label.getUnusedLabel();
-    Label endLabel = Label.getUnusedLabel();
+    DefineLabel startLabel = DefineLabel.getUnusedLabel();
+    DefineLabel endLabel = DefineLabel.getUnusedLabel();
     program.addLoopLabels(startLabel.getName(), endLabel.getName());
     instructions.add(startLabel);
 
@@ -1246,13 +1246,13 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     Register destination = program.registers.get(0);
     List<Instruction> instructions = new ArrayList<>();
 
-    Label startLabel = Label.getUnusedLabel();
-    Label endLabel = Label.getUnusedLabel();
+    DefineLabel startLabel = DefineLabel.getUnusedLabel();
+    DefineLabel endLabel = DefineLabel.getUnusedLabel();
     program.addLoopLabels(startLabel.getName(), endLabel.getName());
     instructions.add(startLabel);
 
-    Label conditionLabel = Label.getUnusedLabel();
-    Label body = Label.getUnusedLabel();
+    DefineLabel conditionLabel = DefineLabel.getUnusedLabel();
+    DefineLabel body = DefineLabel.getUnusedLabel();
 
     if (!whileLoop.isDoWhile()) {
       instructions.add(new Branch(conditionLabel.getName()));

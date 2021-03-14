@@ -1,7 +1,7 @@
 package wacc.backend.labels.code;
 
 import wacc.backend.instructions.Instruction;
-import wacc.backend.instructions.stack_instructions.Label;
+import wacc.backend.instructions.stack_instructions.DefineLabel;
 import wacc.extension.WaccCodeOptimiser;
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class CodeLabel extends wacc.backend.labels.Label {
     // optimise instructions at the machine level
     optimised().forEach(i -> {
 
-          if (!(i instanceof Label)) {
+          if (!(i instanceof DefineLabel)) {
 
             // Labelled instructions are exempt from being indented
             builder.append("\t");

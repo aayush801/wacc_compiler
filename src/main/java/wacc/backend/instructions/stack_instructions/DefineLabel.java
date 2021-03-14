@@ -2,16 +2,16 @@ package wacc.backend.instructions.stack_instructions;
 
 import wacc.backend.instructions.Instruction;
 
-public class Label extends Instruction {
+public class DefineLabel extends Instruction {
 
   private static int INDEX = 0;
   private final String name;
 
-  public static Label getUnusedLabel() {
-    return new Label("L" + INDEX++);
+  public static DefineLabel getUnusedLabel() {
+    return new DefineLabel("L" + INDEX++);
   }
 
-  public Label(String name) {
+  private DefineLabel(String name) {
     this.name = name;
   }
 
