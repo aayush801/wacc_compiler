@@ -303,7 +303,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
       }
     }
-    if (isIntLiteral) {
+    if (isIntLiteral && !operator.equals("*")) {
       operand2 = new ImmediateNum(n);
     } else {
       if (accumulator) {
