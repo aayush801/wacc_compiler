@@ -169,6 +169,20 @@ public class ExtensionTests {
   }
 
   @Test
+  public void immediateOperand() throws IOException {
+    String prog =
+        "begin\n"
+            + "int x = 1 + 2\n"
+            + "end";
+    WaccCompiler compiler = new WaccCompiler(prog);
+    System.out.println(compiler.compile());
+    for (WaccError e : compiler.getErrors()) {
+      System.out.println(e);
+    }
+    System.out.println(compiler.getSourceCode());
+  }
+
+  @Test
   public void testMalloc() throws IOException {
 
     String instructions =

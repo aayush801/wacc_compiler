@@ -1,6 +1,7 @@
 package wacc.backend;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import wacc.backend.instructions.Branch;
 import wacc.backend.instructions.Compare;
@@ -305,7 +306,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     }
 
     final int MAX_IMMEDIATE = 256;
-    if (false && isIntLiteral && !operator.equals("*") && n < MAX_IMMEDIATE) {
+    ArrayList operators = new ArrayList(Arrays.asList("+", "-", "/", "%"));
+    if (isIntLiteral && operators.contains(operator) && n < MAX_IMMEDIATE) {
       operand2 = new ImmediateNum(n);
     } else {
       if (accumulator) {
