@@ -307,7 +307,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     }
 
     final int MAX_IMMEDIATE = 256;
-    if (isIntLiteral && n < MAX_IMMEDIATE) {
+    if (isIntLiteral && n < MAX_IMMEDIATE && !accumulator) {
       operand2 = new ImmediateNum(n);
     } else {
       if (accumulator) {

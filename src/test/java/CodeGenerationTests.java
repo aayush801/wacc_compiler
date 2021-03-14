@@ -521,6 +521,9 @@ public class CodeGenerationTests {
         "  exit x\n" +
         "\n" +
         "  end";
+
+    WaccCompiler compiler = new WaccCompiler(instruction);
+
     checkSourceCode(instruction, "", 89);
   }
 
