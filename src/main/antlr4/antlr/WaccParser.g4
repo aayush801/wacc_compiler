@@ -122,7 +122,7 @@ expr:
   | unaryOperator expr
   | sizeOfCall
   | pointerElem
-  | expr binaryOperator=(DIVIDE | STAR | MOD | CONCATENATE) expr
+  | expr binaryOperator=(DIVIDE | STAR | MOD) expr
   | expr binaryOperator=(PLUS | MINUS) expr
   | expr binaryOperator=(GT | GTE | LT | LTE) expr
   | expr binaryOperator=(EQ | NEQ) expr
