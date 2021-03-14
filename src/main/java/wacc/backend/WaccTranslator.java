@@ -299,6 +299,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     if (rightExpr instanceof LiteralsAST) {
       try {
         n = Integer.parseInt(((LiteralsAST) rightExpr).getText());
+        System.out.println(n);
         isIntLiteral = true;
       } catch (Exception e) {
 
@@ -306,8 +307,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     }
 
     final int MAX_IMMEDIATE = 256;
-    ArrayList operators = new ArrayList(Arrays.asList("+", "-", "/", "%"));
-    if (isIntLiteral && operators.contains(operator) && n < MAX_IMMEDIATE) {
+    if (isIntLiteral && n < MAX_IMMEDIATE) {
       operand2 = new ImmediateNum(n);
     } else {
       if (accumulator) {
@@ -327,6 +327,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
         program.registers.remove(0);
 
         instructions.addAll(binOpExpr.getRightExprAST().accept(this));
+
+        program.registers.add(0, Rn);
       }
     }
 
@@ -454,8 +456,6 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     if (primitiveLabel != null) {
       program.addPrimitive(primitiveLabel);
     }
-
-    program.registers.add(0, Rn);
 
     return instructions;
   }

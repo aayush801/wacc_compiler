@@ -11,6 +11,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import wacc.ErrorCode;
 import wacc.WaccCompiler;
+import wacc.errors.WaccError;
 
 public class CodeGenerationTests {
 

@@ -172,7 +172,7 @@ public class ExtensionTests {
   public void immediateOperand() throws IOException {
     String prog =
         "begin\n"
-            + "int x = 1 + 2\n"
+            + "int x = 1 + 255\n"
             + "end";
     WaccCompiler compiler = new WaccCompiler(prog);
     System.out.println(compiler.compile());
