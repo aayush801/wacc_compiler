@@ -293,8 +293,17 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     // Check if right expression is an immediate value
     ExpressionAST rightExpr = binOpExpr.getRightExprAST();
+    boolean isIntLiteral = false;
+    int n = 0;
     if (rightExpr instanceof LiteralsAST) {
-      int n = Integer.parseInt(((LiteralsAST) rightExpr).getText());
+      try {
+        n = Integer.parseInt(((LiteralsAST) rightExpr).getText());
+        isIntLiteral = true;
+      } catch (Exception e) {
+
+      }
+    }
+    if (isIntLiteral) {
       operand2 = new ImmediateNum(n);
     } else {
       if (accumulator) {
