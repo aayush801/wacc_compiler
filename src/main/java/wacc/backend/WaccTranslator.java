@@ -17,7 +17,7 @@ import wacc.backend.instructions.addr_modes.ImmediateOffset;
 import wacc.backend.instructions.addr_modes.ZeroOffset;
 import wacc.backend.instructions.arithmetic.Arithmetic;
 import wacc.backend.instructions.arithmetic.ArithmeticOpcode;
-import wacc.backend.instructions.stack_instructions.LabelledInstruction;
+import wacc.backend.instructions.stack_instructions.Label;
 import wacc.backend.instructions.stack_instructions.Pop;
 import wacc.backend.instructions.stack_instructions.Push;
 import wacc.backend.labels.code.CodeLabel;
@@ -27,6 +27,7 @@ import wacc.backend.labels.data.DataLabel;
 import wacc.backend.operands.ImmediateChar;
 import wacc.backend.operands.ImmediateNum;
 import wacc.backend.operands.ImmediateShift;
+import wacc.backend.operands.Operand;
 import wacc.backend.primitive_functions.BinOpChecks;
 import wacc.backend.primitive_functions.FreeFunction;
 import wacc.backend.primitive_functions.PairElemNullAccessCheck;
@@ -249,7 +250,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     Register Rn = program.registers.get(0);
     Register Rm = program.registers.get(1);
-
+    Operand operand2 = Rm;
     // we go until r12 in our case, they do pushing when they get to r10 for some reason.
     List<Instruction> instructions = binOpExpr.getLeftExprAST().accept(this);
 
@@ -258,9 +259,10 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     // Short-circuit evaluation
     if (operator.equals("&&") || operator.equals("||")) {
 
-      LabelledInstruction afterCheck = new LabelledInstruction();
+      Label afterCheck = Label.getUnusedLabel();
 
-      ImmediateNum checkValue = operator.equals("||") ? ImmediateNum.ONE : ImmediateNum.ZERO;
+      ImmediateNum checkValue = operator.equals("||") ?
+          ImmediateNum.ONE : ImmediateNum.ZERO;
 
       // Check left side
       instructions.add(new Compare(Rn, checkValue));
@@ -268,7 +270,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
           new Move(ConditionCode.EQ, Rn, checkValue, false));
       // If value matches then no need to evaluate the right side, just jump over it
       instructions.add(
-          new Branch(ConditionCode.EQ, afterCheck.getLabel(), false));
+          new Branch(ConditionCode.EQ, afterCheck.getName(), false));
       // If left side is not sufficient then check right expression
       program.registers.remove(0);
       // Result is stored in Rd
@@ -289,23 +291,30 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       return instructions;
     }
 
-    if (accumulator) {
-      // go into register saving mode.
-
-      // push LHS value onto stack.
-      instructions.add(new Push(Rn));
-
-      // Proceed to translate RHS with the same registers.
-      instructions.addAll(binOpExpr.getRightExprAST().accept(this));
-
-      // Retrieve LHS from the stack.
-      instructions.add(new Pop(Rm));
-
+    // Check if right expression is an immediate value
+    ExpressionAST rightExpr = binOpExpr.getRightExprAST();
+    if (rightExpr instanceof LiteralsAST) {
+      int n = Integer.parseInt(((LiteralsAST) rightExpr).getText());
+      operand2 = new ImmediateNum(n);
     } else {
-      // Translate RHS like normal.
-      program.registers.remove(0);
+      if (accumulator) {
+        // go into register saving mode.
 
-      instructions.addAll(binOpExpr.getRightExprAST().accept(this));
+        // push LHS value onto stack.
+        instructions.add(new Push(Rn));
+
+        // Proceed to translate RHS with the same registers.
+        instructions.addAll(binOpExpr.getRightExprAST().accept(this));
+
+        // Retrieve LHS from the stack.
+        instructions.add(new Pop(Rm));
+
+      } else {
+        // Translate RHS like normal.
+        program.registers.remove(0);
+
+        instructions.addAll(binOpExpr.getRightExprAST().accept(this));
+      }
     }
 
     ImmediateNum TRUE = ImmediateNum.ONE;
@@ -316,7 +325,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       // ARITHMETIC Operators
       case "+":
         instructions.add(
-            new Arithmetic(ArithmeticOpcode.ADD, Rn, Rn, Rm, true,
+            new Arithmetic(ArithmeticOpcode.ADD, Rn, Rn, operand2, true,
                 accumulator));
 
         // check for overflow error
@@ -327,7 +336,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
         break;
 
       case "-":
-        instructions.add(new Arithmetic(ArithmeticOpcode.SUB, Rn, Rn, Rm,
+        instructions.add(new Arithmetic(ArithmeticOpcode.SUB, Rn, Rn, operand2,
             true, accumulator));
 
         // check for overflow error
@@ -352,7 +361,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
       case "%":
         instructions.add(new Move(Register.R0, Rn));
-        instructions.add(new Move(Register.R1, Rm));
+        instructions.add(new Move(Register.R1, operand2));
 
         // check for mod by zero error
         primitiveLabel = BinOpChecks.printDivZeroCheck(program);
@@ -364,7 +373,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
       case "/":
         instructions.add(new Move(Register.R0, Rn));
-        instructions.add(new Move(Register.R1, Rm));
+        instructions.add(new Move(Register.R1, operand2));
 
         // check for dividing by zero error
         primitiveLabel = BinOpChecks.printDivZeroCheck(program);
@@ -376,38 +385,38 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       // EQUATABLE Operators
 
       case "==":
-        instructions.add(new Compare(Rn, Rm));
+        instructions.add(new Compare(Rn, operand2));
         instructions.add(new Move(ConditionCode.EQ, Rn, TRUE, false));
         instructions.add(new Move(ConditionCode.NE, Rn, FALSE, false));
         break;
 
       case "!=":
-        instructions.add(new Compare(Rn, Rm));
+        instructions.add(new Compare(Rn, operand2));
         instructions.add(new Move(ConditionCode.NE, Rn, TRUE, false));
         instructions.add(new Move(ConditionCode.EQ, Rn, FALSE, false));
         break;
 
       // COMPARABLE Operators
       case ">":
-        instructions.add(new Compare(Rn, Rm));
+        instructions.add(new Compare(Rn, operand2));
         instructions.add(new Move(ConditionCode.GT, Rn, TRUE, false));
         instructions.add(new Move(ConditionCode.LE, Rn, FALSE, false));
         break;
 
       case "<":
-        instructions.add(new Compare(Rn, Rm));
+        instructions.add(new Compare(Rn, operand2));
         instructions.add(new Move(ConditionCode.LT, Rn, TRUE, false));
         instructions.add(new Move(ConditionCode.GE, Rn, FALSE, false));
         break;
 
       case ">=":
-        instructions.add(new Compare(Rn, Rm));
+        instructions.add(new Compare(Rn, operand2));
         instructions.add(new Move(ConditionCode.GE, Rn, TRUE, false));
         instructions.add(new Move(ConditionCode.LT, Rn, FALSE, false));
         break;
 
       case "<=":
-        instructions.add(new Compare(Rn, Rm));
+        instructions.add(new Compare(Rn, operand2));
         instructions.add(new Move(ConditionCode.LE, Rn, TRUE, false));
         instructions.add(new Move(ConditionCode.GT, Rn, FALSE, false));
         break;
@@ -415,45 +424,13 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       // BOOLEAN Operators
       case "&":
         // false removes the S, add if needed.
-        instructions.add(new Arithmetic(ArithmeticOpcode.AND, Rn, Rn, Rm, false,
+        instructions.add(new Arithmetic(ArithmeticOpcode.AND, Rn, Rn, operand2, false,
             accumulator));
         break;
 
       case "|":
-        instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, Rm, false,
+        instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, operand2, false,
             accumulator));
-        break;
-
-        //MARK
-      case "++":
-        // size of left array in RO
-        instructions.add(new Load(Register.R0, new ZeroOffset(Rn)));
-        instructions.add(new Load(Register.R1, new ZeroOffset(Rm)));
-        // calculating total size in R0
-        instructions.add(new Arithmetic(ArithmeticOpcode.ADD, Register.R0,
-            Register.R0, Register.R1, true));
-        instructions.add(new Arithmetic(ArithmeticOpcode.SUB, Register.R0,
-            Register.R0, new ImmediateNum(-4), true));
-
-        Register destination = Rn;
-
-        // Add malloc instruction.
-        instructions.add(new Branch("malloc", true));
-
-        // Store result from malloc in destination.
-        instructions.add(new Move(destination, Register.R0));
-
-        Register target = program.registers.get(0);
-
-        program.registers.add(0, destination);
-
-        // Store size of array on the starting address of the heap entry.
-        instructions.add(new Move(target, Register.R0));
-
-        // storing address of the array.
-        instructions.add(new Store(target, new ZeroOffset(destination)));
-
-
         break;
       // Unrecognized Operator
       default:
@@ -909,10 +886,10 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     instructions.add(new Compare(destination, ImmediateNum.ZERO));
 
-    LabelledInstruction body = new LabelledInstruction();
-    LabelledInstruction rest = new LabelledInstruction();
+    Label body = Label.getUnusedLabel();
+    Label rest = Label.getUnusedLabel();
 
-    instructions.add(new Branch(ConditionCode.EQ, body.getLabel(), false));
+    instructions.add(new Branch(ConditionCode.EQ, body.getName(), false));
 
     // save the stack state in the symbol table
     SymbolTable ST1 = ifElse.getST1();
@@ -925,7 +902,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     // save the stack state in the symbol table
     ST1.restoreStackState(program.SP);
 
-    instructions.add(new Branch(rest.getLabel()));
+    instructions.add(new Branch(rest.getName()));
 
     instructions.add(body);
 
@@ -1225,9 +1202,9 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     List<Instruction> instructions = new ArrayList<>();
 
-    LabelledInstruction startLabel = new LabelledInstruction();
-    LabelledInstruction endLabel = new LabelledInstruction();
-    program.addLoopLabels(startLabel.getLabel(), endLabel.getLabel());
+    Label startLabel = Label.getUnusedLabel();
+    Label endLabel = Label.getUnusedLabel();
+    program.addLoopLabels(startLabel.getName(), endLabel.getName());
     instructions.add(startLabel);
 
     // Initialisation
@@ -1258,16 +1235,16 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     Register destination = program.registers.get(0);
     List<Instruction> instructions = new ArrayList<>();
 
-    LabelledInstruction startLabel = new LabelledInstruction();
-    LabelledInstruction endLabel = new LabelledInstruction();
-    program.addLoopLabels(startLabel.getLabel(), endLabel.getLabel());
+    Label startLabel = Label.getUnusedLabel();
+    Label endLabel = Label.getUnusedLabel();
+    program.addLoopLabels(startLabel.getName(), endLabel.getName());
     instructions.add(startLabel);
 
-    LabelledInstruction conditionLabel = new LabelledInstruction();
-    LabelledInstruction body = new LabelledInstruction();
+    Label conditionLabel = Label.getUnusedLabel();
+    Label body = Label.getUnusedLabel();
 
     if (!whileLoop.isDoWhile()) {
-      instructions.add(new Branch(conditionLabel.getLabel()));
+      instructions.add(new Branch(conditionLabel.getName()));
     }
 
     // translate rest of code statement
@@ -1288,7 +1265,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     instructions.addAll(conditionExpr.accept(this));
 
     instructions.add(new Compare(destination, ImmediateNum.ONE));
-    instructions.add(new Branch(ConditionCode.EQ, body.getLabel(), false));
+    instructions.add(new Branch(ConditionCode.EQ, body.getName(), false));
 
     instructions.add(endLabel);
     program.popLoopLabels();
