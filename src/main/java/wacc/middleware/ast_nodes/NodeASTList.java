@@ -43,6 +43,10 @@ public class NodeASTList<T> extends NodeAST implements Iterable<T> {
     ASTList.addAll(elems.getASTList());
   }
 
+  public void addAll(int index, NodeASTList<T> elems){
+    ASTList.addAll(index, elems.getASTList());
+  }
+
   @Override
   public <T> T accept(NodeASTVisitor<? extends T> visitor) {
     return visitor.visit(this);
