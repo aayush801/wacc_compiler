@@ -39,7 +39,7 @@ public class WaccCompiler {
 
   public WaccCompiler(File file) throws IOException {
     this(new FileInputStream(file));
-    this.relativePath = Paths.get(file.getAbsolutePath()).getParent();
+    setRelativePath(file.getAbsolutePath());
     this.filename = file.getName();
   }
 
@@ -94,10 +94,19 @@ public class WaccCompiler {
       syntacticParser.visit(parseTree);
     }
 
+    if (syntaxErrorListener.hasErrors()) {
+      return null;
+    }
+
     return parseTree;
   }
 
   public NodeAST parseSemantics(ProgContext parseTree) {
+
+    if (parseTree == null) {
+      return null;
+    }
+
     WaccASTParser semanticParser = new WaccASTParser(filename, relativePath, errors);
 
     NodeAST tree = semanticParser.visit(parseTree);
@@ -124,5 +133,14 @@ public class WaccCompiler {
 
   public boolean hasErrors() {
     return !errors.isEmpty();
+  }
+
+  public void setRelativePath(String path) {
+    if (path == null) {
+      relativePath = null;
+    }
+    else {
+      relativePath = Paths.get(path).getParent();
+    }
   }
 }

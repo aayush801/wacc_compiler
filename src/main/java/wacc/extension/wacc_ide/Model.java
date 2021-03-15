@@ -6,7 +6,6 @@ import wacc.errors.WaccError;
 import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,22 +13,21 @@ import java.util.List;
 public class Model {
 
   private final List<View> views = new ArrayList<>();
-  private List<Integer> offsets = new ArrayList<>();
   private List<Integer> errorLines = new ArrayList<>();
   List<WaccError> errors = new ArrayList<>();
-
 
   public Model(View view) {
     views.add(view);
   }
 
-  public Void check(KeyEvent key) throws IOException, BadLocationException {
+  public Void check() throws IOException, BadLocationException {
 
     View view = views.get(0);
     JTextPane textPane = view.getPane();
     String text = textPane.getText();
 
     WaccCompiler compiler = new WaccCompiler(text);
+    compiler.setRelativePath(view.getCurrRelativePath());
 
     // Run syntax and semantic checks.
     errors = compiler.getErrors();
@@ -49,11 +47,7 @@ public class Model {
     int offset = 0;
     String[] lines = text.split("\n");
 
-    offsets = new ArrayList<>();
-
     for (int line = 1; line <= lines.length; line++) {
-
-      offsets.add(offset);
 
       String codeLine = lines[line - 1];
 
@@ -75,33 +69,18 @@ public class Model {
     return null ;
   }
 
-  public String checkPosError(int pos) {
+  public String getErrorMsg(int y) {
+    int errLine = y/16 + 1;
 
-    int i;
+    System.out.println(errLine);
 
-    for (i = 0; i < offsets.size(); i++) {
-      if (i == offsets.size() - 1) {
-        break;
-      }
-      Integer curr = offsets.get(i);
-      Integer next = offsets.get(i+1);
-      if (pos >= curr && pos < next) {
-        break;
-      }
-    }
-
-    // line number is i now
-    System.out.println("i: " + i);
-
-    System.out.println(errorLines);
-    if (errorLines.contains(i + 1)) {
-      System.out.println("hi");
+    if (errorLines.contains(errLine)) {
       for (WaccError error : errors) {
-        if (error.getLineNo() == i+1) {
+        if (error.getLineNo() == errLine) {
           return error.toString();
         }
       }
     }
-    return "";
+    return null;
   }
 }

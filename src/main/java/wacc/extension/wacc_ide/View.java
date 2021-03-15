@@ -1,6 +1,7 @@
 package wacc.extension.wacc_ide;
 
-import wacc.extension.wacc_ide.WaccIDE.Controller;
+import org.antlr.v4.runtime.misc.Pair;
+import wacc.WaccCompiler;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -20,12 +21,13 @@ public class View extends JFrame implements ActionListener {
   private JTextPane currentPane;
   private final Model model;
   private static int returnValue = 0;
-  private static JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+  private static final JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
   private JTabbedPane jtp;
   private int ntabs = 0;
-  private final Map<JTextPane, Boolean> modified = new HashMap<>();
+  private final Map<JTextPane, Pair<Boolean, String>> paneState = new HashMap<>();
+  private String currRelativePath;
 
-  public View(Controller controller) {
+  public View() {
     model = new Model(this);
     display();
   }
@@ -99,11 +101,12 @@ public class View extends JFrame implements ActionListener {
     //changing currentPane to the pane in use when tabs are switched
     jtp.addChangeListener(e -> {
       try {
-        System.out.println("yo");
         int x = jtp.getSelectedIndex();
         currentPane = tabs.get(x);
-      } catch (IndexOutOfBoundsException a) {
-        System.exit(0);
+        model.check();
+        currRelativePath = paneState.get(currentPane).b;
+      } catch (IndexOutOfBoundsException | IOException | BadLocationException a) {
+        //System.exit(0);
       }
     });
 
@@ -115,19 +118,19 @@ public class View extends JFrame implements ActionListener {
 
   private void createTab() {
 
+
+
     JPanel newPage = new JPanel();
     JTextPane pane = new JTextPane(){
 
       @Override
       public String getToolTipText(MouseEvent event) {
-        int pos = currentPane.getCaretPosition();
-        return model.checkPosError(pos);
+        return model.getErrorMsg(event.getY());
       }
-
     };
 
     // Initially, pane is not modified.
-    modified.put(pane, false);
+    paneState.put(pane, new Pair<>(false, null));
 
     ToolTipManager.sharedInstance().registerComponent(pane);
 
@@ -175,9 +178,8 @@ public class View extends JFrame implements ActionListener {
       @Override
       public void keyReleased(KeyEvent e) {
         int offset = currentPane.getCaretPosition();
-
         try {
-          model.check(e);
+          model.check();
         } catch (IOException | BadLocationException ioException) {
           ioException.printStackTrace();
         }
@@ -186,7 +188,8 @@ public class View extends JFrame implements ActionListener {
         currentPane.setCaretPosition(offset);
 
         // Set current pane modified to true
-        modified.put(currentPane, true);
+        Pair<Boolean, String> p = paneState.get(currentPane);
+        paneState.put(currentPane, new Pair<>(true, p.b));
       }
     });
 
@@ -248,15 +251,16 @@ public class View extends JFrame implements ActionListener {
       saveFile(jfc);
     }
 
-    if (index >= 0) {
+    if (index >= 0 && jtp.getSelectedIndex() >= 0) {
       jtp.removeTabAt(index);
       tabs.remove(pane);
-      modified.remove(pane);
+      paneState.remove(pane);
       ntabs--;
-      currentPane = tabs.get(jtp.getSelectedIndex());
+      if (ntabs != 0) {
+        currentPane = tabs.get(jtp.getSelectedIndex());
+        currRelativePath = paneState.get(currentPane).b;
+      }
     }
-    if (ntabs == 0)
-      System.exit(0);
   }
 
 
@@ -294,10 +298,17 @@ public class View extends JFrame implements ActionListener {
             }
             currentPane.setText(ingest.toString());
 
+            // Update path of current pane.
+            currRelativePath = f.getAbsolutePath();
+
             // Rename tab
             JPanel jPanel = getjPanel(f.getName() + "        ", currentPane);
             int index = jtp.getSelectedIndex();
             jtp.setTabComponentAt(index, jPanel);
+
+            // Update pane entry
+            Pair<Boolean, String> p = new Pair<>(false, currRelativePath);
+            paneState.put(currentPane, p);
           } catch (FileNotFoundException ex) {
             ex.printStackTrace();
           }
@@ -329,7 +340,7 @@ public class View extends JFrame implements ActionListener {
 
   private boolean saveFirst() {
 
-    if(!modified.get(currentPane)) {
+    if(!paneState.get(currentPane).a) {
       return false;
     }
 
@@ -350,6 +361,8 @@ public class View extends JFrame implements ActionListener {
     try {
       File f = new File(jfc.getSelectedFile().getAbsolutePath());
 
+      currRelativePath = f.getAbsolutePath();
+
       JPanel jPanel = getjPanel(f.getName() + "        ", currentPane);
       int index = jtp.getSelectedIndex();
       jtp.setTabComponentAt(index, jPanel);
@@ -366,10 +379,15 @@ public class View extends JFrame implements ActionListener {
     }
 
     // Saved, so set modified field to be false again.
-    modified.put(currentPane, false);
+    Pair<Boolean, String> p = new Pair<>(false, currRelativePath);
+    paneState.put(currentPane, p);
   }
 
   public JTextPane getPane() {
     return currentPane;
+  }
+
+  public String getCurrRelativePath() {
+    return currRelativePath;
   }
 }
