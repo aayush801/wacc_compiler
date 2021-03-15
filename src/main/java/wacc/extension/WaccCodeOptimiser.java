@@ -22,7 +22,7 @@ public class WaccCodeOptimiser {
     //simplerAlternative
     instructions = removeRedundantInstructions(instructions);
     instructions = removeLoadAfterStore(instructions);
-    instructions = reduceArithmeticOperations(instructions);
+    //instructions = reduceArithmeticOperations(instructions);
     return instructions;
   }
 
