@@ -22,7 +22,7 @@ public class WaccCodeOptimiser {
     //simplerAlternative
     instructions = removeRedundantInstructions(instructions);
     instructions = removeLoadAfterStore(instructions);
-    //instructions = reduceArithmeticOperations(instructions);
+    instructions = reduceArithmeticOperations(instructions);
     return instructions;
   }
 
@@ -117,7 +117,7 @@ public class WaccCodeOptimiser {
     // If a number is loaded into a register and is being incremented, decremented etc.
     // in the following instructions using immediate values then this can be replaced
     // by a single load instruction with the final value as immediate address
-    for (int i = 0; i < instructions.size() - 1; i++) {
+    for (int i = 0; i < instructions.size(); i++) {
       curr = instructions.get(i);
       if (curr instanceof Load &&
           ((Load) curr).getAddressingMode() instanceof ImmediateAddress) {
@@ -128,7 +128,7 @@ public class WaccCodeOptimiser {
         i++;
         Instruction next = instructions.get(i);
         int n;
-        while (i < instructions.size() - 1
+        while (i < instructions.size()
             && next instanceof Arithmetic
             && opcodes.contains(((Arithmetic) next).getOpcode())
             && ((Arithmetic) next).getOperand() instanceof ImmediateNum
