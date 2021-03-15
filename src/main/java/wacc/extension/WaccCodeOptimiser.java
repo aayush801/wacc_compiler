@@ -22,14 +22,16 @@ public class WaccCodeOptimiser {
     //simplerAlternative
     instructions = removeRedundantInstructions(instructions);
     instructions = removeLoadAfterStore(instructions);
-    //instructions = reduceArithmeticOperations(instructions);
+    instructions = reduceArithmeticOperations(instructions);
     return instructions;
   }
 
   // A load after a store with the same register and same addressing mode is redundant
   private static List<Instruction> removeLoadAfterStore(List<Instruction> instructions) {
+    if (instructions.size() == 0) return instructions;
     List<Instruction> improved = new ArrayList<>();
     Instruction curr, prev;
+    improved.add(instructions.get(0));
     for (int i = 1; i < instructions.size(); i++) {
       curr = instructions.get(i);
       if (curr instanceof Load) {
