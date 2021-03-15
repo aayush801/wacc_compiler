@@ -25,4 +25,7 @@ public class Branch extends Instruction {
     return "B" + (isLinkFlagSet ? "L" : "") + getFlags() + " " + label;
   }
 
+  public String getLabel() {
+    return label;
+  }
 }

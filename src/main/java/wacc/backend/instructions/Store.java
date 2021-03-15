@@ -41,4 +41,12 @@ public class Store extends Instruction {
     }
     return mnemonic + " " + Rs + ", " + addressingMode;
   }
+
+  public AddressingMode getAddressingMode() {
+    return addressingMode;
+  }
+
+  public Register getRs() {
+    return Rs;
+  }
 }

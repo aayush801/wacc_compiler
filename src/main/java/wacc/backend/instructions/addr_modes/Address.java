@@ -12,4 +12,9 @@ public class Address extends AddressingMode {
   public String toString() {
     return "=" + address;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    return o instanceof Address && ((Address) o).address.equals(address);
+  }
 }

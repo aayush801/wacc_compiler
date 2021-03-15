@@ -26,10 +26,6 @@ public class Register extends Operand {
 
   @Override
   public boolean equals(Object o) {
-    if (o instanceof Register) {
-      return number == ((Register) o).number;
-    }
-
-    return false;
+    return o instanceof Register && number == ((Register) o).number;
   }
 }

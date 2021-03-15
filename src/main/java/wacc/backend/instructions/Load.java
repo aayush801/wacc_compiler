@@ -33,6 +33,10 @@ public class Load extends Instruction {
     this.addressingMode = addressingMode;
   }
 
+  public Register getRn() {
+    return Rn;
+  }
+
   @Override
   public String toString() {
 
@@ -40,5 +44,9 @@ public class Load extends Instruction {
         + (size == TYPES.BYTE_SIZE ? "SB" : "")
         + code + " " + Rn + ", " + addressingMode;
 
+  }
+
+  public AddressingMode getAddressingMode() {
+    return addressingMode;
   }
 }

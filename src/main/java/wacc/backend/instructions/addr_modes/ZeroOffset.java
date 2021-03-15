@@ -14,4 +14,9 @@ public class ZeroOffset extends AddressingMode {
   public String toString() {
     return "[" + Rn + "]";
   }
+
+  @Override
+  public boolean equals(Object o) {
+    return o instanceof ZeroOffset && ((ZeroOffset) o).Rn.equals(Rn);
+  }
 }

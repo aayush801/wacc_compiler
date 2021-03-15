@@ -13,4 +13,13 @@ public class ImmediateAddress extends AddressingMode {
     return "=" + address;
   }
 
+  public int getAddress() {
+    return address;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return o instanceof ImmediateAddress &&
+        ((ImmediateAddress) o).address == address;
+  }
 }

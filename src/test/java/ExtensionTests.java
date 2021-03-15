@@ -160,26 +160,34 @@ public class ExtensionTests {
             + "int sum = 0;"
             + "sum += 4\n"
             + "end";
+    /*
     WaccCompiler compiler = new WaccCompiler(prog);
     System.out.println(compiler.compile());
     for (WaccError e : compiler.getErrors()) {
       System.out.println(e);
     }
     System.out.println(compiler.getSourceCode());
+
+     */
   }
 
   @Test
-  public void immediateOperand() throws IOException {
+  public void arithmeticOptimisation() throws IOException {
     String prog =
         "begin\n"
-            + "int x = 1 + 255\n"
+            + "int x = 2 + 3 + 5 + 9 + 10;\n"
+            + "int y = x + 2"
             + "end";
+    /*
     WaccCompiler compiler = new WaccCompiler(prog);
     System.out.println(compiler.compile());
-    for (WaccError e : compiler.getErrors()) {
+    for (WaccError e : compiler
+        .getErrors()) {
       System.out.println(e);
     }
     System.out.println(compiler.getSourceCode());
+    */
+
   }
 
   @Test
