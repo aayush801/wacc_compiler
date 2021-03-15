@@ -33,7 +33,6 @@ public class ImportAST extends NodeAST {
     // removes .wacc ext from filename
     this.filename = filename.replace(".wacc", "");
     this.relativePath = relativePath;
-    ;
   }
 
   @Override
@@ -57,7 +56,7 @@ public class ImportAST extends NodeAST {
     }
 
     // check if the imported file is a wacc file
-    String filepath = relativePath + "/" + filename + ".wacc";
+    String filepath = (relativePath == null ? "" : relativePath) + "/" + filename + ".wacc";
     File importedFile = new File(filepath);
     if (!importedFile.isFile()) {
       addError(new InvalidImport(ctx, filepath));
