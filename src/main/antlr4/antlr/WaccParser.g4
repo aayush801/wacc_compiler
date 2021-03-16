@@ -78,10 +78,6 @@ type:
   | classType
 ;
 
-//class
-classType: CLASS CLASS_IDENT ;
-constructor: CLASS_IDENT OPEN_PARENTHESES paramList? CLOSE_PARENTHESES IS stat END;
-
 //base types
 baseType:
     INT_TYPE
@@ -140,11 +136,13 @@ expr:
 ;
 
 //classes
-newObject: NEW CLASS_IDENT OPEN_PARENTHESES argList? CLOSE_PARENTHESES ;
+newObject: NEW IDENT OPEN_PARENTHESES argList? CLOSE_PARENTHESES ;
 fields:
     VISIBILITY (type identifier EQUALS assignRHS)
   | fields SEPERATOR fields
 ;
+classType: CLASS IDENT ;
+constructor: IDENT OPEN_PARENTHESES paramList? CLOSE_PARENTHESES IS stat END;
 
 methodDecl: VISIBILITY funcDecl;
 methodCall: CALL identifier DOT identifier OPEN_PARENTHESES argList? CLOSE_PARENTHESES ;

@@ -530,10 +530,9 @@ public class CodeGenerationTests {
           + "done;\n"
             +"class Lol ting = new Lol();\n"
             +"int x = call ting.getY(3,6);\n"
-            //+"println 2;\n"
             +"println x\n"
         +"end\n";
-    checkSourceCode(instruction, "12", 0);
+    checkSourceCode(instruction, "10", 0);
   }
 
   @Test

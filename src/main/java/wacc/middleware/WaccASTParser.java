@@ -452,7 +452,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public ClassTypeAST visitClassType(ClassTypeContext ctx) {
-    return new ClassTypeAST(semanticErrors, ctx, ctx.CLASS_IDENT().getText());
+    return new ClassTypeAST(semanticErrors, ctx, ctx.IDENT().getText());
   }
 
   @Override
@@ -609,7 +609,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public NewObjectAST visitNewObject(NewObjectContext ctx) {
-    String className = ctx.CLASS_IDENT().getText();
+    String className = ctx.IDENT().getText();
     NodeASTList<ExpressionAST> actuals = visitArgList(ctx.argList());
     return new NewObjectAST(semanticErrors, ctx, className, actuals);
   }
@@ -764,7 +764,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // Return a new classDefASR node.
     return new ClassDefinitionAST(semanticErrors,
         ctx,
-        ctx.classType().CLASS_IDENT().getText(), fields, constructor,
+        ctx.classType().IDENT().getText(), fields, constructor,
         methodDeclASTS);
   }
 
@@ -782,7 +782,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public ConstructorAST visitConstructor(WaccParser.ConstructorContext ctx) {
-    return new ConstructorAST(semanticErrors, ctx, ctx.CLASS_IDENT().getText(),
+    return new ConstructorAST(semanticErrors, ctx, ctx.IDENT().getText(),
         visitParamList(ctx.paramList()),
         (StatementAST) visit(ctx.stat()));
   }
