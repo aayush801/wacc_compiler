@@ -1,11 +1,14 @@
 package wacc.extension.wacc_ide;
 
 import org.antlr.v4.runtime.misc.Pair;
+import org.apache.commons.io.IOUtils;
+import wacc.ErrorCode;
 import wacc.WaccCompiler;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +21,7 @@ import javax.swing.text.*;
 public class View extends JFrame implements ActionListener {
 
   private final List<JTextPane> tabs = new ArrayList<>();
+  JFrame frame;
   private JTextPane currentPane;
   private final Model model;
   private static int returnValue = 0;
@@ -34,7 +38,7 @@ public class View extends JFrame implements ActionListener {
 
   private void display() {
 
-    JFrame frame = new JFrame("WACC IDE");
+     frame = new JFrame("WACC IDE");
 
     //creating tabbedPanes for coding areas.
     jtp = new JTabbedPane();
@@ -58,11 +62,13 @@ public class View extends JFrame implements ActionListener {
     JMenuItem menuOpen = new JMenuItem("Open");
     JMenuItem menuReset = new JMenuItem("Reset");
     JMenuItem menuSave = new JMenuItem("Save");
+    JMenuItem menuCompile = new JMenuItem("Compile");
 
     // Add action listener for each menu options.
     menuOpen.addActionListener(this);
     menuReset.addActionListener(this);
     menuSave.addActionListener(this);
+    menuCompile.addActionListener(this);
 
     mainMenu.add(menu);
     mainMenu.add(newTab);
@@ -71,6 +77,7 @@ public class View extends JFrame implements ActionListener {
     menu.add(menuReset);
     menu.add(menuOpen);
     menu.add(menuSave);
+    menu.add(menuCompile);
 
     // Add menu bar to frame.
     frame.setJMenuBar(mainMenu);
@@ -106,7 +113,7 @@ public class View extends JFrame implements ActionListener {
         model.check();
         currRelativePath = paneState.get(currentPane).b;
       } catch (IndexOutOfBoundsException | IOException | BadLocationException a) {
-        //System.exit(0);
+        a.printStackTrace();
       }
     });
 
@@ -148,7 +155,6 @@ public class View extends JFrame implements ActionListener {
       @Override
       public void mouseReleased(MouseEvent e) {
         int pos = currentPane.getCaretPosition();
-        System.out.println(pos);
 
       }
 
@@ -190,6 +196,19 @@ public class View extends JFrame implements ActionListener {
         // Set current pane modified to true
         Pair<Boolean, String> p = paneState.get(currentPane);
         paneState.put(currentPane, new Pair<>(true, p.b));
+
+        //keyboard shortcuts
+        if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S){
+            saveFile(jfc);
+        }
+
+        if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Q){
+              compile_code();
+          }
+
+        if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_W){
+          closeTab(currentPane);
+        }
       }
     });
 
@@ -317,9 +336,9 @@ public class View extends JFrame implements ActionListener {
 
       // Save
       case "Save":
-        jfc.setDialogTitle("Choose destination.");
-        saveFile(jfc);
-        break;
+          jfc.setDialogTitle("Choose destination.");
+          saveFile(jfc);
+          break;
 
       // Reset
       case "Reset":
@@ -335,6 +354,71 @@ public class View extends JFrame implements ActionListener {
         currentPane.setText("");
 
         break;
+
+      //compile
+      case "Compile":
+        compile_code();
+
+
+    }
+  }
+
+    private void compile_code() {
+    WaccCompiler compiler = null;
+    try {
+      compiler = new WaccCompiler(currentPane.getText());
+    } catch (IOException ioException) {
+      ioException.printStackTrace();
+    }
+    assert compiler != null;
+    ErrorCode errorCode = compiler.compile();
+
+    if (errorCode != ErrorCode.SUCCESS) {
+      JOptionPane.showMessageDialog(frame,"code contains errors, cant be compiled");
+      return ;
+    }
+
+    String sourceCode = compiler.getSourceCode();
+
+    File file = new File("temp.s");
+
+    FileWriter writer = null;
+    try {
+      writer = new FileWriter(file);
+
+      if(sourceCode != null){
+        writer.write(sourceCode);
+        writer.close();
+      }
+
+    } catch (IOException ioException) {
+      ioException.printStackTrace();
+    }
+
+
+    try {
+      Runtime runtime = Runtime.getRuntime();
+      Process compileSourceProcess = runtime
+              .exec("arm-linux-gnueabi-gcc -o EXEName -mcpu=arm1176jzf-s "
+                      + "-mtune=arm1176jzf-s temp.s");
+
+      compileSourceProcess.waitFor();
+
+      Process execWacc = runtime
+              .exec("qemu-arm -L /usr/arm-linux-gnueabi/ EXEName");
+      InputStream inputStream = execWacc.getInputStream();
+
+      execWacc.waitFor();
+
+      File exec = new File("EXEName");
+      exec.deleteOnExit();
+      file.deleteOnExit();
+
+      String text = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
+      JOptionPane.showMessageDialog(frame,"output: " + text);
+
+    } catch (InterruptedException | IOException e2) {
+      e2.printStackTrace();
     }
   }
 
@@ -357,8 +441,10 @@ public class View extends JFrame implements ActionListener {
   }
 
   private void saveFile(JFileChooser jfc) {
+
     returnValue = jfc.showSaveDialog(null);
     try {
+
       File f = new File(jfc.getSelectedFile().getAbsolutePath());
 
       currRelativePath = f.getAbsolutePath();

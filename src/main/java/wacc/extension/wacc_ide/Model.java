@@ -72,8 +72,6 @@ public class Model {
   public String getErrorMsg(int y) {
     int errLine = y/16 + 1;
 
-    System.out.println(errLine);
-
     if (errorLines.contains(errLine)) {
       for (WaccError error : errors) {
         if (error.getLineNo() == errLine) {
