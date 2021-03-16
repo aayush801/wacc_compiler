@@ -45,6 +45,7 @@ public class ProgAST extends NodeAST {
 
   @Override
   public void check() {
+    SymbolTable.reset();
     scopeST = ST = SymbolTable.TopSymbolTable();
 
     // add current file as the global import

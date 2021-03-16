@@ -698,6 +698,9 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       instructions.addAll(exprInstructions);
 
       // push param to bottom of stack
+      if(exprAST.getType() == null){
+        exprAST.check();
+      }
       int exprSize = exprAST.getType().getSize();
       program.SP.decrement(exprSize);
       instructions.add(new Store(exprResult,

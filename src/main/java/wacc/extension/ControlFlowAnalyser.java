@@ -188,7 +188,6 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   @Override
   public NodeAST visit(IdentifierAST identifier) {
     NodeAST value = values.lookupAll(identifier.getIdentifier());
-    System.out.println("here " + value);
     if (value == null) {
       return identifier;
     }

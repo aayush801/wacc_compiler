@@ -52,12 +52,10 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
     List<Integer> indices = SymbolTable.funcIndices.get(funcName);
     Integer last = indices.get(indices.size() - 1);
     IDENTIFIER function = null;
-
     for (Integer index : indices) {
       String tempFuncName = funcName + index;
       // look for the function object in the symbol table
       function = ST.lookupAll(tempFuncName);
-
       if (function == null) {
 
         // if the function is undefined within the current scope

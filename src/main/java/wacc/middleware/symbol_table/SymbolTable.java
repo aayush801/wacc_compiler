@@ -122,5 +122,9 @@ public class SymbolTable {
     SP.setState(stackPtr, freePtr);
   }
 
+  public static void reset(){
+    funcIndex = 0;
+    funcIndices = new HashMap<>();
+  }
 
 }

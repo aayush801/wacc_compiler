@@ -114,6 +114,8 @@ public class WaccCompiler {
     NodeAST tree = semanticParser.visit(parseTree);
     tree.check();
 
+
+
     return tree;
   }
 

@@ -16,6 +16,8 @@ import wacc.middleware.ast_nodes.TypeAST;
 import wacc.middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
+import static java.lang.Character.isDigit;
+
 public class FunctionDeclarationAST extends NodeAST {
 
   private final TypeAST typeAST;
@@ -105,7 +107,16 @@ public class FunctionDeclarationAST extends NodeAST {
 
     for(Integer index : lst){
       // Check if the function name already exists in ST
-      String tempName = funcName.substring(0,funcName.length()-1) + index;
+      String tempName = "";
+      for (int i = 0; i < funcName.length(); i++) {
+        if(Character.isDigit(funcName.charAt(i))){
+          break;
+        }
+        tempName += funcName.charAt(i);
+      }
+      tempName += index;
+
+      System.out.println(tempName);
       FUNCTION existing = funcName.equals(tempName) ? null : (FUNCTION) ST.lookup(tempName);
       if (existing != null) {
         // check that the params/return types are different
@@ -117,6 +128,7 @@ public class FunctionDeclarationAST extends NodeAST {
       } else {
         ST.add(funcName, funcObj);
       }
+
     }
   }
 
