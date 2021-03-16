@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import wacc.backend.WaccTranslator;
 import wacc.errors.WaccError;
+import wacc.extension.ControlFlowAnalyser;
 import wacc.frontend.syntactic_parser.SyntacticParser;
 import wacc.frontend.syntactic_parser.SyntaxErrorListener;
 import java.io.ByteArrayInputStream;
@@ -117,6 +118,8 @@ public class WaccCompiler {
 
   public String translateCode(NodeAST ASTtree) {
     WaccTranslator codeGenerator = new WaccTranslator();
+    // Control flow analysis of AST nodes
+    ASTtree = ASTtree.accept(new ControlFlowAnalyser());
     codeGenerator.visit(ASTtree);
 
     return codeGenerator.toString();

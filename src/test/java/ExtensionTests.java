@@ -175,10 +175,11 @@ public class ExtensionTests {
   public void arithmeticOptimisation() throws IOException {
     String prog =
         "begin\n"
-            + "int x = 2 + 3 + 5 + 9 + 10;\n"
-            + "int y = x + 2"
+            + "int x = 2 ^ 3;\n"
+            + "int y = x ^ 2;\n"
+            + "exit y\n"
             + "end";
-    /*
+
     WaccCompiler compiler = new WaccCompiler(prog);
     System.out.println(compiler.compile());
     for (WaccError e : compiler
@@ -186,8 +187,6 @@ public class ExtensionTests {
       System.out.println(e);
     }
     System.out.println(compiler.getSourceCode());
-    */
-
   }
 
   @Test

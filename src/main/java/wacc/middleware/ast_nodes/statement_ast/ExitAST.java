@@ -19,6 +19,10 @@ public class ExitAST extends StatementAST {
     this.expressionAST = expressionAST;
   }
 
+  public ExpressionAST getExpressionAST() {
+    return expressionAST;
+  }
+
   @Override
   public void check() {
 

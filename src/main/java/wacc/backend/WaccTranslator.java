@@ -208,8 +208,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     Register index = program.registers.get(0);
 
     // calculate index, and set it to the register index.
-    for (int i = 0; i < arrayElem.getExpressionASTS().size(); i++) {
-      ExpressionAST exprAST = arrayElem.getExpressionASTS().get(i);
+    for (int i = 0; i < arrayElem.getExpressionASTs().size(); i++) {
+      ExpressionAST exprAST = arrayElem.getExpressionASTs().get(i);
       ret.addAll(exprAST.accept(this));
 
       ret.add(new Load(target, new ZeroOffset(target)));
@@ -388,7 +388,6 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
         instructions.add(new Branch("__aeabi_idivmod", true));
         instructions.add(new Move(Rn, Register.R1));
         break;
-
       case "/":
         instructions.add(new Move(Register.R0, Rn));
         instructions.add(new Move(Register.R1, operand2));

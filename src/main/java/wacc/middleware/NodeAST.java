@@ -13,9 +13,7 @@ public abstract class NodeAST implements NodeASTInterface {
   // One symbol table reference, updated throughout when required.
   // Initially this is set to the top level symbol table.
   protected static SymbolTable ST;
-
   protected List<WaccError> errors;
-
   public ParserRuleContext ctx;
 
   public NodeAST(List<WaccError> errors, ParserRuleContext ctx) {
@@ -38,4 +36,8 @@ public abstract class NodeAST implements NodeASTInterface {
     return ctx;
   }
 
+
+  public List<WaccError> getErrors() {
+    return errors;
+  }
 }

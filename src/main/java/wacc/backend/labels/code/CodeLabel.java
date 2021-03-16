@@ -15,31 +15,22 @@ public class CodeLabel extends wacc.backend.labels.Label {
   }
 
   public List<Instruction> optimised() {
-
     return WaccCodeOptimiser.optimise(instructions);
-
   }
 
 
   @Override
   public String toString() {
-
     StringBuilder builder = new StringBuilder(name);
-
     builder.append(": \n");
 
     // optimise instructions at the machine level
     optimised().forEach(i -> {
-
           if (!(i instanceof DefineLabel)) {
-
             // Labelled instructions are exempt from being indented
             builder.append("\t");
-
           }
-
           builder.append(i).append("\n");
-
         }
     );
 

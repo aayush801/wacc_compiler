@@ -17,6 +17,14 @@ public class ChainedStatementAST extends StatementAST {
     this.statementAST2 = statementAST2;
   }
 
+  public StatementAST getStatementAST1() {
+    return statementAST1;
+  }
+
+  public StatementAST getStatementAST2() {
+    return statementAST2;
+  }
+
   @Override
   public void check() {
     // Verify that both statements are valid.

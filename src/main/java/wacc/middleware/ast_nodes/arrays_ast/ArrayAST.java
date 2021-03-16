@@ -13,7 +13,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class ArrayAST extends ExpressionAST {
 
-
   private final NodeASTList<ExpressionAST> expressionASTList;
   private ARRAY arrayObj;
 

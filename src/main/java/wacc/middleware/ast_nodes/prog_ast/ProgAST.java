@@ -35,6 +35,14 @@ public class ProgAST extends NodeAST {
     this.filename = filename.replace(".wacc", "");
   }
 
+  public NodeASTList<ImportAST> getImportASTS() {
+    return importASTS;
+  }
+
+  public String getFilename() {
+    return filename;
+  }
+
   @Override
   public void check() {
     scopeST = ST = SymbolTable.TopSymbolTable();

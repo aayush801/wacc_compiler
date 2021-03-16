@@ -46,15 +46,11 @@ public class BinOpExprAST extends ExpressionAST {
     boolean rightIsInt = rightType instanceof INT;
 
     if (!leftIsInt) {
-
       addError(new MismatchedTypes(leftExprAST.ctx, leftType, new INT()));
-
     }
 
     if (!rightIsInt) {
-
       addError(new MismatchedTypes(rightExprAST.ctx, rightType, new INT()));
-
     }
 
     type = new INT();
@@ -142,6 +138,7 @@ public class BinOpExprAST extends ExpressionAST {
       case "/":
       case "&":
       case "|":
+      case "^":
         checkArithmeticParams(leftType, rightType);
         break;
       // EQUATABLE Operators

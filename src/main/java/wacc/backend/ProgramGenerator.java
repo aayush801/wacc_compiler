@@ -29,35 +29,29 @@ public class ProgramGenerator {
   private final List<LabelPair> loopLabels = new ArrayList<>();
   // stores a set dependency functions which are hard coded
   private final Set<PrimitiveLabel> primitives = new LinkedHashSet<>();
+  private static final int REGISTER_START = 4;
+  private static final int REGISTER_END = 12;
+
 
   public ProgramGenerator() {
 
     // only use registers from 4 onwards
-    for (int i = 4; i <= 12; i++) {
-
+    for (int i = REGISTER_START; i <= REGISTER_END; i++) {
       registers.add(new Register(i));
-
     }
-
   }
 
   public void addData(DataLabel label) {
-
     dataSection.add(label);
-
   }
 
 
   public void addCode(CodeLabel label) {
-
     codeSection.add(label);
-
   }
 
   public void addPrimitive(PrimitiveLabel label) {
-
     primitives.add(label);
-
   }
 
   // allocate space on the stack for local variables

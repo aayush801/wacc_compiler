@@ -37,6 +37,7 @@ stat:
         DIVIDE_BY | DECREMENT_BY | AND_BY
         | OR_BY | BITWISE_AND_BY |
         BITWISE_OR_BY | MOD_BY)  expr    #binOpAssign
+
   | assignLHS EQUALS assignRHS            #assignVars
   | READ assignLHS                        #readCall
   | MALLOC expr                           #mallocCall
@@ -48,11 +49,13 @@ stat:
   | IF expr THEN stat ELSE stat END_IF    #ifThenElse
   | IF expr stat END_IF                   #ifThen
   | WHILE expr DO stat DONE               #whileDo
+
   | DO stat WHILE expr DONE               #doWhile
   | FOR OPEN_PARENTHESES stat?
       SEPERATOR expr?
       SEPERATOR stat?
     CLOSE_PARENTHESES stat END_FOR        #forLoop
+
   | FOR_EACH type identifier IN identifier
       stat END_FOR                        #forEachLoop
   | BEGIN stat END                        #beginStat
@@ -125,7 +128,7 @@ expr:
   | unaryOperator expr
   | sizeOfCall
   | pointerElem
-  | expr binaryOperator=(DIVIDE | STAR | MOD) expr
+  | expr binaryOperator=(POWER | DIVIDE | STAR | MOD) expr
   | expr binaryOperator=(PLUS | MINUS) expr
   | expr binaryOperator=(GT | GTE | LT | LTE) expr
   | expr binaryOperator=(EQ | NEQ) expr

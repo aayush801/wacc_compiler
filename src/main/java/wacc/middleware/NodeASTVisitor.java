@@ -1,5 +1,6 @@
 package wacc.middleware;
 
+import org.w3c.dom.Node;
 import wacc.middleware.ast_nodes.NodeASTList;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayElemAST;

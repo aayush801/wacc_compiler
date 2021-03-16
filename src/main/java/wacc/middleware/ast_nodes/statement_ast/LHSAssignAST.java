@@ -159,7 +159,6 @@ public class LHSAssignAST extends StatementAST {
     return identifier;
   }
 
-
   public int getOffset() {
     return offsetIdent;
   }

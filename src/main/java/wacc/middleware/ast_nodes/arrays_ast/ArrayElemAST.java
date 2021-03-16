@@ -21,17 +21,17 @@ public class ArrayElemAST extends ExpressionAST {
 
 
   private final String arrayName;
-  private final NodeASTList<ExpressionAST> expressionASTS;
+  private final NodeASTList<ExpressionAST> expressionASTs;
   public TYPE type;
   private SymbolTable scopeST;
   private boolean isLHS = false;
 
-  public ArrayElemAST(List<WaccError> errors,ParserRuleContext ctx,
-      String arrayName, NodeASTList<ExpressionAST> expressionASTS) {
+  public ArrayElemAST(List<WaccError> errors, ParserRuleContext ctx,
+      String arrayName, NodeASTList<ExpressionAST> expressionASTs) {
 
     super(errors, ctx);
     this.arrayName = arrayName;
-    this.expressionASTS = expressionASTS;
+    this.expressionASTs = expressionASTs;
   }
 
 
@@ -51,8 +51,8 @@ public class ArrayElemAST extends ExpressionAST {
     return arrayName;
   }
 
-  public NodeASTList<ExpressionAST> getExpressionASTS() {
-    return expressionASTS;
+  public NodeASTList<ExpressionAST> getExpressionASTs() {
+    return expressionASTs;
   }
 
 
@@ -90,7 +90,7 @@ public class ArrayElemAST extends ExpressionAST {
     }
 
     // Verify that any given expressions are INTs.
-    for (ExpressionAST expressionAST : expressionASTS) {
+    for (ExpressionAST expressionAST : expressionASTs) {
       expressionAST.check();
       if (!(expressionAST.getType() instanceof INT)) {
         addError(

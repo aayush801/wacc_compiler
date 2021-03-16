@@ -15,13 +15,15 @@ public class SizeOfAST extends ExpressionAST {
   private ExpressionAST expressionAST;
   private int size;
 
-  public SizeOfAST(List<WaccError> errors, ParserRuleContext ctx, TypeAST typeAST) {
+  public SizeOfAST(List<WaccError> errors, ParserRuleContext ctx,
+      TypeAST typeAST) {
     super(errors, ctx);
     this.typeAST = typeAST;
   }
 
 
-  public SizeOfAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST expressionAST) {
+  public SizeOfAST(List<WaccError> errors, ParserRuleContext ctx,
+      ExpressionAST expressionAST) {
     super(errors, ctx);
     this.expressionAST = expressionAST;
   }

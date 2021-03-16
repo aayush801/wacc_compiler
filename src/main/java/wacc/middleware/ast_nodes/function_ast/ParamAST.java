@@ -28,6 +28,10 @@ public class ParamAST extends NodeAST {
     return paramObj;
   }
 
+  public String getParamName() {
+    return paramName;
+  }
+
   @Override
   public void check() {
     typeAST.check();

@@ -28,6 +28,11 @@ public class VariableDeclarationAST extends StatementAST {
     this.rhsAssignAST = rhsAssignAST;
   }
 
+  public String getVarName() {
+    return varName;
+  }
+
+
   @Override
   public void check() {
     // check the type of the declaration.
@@ -69,10 +74,6 @@ public class VariableDeclarationAST extends StatementAST {
     // typeAST node, and add this to the current symbol table.
     varObj = new VARIABLE(typeAST.getType());
     ST.add(varName, varObj);
-  }
-
-  public String getVarName() {
-    return varName;
   }
 
   public TypeAST getTypeAST() {
