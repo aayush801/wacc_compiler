@@ -13,7 +13,7 @@ import wacc.frontend.identifier_objects.basic_types.CHAR;
 import wacc.frontend.identifier_objects.basic_types.INT;
 import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeASTVisitor;
-import wacc.middleware.SymbolTable;
+import wacc.middleware.symbol_table.SymbolTable;
 
 public class UnaryOpExprAST extends ExpressionAST {
 

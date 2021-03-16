@@ -1,4 +1,5 @@
 package wacc.middleware;
+
 import antlr.WaccParser;
 import antlr.WaccParser.ArgListContext;
 import antlr.WaccParser.ArrayContext;
@@ -13,9 +14,11 @@ import antlr.WaccParser.BeginStatContext;
 import antlr.WaccParser.BoolLiterContext;
 import antlr.WaccParser.CharLiterContext;
 import antlr.WaccParser.ClassDefContext;
+import antlr.WaccParser.ClassTypeContext;
 import antlr.WaccParser.DoWhileContext;
 import antlr.WaccParser.ExitStatContext;
 import antlr.WaccParser.ExprContext;
+import antlr.WaccParser.FieldsContext;
 import antlr.WaccParser.ForLoopContext;
 import antlr.WaccParser.FreeCallContext;
 import antlr.WaccParser.FuncCallContext;
@@ -62,9 +65,6 @@ import wacc.middleware.ast_nodes.StatementAST;
 import wacc.middleware.ast_nodes.TypeAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayElemAST;
-import wacc.middleware.ast_nodes.statement_ast.class_ast.MethodCallAST;
-import wacc.middleware.ast_nodes.statement_ast.class_ast.MethodDeclarationAST;
-import wacc.middleware.ast_nodes.statement_ast.class_ast.NewObjectAST;
 import wacc.middleware.ast_nodes.expression_ast.BinOpExprAST;
 import wacc.middleware.ast_nodes.expression_ast.IdentifierAST;
 import wacc.middleware.ast_nodes.expression_ast.LiteralsAST;
@@ -81,9 +81,7 @@ import wacc.middleware.ast_nodes.prog_ast.ProgAST;
 import wacc.middleware.ast_nodes.statement_ast.AssignmentAST;
 import wacc.middleware.ast_nodes.statement_ast.BeginAST;
 import wacc.middleware.ast_nodes.statement_ast.ChainedStatementAST;
-import wacc.middleware.ast_nodes.statement_ast.class_ast.ClassDefinitionAST;
 import wacc.middleware.ast_nodes.statement_ast.ExitAST;
-import wacc.middleware.ast_nodes.statement_ast.loop_ast.ForAST;
 import wacc.middleware.ast_nodes.statement_ast.FreeAST;
 import wacc.middleware.ast_nodes.statement_ast.IfElseAST;
 import wacc.middleware.ast_nodes.statement_ast.LHSAssignAST;
@@ -93,9 +91,17 @@ import wacc.middleware.ast_nodes.statement_ast.ReadAST;
 import wacc.middleware.ast_nodes.statement_ast.ReturnAST;
 import wacc.middleware.ast_nodes.statement_ast.SkipAST;
 import wacc.middleware.ast_nodes.statement_ast.VariableDeclarationAST;
+import wacc.middleware.ast_nodes.class_ast.ClassDefinitionAST;
+import wacc.middleware.ast_nodes.class_ast.ConstructorAST;
+import wacc.middleware.ast_nodes.class_ast.FieldAST;
+import wacc.middleware.ast_nodes.class_ast.MethodCallAST;
+import wacc.middleware.ast_nodes.class_ast.MethodDeclarationAST;
+import wacc.middleware.ast_nodes.class_ast.NewObjectAST;
+import wacc.middleware.ast_nodes.statement_ast.loop_ast.ForAST;
 import wacc.middleware.ast_nodes.statement_ast.loop_ast.WhileAST;
 import wacc.middleware.ast_nodes.types_ast.ArrayTypeAST;
 import wacc.middleware.ast_nodes.types_ast.BaseTypeAST;
+import wacc.middleware.ast_nodes.types_ast.ClassTypeAST;
 import wacc.middleware.ast_nodes.types_ast.PairElemTypeAST;
 import wacc.middleware.ast_nodes.types_ast.PairTypeAST;
 import wacc.middleware.ast_nodes.types_ast.PointerTypeAST;
@@ -213,7 +219,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // similar to visitParamList, but arguments are expressions so call
     // visitExpr. Also need an explicit check here for the number of arguments.
     // in either case, return a new NodeASTList.
-    if (ctx.expr() != null) {
+    if (ctx != null) {
       return new NodeASTList<>(semanticErrors,
           ctx, ctx.expr().stream().map(this::visitExpr).collect(Collectors.toList()));
     } else {
@@ -374,7 +380,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public SizeOfAST visitSizeOfCall(SizeOfCallContext ctx) {
-    if(ctx.type() != null) {
+    if (ctx.type() != null) {
       return new SizeOfAST(semanticErrors, ctx, visitType(ctx.type()));
     } else {
       return new SizeOfAST(semanticErrors, ctx, visitExpr(ctx.expr()));
@@ -442,6 +448,11 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   public TypeAST visitType(TypeContext ctx) {
     // return the TypeAST obtained from visiting the children.
     return (TypeAST) visitChildren(ctx);
+  }
+
+  @Override
+  public ClassTypeAST visitClassType(ClassTypeContext ctx) {
+    return new ClassTypeAST(semanticErrors, ctx, ctx.CLASS_IDENT().getText());
   }
 
   @Override
@@ -542,6 +553,15 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
           visitFuncCall(ctx.funcCall()));
     }
 
+    if (ctx.methodCall() != null) {
+      return new RHSAssignAST(semanticErrors, ctx, visitMethodCall(ctx.methodCall()));
+    }
+
+    if (ctx.newObject() != null) {
+      return new RHSAssignAST(semanticErrors, ctx,
+          visitNewObject(ctx.newObject()));
+    }
+
     return null;
   }
 
@@ -573,7 +593,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
       return visitPointerElem(ctx.pointerElem());
     }
 
-    if(ctx.sizeOfCall() != null){
+    if (ctx.sizeOfCall() != null) {
       return visitSizeOfCall(ctx.sizeOfCall());
     }
 
@@ -589,12 +609,9 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public NewObjectAST visitNewObject(NewObjectContext ctx) {
-    IdentifierContext identifier = ctx.identifier();
-    ArgListContext argList = ctx.argList();
-
-    List<ExpressionAST> actuals = new ArrayList<>();
-    return new NewObjectAST(semanticErrors, ctx, identifier.getText(),
-        new NodeASTList<>(semanticErrors, ctx, actuals));
+    String className = ctx.CLASS_IDENT().getText();
+    NodeASTList<ExpressionAST> actuals = visitArgList(ctx.argList());
+    return new NewObjectAST(semanticErrors, ctx, className, actuals);
   }
 
   @Override
@@ -705,47 +722,71 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   public MethodCallAST visitMethodCall(WaccParser.MethodCallContext ctx) {
 
     // check whether the function call has any arguments.
-    NodeASTList<ExpressionAST> actuals;
-    if (ctx.argList() != null) {
-      // arguments present, so check them.
-      actuals = visitArgList(ctx.argList());
-    } else {
-      // no arguments, just set actuals to an empty list.
-      actuals = new NodeASTList<>(semanticErrors, ctx);
-    }
+    NodeASTList<ExpressionAST> actuals = visitArgList(ctx.argList());
 
     // return a new FunctionCallAST.
     return new MethodCallAST(semanticErrors, ctx, ctx.identifier(0).getText(),
-        new FunctionCallAST(semanticErrors, ctx, ctx.identifier(1).getText(), actuals));
+        ctx.identifier(1).getText(), actuals);
   }
 
   @Override
   public MethodDeclarationAST visitMethodDecl(WaccParser.MethodDeclContext ctx) {
-    FunctionDeclarationAST func = visitFuncDecl(ctx.funcDecl());
-    Visibility visibility = Visibility.PUBLIC;
-    if (ctx.VISIBILITY().getText().equals("private")) {
-      visibility = Visibility.PRIVATE;
+
+    TypeAST typeAST = visitType(ctx.funcDecl().type());
+    String funcName = ctx.funcDecl().identifier().getText();
+    NodeASTList<ParamAST> paramASTS;
+
+    if (ctx.funcDecl().paramList() != null) {
+      paramASTS = visitParamList(ctx.funcDecl().paramList());
+    } else {
+      paramASTS = new NodeASTList<>(semanticErrors, ctx);
     }
 
-    return new MethodDeclarationAST(semanticErrors, ctx, func, visibility);
+    StatementAST funcBody = (StatementAST) visit(ctx.funcDecl().stat());
+
+    Visibility visibility =
+        ctx.VISIBILITY().getText().equals("private") ? Visibility.PRIVATE : Visibility.PUBLIC;
+    return new MethodDeclarationAST(semanticErrors, ctx, visibility, typeAST, funcName, paramASTS,
+        funcBody);
   }
 
   @Override
   public ClassDefinitionAST visitClassDef(ClassDefContext ctx) {
-    // Make a list of functionASTs for all functions declared in the program.
-    // Do this by calling visitFuncDecl on all function declarations in ctx.
     NodeASTList<MethodDeclarationAST> methodDeclASTS =
         new NodeASTList<>(semanticErrors, ctx,
             ctx.methodDecl().stream()
-            .map(this::visitMethodDecl).collect(Collectors.toList()));
+                .map(this::visitMethodDecl).collect(Collectors.toList()));
 
-    // Return a new progAST node.
+    FieldAST fields = (ctx.fields() != null) ?  visitFields(ctx.fields()) : null;
+
+    ConstructorAST constructor = (ctx.constructor() != null) ? visitConstructor(ctx.constructor()) : null;
+
+    // Return a new classDefASR node.
     return new ClassDefinitionAST(semanticErrors,
         ctx,
-        ctx.identifier().getText(),
-        (StatementAST) visit(ctx.fields()),
+        ctx.classType().CLASS_IDENT().getText(), fields, constructor,
         methodDeclASTS);
   }
+
+  @Override
+  public FieldAST visitFields(FieldsContext ctx) {
+    if(ctx.fields().size() > 1){
+      return new FieldAST(semanticErrors, ctx, visitFields(ctx.fields(0)), visitFields(ctx.fields(1)));
+    }else{
+      Visibility visibility = (ctx.VISIBILITY().getText().equals("private")? Visibility.PRIVATE : Visibility.PUBLIC);
+      return new FieldAST(semanticErrors, ctx, visibility, new VariableDeclarationAST(semanticErrors,
+          ctx, visitType(ctx.type()), ctx.identifier().getText(),
+          visitAssignRHS(ctx.assignRHS())));
+    }
+  }
+
+  @Override
+  public ConstructorAST visitConstructor(WaccParser.ConstructorContext ctx) {
+    return new ConstructorAST(semanticErrors, ctx, ctx.CLASS_IDENT().getText(),
+        visitParamList(ctx.paramList()),
+        (StatementAST) visit(ctx.stat()));
+  }
+
 
   @Override
   public IfElseAST visitSwitchStat(WaccParser.SwitchStatContext ctx) {

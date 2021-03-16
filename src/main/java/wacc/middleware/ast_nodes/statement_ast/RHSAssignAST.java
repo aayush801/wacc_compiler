@@ -1,6 +1,7 @@
 package wacc.middleware.ast_nodes.statement_ast;
 
 import java.util.List;
+import org.antlr.v4.runtime.ParserRuleContext;
 import wacc.errors.WaccError;
 import wacc.frontend.identifier_objects.TYPE;
 import wacc.middleware.ExpressionAST;
@@ -8,18 +9,21 @@ import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.ast_nodes.StatementAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayAST;
 import wacc.middleware.ast_nodes.function_ast.FunctionCallAST;
+import wacc.middleware.ast_nodes.function_ast.FunctionCallInterface;
 import wacc.middleware.ast_nodes.pair_ast.NewPairAST;
 import wacc.middleware.ast_nodes.pair_ast.PairElemAST;
-import wacc.middleware.SymbolTable;
-import org.antlr.v4.runtime.ParserRuleContext;
+import wacc.middleware.ast_nodes.class_ast.MethodCallAST;
+import wacc.middleware.ast_nodes.class_ast.NewObjectAST;
+import wacc.middleware.symbol_table.SymbolTable;
 
 public class RHSAssignAST extends StatementAST {
 
+  private NewObjectAST newObjectAST;
   private ExpressionAST expressionAST;
   private ArrayAST arrayAST;
   private NewPairAST newPairAST;
   private PairElemAST pairElemAST;
-  private FunctionCallAST functionCallAST;
+  private FunctionCallInterface functionCallAST;
   private SymbolTable scopeST;
 
   private TYPE type;
@@ -54,9 +58,16 @@ public class RHSAssignAST extends StatementAST {
 
   // RHS Assign is a function call.
   public RHSAssignAST(List<WaccError> errors, ParserRuleContext ctx,
-      FunctionCallAST functionCallAST) {
+      FunctionCallInterface functionCallAST) {
     super(errors, ctx);
     this.functionCallAST = functionCallAST;
+  }
+
+  // RHS Assign is a newObject.
+  public RHSAssignAST(List<WaccError> errors, ParserRuleContext ctx,
+      NewObjectAST newObjectAST) {
+    super(errors, ctx);
+    this.newObjectAST = newObjectAST;
   }
 
   public TYPE getType() {
@@ -149,7 +160,19 @@ public class RHSAssignAST extends StatementAST {
       }
 
       type = functionCallAST.getFuncObj().getReturnType();
+      return;
+    }
 
+    if (newObjectAST != null) {
+
+      //check the object ast
+      newObjectAST.check();
+
+      if (newObjectAST.getClassObj() == null) {
+        return;
+      }
+
+      type = newObjectAST.getClassObj();
     }
 
   }
@@ -170,8 +193,12 @@ public class RHSAssignAST extends StatementAST {
     return pairElemAST;
   }
 
-  public FunctionCallAST getFunctionCallAST() {
+  public FunctionCallInterface getFunctionCallAST() {
     return functionCallAST;
+  }
+
+  public NewObjectAST getNewObjectAST() {
+    return newObjectAST;
   }
 
   public SymbolTable getScopeST() {

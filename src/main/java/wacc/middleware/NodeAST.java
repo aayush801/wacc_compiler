@@ -5,6 +5,7 @@ import wacc.frontend.identifier_objects.IDENTIFIER;
 import wacc.frontend.identifier_objects.TYPE;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
+import wacc.middleware.symbol_table.SymbolTable;
 
 public abstract class NodeAST implements NodeASTInterface {
 

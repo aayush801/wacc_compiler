@@ -4,12 +4,11 @@ import java.util.List;
 import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.Undefined;
 import wacc.frontend.identifier_objects.IDENTIFIER;
-import wacc.frontend.identifier_objects.PARAM;
+import wacc.frontend.identifier_objects.STACK_OBJECT;
 import wacc.frontend.identifier_objects.TYPE;
-import wacc.frontend.identifier_objects.VARIABLE;
 import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeASTVisitor;
-import wacc.middleware.SymbolTable;
+import wacc.middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class IdentifierAST extends ExpressionAST {
@@ -48,13 +47,8 @@ public class IdentifierAST extends ExpressionAST {
       return;
     }
 
-    if (obj instanceof VARIABLE) {
-      type = ((VARIABLE) obj).getType();
-      return;
-    }
-
-    if (obj instanceof PARAM) {
-      type = ((PARAM) obj).getType();
+    if (obj instanceof STACK_OBJECT) {
+      type = ((STACK_OBJECT) obj).getType();
       return;
     }
 

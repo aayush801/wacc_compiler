@@ -12,7 +12,7 @@ import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.ast_nodes.NodeASTList;
 import wacc.middleware.ast_nodes.StatementAST;
 import wacc.middleware.ast_nodes.TypeAST;
-import wacc.middleware.SymbolTable;
+import wacc.middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class FunctionDeclarationAST extends NodeAST {

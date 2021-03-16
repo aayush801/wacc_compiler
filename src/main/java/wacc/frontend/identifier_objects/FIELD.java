@@ -7,14 +7,17 @@ import wacc.middleware.Visibility;
 public class FIELD extends VARIABLE {
 
   private final Visibility visibility;
+  private final int offset;
 
-  public FIELD(TYPE type, Visibility visibility) {
-    super(type);
+  public FIELD(TYPE type, Visibility visibility, int offset) {
+    super("field", type);
     this.visibility = visibility;
+    this.type = type;
+    this.offset = offset;
   }
 
-  public FIELD(TYPE type) {
-    this(type, Visibility.PUBLIC);
+  public int getOffset() {
+    return offset;
   }
 
   public Visibility getVisibility() {

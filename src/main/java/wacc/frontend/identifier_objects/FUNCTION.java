@@ -2,12 +2,12 @@ package wacc.frontend.identifier_objects;
 
 import java.util.ArrayList;
 import java.util.List;
-import wacc.middleware.SymbolTable;
+import wacc.middleware.symbol_table.SymbolTable;
 
 public class FUNCTION extends IDENTIFIER {
 
   public final TYPE returnType;
-  public final List<PARAM> formals = new ArrayList<>();
+  public List<PARAM> formals = new ArrayList<>();
   private SymbolTable ST;
 
   public FUNCTION(TYPE returnType) {

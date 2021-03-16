@@ -1,7 +1,6 @@
 package wacc.backend;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import wacc.backend.instructions.Branch;
 import wacc.backend.instructions.Compare;
@@ -38,6 +37,7 @@ import wacc.backend.primitive_functions.ReadFunctions;
 import wacc.backend.registers.Register;
 import wacc.backend.registers.StackPointer;
 import wacc.frontend.identifier_objects.CLASS;
+import wacc.frontend.identifier_objects.FIELD;
 import wacc.frontend.identifier_objects.IDENTIFIER;
 import wacc.frontend.identifier_objects.PARAM;
 import wacc.frontend.identifier_objects.POINTER;
@@ -53,20 +53,23 @@ import wacc.frontend.identifier_objects.basic_types.STR;
 import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeAST;
 import wacc.middleware.NodeASTVisitor;
-import wacc.middleware.SymbolTable;
 import wacc.middleware.ast_nodes.NodeASTList;
 import wacc.middleware.ast_nodes.StatementAST;
 import wacc.middleware.ast_nodes.TypeAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayElemAST;
-import wacc.middleware.ast_nodes.statement_ast.class_ast.MethodCallAST;
-import wacc.middleware.ast_nodes.statement_ast.class_ast.NewObjectAST;
+import wacc.middleware.ast_nodes.class_ast.ClassDefinitionAST;
+import wacc.middleware.ast_nodes.class_ast.FieldAST;
+import wacc.middleware.ast_nodes.class_ast.MethodCallAST;
+import wacc.middleware.ast_nodes.class_ast.MethodDeclarationAST;
+import wacc.middleware.ast_nodes.class_ast.NewObjectAST;
 import wacc.middleware.ast_nodes.expression_ast.BinOpExprAST;
 import wacc.middleware.ast_nodes.expression_ast.IdentifierAST;
 import wacc.middleware.ast_nodes.expression_ast.LiteralsAST;
 import wacc.middleware.ast_nodes.expression_ast.SizeOfAST;
 import wacc.middleware.ast_nodes.expression_ast.UnaryOpExprAST;
 import wacc.middleware.ast_nodes.function_ast.FunctionCallAST;
+import wacc.middleware.ast_nodes.function_ast.FunctionCallInterface;
 import wacc.middleware.ast_nodes.function_ast.FunctionDeclarationAST;
 import wacc.middleware.ast_nodes.function_ast.ParamAST;
 import wacc.middleware.ast_nodes.pair_ast.NewPairAST;
@@ -75,12 +78,8 @@ import wacc.middleware.ast_nodes.pointers_ast.PointerElemAST;
 import wacc.middleware.ast_nodes.prog_ast.ProgAST;
 import wacc.middleware.ast_nodes.statement_ast.AssignmentAST;
 import wacc.middleware.ast_nodes.statement_ast.BeginAST;
-import wacc.middleware.ast_nodes.statement_ast.loop_ast.BreakAST;
 import wacc.middleware.ast_nodes.statement_ast.ChainedStatementAST;
-import wacc.middleware.ast_nodes.statement_ast.class_ast.ClassDefinitionAST;
-import wacc.middleware.ast_nodes.statement_ast.loop_ast.ContinueAST;
 import wacc.middleware.ast_nodes.statement_ast.ExitAST;
-import wacc.middleware.ast_nodes.statement_ast.loop_ast.ForAST;
 import wacc.middleware.ast_nodes.statement_ast.FreeAST;
 import wacc.middleware.ast_nodes.statement_ast.IfElseAST;
 import wacc.middleware.ast_nodes.statement_ast.LHSAssignAST;
@@ -90,12 +89,17 @@ import wacc.middleware.ast_nodes.statement_ast.ReadAST;
 import wacc.middleware.ast_nodes.statement_ast.ReturnAST;
 import wacc.middleware.ast_nodes.statement_ast.SkipAST;
 import wacc.middleware.ast_nodes.statement_ast.VariableDeclarationAST;
+import wacc.middleware.ast_nodes.statement_ast.loop_ast.BreakAST;
+import wacc.middleware.ast_nodes.statement_ast.loop_ast.ContinueAST;
+import wacc.middleware.ast_nodes.statement_ast.loop_ast.ForAST;
 import wacc.middleware.ast_nodes.statement_ast.loop_ast.WhileAST;
 import wacc.middleware.ast_nodes.types_ast.ArrayTypeAST;
 import wacc.middleware.ast_nodes.types_ast.BaseTypeAST;
 import wacc.middleware.ast_nodes.types_ast.PairElemTypeAST;
 import wacc.middleware.ast_nodes.types_ast.PairTypeAST;
 import wacc.middleware.ast_nodes.types_ast.PointerTypeAST;
+import wacc.middleware.symbol_table.ClassSymbolTable;
+import wacc.middleware.symbol_table.SymbolTable;
 
 public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
@@ -112,7 +116,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     // translate function declarations
     for (FunctionDeclarationAST func : prog.getFunctionDeclarationASTS()) {
-      func.accept(this);
+      visit(func);
     }
 
     List<Instruction> instructions = new ArrayList<>();
@@ -299,7 +303,6 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     if (rightExpr instanceof LiteralsAST) {
       try {
         n = Integer.parseInt(((LiteralsAST) rightExpr).getText());
-        //System.out.println(n);
         isIntLiteral = true;
       } catch (Exception e) {
 
@@ -467,8 +470,16 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     // lookup varObj in current and higher scopes to find the variable.
     IDENTIFIER varObj = identifier.getScopeST()
         .lookupAll(identifier.getIdentifier());
+    List<Instruction> ret = new ArrayList<>();
 
-    if (varObj instanceof STACK_OBJECT) {
+    if (varObj instanceof FIELD) {
+      // get the offset from the start of the class object
+      int offset = ((FIELD) varObj).getOffset();
+      // load the chosen field into the target register
+      ret.add(new Load(target, new ImmediateOffset(Register.R0, new ImmediateNum(offset)),
+          ((FIELD) varObj).getType().getSize()));
+
+    } else if (varObj instanceof STACK_OBJECT) {
 
       STACK_OBJECT varStackObj = (STACK_OBJECT) varObj;
       if (!varStackObj.isLive()) {
@@ -483,15 +494,13 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
           .getStackAddress());
 
       // Simply load the identifier into the first register in the list.
-      List<Instruction> ret = new ArrayList<>();
       ret.add(
           new Load(target,
               new ImmediateOffset(new StackPointer(), new ImmediateNum(offset)),
               varStackObj.getType().getSize()));
-      return ret;
     }
 
-    return new ArrayList<>();
+    return ret;
   }
 
   @Override
@@ -530,7 +539,6 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     }
 
-    //return new Collections.singleton(new Load(registers.get(0), new Address()));
     List<Instruction> instructions = new ArrayList<>();
     instructions.add(instruction);
 
@@ -640,15 +648,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     NodeASTList<ParamAST> paramASTList = functionDeclaration.getParamASTList();
 
-    if (program.inClass()) {
-      PARAM paramObj = new PARAM(program.getClassScope());
-
-      // push paramObj onto the virtual stack
-      program.SP.push(paramObj);
-      paramObj.setLive(true);
-    }
-
-    // implicitly adds parameters to the stack
+    // pushes parameters to the stack
     for (int i = paramASTList.size() - 1; i >= 0; i--) {
       paramASTList.get(i).accept(this);
     }
@@ -665,23 +665,28 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     program.popPC(instructions);
     instructions.add(new EOC());
 
+    //get func identifier name
+    String funcName = functionDeclaration.getFuncName();
+
+    //if in scope of a class then append classname as prefix
+    if (funcScope.getEncSymTable() instanceof ClassSymbolTable) {
+      String prefix = ((ClassSymbolTable) funcScope.getEncSymTable()).getClassName() + "_";
+      funcName = prefix + funcName;
+    }
+
     // add the function label
     FunctionLabel label =
-        new FunctionLabel(functionDeclaration.getFuncName(), instructions);
+        new FunctionLabel(funcName, instructions);
     program.addCode(label);
 
+    // pop all params off the stack
+    paramASTList.forEach(p -> program.SP.pop(p.getParamObj()));
     return null;
   }
 
-  @Override
-  public List<Instruction> visit(FunctionCallAST functionCall) {
-    Register dest = program.registers.get(0);
-
-    NodeASTList<ExpressionAST> actuals = functionCall.getActuals();
-
+  /* Helper method */
+  public List<Instruction> pushParams(NodeASTList<ExpressionAST> actuals) {
     List<Instruction> instructions = new ArrayList<>();
-
-    int originalStackPointer = program.SP.getStackPtr();
 
     // push parameters onto the stack from last to first
     for (int i = actuals.size() - 1; i >= 0; i--) {
@@ -701,9 +706,12 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
           exprSize));
     }
 
-    // branch to the function label
-    instructions.add(new Branch("f_" + functionCall.getFuncName(), true));
+    return instructions;
+  }
 
+  /* Helper method */
+  public List<Instruction> popParams(int originalStackPointer) {
+    List<Instruction> instructions = new ArrayList<>();
     // restore stack pointer address (pop parameters off the stack)
     int offset = program.SP.calculateOffset(originalStackPointer);
     program.SP.increment(offset);
@@ -711,7 +719,25 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
         new Arithmetic(ArithmeticOpcode.ADD, program.SP, program.SP,
             new ImmediateNum(offset), false));
 
-    // store the result in the destination register
+    return instructions;
+  }
+
+  @Override
+  public List<Instruction> visit(FunctionCallAST functionCall) {
+    Register dest = program.registers.get(0);
+
+    int originalStackPointer = program.SP.getStackPtr();
+
+    //push param values onto the stack
+    List<Instruction> instructions = pushParams(functionCall.getActuals());
+
+    // branch to the function label
+    instructions.add(new Branch("f_" + functionCall.getFuncName(), true));
+
+    // revert the stack pointer to its old levels
+    instructions.addAll(popParams(originalStackPointer));
+
+    // store the function result in the destination register
     instructions.add(new Move(dest, Register.R0));
 
     return instructions;
@@ -1133,18 +1159,19 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     ArrayAST arrayAST = rhs.getArrayAST();
     NewPairAST newPairAST = rhs.getNewPairAST();
     PairElemAST pairElemAST = rhs.getPairElemAST();
-    FunctionCallAST functionCallAST = rhs.getFunctionCallAST();
+    FunctionCallInterface functionCallAST = rhs.getFunctionCallAST();
+    NewObjectAST newObjectAST = rhs.getNewObjectAST();
 
     if (expressionAST != null) {
-      return expressionAST.accept(this);
+      return visit(expressionAST);
     }
 
     if (arrayAST != null) {
-      return arrayAST.accept(this);
+      return visit(arrayAST);
     }
 
     if (newPairAST != null) {
-      return newPairAST.accept(this);
+      return visit(newPairAST);
     }
 
     if (pairElemAST != null) {
@@ -1162,9 +1189,11 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     }
 
     if (functionCallAST != null) {
-
       return functionCallAST.accept(this);
+    }
 
+    if (newObjectAST != null) {
+      return visit(newObjectAST);
     }
 
     return null;
@@ -1189,7 +1218,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
   @Override
   public List<Instruction> visit(VariableDeclarationAST variableDeclaration) {
     RHSAssignAST rhsAssignAST = variableDeclaration.getRhsAssignAST();
-    VARIABLE varObj = variableDeclaration.getVarObj();
+    STACK_OBJECT stackObj = variableDeclaration.getVarObj();
     TypeAST typeAST = variableDeclaration.getTypeAST();
     Register destination = program.registers.get(0);
 
@@ -1198,10 +1227,11 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     // Amount of bytes to add to the stack pointer to get address of variable
 
     //int stackAddress = program.SP.push(varObj); //pushes varObj onto stack
-    varObj.setLive(true);
+    stackObj.setLive(true);
 
     // gets address of var in respect to the current stack pointer
-    int offset = program.SP.calculateOffset(varObj.getStackAddress());
+    int offset = program.SP.calculateOffset(stackObj.getStackAddress());
+
     TYPE type = typeAST.getType();
     instructions.add(new Store(ConditionCode.NONE, destination,
         new ImmediateOffset(program.SP, new ImmediateNum(offset)), type.getSize()));
@@ -1318,26 +1348,119 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     return ret;
   }
 
+
   @Override
   public List<Instruction> visit(ClassDefinitionAST classDef) {
-    CLASS classObj = classDef.getClassObj();
-    program.setClass(classObj);
 
-    program.resetClass();
+    // first translate all the fields onto the stack
+    List<Instruction> constructor = new ArrayList<>();
+    CLASS classObj = classDef.getClassObj();
+    SymbolTable scope = classObj.getScopeST();
+    int size = scope.calculateScopeSize();
+
+    program.pushLR(constructor);
+
+    constructor.addAll(program.allocateStackSpace(scope));
+
+    constructor.addAll(visit(classDef.getFields()));
+
+    // malloc the size of the object
+    constructor.add(new Load(Register.R0, new ImmediateAddress(size)));
+    constructor.add(new Branch("malloc", true));
+
+    int increment = 0;
+    //get each field off the stack and put it on the heap
+    for (STACK_OBJECT stackObj : scope.getVariables()) {
+      // put value from stack into R1
+      int offset = program.SP.calculateOffset(stackObj.getStackAddress());
+      constructor
+          .add(new Load(Register.R1, new ImmediateOffset(program.SP, new ImmediateNum(offset))));
+
+      // store R1 value into adress of R0 with offset
+      constructor.add(new Store(Register.R1, new ImmediateOffset(Register.R0,
+          new ImmediateNum(increment))));
+
+      //increment heap size by this amount
+      increment += stackObj.getType().getSize();
+    }
+
+    constructor.addAll(program.deallocateStackSpace(scope));
+    program.popPC(constructor);
+
+    CodeLabel label = new CodeLabel("c_" + classObj.getName(), constructor);
+    program.addCode(label);
+
+    for (MethodDeclarationAST method : classDef.getMethods()) {
+      visit(method);
+    }
 
     return new ArrayList<>();
   }
 
   @Override
   public List<Instruction> visit(NewObjectAST newObjectAST) {
+    List<Instruction> ret = new ArrayList<>();
+
+    Register destination = program.registers.get(0);
+
+    CLASS classObj = newObjectAST.getClassObj();
+
+    //branch to constructor
+    ret.add(new Branch("c_" + classObj.getName(), true));
+
+    //move returned heap address to destination
+    ret.add(new Move(destination, Register.R0));
+
+    return ret;
+  }
+
+  @Override
+  public List<Instruction> visit(MethodCallAST methodCall) {
+    Register dest = program.registers.get(0);
+
+    SymbolTable scopeST = methodCall.getScopeST();
+
+    VARIABLE stackObj = (VARIABLE) scopeST.lookupAll(methodCall.getObjectName());
+    String className = stackObj.getType().getName();
+
+    int originalStackPointer = program.SP.getStackPtr();
+
+    //push param values onto the stack
+    List<Instruction> ret = pushParams(methodCall.getActuals());
+
+    // put object into R0
+    int offset = program.SP.calculateOffset(stackObj.getStackAddress());
+    ret.add(new Load(Register.R0, new ImmediateOffset(program.SP, new ImmediateNum(offset))));
+
+    // call the class function
+    ret.add(new Branch("f_" + className + "_" + methodCall.getFuncName(), true));
+
+    // revert the stack pointer to its old levels
+    ret.addAll(popParams(originalStackPointer));
+
+    // move result into dest register
+    ret.add(new Move(dest, Register.R0));
+
+    return ret;
+  }
+
+  @Override
+  public List<Instruction> visit(MethodDeclarationAST methodDecl) {
+    visit((FunctionDeclarationAST) methodDecl);
     return null;
   }
 
   @Override
-  public List<Instruction> visit(MethodCallAST classDef) {
-    return null;
+  public List<Instruction> visit(FieldAST fields) {
+    List<Instruction> ret = new ArrayList<>();
+    if (fields.isChained()) {
+      ret.addAll(visit(fields.getLeftField()));
+      ret.addAll(visit(fields.getRightField()));
+    } else {
+      ret.addAll(visit(fields.getVariableDeclarationAST()));
+    }
+    return ret;
   }
-
 
   @Override
   public List<Instruction> visit(ContinueAST continueStat) {

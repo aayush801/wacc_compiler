@@ -6,8 +6,8 @@ import wacc.errors.semantic_errors.DuplicateIdentifier;
 import wacc.errors.semantic_errors.MismatchedTypes;
 import wacc.frontend.identifier_objects.FUNCTION;
 import wacc.frontend.identifier_objects.IDENTIFIER;
+import wacc.frontend.identifier_objects.STACK_OBJECT;
 import wacc.frontend.identifier_objects.VARIABLE;
-import wacc.middleware.NodeAST;
 import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.ast_nodes.StatementAST;
 import wacc.middleware.ast_nodes.TypeAST;
@@ -39,11 +39,11 @@ public class VariableDeclarationAST extends StatementAST {
     }
 
     // lookup name in current symbol table.
-    IDENTIFIER variable = NodeAST.ST.lookup(varName);
+    IDENTIFIER obj = ST.lookup(varName);
 
     // if variable already present in current symbol table and is not a
     // function, this is not valid as it is a duplicate identifier.
-    if (variable != null && !(variable instanceof FUNCTION)) {
+    if (obj != null && !(obj instanceof FUNCTION)) {
       addError(new DuplicateIdentifier(ctx));
       return;
     }
@@ -68,8 +68,11 @@ public class VariableDeclarationAST extends StatementAST {
     // If all checks pass, create new VARIABLE object with the type of the
     // typeAST node, and add this to the current symbol table.
     varObj = new VARIABLE(typeAST.getType());
+    ST.add(varName, varObj);
+  }
 
-    NodeAST.ST.add(varName, varObj);
+  public String getVarName() {
+    return varName;
   }
 
   public TypeAST getTypeAST() {
@@ -80,8 +83,12 @@ public class VariableDeclarationAST extends StatementAST {
     return rhsAssignAST;
   }
 
-  public VARIABLE getVarObj() {
+  public STACK_OBJECT getVarObj() {
     return varObj;
+  }
+
+  public void setVarObj(VARIABLE varObj) {
+    this.varObj = varObj;
   }
 
   @Override

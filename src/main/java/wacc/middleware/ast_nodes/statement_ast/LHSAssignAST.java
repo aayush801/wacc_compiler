@@ -14,7 +14,7 @@ import wacc.middleware.ast_nodes.StatementAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayElemAST;
 import wacc.middleware.ast_nodes.pair_ast.PairElemAST;
 import wacc.middleware.ast_nodes.pointers_ast.PointerElemAST;
-import wacc.middleware.SymbolTable;
+import wacc.middleware.symbol_table.SymbolTable;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class LHSAssignAST extends StatementAST {

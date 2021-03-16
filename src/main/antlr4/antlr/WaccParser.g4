@@ -57,16 +57,17 @@ stat:
       stat END_FOR                        #forEachLoop
   | BEGIN stat END                        #beginStat
   | stat SEPERATOR stat                   #seperateStat
-  | CLASS identifier
+  | classType
       fields?
+      constructor?
       methodDecl*
     DONE                                  #classDef
-  | methodCall                            #methodCallStat
   | SWITCH expr
       (CASE expr COLON stat)*
       (DEFAULT COLON stat)?
     DONE                                  #switchStat
 ;
+
 
 //typings
 type:
@@ -74,7 +75,12 @@ type:
   | pairType
   | arrayType
   | pointerType
+  | classType
 ;
+
+//class
+classType: CLASS CLASS_IDENT ;
+constructor: CLASS_IDENT OPEN_PARENTHESES paramList? CLOSE_PARENTHESES IS stat END;
 
 //base types
 baseType:
@@ -108,6 +114,7 @@ assignRHS:
   | pairElem
   | funcCall
   | newObject
+  | methodCall
 ;
 
 //expressions
@@ -133,14 +140,14 @@ expr:
 ;
 
 //classes
-newObject: NEW identifier OPEN_PARENTHESES argList? CLOSE_PARENTHESES ;
+newObject: NEW CLASS_IDENT OPEN_PARENTHESES argList? CLOSE_PARENTHESES ;
 fields:
-    VISIBILITY stat
-  | fields SEPARATOR fields
+    VISIBILITY (type identifier EQUALS assignRHS)
+  | fields SEPERATOR fields
 ;
 
-methodDecl: VISIBILITY funcDecl ;
-methodCall: identifier DOT identifier OPEN_PARENTHESES argList? CLOSE_PARENTHESES ;
+methodDecl: VISIBILITY funcDecl;
+methodCall: CALL identifier DOT identifier OPEN_PARENTHESES argList? CLOSE_PARENTHESES ;
 
 //unary operators
 unaryOperator: NOT | MINUS | LENGTH | ORD | CHR | INVERT | BITWISE_AND | MALLOC;

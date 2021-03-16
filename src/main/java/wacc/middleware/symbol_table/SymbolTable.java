@@ -1,4 +1,4 @@
-package wacc.middleware;
+package wacc.middleware.symbol_table;
 
 import wacc.backend.registers.StackPointer;
 import wacc.frontend.identifier_objects.IDENTIFIER;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class SymbolTable {
 
   private final SymbolTable encSymTable;
-  private final LinkedHashMap<String, IDENTIFIER> dict;
+  protected final LinkedHashMap<String, IDENTIFIER> dict;
   protected TYPE scopeReturnType = null;
   int stackPtr = 0, freePtr = 0;
 
@@ -37,7 +37,6 @@ public class SymbolTable {
       scopeReturnType = st.getScopeReturnType();
     }
     dict = new LinkedHashMap<>();
-
   }
 
   // generate top symbol table
@@ -108,6 +107,10 @@ public class SymbolTable {
   public void saveStackState(StackPointer SP) {
     stackPtr = SP.getStackPtr();
     freePtr = SP.getFreePtr();
+  }
+
+  public boolean inScope(SymbolTable encScope){
+    return this == encScope || getEncSymTable().inScope(encScope);
   }
 
   public void restoreStackState(StackPointer SP) {

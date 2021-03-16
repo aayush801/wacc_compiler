@@ -3,8 +3,10 @@ package wacc.middleware;
 import wacc.middleware.ast_nodes.NodeASTList;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayElemAST;
-import wacc.middleware.ast_nodes.statement_ast.class_ast.MethodCallAST;
-import wacc.middleware.ast_nodes.statement_ast.class_ast.NewObjectAST;
+import wacc.middleware.ast_nodes.class_ast.FieldAST;
+import wacc.middleware.ast_nodes.class_ast.MethodCallAST;
+import wacc.middleware.ast_nodes.class_ast.MethodDeclarationAST;
+import wacc.middleware.ast_nodes.class_ast.NewObjectAST;
 import wacc.middleware.ast_nodes.expression_ast.BinOpExprAST;
 import wacc.middleware.ast_nodes.expression_ast.IdentifierAST;
 import wacc.middleware.ast_nodes.expression_ast.LiteralsAST;
@@ -21,7 +23,7 @@ import wacc.middleware.ast_nodes.statement_ast.AssignmentAST;
 import wacc.middleware.ast_nodes.statement_ast.BeginAST;
 import wacc.middleware.ast_nodes.statement_ast.loop_ast.BreakAST;
 import wacc.middleware.ast_nodes.statement_ast.ChainedStatementAST;
-import wacc.middleware.ast_nodes.statement_ast.class_ast.ClassDefinitionAST;
+import wacc.middleware.ast_nodes.class_ast.ClassDefinitionAST;
 import wacc.middleware.ast_nodes.statement_ast.loop_ast.ContinueAST;
 import wacc.middleware.ast_nodes.statement_ast.ExitAST;
 import wacc.middleware.ast_nodes.statement_ast.loop_ast.ForAST;
@@ -126,4 +128,8 @@ public abstract class NodeASTVisitor<T> {
   public abstract T visit(NewObjectAST newObjectAST);
 
   public abstract T visit(MethodCallAST classDef);
+
+  public abstract T visit(MethodDeclarationAST classDef);
+
+  public abstract T visit(FieldAST fields);
 }

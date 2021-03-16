@@ -10,14 +10,13 @@ import wacc.backend.registers.LinkRegister;
 import wacc.backend.registers.ProgramCounter;
 import wacc.backend.registers.Register;
 import wacc.backend.registers.StackPointer;
-import wacc.frontend.identifier_objects.CLASS;
 import wacc.frontend.identifier_objects.VARIABLE;
 import wacc.frontend.identifier_objects.basic_types.INT;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import wacc.middleware.SymbolTable;
+import wacc.middleware.symbol_table.SymbolTable;
 
 public class ProgramGenerator {
 
@@ -30,7 +29,6 @@ public class ProgramGenerator {
   private final List<LabelPair> loopLabels = new ArrayList<>();
   // stores a set dependency functions which are hard coded
   private final Set<PrimitiveLabel> primitives = new LinkedHashSet<>();
-  private CLASS classScope = null;
 
   public ProgramGenerator() {
 
@@ -140,7 +138,7 @@ public class ProgramGenerator {
     //    PUSH {lr}
     instructions.add(0, new Push(LR));
 
-    // decrements stack pointer and free pointer by 4bytes
+    // decrements stack pointer and free pointer by 4 bytes
     SP.push(new VARIABLE(new INT()));
 
   }
@@ -188,20 +186,5 @@ public class ProgramGenerator {
     public String getSnd() {
       return snd;
     }
-  }
-
-  public void setClass(CLASS classObj) {
-    classScope = classObj;
-  }
-
-  public boolean inClass() {
-    return classScope != null;
-  }
-
-  public CLASS getClassScope() {
-    return classScope;
-  }
-  public void resetClass() {
-    classScope = null;
   }
 }

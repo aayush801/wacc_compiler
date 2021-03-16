@@ -146,9 +146,9 @@ PAIR_SECOND: 'snd' ;
 //class
 CLASS : 'class' ;
 EXTENDS : 'extends' ;
+VISIBILITY : PUBLIC | PRIVATE ;
 PUBLIC : 'public' ;
 PRIVATE : 'private' ;
-VISIBILITY : PUBLIC | PRIVATE ;
 NEW : 'new' ;
 
 NULL: 'null' ;
@@ -167,5 +167,6 @@ STRING: '"' CHAR* '"' ;
 CHARACTER: '\'' CHAR? '\'' ;
 
 //identifier
+CLASS_IDENT : [A-Z][_a-zA-Z0-9]*;
 IDENT: [_a-zA-Z][_a-zA-Z0-9]* ;
 

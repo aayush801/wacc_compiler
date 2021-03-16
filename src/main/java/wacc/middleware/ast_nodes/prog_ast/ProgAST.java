@@ -6,7 +6,7 @@ import wacc.errors.WaccError;
 import wacc.frontend.identifier_objects.IMPORT;
 import wacc.middleware.NodeAST;
 import wacc.middleware.NodeASTVisitor;
-import wacc.middleware.SymbolTable;
+import wacc.middleware.symbol_table.SymbolTable;
 import wacc.middleware.ast_nodes.NodeASTList;
 import wacc.middleware.ast_nodes.StatementAST;
 import wacc.middleware.ast_nodes.function_ast.FunctionDeclarationAST;

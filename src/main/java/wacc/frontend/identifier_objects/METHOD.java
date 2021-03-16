@@ -8,13 +8,12 @@ public class METHOD extends FUNCTION {
 
   private final Visibility visibility;
 
-  public METHOD(TYPE type, Visibility visibility) {
-    super(type);
+  public METHOD(FUNCTION funcObj, Visibility visibility)
+  {
+    super(funcObj.returnType);
+    formals = funcObj.formals;
+    setST(funcObj.getST());
     this.visibility = visibility;
-  }
-
-  public METHOD(TYPE type) {
-    this(type, Visibility.PUBLIC);
   }
 
   public Visibility getVisibility() {

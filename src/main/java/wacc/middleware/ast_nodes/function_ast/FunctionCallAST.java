@@ -1,6 +1,7 @@
 package wacc.middleware.ast_nodes.function_ast;
 
 import java.util.List;
+import org.antlr.v4.runtime.ParserRuleContext;
 import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.InvalidArguments;
 import wacc.errors.semantic_errors.MismatchedTypes;
@@ -12,15 +13,14 @@ import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeAST;
 import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.ast_nodes.NodeASTList;
-import org.antlr.v4.runtime.ParserRuleContext;
 
-public class FunctionCallAST extends NodeAST {
+public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
 
   private final String funcName;
   private final NodeASTList<ExpressionAST> actuals;
   private FUNCTION funcObj;
 
-  public FunctionCallAST(List<WaccError> errors,ParserRuleContext ctx,
+  public FunctionCallAST(List<WaccError> errors, ParserRuleContext ctx,
       String funcName, NodeASTList<ExpressionAST> actuals) {
     super(errors, ctx);
     this.funcName = funcName;
@@ -59,8 +59,9 @@ public class FunctionCallAST extends NodeAST {
 
       // if the parameter size does not match up with the number of parameters,
       // the actual function takes, then throw invalid argument exception
-      addError(new InvalidArguments(ctx, funcName, actuals.size(),
-          ((FUNCTION) function).formals.size()));
+      addError(
+          new InvalidArguments(ctx, funcName, ((FUNCTION) function).formals.size(),
+              actuals.size()));
 
     } else {
 
