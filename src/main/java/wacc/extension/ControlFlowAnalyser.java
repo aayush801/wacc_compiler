@@ -87,14 +87,15 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   @Override
   public NodeAST visit(BinOpExprAST binOpExpr) {
     NodeAST left = visit(binOpExpr.getLeftExprAST());
-    System.out.println(left);
     NodeAST right = visit(binOpExpr.getRightExprAST());
-    System.out.println(right);
     if (left instanceof LiteralsAST && right instanceof LiteralsAST) {
       int a = 0, b = 0;
       if (((LiteralsAST) left).getType() instanceof INT) {
         a = Integer.parseInt(((LiteralsAST) left).getText());
         b = Integer.parseInt(((LiteralsAST) right).getText());
+        if (b == 0 && binOpExpr.getOperator().equals("/")) {
+          return binOpExpr;
+        }
       } else if (((LiteralsAST) left).getType() instanceof CHAR) {
         a = ((LiteralsAST) left).getText().charAt(0);
         b = ((LiteralsAST) right).getText().charAt(0);
