@@ -8,11 +8,9 @@ import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.ast_nodes.StatementAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayAST;
-import wacc.middleware.ast_nodes.function_ast.FunctionCallAST;
 import wacc.middleware.ast_nodes.function_ast.FunctionCallInterface;
 import wacc.middleware.ast_nodes.pair_ast.NewPairAST;
 import wacc.middleware.ast_nodes.pair_ast.PairElemAST;
-import wacc.middleware.ast_nodes.class_ast.MethodCallAST;
 import wacc.middleware.ast_nodes.class_ast.NewObjectAST;
 import wacc.middleware.symbol_table.SymbolTable;
 
@@ -27,6 +25,15 @@ public class RHSAssignAST extends StatementAST {
   private SymbolTable scopeST;
 
   private TYPE type;
+  private TYPE lhsType;
+
+  public TYPE getLhsType() {
+    return lhsType;
+  }
+
+  public void setLhsType(TYPE lhsType) {
+    this.lhsType = lhsType;
+  }
 
   // RHS Assign is an expression.
   public RHSAssignAST(List<WaccError> errors, ParserRuleContext ctx,
@@ -151,6 +158,7 @@ public class RHSAssignAST extends StatementAST {
       // case when assign RHS is a function call.
 
       // check the function call.
+      functionCallAST.setLhsReturnType(lhsType);
       functionCallAST.check();
 
       // verify that the function object is not null. If the function is

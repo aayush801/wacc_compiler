@@ -20,6 +20,7 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
   private String funcName;
   private final NodeASTList<ExpressionAST> actuals;
   private FUNCTION funcObj;
+  private TYPE lhsReturnType;
 
   public FunctionCallAST(List<WaccError> errors, ParserRuleContext ctx,
       String funcName, NodeASTList<ExpressionAST> actuals) {
@@ -41,6 +42,11 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
   }
 
   @Override
+  public void setLhsReturnType(TYPE lhsReturnType) {
+    this.lhsReturnType = lhsReturnType;
+  }
+
+  @Override
   public void check() {
 
     List<Integer> indices = SymbolTable.funcIndices.get(funcName);
@@ -49,7 +55,6 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
 
     for (Integer index : indices) {
       String tempFuncName = funcName + index;
-
       // look for the function object in the symbol table
       function = ST.lookupAll(tempFuncName);
 
@@ -63,9 +68,8 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
         // if the funcName does NOT actually refer to a function
         addError(new MismatchedTypes(ctx, function, new FUNCTION(new TYPE())));
 
-      } else if (false) {
-
-      } else if (actuals.size() != ((FUNCTION) function).formals.size()) {
+      }
+      else if (actuals.size() != ((FUNCTION) function).formals.size()) {
 
         // if the parameter size does not match up with the number of parameters,
         // the actual function takes, then throw invalid argument exception
@@ -75,8 +79,8 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
                           actuals.size()));
         }
 
-      } else {
-
+      }
+      else {
         // go through each parameter and check if the types
         // of the callee match up with the caller
         for (int i = 0; i < actuals.size(); i++) {
@@ -87,16 +91,16 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
           IDENTIFIER formalType = ((FUNCTION) function).formals.get(i).getType();
 
           // check compatibility
-          System.out.println("actual type: " + actualType);
-          System.out.println("formal type: " + formalType);
           if (!(isCompatible(actualType, formalType))) {
-
             if (index.equals(last)) {
               addError(new MismatchedTypes(actuals.get(i).ctx, actualType, formalType));
             } else {
               break;
             }
           }
+        }
+        if(isCompatible(lhsReturnType, ((FUNCTION) function).getReturnType())){
+          break;
         }
         if (index.equals(last)) {
           break;

@@ -54,6 +54,7 @@ public class VariableDeclarationAST extends StatementAST {
     }
 
     // check the RHS now.
+    rhsAssignAST.setLhsType(typeAST.getType());
     rhsAssignAST.check();
 
     // verify that the RHS is not null.
@@ -63,7 +64,6 @@ public class VariableDeclarationAST extends StatementAST {
 
     // Verify that LHS and RHS are type compatible.
     if (!isCompatible(typeAST.getType(), rhsAssignAST.getType())) {
-
       addError(new MismatchedTypes(ctx, rhsAssignAST.getType(),
           typeAST.getType()));
       return;
