@@ -116,8 +116,8 @@ public class WaccCompiler {
     tree.check();
 
     // Control flow analysis of AST nodes
-    //NodeAST prog = tree.accept(new ControlFlowAnalyser());
-   // prog.check();
+    NodeAST prog = tree.accept(new ControlFlowAnalyser());
+    prog.check();
 
     return tree;
   }

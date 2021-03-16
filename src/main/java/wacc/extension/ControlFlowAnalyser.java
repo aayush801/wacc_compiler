@@ -95,10 +95,8 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
       if (((LiteralsAST) left).getType() instanceof INT) {
         a = Integer.parseInt(((LiteralsAST) left).getText());
         b = Integer.parseInt(((LiteralsAST) right).getText());
-        if (b == 0 && binOpExpr.getOperator().equals("/")) {
-          return binOpExpr;
-        }
-        if (b == 0 && binOpExpr.getOperator().equals("%")) {
+        if (b == 0 && (binOpExpr.getOperator().equals("/")
+            || binOpExpr.getOperator().equals("%"))) {
           return binOpExpr;
         }
       } else if (((LiteralsAST) left).getType() instanceof CHAR) {
@@ -169,15 +167,15 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
         case "==":
           value = (a == b) ? 1 : 0;
           break;
-        }
+      }
 
-        if (binOpExpr.getType() instanceof INT) {
-          return new LiteralsAST(binOpExpr.getErrors(), binOpExpr.getCtx(), (int) value);
-        } else if (binOpExpr.getType() instanceof BOOL) {
-          return new LiteralsAST(binOpExpr.getErrors(), binOpExpr.getCtx(), value == 1);
-        } else if (binOpExpr.getType() instanceof CHAR) {
-          return new LiteralsAST(binOpExpr.getErrors(), binOpExpr.getCtx(), (int) value);
-        }
+      if (binOpExpr.getType() instanceof INT) {
+        return new LiteralsAST(binOpExpr.getErrors(), binOpExpr.getCtx(), (int) value);
+      } else if (binOpExpr.getType() instanceof BOOL) {
+        return new LiteralsAST(binOpExpr.getErrors(), binOpExpr.getCtx(), value == 1);
+      } else if (binOpExpr.getType() instanceof CHAR) {
+        return new LiteralsAST(binOpExpr.getErrors(), binOpExpr.getCtx(), (int) value);
+      }
     }
 
     return binOpExpr;
@@ -199,7 +197,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   @Override
   public NodeAST visit(UnaryOpExprAST unaryOpExpr) {
-    ExpressionAST expr =  visit(unaryOpExpr.getExpr());
+    ExpressionAST expr = visit(unaryOpExpr.getExpr());
     String operator = unaryOpExpr.getOperator();
     if (expr instanceof LiteralsAST) {
       String str = ((LiteralsAST) expr).getText();
@@ -227,7 +225,6 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
       return new LiteralsAST(unaryOpExpr.getErrors(), unaryOpExpr.getCtx(),
           ((ArrayAST) expr).getExpressionASTList().size());
     }
-
 
     return new UnaryOpExprAST(unaryOpExpr.getErrors(), unaryOpExpr.getCtx(),
         expr, unaryOpExpr.getOperator());
@@ -345,7 +342,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   @Override
   public NodeAST visit(ReturnAST returnStatement) {
     return new ReturnAST(returnStatement.getErrors(), returnStatement.getCtx(),
-            visit(returnStatement.getExpr()));
+        visit(returnStatement.getExpr()));
   }
 
   @Override
@@ -468,7 +465,6 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   public NodeAST visit(PointerElemAST pointerElem) {
     return pointerElem;
   }
-
 
 
   @Override
