@@ -96,7 +96,6 @@ public class WaccCompiler {
     }
 
     if (syntaxErrorListener.hasErrors()) {
-      System.out.println("here");
       return null;
     }
 
@@ -114,15 +113,13 @@ public class WaccCompiler {
     NodeAST tree = semanticParser.visit(parseTree);
     tree.check();
 
-
-
     return tree;
   }
 
   public String translateCode(NodeAST ASTtree) {
     WaccTranslator codeGenerator = new WaccTranslator();
     // Control flow analysis of AST nodes
-    ASTtree = ASTtree.accept(new ControlFlowAnalyser());
+    //ASTtree = ASTtree.accept(new ControlFlowAnalyser());
     codeGenerator.visit(ASTtree);
 
     return codeGenerator.toString();

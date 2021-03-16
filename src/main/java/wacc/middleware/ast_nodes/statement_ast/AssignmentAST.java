@@ -33,6 +33,8 @@ public class AssignmentAST extends StatementAST {
   @Override
   public void check() {
     LHS.check();
+
+    RHS.setLhsType(LHS.getType());
     RHS.check();
 
     // LHS is an IDENTIFIER because it could be an Identifier(Ident).

@@ -32,7 +32,6 @@ public class ExtensionTests {
 
     if (errorCode != ErrorCode.SUCCESS) {
       compiler.getErrors().forEach(System.out::println);
-      return;
     }
 
     assertThat(errorCode, is(ErrorCode.SUCCESS));
@@ -216,25 +215,7 @@ public class ExtensionTests {
     runAndCheckProgram(instructions, "", 0);
   }
 
-  @Test
-  public void duplicateFunctionsThrowsSemanticError() throws IOException {
-    String instruction =
-            "begin\n" +
-                    "  int f(int x) is\n" +
-                    "    return 2 \n" +
-                    "  end\n" +
-                    "  int f() is\n" +
-                    "    return 3\n" +
-                    "  end\n" +
-                    "  int f() is\n" +
-                    "    return 3\n" +
-                    "  end\n" +
-                    "\n" +
-                    "  int x = call f() ;\n" +
-                    "  println x \n" +
-                    "end\n";
-    runAndCheckProgram(instruction, "", 200);
-  }
+
 
   @Test
   public void functionOverloading() throws IOException {
@@ -297,7 +278,7 @@ public class ExtensionTests {
   public void returnTypeDeterminesFunctionCall() throws IOException {
     String instruction =
             "begin\n" +
-                    "  int f(int x) is\n" +
+                    "  int f(int x, int y) is\n" +
                     "    return 2 \n" +
                     "  end\n" +
                     "  char f(int x) is\n" +

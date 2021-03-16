@@ -22,6 +22,26 @@ public class SemanticTests {
   }
 
   @Test
+  public void duplicateFunctionsThrowsSemanticError() throws IOException {
+    String instruction =
+        "begin\n" +
+            "  int f(int x) is\n" +
+            "    return 2 \n" +
+            "  end\n" +
+            "  int f() is\n" +
+            "    return 3\n" +
+            "  end\n" +
+            "  int f() is\n" +
+            "    return 3\n" +
+            "  end\n" +
+            "\n" +
+            "  int x = call f() ;\n" +
+            "  println x \n" +
+            "end\n";
+    check(instruction, true);
+  }
+
+  @Test
   public void testUndefined() throws IOException {
     String instruction =
         "begin " +

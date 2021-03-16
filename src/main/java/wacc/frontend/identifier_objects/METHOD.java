@@ -13,6 +13,7 @@ public class METHOD extends FUNCTION {
     super(funcObj.returnType);
     formals = funcObj.formals;
     setST(funcObj.getST());
+    setName(funcObj.getName());
     this.visibility = visibility;
   }
 

@@ -37,6 +37,7 @@ public class MethodDeclarationAST extends FunctionDeclarationAST {
       });
       return;
     }
+
     super.check();
 
     methodObj = new METHOD(funcObj, visibility);

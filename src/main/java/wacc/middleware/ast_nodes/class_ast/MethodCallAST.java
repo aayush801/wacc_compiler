@@ -4,7 +4,6 @@ import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.MismatchedTypes;
-import wacc.errors.semantic_errors.NotAFunction;
 import wacc.errors.semantic_errors.NotAMethod;
 import wacc.errors.semantic_errors.Undefined;
 import wacc.errors.semantic_errors.VisibilityError;
@@ -14,11 +13,11 @@ import wacc.frontend.identifier_objects.METHOD;
 import wacc.frontend.identifier_objects.STACK_OBJECT;
 import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeASTVisitor;
-import wacc.middleware.ast_nodes.function_ast.FunctionCallInterface;
-import wacc.middleware.symbol_table.SymbolTable;
 import wacc.middleware.Visibility;
 import wacc.middleware.ast_nodes.NodeASTList;
 import wacc.middleware.ast_nodes.function_ast.FunctionCallAST;
+import wacc.middleware.ast_nodes.function_ast.FunctionCallInterface;
+import wacc.middleware.symbol_table.SymbolTable;
 
 public class MethodCallAST extends FunctionCallAST implements FunctionCallInterface {
 
@@ -49,8 +48,9 @@ public class MethodCallAST extends FunctionCallAST implements FunctionCallInterf
 
     SymbolTable classScope = ((CLASS) ((STACK_OBJECT) obj).getType()).getScopeST();
 
-    IDENTIFIER funcObj = classScope.lookup(getFuncName());
+    List<Integer> lst = SymbolTable.funcIndices.get(getFuncName());
 
+    IDENTIFIER funcObj = classScope.lookup(getFuncName() + lst.get(0));
     if (!(funcObj instanceof METHOD)) {
       addError(new NotAMethod(ctx));
       return;

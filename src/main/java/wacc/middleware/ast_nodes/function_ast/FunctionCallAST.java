@@ -50,8 +50,14 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
   public void check() {
 
     List<Integer> indices = SymbolTable.funcIndices.get(funcName);
+    if (indices == null) {
+      addError(new Undefined(ctx));
+      return;
+    }
+
     Integer last = indices.get(indices.size() - 1);
     IDENTIFIER function = null;
+
     for (Integer index : indices) {
       String tempFuncName = funcName + index;
       // look for the function object in the symbol table
@@ -66,48 +72,55 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
         // if the funcName does NOT actually refer to a function
         addError(new MismatchedTypes(ctx, function, new FUNCTION(new TYPE())));
 
-      }
-      else if (actuals.size() != ((FUNCTION) function).formals.size()) {
+      } else if (actuals.size() != ((FUNCTION) function).formals.size()) {
 
         // if the parameter size does not match up with the number of parameters,
         // the actual function takes, then throw invalid argument exception
         if (index.equals(last)) {
           addError(
-                  new InvalidArguments(ctx, funcName, ((FUNCTION) function).formals.size(),
-                          actuals.size()));
+              new InvalidArguments(ctx, funcName, ((FUNCTION) function).formals.size(),
+                  actuals.size()));
         }
 
-      }
-      else {
-        // go through each parameter and check if the types
-        // of the callee match up with the caller
-        for (int i = 0; i < actuals.size(); i++) {
+      } else {
 
-          actuals.get(i).check();
+        if (isCompatible(lhsReturnType, ((FUNCTION) function).getReturnType())) {
+          // found matching function
+          boolean foundMatch = true;
 
-          IDENTIFIER actualType = actuals.get(i).getType();
-          IDENTIFIER formalType = ((FUNCTION) function).formals.get(i).getType();
+          // go through each parameter and check if the types
+          // of the callee match up with the caller
+          for (int i = 0; i < actuals.size(); i++) {
 
-          // check compatibility
-          if (!(isCompatible(actualType, formalType))) {
-            if (index.equals(last)) {
-              addError(new MismatchedTypes(actuals.get(i).ctx, actualType, formalType));
-            } else {
-              break;
+            actuals.get(i).check();
+
+            IDENTIFIER actualType = actuals.get(i).getType();
+            IDENTIFIER formalType = ((FUNCTION) function).formals.get(i).getType();
+
+            // check compatibility
+            if (!(isCompatible(actualType, formalType))) {
+              foundMatch = false;
+              if (index.equals(last)) {
+                addError(new MismatchedTypes(actuals.get(i).ctx, actualType, formalType));
+              } else {
+                break;
+              }
             }
+
           }
-        }
-        if(isCompatible(lhsReturnType, ((FUNCTION) function).getReturnType())){
-          break;
-        }
-        if (index.equals(last)) {
-          break;
+
+          if (foundMatch) {
+            break;
+          }
+
         }
       }
     }
+
     // save the function obj in the ast node
     funcObj = (FUNCTION) function;
     funcName = funcObj.getName();
+
   }
 
   @Override
