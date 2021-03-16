@@ -13,10 +13,11 @@ import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeAST;
 import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.ast_nodes.NodeASTList;
+import wacc.middleware.symbol_table.SymbolTable;
 
 public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
 
-  private final String funcName;
+  private String funcName;
   private final NodeASTList<ExpressionAST> actuals;
   private FUNCTION funcObj;
 
@@ -42,49 +43,70 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
   @Override
   public void check() {
 
-    // look for the function object in the symbol table
-    IDENTIFIER function = ST.lookupAll(funcName);
+    List<Integer> indices = SymbolTable.funcIndices.get(funcName);
+    Integer last = indices.get(indices.size() - 1);
+    IDENTIFIER function = null;
 
-    if (function == null) {
+    for (Integer index : indices) {
+      String tempFuncName = funcName + index;
 
-      // if the function is undefined within the current scope
-      addError(new Undefined(ctx, funcName));
+      // look for the function object in the symbol table
+      function = ST.lookupAll(tempFuncName);
+      System.out.println(tempFuncName);
 
-    } else if (!(function instanceof FUNCTION)) {
+      if (function == null) {
 
-      // if the funcName deos NOT actually refer to a function
-      addError(new MismatchedTypes(ctx, function, new FUNCTION(new TYPE())));
+        // if the function is undefined within the current scope
+        addError(new Undefined(ctx, funcName));
 
-    } else if (actuals.size() != ((FUNCTION) function).formals.size()) {
+      } else if (!(function instanceof FUNCTION)) {
 
-      // if the parameter size does not match up with the number of parameters,
-      // the actual function takes, then throw invalid argument exception
-      addError(
-          new InvalidArguments(ctx, funcName, ((FUNCTION) function).formals.size(),
-              actuals.size()));
+        // if the funcName does NOT actually refer to a function
+        addError(new MismatchedTypes(ctx, function, new FUNCTION(new TYPE())));
 
-    } else {
+      } else if (false) {
 
-      // go through each parameter and check if the types
-      // of the callee match up with the caller
-      for (int i = 0; i < actuals.size(); i++) {
+      } else if (actuals.size() != ((FUNCTION) function).formals.size()) {
 
-        actuals.get(i).check();
+        // if the parameter size does not match up with the number of parameters,
+        // the actual function takes, then throw invalid argument exception
+        if (index.equals(last)) {
+          addError(
+                  new InvalidArguments(ctx, funcName, ((FUNCTION) function).formals.size(),
+                          actuals.size()));
+        }
 
-        IDENTIFIER actualType = actuals.get(i).getType();
-        IDENTIFIER formalType = ((FUNCTION) function).formals.get(i).getType();
+      } else {
 
-        // check compatibility
-        if (!(isCompatible(actualType, formalType))) {
-          addError(new MismatchedTypes(actuals.get(i).ctx, actualType, formalType));
+        // go through each parameter and check if the types
+        // of the callee match up with the caller
+        for (int i = 0; i < actuals.size(); i++) {
+
+          actuals.get(i).check();
+
+          IDENTIFIER actualType = actuals.get(i).getType();
+          IDENTIFIER formalType = ((FUNCTION) function).formals.get(i).getType();
+
+          // check compatibility
+          System.out.println("actual type: " + actualType);
+          System.out.println("formal type: " + formalType);
+          if (!(isCompatible(actualType, formalType))) {
+
+            if (index.equals(last)) {
+              addError(new MismatchedTypes(actuals.get(i).ctx, actualType, formalType));
+            } else {
+              break;
+            }
+          }
+        }
+        if (index.equals(last)) {
+          break;
         }
       }
-
-      // save the function obj in the ast node
-      funcObj = (FUNCTION) function;
-
     }
-
+    // save the function obj in the ast node
+    funcObj = (FUNCTION) function;
+    funcName = funcObj.getName();
   }
 
   @Override

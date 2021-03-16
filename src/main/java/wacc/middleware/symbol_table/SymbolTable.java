@@ -11,8 +11,11 @@ import wacc.frontend.identifier_objects.basic_types.INT;
 import wacc.frontend.identifier_objects.basic_types.PAIR;
 import wacc.frontend.identifier_objects.basic_types.STR;
 import wacc.frontend.identifier_objects.basic_types.VOID;
+
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SymbolTable {
@@ -21,6 +24,8 @@ public class SymbolTable {
   protected final LinkedHashMap<String, IDENTIFIER> dict;
   protected TYPE scopeReturnType = null;
   int stackPtr = 0, freePtr = 0;
+  public static int funcIndex = 0;
+  public static Map<String, List<Integer>> funcIndices = new HashMap<>();
 
   public SymbolTable() {
     this(null);

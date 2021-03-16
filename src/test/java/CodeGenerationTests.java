@@ -811,4 +811,77 @@ public class CodeGenerationTests {
     checkSourceCode(instruction, "", 0);
   }
 
+  @Test
+  public void functionOverloading() throws IOException {
+    String instruction =
+            "begin\n" +
+                    "  int f() is\n" +
+                    "    return 0 \n" +
+                    "  end\n" +
+                    "  int f(int x) is\n" +
+                    "    return x\n" +
+                    "  end\n" +
+                    "  int g() is\n" +
+                    "      return 70\n" +
+                    "    end\n" +
+                    "    int g(int y, int z, int w) is\n" +
+                    "      return 70 - y - z - w\n" +
+                    "    end\n" +
+                    "  int x = call g(1, 2, 3) ;\n" +
+                    "  println x \n" +
+                    "end";
+    checkSourceCode(instruction, "64", 0);
+  }
+
+  @Test
+  public void functionOverloadingDifferentParamType() throws IOException {
+    String instruction =
+            "begin\n" +
+                    "  int f(char c) is\n" +
+                    "    return 0 \n" +
+                    "  end\n" +
+                    "  int f(int x) is\n" +
+                    "    return x\n" +
+                    "  end\n" +
+                    "\n" +
+                    "  int x = call f(2) ;\n" +
+                    "  println x \n" +
+                    "end\n";
+    checkSourceCode(instruction, "2", 0);
+  }
+
+  @Test
+  public void functionOverloadingDifferentReturnType() throws IOException {
+    String instruction =
+            "begin\n" +
+                    "  char f(int x) is\n" +
+                    "    return 'c' \n" +
+                    "  end\n" +
+                    "  int f(int x) is\n" +
+                    "    return x\n" +
+                    "  end\n" +
+                    "\n" +
+                    "  char x = call f(2) ;\n" +
+                    "  println x \n" +
+                    "end\n";
+    checkSourceCode(instruction, "c", 0);
+  }
+
+  @Test
+  public void duplicateFunctionsThrowsSemanticError() throws IOException {
+    String instruction =
+            "begin\n" +
+                    "  int f() is\n" +
+                    "    return 2 \n" +
+                    "  end\n" +
+                    "  int f() is\n" +
+                    "    return 3\n" +
+                    "  end\n" +
+                    "\n" +
+                    "  int x = call f() ;\n" +
+                    "  println x \n" +
+                    "end\n";
+    checkSourceCode(instruction, "", 255);
+  }
+
 }

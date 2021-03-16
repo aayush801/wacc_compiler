@@ -6,9 +6,16 @@
 # Program:
 
 begin
-  int f() is
+  int f(char c) is
     return 0 
   end
-  int x = call f() ;
+  int f(int x) is
+    return x
+  end
+  int f(int x) is
+      return x
+    end
+
+  int x = call f(2) ;
   println x 
 end

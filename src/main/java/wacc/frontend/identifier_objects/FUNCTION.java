@@ -10,6 +10,8 @@ public class FUNCTION extends IDENTIFIER {
   public List<PARAM> formals = new ArrayList<>();
   private SymbolTable ST;
 
+  private String name = "function";
+
   public FUNCTION(TYPE returnType) {
     super("function");
     this.returnType = returnType;
@@ -25,6 +27,15 @@ public class FUNCTION extends IDENTIFIER {
 
   public TYPE getReturnType() {
     return returnType;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  @Override
+  public String getName() {
+    return name;
   }
 
   public boolean equals(Object o) {

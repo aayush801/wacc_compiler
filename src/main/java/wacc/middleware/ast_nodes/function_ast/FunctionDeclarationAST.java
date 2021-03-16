@@ -1,5 +1,6 @@
 package wacc.middleware.ast_nodes.function_ast;
 
+import java.util.ArrayList;
 import java.util.List;
 import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.DuplicateIdentifier;
@@ -18,7 +19,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 public class FunctionDeclarationAST extends NodeAST {
 
   private final TypeAST typeAST;
-  private final String funcName;
+  private String funcName;
   private final NodeASTList<ParamAST> paramASTList;
   private final StatementAST statementAST;
   public FUNCTION funcObj;
@@ -53,17 +54,13 @@ public class FunctionDeclarationAST extends NodeAST {
     typeAST.check();
 
     TYPE type = typeAST.getType();
-    IDENTIFIER function = ST.lookup(funcName);
 
     if (type == null) {
       addError(new Undefined(ctx));
 
-    } else if (function != null) {
-      addError(new DuplicateIdentifier(ctx));
-
     } else {
+
       funcObj = new FUNCTION(type);
-      ST.add(funcName, funcObj);
 
       return true;
     }
@@ -94,6 +91,31 @@ public class FunctionDeclarationAST extends NodeAST {
     }
 
     ST = ST.getEncSymTable();
+
+    List<Integer> lst = SymbolTable.funcIndices.get(funcName);
+    if (lst == null) {
+      lst = new ArrayList<>();
+    }
+    lst.add(SymbolTable.funcIndex);
+    SymbolTable.funcIndices.put(funcName, lst);
+    funcName += SymbolTable.funcIndex;
+    funcObj.setName(funcName);
+    SymbolTable.funcIndex++;
+
+    // Check if the function name already exists in ST
+    FUNCTION existing = (FUNCTION) ST.lookup(funcName);
+    if (existing != null) {
+      // check that the params/return types are different
+      boolean paramsSame = existing.formals.equals(funcObj.formals);
+      boolean returnTypeSame = existing.getReturnType().equals(funcObj.getReturnType());
+      if (paramsSame && returnTypeSame) {
+        errors.add(new DuplicateIdentifier(ctx));
+      } else {
+        ST.add(funcName, funcObj);
+      }
+    } else {
+      ST.add(funcName, funcObj);
+    }
   }
 
   @Override
