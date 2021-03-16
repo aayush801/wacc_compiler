@@ -31,7 +31,7 @@ public class LiteralsAST extends ExpressionAST {
   }
 
   public LiteralsAST(List<WaccError> errors, ParserRuleContext ctx, String c) {
-    this(errors, ctx, c.toString(), new CHAR());
+    this(errors, ctx, c, new CHAR());
   }
 
   public LiteralsAST(List<WaccError> errors, ParserRuleContext ctx, TYPE type) {

@@ -82,8 +82,8 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   @Override
   public NodeAST visit(ArrayElemAST arrayElem) {
-    return new ArrayAST(arrayElem.getErrors(), arrayElem.getCtx(),
-        visit(arrayElem.getExpressionASTs()));
+    return new ArrayElemAST(arrayElem.getErrors(), arrayElem.getCtx(),
+        arrayElem.getArrayName(), visit(arrayElem.getExpressionASTs()));
   }
 
   @Override
@@ -100,8 +100,10 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
           return binOpExpr;
         }
       } else if (((LiteralsAST) left).getType() instanceof CHAR) {
-        a = ((LiteralsAST) left).getText().charAt(0);
-        b = ((LiteralsAST) right).getText().charAt(0);
+        a = ((LiteralsAST) left).getText()
+            .charAt(((LiteralsAST) left).getText().length() - 2);
+        b = ((LiteralsAST) right).getText()
+            .charAt(((LiteralsAST) right).getText().length() - 2);
       } else if (((LiteralsAST) left).getType() instanceof BOOL) {
         a = ((LiteralsAST) left).getText().equals("true") ? 1 : 0;
         b = ((LiteralsAST) right).getText().equals("true") ? 1 : 0;
@@ -167,14 +169,20 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
         case "==":
           value = (a == b) ? 1 : 0;
           break;
+        case "!=":
+          value = (a != b) ? 1 : 0;
+          break;
       }
 
       if (binOpExpr.getType() instanceof INT) {
-        return new LiteralsAST(binOpExpr.getErrors(), binOpExpr.getCtx(), (int) value);
+        return new LiteralsAST(binOpExpr.getErrors(), binOpExpr.getCtx(),
+            (int) value);
       } else if (binOpExpr.getType() instanceof BOOL) {
-        return new LiteralsAST(binOpExpr.getErrors(), binOpExpr.getCtx(), value == 1);
+        return new LiteralsAST(binOpExpr.getErrors(), binOpExpr.getCtx(),
+            value == 1);
       } else if (binOpExpr.getType() instanceof CHAR) {
-        return new LiteralsAST(binOpExpr.getErrors(), binOpExpr.getCtx(), (int) value);
+        return new LiteralsAST(binOpExpr.getErrors(), binOpExpr.getCtx(),
+            "'" + (char) value + "'");
       }
     }
 
@@ -261,13 +269,13 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   @Override
   public NewPairAST visit(NewPairAST newPair) {
     return new NewPairAST(newPair.getErrors(), newPair.getCtx(),
-        (ExpressionAST) visit(newPair.getFstExpr()),
-        (ExpressionAST) visit(newPair.getSndExpr()));
+        visit(newPair.getFstExpr()),
+        visit(newPair.getSndExpr()));
   }
 
   @Override
   public NodeAST visit(PairElemAST pairElem) {
-    return null;
+    return pairElem;
   }
 
   @Override
@@ -468,28 +476,28 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
 
   @Override
-  public NodeAST visit(MethodDeclarationAST classDef) {
-    return null;
+  public NodeAST visit(MethodDeclarationAST methodDecl) {
+    return methodDecl;
   }
 
   @Override
   public NodeAST visit(FieldAST fields) {
-    return null;
+    return fields;
   }
 
   @Override
   public NodeAST visit(ClassDefinitionAST classDef) {
-    return null;
+    return classDef;
   }
 
   @Override
   public NodeAST visit(NewObjectAST newObjectAST) {
-    return null;
+    return newObjectAST;
   }
 
   @Override
-  public NodeAST visit(MethodCallAST classDef) {
-    return null;
+  public NodeAST visit(MethodCallAST methodCall) {
+    return methodCall;
   }
 
   public class ValueTable {
