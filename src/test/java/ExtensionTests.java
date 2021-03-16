@@ -156,7 +156,7 @@ public class ExtensionTests {
             + "sum += 4;\n"
             + "println sum\n"
             + "end";
-    
+
     runAndCheckProgram(prog, "4", 0);
   }
 

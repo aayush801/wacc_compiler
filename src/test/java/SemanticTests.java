@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.junit.Test;
 import wacc.ErrorCode;
 import wacc.WaccCompiler;
+import wacc.errors.WaccError;
+import wacc.errors.semantic_errors.WaccSemanticError;
 
 // import ANTLR's runtime libraries
 // import antlr package
@@ -14,6 +16,9 @@ public class SemanticTests {
   public void check(String instruction, boolean b) throws IOException {
     WaccCompiler compiler = new WaccCompiler(instruction);
     compiler.parseSemantics(compiler.parseSyntactics());
+    for (WaccError e : compiler.getErrors()) {
+      System.out.println(e);
+    }
     assertThat(compiler.hasErrors(), is(b));
 
     if (compiler.compile() == ErrorCode.SEMANTIC_ERROR) {
@@ -48,6 +53,19 @@ public class SemanticTests {
             "int c = 1 + c " +
             "end";
     check(instruction, true);
+  }
+
+  @Test
+  public void declareInWhile() throws IOException {
+    String instruction =
+        "begin \n"
+            + "int i = 0;"
+            + "while i < 10 do\n"
+            + "int y = i;\n"
+            + "i = i + 1\n"
+            + "done\n"
+            + "end";
+    check(instruction, false);
   }
 
   @Test
