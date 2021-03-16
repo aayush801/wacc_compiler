@@ -324,12 +324,21 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // type var = array[i]
     VariableDeclarationAST variableDeclaration =
         new VariableDeclarationAST(semanticErrors, ctx,
-            typeAST, loopVariable,
+            typeAST, variableName,
             new RHSAssignAST(semanticErrors, ctx,
                 new ArrayElemAST(semanticErrors, ctx, arrayName,
                     new NodeASTList<>(semanticErrors, ctx,
                         Arrays.asList(new IdentifierAST(semanticErrors, ctx,
-                            "i"))))));
+                            loopVariable))))));
+    // var = array[i]
+    AssignmentAST variableUpdate =
+        new AssignmentAST(semanticErrors, ctx,
+            new LHSAssignAST(semanticErrors, ctx, loopVariable),
+            new RHSAssignAST(semanticErrors, ctx,
+                new ArrayElemAST(semanticErrors, ctx, arrayName,
+                    new NodeASTList<>(semanticErrors, ctx,
+                        Arrays.asList(new IdentifierAST(semanticErrors, ctx,
+                            loopVariable))))));
 
     // i = i + 1
     AssignmentAST indexIncrement =
@@ -349,11 +358,13 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
             new UnaryOpExprAST(semanticErrors, ctx,
                 new IdentifierAST(semanticErrors, ctx, arrayName), "len"));
 
-    StatementAST body = new ChainedStatementAST(semanticErrors, ctx, variableDeclaration,
+    StatementAST body = new ChainedStatementAST(semanticErrors, ctx, variableUpdate,
         (StatementAST) visit(ctx.stat()));
 
+    StatementAST initialisation = new ChainedStatementAST(semanticErrors, ctx,
+        indexDeclaration, variableDeclaration);
     // Only enter loop if array is non-empty
-    return new ForAST(semanticErrors, ctx, indexDeclaration, indexBoundCheck,
+    return new ForAST(semanticErrors, ctx, initialisation, indexBoundCheck,
             indexIncrement, body);
   }
 

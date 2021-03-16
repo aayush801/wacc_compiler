@@ -69,12 +69,25 @@ public class SemanticTests {
   }
 
   @Test
+  public void forEachLoop() throws IOException {
+    String instruction =
+        "begin \n"
+            + "int[] array = [1,2,3,4];\n"
+            + "foreach int x in array\n"
+            + "println x\n"
+            + "rof\n"
+            + "end";
+    check(instruction, false);
+  }
+
+  @Test
   public void testArrayElem() throws IOException {
     String instruction =
         "begin \n" +
             "bool[] array = [true, false] ; \n" +
             "array[5] = true\n" +
             "end";
+
     check(instruction, false);
   }
 

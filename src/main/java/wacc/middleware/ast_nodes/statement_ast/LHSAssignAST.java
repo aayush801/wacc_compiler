@@ -73,7 +73,7 @@ public class LHSAssignAST extends StatementAST {
       // For when LHSAssign is an IDENT.
 
       // Lookup identifier name in current symbol table.
-      IDENTIFIER obj = NodeAST.ST.lookupAll(identifier);
+      IDENTIFIER obj = ST.lookupAll(identifier);
 
       // Verify that the identifier is defined.
       if (obj == null) {

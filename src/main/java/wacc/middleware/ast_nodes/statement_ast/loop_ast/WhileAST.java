@@ -13,9 +13,9 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 public class WhileAST extends StatementAST {
 
-  private final ExpressionAST conditionAST;
-  private final StatementAST bodyAST;
-  private SymbolTable scopeST;
+  protected final ExpressionAST conditionAST;
+  protected final StatementAST bodyAST;
+  protected SymbolTable scopeST;
   private final boolean isDoWhile;
 
   public WhileAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST conditionAST,
@@ -48,13 +48,10 @@ public class WhileAST extends StatementAST {
 
     // verify that the condition expression is a boolean.
     if (!(type instanceof BOOL)) {
-
       addError(new MismatchedTypes(
           conditionAST.ctx, type, new BOOL())
       );
-
       return;
-
     }
 
     // expression valid, now check the statement inside the body.
@@ -62,7 +59,6 @@ public class WhileAST extends StatementAST {
     scopeST = ST = new SymbolTable(ST);
     bodyAST.check();
     ST = ST.getEncSymTable();
-
   }
 
   public SymbolTable getScope() {

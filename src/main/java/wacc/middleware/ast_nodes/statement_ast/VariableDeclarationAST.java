@@ -49,6 +49,7 @@ public class VariableDeclarationAST extends StatementAST {
     // if variable already present in current symbol table and is not a
     // function, this is not valid as it is a duplicate identifier.
     if (obj != null && !(obj instanceof FUNCTION)) {
+      System.out.println(varName);
       addError(new DuplicateIdentifier(ctx));
       return;
     }

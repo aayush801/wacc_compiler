@@ -24,6 +24,7 @@ import wacc.middleware.WaccASTParser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import wacc.middleware.symbol_table.SymbolTable;
 
 public class WaccCompiler {
 
@@ -117,6 +118,7 @@ public class WaccCompiler {
 
     if (!hasErrors()) {
       // Control flow analysis of AST nodes
+      NodeAST.ST = new SymbolTable();
       NodeAST prog = tree.accept(new ControlFlowAnalyser());
       prog.check();
       return prog;

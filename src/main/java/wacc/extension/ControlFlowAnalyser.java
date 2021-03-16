@@ -420,12 +420,15 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   @Override
   public NodeAST visit(ForAST forLoop) {
-    return forLoop;
+    return new ForAST(forLoop.getErrors(), forLoop.getCtx(),
+        forLoop.getInitialisation(), forLoop.getConditionAST(),
+        forLoop.getStatementAST());
   }
 
   @Override
   public NodeAST visit(WhileAST whileLoop) {
-    return whileLoop;
+    return new WhileAST(whileLoop.getErrors(), whileLoop.getCtx(),
+        whileLoop.getConditionAST(), whileLoop.getStatementAST());
   }
 
   @Override

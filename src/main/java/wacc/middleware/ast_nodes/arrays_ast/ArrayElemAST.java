@@ -65,7 +65,7 @@ public class ArrayElemAST extends ExpressionAST {
     scopeST = ST;
 
     // lookup the array name in the symbol table.
-    IDENTIFIER array = NodeAST.ST.lookupAll(arrayName);
+    IDENTIFIER array = ST.lookupAll(arrayName);
 
     // Verify that array name is found.
     if (array == null) {
