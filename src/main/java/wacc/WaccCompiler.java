@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.w3c.dom.Node;
 import wacc.backend.WaccTranslator;
 import wacc.errors.WaccError;
 import wacc.extension.ControlFlowAnalyser;
@@ -111,15 +112,19 @@ public class WaccCompiler {
     WaccASTParser semanticParser = new WaccASTParser(filename, relativePath, errors);
 
     NodeAST tree = semanticParser.visit(parseTree);
+
     tree.check();
+
+    // Control flow analysis of AST nodes
+    //NodeAST prog = tree.accept(new ControlFlowAnalyser());
+   // prog.check();
 
     return tree;
   }
 
   public String translateCode(NodeAST ASTtree) {
     WaccTranslator codeGenerator = new WaccTranslator();
-    // Control flow analysis of AST nodes
-    //ASTtree = ASTtree.accept(new ControlFlowAnalyser());
+
     codeGenerator.visit(ASTtree);
 
     return codeGenerator.toString();

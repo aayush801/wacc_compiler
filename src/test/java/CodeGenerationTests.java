@@ -525,16 +525,17 @@ public class CodeGenerationTests {
             +"end\n"
             +"class Lol\n"
             + "  private int y = 2;\n"
-            + "  public int z = 5\n"
+            + "  public int z = 5;\n"
+            + "  public int x = 5\n"
             + "  public int getY(int x, int l) is\n"
-              + "  return y * z \n"
+              + "  return y + z \n"
             + "  end\n"
           + "done;\n"
             +"class Lol ting = new Lol();\n"
             +"int x = call ting.getY(3,6);\n"
             +"println x\n"
         +"end\n";
-    checkSourceCode(instruction, "10", 0);
+    checkSourceCode(instruction, "7", 0);
   }
 
   @Test
