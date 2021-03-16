@@ -96,6 +96,7 @@ public class WaccCompiler {
     }
 
     if (syntaxErrorListener.hasErrors()) {
+      System.out.println("here");
       return null;
     }
 

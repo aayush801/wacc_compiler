@@ -219,9 +219,10 @@ public class CodeGenerationTests {
         "    int x = 3 ;\n" +
         "    char z = chr x;\n" +
         "    char y = chr 3;\n" +
-        "    y = chr 4\n" +
+        "    y = chr 97;\n" +
+        "    println y\n" +
         "end";
-    checkSourceCode(instruction, "", 0);
+    checkSourceCode(instruction, "a", 0);
   }
 
   @Test
