@@ -121,16 +121,15 @@ public class ExtensionTests {
         "begin\n"
             + "switch 1 "
             + "case 1:\n"
-            + "print 1\n"
+            + "println 1\n"
             + "case 2:\n"
-            + "print 2\n"
+            + "println 2\n"
             + "default:\n"
-            + "print 3\n"
+            + "println 3\n"
             + "done\n"
             + "end";
-    WaccCompiler compiler = new WaccCompiler(prog);
-    System.out.println(compiler.compile());
-    System.out.println(compiler.getSourceCode());
+    runAndCheckProgram(prog, "1", 0);
+
   }
 
   @Test
@@ -141,14 +140,11 @@ public class ExtensionTests {
             + "int sum = 0;"
             + "foreach int x in array\n"
             + "   sum = sum + x\n"
-            + "rof\n"
+            + "rof;\n"
+            + "println sum\n"
             + "end";
-    WaccCompiler compiler = new WaccCompiler(prog);
-    System.out.println(compiler.compile());
-    for (WaccError e : compiler.getErrors()) {
-      System.out.println(e);
-    }
-    System.out.println(compiler.getSourceCode());
+
+    runAndCheckProgram(prog, "6", 0);
   }
 
   @Test
@@ -157,17 +153,11 @@ public class ExtensionTests {
         "begin\n"
             + "int[] array = [1, 2, 3];"
             + "int sum = 0;"
-            + "sum += 4\n"
+            + "sum += 4;\n"
+            + "println sum\n"
             + "end";
-    /*
-    WaccCompiler compiler = new WaccCompiler(prog);
-    System.out.println(compiler.compile());
-    for (WaccError e : compiler.getErrors()) {
-      System.out.println(e);
-    }
-    System.out.println(compiler.getSourceCode());
-
-     */
+    
+    runAndCheckProgram(prog, "4", 0);
   }
 
   @Test
@@ -176,16 +166,10 @@ public class ExtensionTests {
         "begin\n"
             + "int x = 2 ^ 3;\n"
             + "int y = x ^ 2;\n"
-            + "exit y\n"
+            + "println y\n"
             + "end";
 
-    WaccCompiler compiler = new WaccCompiler(prog);
-    System.out.println(compiler.compile());
-    for (WaccError e : compiler
-        .getErrors()) {
-      System.out.println(e);
-    }
-    System.out.println(compiler.getSourceCode());
+    runAndCheckProgram(prog, "64", 0);
   }
 
   @Test
