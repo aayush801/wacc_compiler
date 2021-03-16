@@ -12,6 +12,7 @@ import org.junit.Test;
 import wacc.ErrorCode;
 import wacc.WaccCompiler;
 import wacc.errors.WaccError;
+import wacc.errors.semantic_errors.WaccSemanticError;
 
 public class CodeGenerationTests {
 
@@ -871,8 +872,11 @@ public class CodeGenerationTests {
   public void duplicateFunctionsThrowsSemanticError() throws IOException {
     String instruction =
             "begin\n" +
-                    "  int f() is\n" +
+                    "  int f(int x) is\n" +
                     "    return 2 \n" +
+                    "  end\n" +
+                    "  int f() is\n" +
+                    "    return 3\n" +
                     "  end\n" +
                     "  int f() is\n" +
                     "    return 3\n" +
@@ -881,7 +885,26 @@ public class CodeGenerationTests {
                     "  int x = call f() ;\n" +
                     "  println x \n" +
                     "end\n";
-    checkSourceCode(instruction, "", 255);
+    checkSourceCode(instruction, "", 200);
   }
+
+//  @Test
+//  public void returnTypeDeterminesFunctionCall() throws IOException {
+//    String instruction =
+//            "begin\n" +
+//                    "  int f(int x) is\n" +
+//                    "    return 2 \n" +
+//                    "  end\n" +
+//                    "  char f() is\n" +
+//                    "    return 'c'\n" +
+//                    "  end\n" +
+//                    "\n" +
+//                    "  char x = call f() ;\n" +
+//                    "  println x \n" +
+//                    "end\n";
+//    checkSourceCode(instruction, "", 200);
+//  }
+
+
 
 }

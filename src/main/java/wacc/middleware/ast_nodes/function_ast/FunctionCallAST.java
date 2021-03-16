@@ -52,7 +52,6 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
 
       // look for the function object in the symbol table
       function = ST.lookupAll(tempFuncName);
-      System.out.println(tempFuncName);
 
       if (function == null) {
 

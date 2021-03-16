@@ -102,19 +102,21 @@ public class FunctionDeclarationAST extends NodeAST {
     funcObj.setName(funcName);
     SymbolTable.funcIndex++;
 
-    // Check if the function name already exists in ST
-    FUNCTION existing = (FUNCTION) ST.lookup(funcName);
-    if (existing != null) {
-      // check that the params/return types are different
-      boolean paramsSame = existing.formals.equals(funcObj.formals);
-      boolean returnTypeSame = existing.getReturnType().equals(funcObj.getReturnType());
-      if (paramsSame && returnTypeSame) {
-        errors.add(new DuplicateIdentifier(ctx));
+
+    for(Integer index : lst){
+      // Check if the function name already exists in ST
+      String tempName = funcName.substring(0,funcName.length()-1) + index;
+      FUNCTION existing = funcName.equals(tempName) ? null : (FUNCTION) ST.lookup(tempName);
+      if (existing != null) {
+        // check that the params/return types are different
+        boolean paramsSame = existing.formals.equals(funcObj.formals);
+        boolean returnTypeSame = existing.getReturnType().equals(funcObj.getReturnType());
+        if (paramsSame && returnTypeSame) {
+          errors.add(new DuplicateIdentifier(ctx));
+        }
       } else {
         ST.add(funcName, funcObj);
       }
-    } else {
-      ST.add(funcName, funcObj);
     }
   }
 
