@@ -165,12 +165,12 @@ public class ExtensionTests {
             + "rof;\n"
             + "print sum\n"
             + "end";
-    //*
+    /*
     WaccCompiler compiler = new WaccCompiler(prog);
     compiler.compile();
     System.out.println(compiler.getSourceCode());
-    //*/
-    //runAndCheckProgram(prog, "6", 0);
+    */
+    runAndCheckProgram(prog, "6", 0);
   }
 
   @Test
