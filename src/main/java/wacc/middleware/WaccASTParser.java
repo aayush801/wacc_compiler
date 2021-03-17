@@ -310,16 +310,16 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // array
     String arrayName = ctx.identifier(1).getText();
     // Loop variable
-    String loopVariable = "i";
-    if (variableName.equals(loopVariable)) {
+    String indexVariable = "i";
+    if (variableName.equals(indexVariable)) {
       // To avoid clash with variable
-      loopVariable = "j";
+      indexVariable = "j";
     }
     // int i = 0
     VariableDeclarationAST indexDeclaration =
         new VariableDeclarationAST(semanticErrors, ctx,
             new BaseTypeAST(semanticErrors, ctx, "int"),
-            loopVariable,
+            indexVariable,
             new RHSAssignAST(semanticErrors, ctx,
                 new LiteralsAST(semanticErrors, ctx, "0", new INT())));
 
@@ -331,31 +331,31 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
                 new ArrayElemAST(semanticErrors, ctx, arrayName,
                     new NodeASTList<>(semanticErrors, ctx,
                         Arrays.asList(new IdentifierAST(semanticErrors, ctx,
-                            loopVariable))))));
+                            indexVariable))))));
     // var = array[i]
     AssignmentAST variableUpdate =
         new AssignmentAST(semanticErrors, ctx,
-            new LHSAssignAST(semanticErrors, ctx, loopVariable),
+            new LHSAssignAST(semanticErrors, ctx, variableName),
             new RHSAssignAST(semanticErrors, ctx,
                 new ArrayElemAST(semanticErrors, ctx, arrayName,
                     new NodeASTList<>(semanticErrors, ctx,
                         Arrays.asList(new IdentifierAST(semanticErrors, ctx,
-                            loopVariable))))));
+                            indexVariable))))));
 
     // i = i + 1
     AssignmentAST indexIncrement =
         new AssignmentAST(semanticErrors, ctx,
-            new LHSAssignAST(semanticErrors, ctx, loopVariable),
+            new LHSAssignAST(semanticErrors, ctx, indexVariable),
             new RHSAssignAST(semanticErrors, ctx,
                 new BinOpExprAST(semanticErrors, ctx,
-                    new IdentifierAST(semanticErrors, ctx, loopVariable),
+                    new IdentifierAST(semanticErrors, ctx, indexVariable),
                     "+", new LiteralsAST(semanticErrors, ctx, "1",
                     new INT()))));
 
     // i < len array
     BinOpExprAST indexBoundCheck =
         new BinOpExprAST(semanticErrors, ctx,
-            new IdentifierAST(semanticErrors, ctx, loopVariable),
+            new IdentifierAST(semanticErrors, ctx, indexVariable),
             "<",
             new UnaryOpExprAST(semanticErrors, ctx,
                 new IdentifierAST(semanticErrors, ctx, arrayName), "len"));
