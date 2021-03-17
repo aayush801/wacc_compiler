@@ -38,9 +38,9 @@ public class ForAST extends WhileAST {
     // create a new scope(symbol table) for the statement.
     scopeST = ST = new SymbolTable(ST);
     initialisation.check();
+
     conditionAST.check();
     IDENTIFIER type = conditionAST.getType();
-
     if (type == null) {
       // error has occurred elsewhere
       return;
@@ -53,7 +53,9 @@ public class ForAST extends WhileAST {
       );
       return;
     }
+
     bodyAST.check();
+
     ST = ST.getEncSymTable();
   }
 

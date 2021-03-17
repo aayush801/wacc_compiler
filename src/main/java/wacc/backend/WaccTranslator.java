@@ -1296,25 +1296,23 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     DefineLabel conditionLabel = DefineLabel.getUnusedLabel();
     DefineLabel bodyLabel = DefineLabel.getUnusedLabel();
 
-    if (!whileLoop.isDoWhile()) {
+    if (!whileLoop.isDoWhile() && !(whileLoop instanceof ForAST)) {
       instructions.add(new Branch(conditionLabel.getName()));
     }
 
     // save the stack state in the symbol table
     scopeST.saveStackState(program.SP);
     instructions.addAll(program.allocateStackSpace(scopeST));
+
     // Add code for initialisation for loop if it is a for-loop
     if (whileLoop instanceof ForAST) {
       instructions.addAll(((ForAST) whileLoop).getInitialisation().accept(this));
+      instructions.add(new Branch(conditionLabel.getName()));
     }
 
     // translate rest of code statement
     instructions.add(bodyLabel);
     instructions.addAll(statementAST.accept(this));
-    instructions.addAll(program.deallocateStackSpace(scopeST));
-
-    // save the stack state in the symbol table
-    scopeST.restoreStackState(program.SP);
 
     // translate expression for loop (variance)
     instructions.add(conditionLabel);
@@ -1325,6 +1323,12 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     instructions.add(endLabel);
     program.popLoopLabels();
+
+    // save the stack state in the symbol table
+    instructions.addAll(program.deallocateStackSpace(scopeST));
+    scopeST.restoreStackState(program.SP);
+
+
 
     return instructions;
   }
@@ -1433,7 +1437,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     SymbolTable scopeST = methodCall.getScopeST();
 
-    VARIABLE stackObj = (VARIABLE) scopeST.lookupAll(methodCall.getObjectFieldAST().getObjectName());
+    VARIABLE stackObj = (VARIABLE) scopeST.lookupAll(methodCall.getObjectName());
     String className = stackObj.getType().getName();
 
     int originalStackPointer = program.SP.getStackPtr();

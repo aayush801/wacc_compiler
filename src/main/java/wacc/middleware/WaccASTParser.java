@@ -728,7 +728,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     ObjectFieldAST objectField = visitObjectField(ctx.objectField());
 
     // return a new FunctionCallAST.
-    return new MethodCallAST(semanticErrors, ctx, objectField, actuals);
+    return new MethodCallAST(semanticErrors, ctx, objectField.getObjectName(), objectField.getIdentifier(), actuals);
   }
 
   @Override

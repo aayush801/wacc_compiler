@@ -27,7 +27,7 @@ public class SemanticTests {
   }
 
   @Test
-  public void testVisibilityMethod() throws IOException {
+  public void testGetPrivateMethod() throws IOException {
     String instruction =
         "begin\n"
             +"int getX(int y) is\n"
@@ -49,7 +49,7 @@ public class SemanticTests {
   }
 
   @Test
-  public void testGetPublicField() throws IOException {
+  public void testGetPrivateField() throws IOException {
     String instruction =
         "begin\n"
             +"int getX(int y) is\n"
@@ -58,7 +58,7 @@ public class SemanticTests {
             +"class Lol\n"
             + "  private int y = 2;\n"
             + "  public int z = 5;\n"
-            + "  public int x = 5\n"
+            + "  private int x = 5\n"
             + "  private int getY(int x, int l) is\n"
             + "  return y + z \n"
             + "  end\n"

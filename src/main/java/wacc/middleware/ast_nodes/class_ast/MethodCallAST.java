@@ -3,12 +3,14 @@ package wacc.middleware.ast_nodes.class_ast;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 import wacc.errors.WaccError;
+import wacc.errors.semantic_errors.MismatchedTypes;
 import wacc.errors.semantic_errors.NotAMethod;
 import wacc.errors.semantic_errors.Undefined;
 import wacc.errors.semantic_errors.VisibilityError;
 import wacc.frontend.identifier_objects.CLASS;
 import wacc.frontend.identifier_objects.IDENTIFIER;
 import wacc.frontend.identifier_objects.METHOD;
+import wacc.frontend.identifier_objects.STACK_OBJECT;
 import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.Visibility;
@@ -19,24 +21,40 @@ import wacc.middleware.symbol_table.SymbolTable;
 
 public class MethodCallAST extends FunctionCallAST implements FunctionCallInterface {
 
-  private final ObjectFieldAST objectFieldAST;
+  private final String objectName;
   private SymbolTable scopeST;
 
   private CLASS classObj;
 
   public MethodCallAST(List<WaccError> errors, ParserRuleContext ctx,
-      ObjectFieldAST objectFieldAST, NodeASTList<ExpressionAST> actuals) {
-    super(errors, ctx, objectFieldAST.getIdentifier(), actuals);
-    this.objectFieldAST = objectFieldAST;
+      String objectName, String funcName, NodeASTList<ExpressionAST> actuals) {
+    super(errors, ctx, funcName, actuals);
+    this.objectName = objectName;
   }
 
   @Override
   public void check() {
     scopeST = ST;
 
-    objectFieldAST.check();
+    IDENTIFIER obj = ST.lookup(objectName);
 
-    classObj = objectFieldAST.getClassObj();
+    if(obj == null){
+      addError(new Undefined(ctx, objectName));
+      return;
+    }
+
+    if(!(obj instanceof STACK_OBJECT)){
+      addError(new Undefined(ctx, objectName));
+      return;
+    }
+
+    if(!(((STACK_OBJECT) obj).getType() instanceof CLASS)){
+      addError(new MismatchedTypes(ctx, obj, new CLASS("", ST)));
+      return;
+    }
+
+    classObj = (CLASS) ((STACK_OBJECT) obj).getType();
+
 
     List<Integer> lst = SymbolTable.funcIndices.get(getBaseName());
 
@@ -44,6 +62,7 @@ public class MethodCallAST extends FunctionCallAST implements FunctionCallInterf
       addError(new Undefined(ctx, getBaseName()));
       return;
     }
+
     SymbolTable classScope = classObj.getScopeST();
     IDENTIFIER funcObj = classScope.lookup(getBaseName() + lst.get(0));
 
@@ -66,10 +85,11 @@ public class MethodCallAST extends FunctionCallAST implements FunctionCallInterf
 
     ST = scopeST;
 
+
   }
 
-  public ObjectFieldAST getObjectFieldAST() {
-    return objectFieldAST;
+  public String getObjectName() {
+    return objectName;
   }
 
   public SymbolTable getScopeST() {
