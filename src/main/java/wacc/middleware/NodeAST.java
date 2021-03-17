@@ -12,9 +12,10 @@ public abstract class NodeAST implements NodeASTInterface {
   // A general Node of the AST.
   // One symbol table reference, updated throughout when required.
   // Initially this is set to the top level symbol table.
-  public static SymbolTable ST;
+  protected static SymbolTable ST;
   protected List<WaccError> errors;
   public ParserRuleContext ctx;
+  protected int insideLoops = 0;
 
   public NodeAST(List<WaccError> errors, ParserRuleContext ctx) {
     this.ctx = ctx;

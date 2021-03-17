@@ -300,10 +300,15 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   @Override
   public StatementAST visit(ChainedStatementAST chainedStatement) {
+    StatementAST first, second;
+    first = (StatementAST) visit(chainedStatement.getStatementAST1());
+    second = chainedStatement.getStatementAST2();
+    if (!(first instanceof WhileAST)) {
+      second = (StatementAST) visit(second);
+    }
+
     return new ChainedStatementAST(chainedStatement.getErrors(),
-        chainedStatement.getCtx(),
-        (StatementAST) visit(chainedStatement.getStatementAST1()),
-        (StatementAST) visit(chainedStatement.getStatementAST2()));
+        chainedStatement.getCtx(), first, second);
   }
 
   @Override
@@ -410,9 +415,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
     if (rhs.getExpressionAST() != null) {
       values.add(variableDeclaration.getVarName(), rhs.getExpressionAST());
     }
-//    if (rhs.getNewPairAST() != null) {
-//      values.add(variableDeclaration.getVarName(), rhs.getExpressionAST());
-//    }
+
     return new VariableDeclarationAST(variableDeclaration.getErrors(),
         variableDeclaration.getCtx(),
         variableDeclaration.getTypeAST(), variableDeclaration.getVarName(),

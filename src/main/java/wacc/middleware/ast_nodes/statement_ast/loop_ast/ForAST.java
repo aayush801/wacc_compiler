@@ -33,6 +33,7 @@ public class ForAST extends WhileAST {
 
   @Override
   public void check() {
+    insideLoops++;
     // check the expression
     // expression valid, now check the statement inside the body.
     // create a new scope(symbol table) for the statement.
@@ -57,6 +58,7 @@ public class ForAST extends WhileAST {
     bodyAST.check();
 
     ST = ST.getEncSymTable();
+    insideLoops--;
   }
 
   public StatementAST getInitialisation() {

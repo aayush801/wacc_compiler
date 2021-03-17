@@ -389,6 +389,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
         instructions.add(new Branch("__aeabi_idivmod", true));
         instructions.add(new Move(Rn, Register.R1));
         break;
+
       case "/":
         instructions.add(new Move(Register.R0, Rn));
         instructions.add(new Move(Register.R1, operand2));
@@ -449,6 +450,50 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       case "|":
         instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, operand2,
             false, accumulator));
+        break;
+
+      case "^":
+        // For a ^ n
+        // If n = 0 then the value is a ^ n = 1
+        instructions.add(new Move(Register.R0, ImmediateNum.ONE));
+        instructions.add(new Compare(Rm, ImmediateNum.ZERO));
+
+        DefineLabel endLabel = DefineLabel.getUnusedLabel();
+
+        instructions.add(new Branch(ConditionCode.EQ, endLabel.getName(),
+            false));
+
+        // translate rest of code statement
+        DefineLabel bodyLabel = DefineLabel.getUnusedLabel();
+        DefineLabel conditionLabel = DefineLabel.getUnusedLabel();
+
+        // Multiply 1 by the a, n number of times
+        instructions.add(bodyLabel);
+
+        instructions.add(
+            new Arithmetic(ArithmeticOpcode.SMULL, Register.R0, Register.R1,
+                Register.R0, Rn, accumulator));
+
+        instructions.add(new Arithmetic(ArithmeticOpcode.SUB, Rm, Rm,
+            ImmediateNum.ONE, true));
+
+        // translate expression for loop (variance)
+        instructions.add(conditionLabel);
+        instructions.add(new Compare(Rm, ImmediateNum.ZERO));
+        instructions.add(new Branch(ConditionCode.NE, bodyLabel.getName(),
+            false));
+
+
+        instructions.add(new Compare(Rm, new ImmediateShift(Rn, 31, false)));
+
+        // check for overflow error
+        primitiveLabel = BinOpChecks.printOverflowCheck(program);
+        instructions.add(new Branch(ConditionCode.NE,
+            primitiveLabel.getLabelName(), true));
+
+        instructions.add(endLabel);
+        // Move product into destination register
+        instructions.add(new Move(Rn, Register.R0));
         break;
       // Unrecognized Operator
       default:
@@ -1251,14 +1296,9 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
   @Override
   public List<Instruction> visit(ForAST forLoop) {
-    StatementAST initialisation = forLoop.getInitialisation();
+    //StatementAST initialisation = forLoop.getInitialisation();
 
     List<Instruction> instructions = new ArrayList<>();
-
-    DefineLabel startLabel = DefineLabel.getUnusedLabel();
-    DefineLabel endLabel = DefineLabel.getUnusedLabel();
-    program.addLoopLabels(startLabel.getName(), endLabel.getName());
-    instructions.add(startLabel);
 
     // Initialisation
     //instructions.addAll(initialisation.accept(this));
@@ -1266,8 +1306,6 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     // generate loop body and condition
     instructions.addAll(visit((WhileAST) forLoop));
 
-    instructions.add(endLabel);
-    program.popLoopLabels();
 
     return instructions;
   }
@@ -1288,13 +1326,12 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     Register destination = program.registers.get(0);
     List<Instruction> instructions = new ArrayList<>();
 
-    DefineLabel startLabel = DefineLabel.getUnusedLabel();
-    DefineLabel endLabel = DefineLabel.getUnusedLabel();
-    program.addLoopLabels(startLabel.getName(), endLabel.getName());
-    instructions.add(startLabel);
-
     DefineLabel conditionLabel = DefineLabel.getUnusedLabel();
     DefineLabel bodyLabel = DefineLabel.getUnusedLabel();
+    DefineLabel endLabel = DefineLabel.getUnusedLabel();
+
+    program.addLoopLabels(conditionLabel.getName(), endLabel.getName());
+    instructions.add(conditionLabel);
 
     if (!whileLoop.isDoWhile() && !(whileLoop instanceof ForAST)) {
       instructions.add(new Branch(conditionLabel.getName()));
@@ -1306,7 +1343,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     // Add code for initialisation for loop if it is a for-loop
     if (whileLoop instanceof ForAST) {
-      instructions.addAll(((ForAST) whileLoop).getInitialisation().accept(this));
+      instructions.addAll(((ForAST) whileLoop).getInitialisation()
+          .accept(this));
       instructions.add(new Branch(conditionLabel.getName()));
     }
 

@@ -165,13 +165,30 @@ public class ExtensionTests {
             + "rof;\n"
             + "print sum\n"
             + "end";
-        /*
+    /*
     WaccCompiler compiler = new WaccCompiler(prog);
     compiler.compile();
     System.out.println(compiler.getSourceCode());
     */
     runAndCheckProgram(prog, "6", 0);
   }
+
+  @Test
+  public void exponentiation() throws IOException {
+    String prog =
+        "begin\n"
+            + "int x = 2 ^ 3;\n"
+            + "print x"
+            + "end";
+    /*
+    WaccCompiler compiler = new WaccCompiler(prog);
+    compiler.compile();
+    System.out.println(compiler.getSourceCode());
+
+     */
+    runAndCheckProgram(prog, "8", 0);
+  }
+
 
   @Test
   public void binOpAssign() throws IOException {
@@ -186,17 +203,6 @@ public class ExtensionTests {
     runAndCheckProgram(prog, "4", 0);
   }
 
-  @Test
-  public void arithmeticOptimisation() throws IOException {
-    String prog =
-        "begin\n"
-            + "int x = 2 ^ 3;\n"
-            + "int y = x ^ 2;\n"
-            + "println y\n"
-            + "end";
-
-    runAndCheckProgram(prog, "64", 0);
-  }
 
   @Test
   public void testGetPublicField() throws IOException {

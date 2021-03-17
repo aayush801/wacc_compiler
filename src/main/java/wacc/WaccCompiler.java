@@ -116,19 +116,21 @@ public class WaccCompiler {
 
     tree.check();
 
-//    if (!hasErrors()) {
-//      // Control flow analysis of AST nodes
-//      NodeAST prog = tree.accept(new ControlFlowAnalyser());
-//      prog.check();
-//      return prog;
-//    }
+    //*
+    if (!hasErrors()) {
+      // Control flow analysis of AST nodes
+      NodeAST prog = tree.accept(new ControlFlowAnalyser());
+      prog.check();
+      return prog;
+    }
+
+     //*/
 
     return tree;
   }
 
   public String translateCode(NodeAST ASTtree) {
     WaccTranslator codeGenerator = new WaccTranslator();
-
     codeGenerator.visit(ASTtree);
 
     return codeGenerator.toString();

@@ -367,7 +367,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
         indexDeclaration, variableDeclaration);
     // Only enter loop if array is non-empty
     return new ForAST(semanticErrors, ctx, initialisation, indexBoundCheck,
-            indexIncrement, body);
+        indexIncrement, body);
   }
 
   @Override
@@ -514,7 +514,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
       return new LHSAssignAST(semanticErrors, ctx, pointerElemAST);
     }
 
-    if(ctx.objectField() != null){
+    if (ctx.objectField() != null) {
       ObjectFieldAST objectFieldAST = visitObjectField(ctx.objectField());
       objectFieldAST.setLHS();
       return new LHSAssignAST(semanticErrors, ctx, objectFieldAST);
@@ -728,12 +728,14 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     ObjectFieldAST objectField = visitObjectField(ctx.objectField());
 
     // return a new FunctionCallAST.
-    return new MethodCallAST(semanticErrors, ctx, objectField.getObjectName(), objectField.getIdentifier(), actuals);
+    return new MethodCallAST(semanticErrors, ctx, objectField.getObjectName(),
+        objectField.getIdentifier(), actuals);
   }
 
   @Override
   public ObjectFieldAST visitObjectField(ObjectFieldContext ctx) {
-    return new ObjectFieldAST(semanticErrors, ctx, ctx.identifier(0).getText(), ctx.identifier(1).getText());
+    return new ObjectFieldAST(semanticErrors, ctx, ctx.identifier(0).getText(),
+        ctx.identifier(1).getText());
   }
 
   @Override
@@ -751,10 +753,10 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
     StatementAST funcBody = (StatementAST) visit(ctx.funcDecl().stat());
 
-    Visibility visibility =
-        ctx.VISIBILITY().getText().equals("private") ? Visibility.PRIVATE : Visibility.PUBLIC;
-    return new MethodDeclarationAST(semanticErrors, ctx, visibility, typeAST, funcName, paramASTS,
-        funcBody);
+    Visibility visibility = ctx.VISIBILITY().getText().equals("private") ?
+        Visibility.PRIVATE : Visibility.PUBLIC;
+    return new MethodDeclarationAST(semanticErrors, ctx, visibility, typeAST,
+        funcName, paramASTS, funcBody);
   }
 
   @Override
@@ -764,9 +766,10 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
             ctx.methodDecl().stream()
                 .map(this::visitMethodDecl).collect(Collectors.toList()));
 
-    FieldAST fields = (ctx.fields() != null) ?  visitFields(ctx.fields()) : null;
+    FieldAST fields = (ctx.fields() != null) ? visitFields(ctx.fields()) : null;
 
-    ConstructorAST constructor = (ctx.constructor() != null) ? visitConstructor(ctx.constructor()) : null;
+    ConstructorAST constructor =
+        (ctx.constructor() != null) ? visitConstructor(ctx.constructor()) : null;
 
     // Return a new classDefASR node.
     return new ClassDefinitionAST(semanticErrors,
@@ -777,13 +780,16 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public FieldAST visitFields(FieldsContext ctx) {
-    if(ctx.fields().size() > 1){
-      return new FieldAST(semanticErrors, ctx, visitFields(ctx.fields(0)), visitFields(ctx.fields(1)));
-    }else{
-      Visibility visibility = (ctx.VISIBILITY().getText().equals("private")? Visibility.PRIVATE : Visibility.PUBLIC);
-      return new FieldAST(semanticErrors, ctx, visibility, new VariableDeclarationAST(semanticErrors,
-          ctx, visitType(ctx.type()), ctx.identifier().getText(),
-          visitAssignRHS(ctx.assignRHS())));
+    if (ctx.fields().size() > 1) {
+      return new FieldAST(semanticErrors, ctx, visitFields(ctx.fields(0)),
+          visitFields(ctx.fields(1)));
+    } else {
+      Visibility visibility = (ctx.VISIBILITY().getText().equals("private") ? Visibility.PRIVATE
+          : Visibility.PUBLIC);
+      return new FieldAST(semanticErrors, ctx, visibility,
+          new VariableDeclarationAST(semanticErrors,
+              ctx, visitType(ctx.type()), ctx.identifier().getText(),
+              visitAssignRHS(ctx.assignRHS())));
     }
   }
 

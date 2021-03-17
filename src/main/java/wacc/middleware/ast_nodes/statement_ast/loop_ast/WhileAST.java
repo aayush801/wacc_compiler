@@ -37,6 +37,8 @@ public class WhileAST extends StatementAST {
 
   @Override
   public void check() {
+    insideLoops++;
+
     // check the expression
     conditionAST.check();
     IDENTIFIER type = conditionAST.getType();
@@ -59,6 +61,8 @@ public class WhileAST extends StatementAST {
     scopeST = ST = new SymbolTable(ST);
     bodyAST.check();
     ST = ST.getEncSymTable();
+
+    insideLoops--;
   }
 
   public SymbolTable getScope() {
