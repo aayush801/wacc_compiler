@@ -178,7 +178,7 @@ public class ExtensionTests {
     String prog =
         "begin\n"
             + "int x = 2 ^ 3;\n"
-            + "print x"
+            + "print x\n"
             + "end";
     /*
     WaccCompiler compiler = new WaccCompiler(prog);

@@ -61,7 +61,7 @@ import wacc.middleware.ast_nodes.types_ast.PointerTypeAST;
 public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   private ValueTable values = new ValueTable();
-
+  private boolean afterLoops = false;
   private final int MAX_VALUE = 2147483647;
   private final int MIN_VALUE = -2147483648;
 
@@ -192,6 +192,9 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   @Override
   public NodeAST visit(IdentifierAST identifier) {
+    if (afterLoops) {
+      return identifier;
+    }
     NodeAST value = values.lookupAll(identifier.getIdentifier());
     if (value == null) {
       return identifier;
@@ -248,6 +251,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
               functionDeclaration.getCtx(), param.getParamName()));
     }
     StatementAST stat = (StatementAST) visit(functionDeclaration.getStatementAST());
+    afterLoops = false;
     values = values.getEncValueTable();
 
     return new FunctionDeclarationAST(functionDeclaration.getErrors(),
@@ -302,10 +306,10 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   public StatementAST visit(ChainedStatementAST chainedStatement) {
     StatementAST first, second;
     first = (StatementAST) visit(chainedStatement.getStatementAST1());
-    second = chainedStatement.getStatementAST2();
-    if (!(first instanceof WhileAST)) {
-      second = (StatementAST) visit(second);
+    if (first instanceof WhileAST) {
+      afterLoops = true;
     }
+    second = (StatementAST) visit(chainedStatement.getStatementAST2());
 
     return new ChainedStatementAST(chainedStatement.getErrors(),
         chainedStatement.getCtx(), first, second);
