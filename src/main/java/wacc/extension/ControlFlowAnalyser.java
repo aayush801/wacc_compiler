@@ -161,7 +161,6 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
           value = a <= b ? 1 : 0;
           break;
         case "&&":
-          System.out.println("&&");
           value = (a == 1 && b == 1) ? 1 : 0;
           break;
         case "||":
@@ -306,9 +305,6 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   public StatementAST visit(ChainedStatementAST chainedStatement) {
     StatementAST first, second;
     first = (StatementAST) visit(chainedStatement.getStatementAST1());
-    if (first instanceof WhileAST) {
-      afterLoops = true;
-    }
     second = (StatementAST) visit(chainedStatement.getStatementAST2());
 
     return new ChainedStatementAST(chainedStatement.getErrors(),
@@ -428,6 +424,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   @Override
   public NodeAST visit(ForAST forLoop) {
+    afterLoops = true;
     return new ForAST(forLoop.getErrors(), forLoop.getCtx(),
         forLoop.getInitialisation(), forLoop.getConditionAST(),
         forLoop.getStatementAST());
@@ -435,6 +432,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   @Override
   public NodeAST visit(WhileAST whileLoop) {
+    afterLoops = true;
     return new WhileAST(whileLoop.getErrors(), whileLoop.getCtx(),
         whileLoop.getConditionAST(), whileLoop.getStatementAST());
   }
