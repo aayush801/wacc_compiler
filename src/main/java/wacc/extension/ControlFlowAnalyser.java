@@ -198,6 +198,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
     if (value == null) {
       return identifier;
     }
+
     return value;
   }
 

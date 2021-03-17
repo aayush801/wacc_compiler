@@ -150,7 +150,7 @@ public class ExtensionTests {
     WaccCompiler compiler = new WaccCompiler(prog);
     compiler.compile();
     System.out.println(compiler.getSourceCode());
-    */
+    /*/
     runAndCheckProgram(prog, "3", 0);
   }
 

@@ -1331,7 +1331,6 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     DefineLabel endLabel = DefineLabel.getUnusedLabel();
 
     program.addLoopLabels(conditionLabel.getName(), endLabel.getName());
-    instructions.add(conditionLabel);
 
     if (!whileLoop.isDoWhile() && !(whileLoop instanceof ForAST)) {
       instructions.add(new Branch(conditionLabel.getName()));
