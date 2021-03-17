@@ -118,7 +118,6 @@ public class WaccCompiler {
 
     if (!hasErrors()) {
       // Control flow analysis of AST nodes
-      NodeAST.ST = new SymbolTable();
       NodeAST prog = tree.accept(new ControlFlowAnalyser());
       prog.check();
       return prog;

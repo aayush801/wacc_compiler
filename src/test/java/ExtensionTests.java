@@ -38,6 +38,8 @@ public class ExtensionTests {
 
     String sourceCode = compiler.getSourceCode();
 
+    System.out.println(sourceCode);
+
     File file = new File("temp.s");
 
     FileWriter writer = new FileWriter(file);

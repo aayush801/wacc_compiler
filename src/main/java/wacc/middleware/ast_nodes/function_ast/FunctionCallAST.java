@@ -1,5 +1,7 @@
 package wacc.middleware.ast_nodes.function_ast;
 
+import antlr.WaccParser.FuncCallContext;
+import antlr.WaccParser.ProgContext;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 import wacc.errors.WaccError;
@@ -17,6 +19,7 @@ import wacc.middleware.symbol_table.SymbolTable;
 
 public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
 
+  private final String baseName;
   private String funcName;
   private final NodeASTList<ExpressionAST> actuals;
   private FUNCTION funcObj;
@@ -25,12 +28,16 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
   public FunctionCallAST(List<WaccError> errors, ParserRuleContext ctx,
       String funcName, NodeASTList<ExpressionAST> actuals) {
     super(errors, ctx);
-    this.funcName = funcName;
+    baseName = this.funcName = funcName;
     this.actuals = actuals;
   }
 
   public NodeASTList<ExpressionAST> getActuals() {
     return actuals;
+  }
+
+  public String getBaseName(){
+    return baseName;
   }
 
   public String getFuncName() {
@@ -49,9 +56,9 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
   @Override
   public void check() {
 
-    List<Integer> indices = SymbolTable.funcIndices.get(funcName);
+    List<Integer> indices = SymbolTable.funcIndices.get(baseName);
     if (indices == null) {
-      addError(new Undefined(ctx));
+      addError(new Undefined(ctx, baseName));
       return;
     }
 
@@ -59,13 +66,13 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
     IDENTIFIER function = null;
 
     for (Integer index : indices) {
-      String tempFuncName = funcName + index;
+      String tempFuncName = baseName + index;
       // look for the function object in the symbol table
       function = ST.lookupAll(tempFuncName);
       if (function == null) {
 
         // if the function is undefined within the current scope
-        addError(new Undefined(ctx, funcName));
+        addError(new Undefined(ctx, baseName));
 
       } else if (!(function instanceof FUNCTION)) {
 
@@ -78,7 +85,7 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
         // the actual function takes, then throw invalid argument exception
         if (index.equals(last)) {
           addError(
-              new InvalidArguments(ctx, funcName, ((FUNCTION) function).formals.size(),
+              new InvalidArguments(ctx, baseName, ((FUNCTION) function).formals.size(),
                   actuals.size()));
         }
 
@@ -110,16 +117,16 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
           }
 
           if (foundMatch) {
-            break;
+            // save the function obj in the ast node
+            funcObj = (FUNCTION) function;
+            funcName = funcObj.getName();
+            return;
           }
 
         }
       }
     }
 
-    // save the function obj in the ast node
-    funcObj = (FUNCTION) function;
-    funcName = funcObj.getName();
 
   }
 

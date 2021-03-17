@@ -6,7 +6,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 public abstract class WaccError extends BaseErrorListener {
 
   private final int lineNo, lineCol;
-  private String code;
+  private String offendingSymbol;
+  private final String code;
 
 
   public WaccError(int line, int charPositionInLine, String code) {
@@ -23,13 +24,9 @@ public abstract class WaccError extends BaseErrorListener {
 
   public WaccError(ParserRuleContext ctx, String offendingSymbol) {
     this(ctx);
-    highlightOffendingSymbol(offendingSymbol);
+    this.offendingSymbol = offendingSymbol;
   }
 
-  private void highlightOffendingSymbol(String offendingSymbol) {
-    int position = code.indexOf(offendingSymbol);
-    code = code.substring(0, position) + "->" + code.substring(position);
-  }
 
   public int getLineNo() {
     return lineNo;
@@ -39,7 +36,7 @@ public abstract class WaccError extends BaseErrorListener {
 
   @Override
   public String toString() {
-    return ": " + code + " found at line " + lineNo + ":"
+    return ": " + ((offendingSymbol == null) ? code : offendingSymbol) + " found at line " + lineNo + ":"
         + lineCol + " " + getErrorMessage();
   }
 

@@ -48,9 +48,9 @@ public class MethodCallAST extends FunctionCallAST implements FunctionCallInterf
 
     SymbolTable classScope = ((CLASS) ((STACK_OBJECT) obj).getType()).getScopeST();
 
-    List<Integer> lst = SymbolTable.funcIndices.get(getFuncName());
+    List<Integer> lst = SymbolTable.funcIndices.get(getBaseName());
 
-    IDENTIFIER funcObj = classScope.lookup(getFuncName() + lst.get(0));
+    IDENTIFIER funcObj = classScope.lookup(getBaseName() + lst.get(0));
     if (!(funcObj instanceof METHOD)) {
       addError(new NotAMethod(ctx));
       return;

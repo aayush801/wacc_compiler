@@ -41,7 +41,7 @@ public class MethodDeclarationAST extends FunctionDeclarationAST {
     super.check();
 
     methodObj = new METHOD(funcObj, visibility);
-    ST.add(getFuncName(), methodObj);
+    ST.add(funcObj.getName(), methodObj);
   }
 
   public Visibility getVisibility() {

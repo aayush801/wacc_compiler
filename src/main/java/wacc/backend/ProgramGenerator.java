@@ -39,6 +39,7 @@ public class ProgramGenerator {
     for (int i = REGISTER_START; i <= REGISTER_END; i++) {
       registers.add(new Register(i));
     }
+
   }
 
   public void addData(DataLabel label) {

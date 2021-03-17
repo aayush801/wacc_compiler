@@ -68,7 +68,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   @Override
   public ProgAST visit(ProgAST prog) {
     ProgAST newProg = new ProgAST(prog.getErrors(), prog.getCtx(),
-        prog.getFilename(), prog.getImportASTS(),
+        prog.getFilename(), new NodeASTList<>(prog.getErrors(), prog.getCtx()),
         visit(prog.getFunctionDeclarationASTS()),
         (StatementAST) visit(prog.getStatementAST()));
     return newProg;
@@ -251,14 +251,14 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
     return new FunctionDeclarationAST(functionDeclaration.getErrors(),
         functionDeclaration.getCtx(), functionDeclaration.getTypeAST(),
-        functionDeclaration.getFuncName(), functionDeclaration.getParamASTList(),
+        functionDeclaration.getBaseName(), functionDeclaration.getParamASTList(),
         stat);
   }
 
   @Override
   public NodeAST visit(FunctionCallAST functionCall) {
     return new FunctionCallAST(functionCall.getErrors(), functionCall.getCtx(),
-        functionCall.getFuncName(), visit(functionCall.getActuals()));
+        functionCall.getBaseName(), visit(functionCall.getActuals()));
   }
 
   @Override
@@ -379,7 +379,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
     } else if (rhs.getFunctionCallAST() != null) {
       return new RHSAssignAST(rhs.getErrors(), rhs.getCtx(),
-          (FunctionCallInterface) visit((FunctionCallAST) rhs.getFunctionCallAST()));
+          (FunctionCallInterface) rhs.getFunctionCallAST().accept(this));
 
     } else if (rhs.getNewPairAST() != null) {
       return new RHSAssignAST(rhs.getErrors(), rhs.getCtx(),

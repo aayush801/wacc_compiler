@@ -5,7 +5,6 @@ import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.DuplicateIdentifier;
-import wacc.errors.semantic_errors.MismatchedTypes;
 import wacc.errors.semantic_errors.Undefined;
 import wacc.frontend.identifier_objects.FUNCTION;
 import wacc.frontend.identifier_objects.IDENTIFIER;
@@ -22,6 +21,7 @@ public class FunctionDeclarationAST extends NodeAST {
 
   private final TypeAST typeAST;
   private String funcName;
+  private final String baseName;
   private final NodeASTList<ParamAST> paramASTList;
   private final StatementAST statementAST;
   public FUNCTION funcObj;
@@ -31,7 +31,7 @@ public class FunctionDeclarationAST extends NodeAST {
       StatementAST statementAST) {
     super(errors, ctx);
     this.typeAST = typeAST;
-    this.funcName = funcName;
+    baseName = this.funcName = funcName;
     this.paramASTList = paramASTList;
     this.statementAST = statementAST;
   }
@@ -42,6 +42,10 @@ public class FunctionDeclarationAST extends NodeAST {
 
   public String getFuncName() {
     return funcName;
+  }
+
+  public String getBaseName() {
+    return baseName;
   }
 
   public NodeASTList<ParamAST> getParamASTList() {
@@ -94,18 +98,15 @@ public class FunctionDeclarationAST extends NodeAST {
 
     ST = ST.getEncSymTable();
 
-    List<Integer> lst = SymbolTable.funcIndices.get(funcName);
+    List<Integer> lst = SymbolTable.funcIndices.get(baseName);
     if (lst == null) {
       lst = new ArrayList<>();
     }
 
-    String basename = funcName;
-    funcName += SymbolTable.funcIndex;
-    funcObj.setName(funcName);
 
     // Check if the function already exists in ST
     for (Integer index : lst) {
-      String tempName = basename + index;
+      String tempName = baseName + index;
 
       IDENTIFIER existing = ST.lookup(tempName);
       if (existing instanceof FUNCTION) {
@@ -128,18 +129,27 @@ public class FunctionDeclarationAST extends NodeAST {
               break;
             }
           }
+
           // if params match then this is a duplicate function
           if (paramsSame) {
-            errors.add(new DuplicateIdentifier(ctx));
+            errors.add(new DuplicateIdentifier(ctx, baseName));
             return;
           }
         }
       }
     }
 
+    // set the funcname to the funcObj name
+    funcName = baseName + SymbolTable.funcIndex;
+    funcObj.setName(funcName);
+
+    //add func index to this lst
     lst.add(SymbolTable.funcIndex++);
+    SymbolTable.funcIndices.put(baseName, lst);
+
+    // add function to symbol table
     ST.add(funcName, funcObj);
-    SymbolTable.funcIndices.put(basename, lst);
+
   }
 
   @Override
