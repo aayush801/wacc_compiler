@@ -12,6 +12,7 @@ import org.junit.Test;
 import wacc.ErrorCode;
 import wacc.WaccCompiler;
 import wacc.errors.WaccError;
+import wacc.errors.semantic_errors.WaccSemanticError;
 
 public class ExtensionTests {
 
@@ -134,18 +135,41 @@ public class ExtensionTests {
 
   }
 
+
+  @Test
+  public void testForLoop() throws IOException {
+    String prog =
+        "begin " +
+            "int sum = 0;\n" +
+            "for (int x = 0; x < 3; x = x + 1)\n" +
+            " sum = sum + x\n" +
+            "rof;\n" +
+            "print sum\n" +
+            "end";
+    /*
+    WaccCompiler compiler = new WaccCompiler(prog);
+    compiler.compile();
+    System.out.println(compiler.getSourceCode());
+    */
+    runAndCheckProgram(prog, "3", 0);
+  }
+
   @Test
   public void foreachLoop() throws IOException {
     String prog =
         "begin\n"
             + "int[] array = [1, 2, 3];"
-            + "int sum = 0;"
+            + "int sum = 0;\n"
             + "foreach int x in array\n"
             + "   sum = sum + x\n"
             + "rof;\n"
-            + "println sum\n"
+            + "print sum\n"
             + "end";
-
+        /*
+    WaccCompiler compiler = new WaccCompiler(prog);
+    compiler.compile();
+    System.out.println(compiler.getSourceCode());
+    */
     runAndCheckProgram(prog, "6", 0);
   }
 

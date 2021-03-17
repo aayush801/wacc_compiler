@@ -326,7 +326,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // type var = array[i]
     VariableDeclarationAST variableDeclaration =
         new VariableDeclarationAST(semanticErrors, ctx,
-            typeAST, variableName, 
+            typeAST, variableName,
             new RHSAssignAST(semanticErrors, ctx,
                 new ArrayElemAST(semanticErrors, ctx, arrayName,
                     new NodeASTList<>(semanticErrors, ctx,
