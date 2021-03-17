@@ -78,17 +78,6 @@ public class CodeGenerationTests {
     checkSourceCode(instruction, "", 255);
   }
 
-  @Test
-  public void testForLoop() throws IOException {
-    String instruction =
-        "begin " +
-            "for(int x = 0; x < 3; x = x + 1)\n" +
-            "print x\n" +
-            "rof\n" +
-            "end";
-    String expected = "012";
-    checkSourceCode(instruction, expected, 0);
-  }
 
   @Test
   public void testComments() throws IOException {

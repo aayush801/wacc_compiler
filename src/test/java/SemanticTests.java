@@ -69,6 +69,18 @@ public class SemanticTests {
   }
 
   @Test
+  public void testForLoop() throws IOException {
+    String prog =
+        "begin " +
+            "int sum = 0;\n" +
+            "for (int x = 0; x < 3; x = x + 1)\n" +
+            " sum = sum + x\n" +
+            "rof;\n" +
+            "println sum\n" +
+            "end";
+    check(prog, false);
+  }
+  @Test
   public void forEachLoop() throws IOException {
     String instruction =
         "begin \n"

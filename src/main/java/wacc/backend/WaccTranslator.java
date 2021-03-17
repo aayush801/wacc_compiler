@@ -1250,7 +1250,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     instructions.add(startLabel);
 
     // Initialisation
-    instructions.addAll(initialisation.accept(this));
+    //instructions.addAll(initialisation.accept(this));
 
     // generate loop body and condition
     instructions.addAll(visit((WhileAST) forLoop));
@@ -1283,19 +1283,22 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     instructions.add(startLabel);
 
     DefineLabel conditionLabel = DefineLabel.getUnusedLabel();
-    DefineLabel body = DefineLabel.getUnusedLabel();
+    DefineLabel bodyLabel = DefineLabel.getUnusedLabel();
 
     if (!whileLoop.isDoWhile()) {
       instructions.add(new Branch(conditionLabel.getName()));
     }
 
-    // translate rest of code statement
-    instructions.add(body);
-
     // save the stack state in the symbol table
     scopeST.saveStackState(program.SP);
-
     instructions.addAll(program.allocateStackSpace(scopeST));
+    // Add code for initialisation for loop if it is a for-loop
+    if (whileLoop instanceof ForAST) {
+      instructions.addAll(((ForAST) whileLoop).getInitialisation().accept(this));
+    }
+
+    // translate rest of code statement
+    instructions.add(bodyLabel);
     instructions.addAll(statementAST.accept(this));
     instructions.addAll(program.deallocateStackSpace(scopeST));
 
@@ -1307,7 +1310,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     instructions.addAll(conditionExpr.accept(this));
 
     instructions.add(new Compare(destination, ImmediateNum.ONE));
-    instructions.add(new Branch(ConditionCode.EQ, body.getName(), false));
+    instructions.add(new Branch(ConditionCode.EQ, bodyLabel.getName(), false));
 
     instructions.add(endLabel);
     program.popLoopLabels();
