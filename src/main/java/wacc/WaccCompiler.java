@@ -150,8 +150,7 @@ public class WaccCompiler {
   public void setRelativePath(String path) {
     if (path == null) {
       relativePath = null;
-    }
-    else {
+    } else {
       relativePath = Paths.get(path).getParent();
     }
   }
