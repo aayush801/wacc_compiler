@@ -41,6 +41,7 @@ public class NewObjectAST extends NodeAST {
     }
 
     classObj = (CLASS) obj;
+
   }
 
   public String getClassName() {

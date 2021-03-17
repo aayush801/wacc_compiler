@@ -29,6 +29,7 @@ import antlr.WaccParser.ImportsContext;
 import antlr.WaccParser.IntLiterContext;
 import antlr.WaccParser.NewObjectContext;
 import antlr.WaccParser.NewPairContext;
+import antlr.WaccParser.ObjectFieldContext;
 import antlr.WaccParser.PairElemContext;
 import antlr.WaccParser.PairElemTypeContext;
 import antlr.WaccParser.PairLiterContext;
@@ -65,6 +66,7 @@ import wacc.middleware.ast_nodes.StatementAST;
 import wacc.middleware.ast_nodes.TypeAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayElemAST;
+import wacc.middleware.ast_nodes.class_ast.ObjectFieldAST;
 import wacc.middleware.ast_nodes.expression_ast.BinOpExprAST;
 import wacc.middleware.ast_nodes.expression_ast.IdentifierAST;
 import wacc.middleware.ast_nodes.expression_ast.LiteralsAST;
@@ -512,6 +514,12 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
       return new LHSAssignAST(semanticErrors, ctx, pointerElemAST);
     }
 
+    if(ctx.objectField() != null){
+      ObjectFieldAST objectFieldAST = visitObjectField(ctx.objectField());
+      objectFieldAST.setLHS();
+      return new LHSAssignAST(semanticErrors, ctx, objectFieldAST);
+    }
+
     return null;
   }
 
@@ -585,6 +593,10 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
     if (ctx.sizeOfCall() != null) {
       return visitSizeOfCall(ctx.sizeOfCall());
+    }
+
+    if (ctx.objectField() != null) {
+      return visitObjectField(ctx.objectField());
     }
 
     // in this case, could be a literal, an ident,or null.
@@ -713,10 +725,15 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
     // check whether the function call has any arguments.
     NodeASTList<ExpressionAST> actuals = visitArgList(ctx.argList());
+    ObjectFieldAST objectField = visitObjectField(ctx.objectField());
 
     // return a new FunctionCallAST.
-    return new MethodCallAST(semanticErrors, ctx, ctx.identifier(0).getText(),
-        ctx.identifier(1).getText(), actuals);
+    return new MethodCallAST(semanticErrors, ctx, objectField, actuals);
+  }
+
+  @Override
+  public ObjectFieldAST visitObjectField(ObjectFieldContext ctx) {
+    return new ObjectFieldAST(semanticErrors, ctx, ctx.identifier(0).getText(), ctx.identifier(1).getText());
   }
 
   @Override

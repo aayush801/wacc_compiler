@@ -8,6 +8,7 @@ import wacc.middleware.ast_nodes.class_ast.FieldAST;
 import wacc.middleware.ast_nodes.class_ast.MethodCallAST;
 import wacc.middleware.ast_nodes.class_ast.MethodDeclarationAST;
 import wacc.middleware.ast_nodes.class_ast.NewObjectAST;
+import wacc.middleware.ast_nodes.class_ast.ObjectFieldAST;
 import wacc.middleware.ast_nodes.expression_ast.BinOpExprAST;
 import wacc.middleware.ast_nodes.expression_ast.IdentifierAST;
 import wacc.middleware.ast_nodes.expression_ast.LiteralsAST;
@@ -133,4 +134,6 @@ public abstract class NodeASTVisitor<T> {
   public abstract T visit(MethodDeclarationAST classDef);
 
   public abstract T visit(FieldAST fields);
+
+  public abstract T visit(ObjectFieldAST objField);
 }

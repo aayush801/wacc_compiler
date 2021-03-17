@@ -103,6 +103,7 @@ assignLHS:
   | arrayElem
   | pairElem
   | pointerElem
+  | objectField
 ;
 
 //right hand side assignment
@@ -127,6 +128,7 @@ expr:
   | arrayElem
   | unaryOperator expr
   | sizeOfCall
+  | objectField
   | pointerElem
   | expr binaryOperator=(POWER | DIVIDE | STAR | MOD) expr
   | expr binaryOperator=(PLUS | MINUS) expr
@@ -147,8 +149,9 @@ fields:
 classType: CLASS IDENT ;
 constructor: IDENT OPEN_PARENTHESES paramList? CLOSE_PARENTHESES IS stat END;
 
+objectField: identifier DOT identifier;
 methodDecl: VISIBILITY funcDecl;
-methodCall: CALL identifier DOT identifier OPEN_PARENTHESES argList? CLOSE_PARENTHESES ;
+methodCall: CALL objectField OPEN_PARENTHESES argList? CLOSE_PARENTHESES ;
 
 //unary operators
 unaryOperator: NOT | MINUS | LENGTH | ORD | CHR | INVERT | BITWISE_AND | MALLOC;

@@ -1,21 +1,21 @@
 package wacc.middleware.ast_nodes.statement_ast;
 
 import java.util.List;
+import org.antlr.v4.runtime.ParserRuleContext;
 import wacc.errors.WaccError;
-import wacc.errors.semantic_errors.Undefined;
 import wacc.errors.semantic_errors.ExpressionNotFound;
+import wacc.errors.semantic_errors.Undefined;
 import wacc.frontend.identifier_objects.IDENTIFIER;
 import wacc.frontend.identifier_objects.PARAM;
 import wacc.frontend.identifier_objects.TYPE;
 import wacc.frontend.identifier_objects.VARIABLE;
-import wacc.middleware.NodeAST;
 import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.ast_nodes.StatementAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayElemAST;
+import wacc.middleware.ast_nodes.class_ast.ObjectFieldAST;
 import wacc.middleware.ast_nodes.pair_ast.PairElemAST;
 import wacc.middleware.ast_nodes.pointers_ast.PointerElemAST;
 import wacc.middleware.symbol_table.SymbolTable;
-import org.antlr.v4.runtime.ParserRuleContext;
 
 public class LHSAssignAST extends StatementAST {
 
@@ -23,6 +23,7 @@ public class LHSAssignAST extends StatementAST {
   private ArrayElemAST arrayElemAST;
   private PairElemAST pairElemAST;
   private PointerElemAST pointerElemAST;
+  private ObjectFieldAST objectFieldAST;
 
   private int offsetIdent;
   private boolean isChar;
@@ -57,6 +58,13 @@ public class LHSAssignAST extends StatementAST {
       PointerElemAST pointerElemAST) {
     super(errors, ctx);
     this.pointerElemAST = pointerElemAST;
+  }
+
+  // For when LHSAssign is a objectField.
+  public LHSAssignAST(List<WaccError> errors, ParserRuleContext ctx,
+      ObjectFieldAST objectFieldAST) {
+    super(errors, ctx);
+    this.objectFieldAST = objectFieldAST;
   }
 
   // Basic type getter.
@@ -104,53 +112,46 @@ public class LHSAssignAST extends StatementAST {
 
       // Last case: return the type of the obj returned from the lookup.
       type = (TYPE) obj;
-
       return;
-
     }
 
     if (arrayElemAST != null) {
-      // For when LHSAssign is an arrayElem.
-
       // Verify that the arrayElem is valid.
       arrayElemAST.check();
-
       if (arrayElemAST.getType() != null) {
         // arrayElem is of a valid type, sp get the type of the arrayElem,
         // and set the type.
         type = arrayElemAST.getType();
       }
-
       return;
-
     }
 
     if (pairElemAST != null) {
-      // For when LHSAssign is a pairElem.
-
       // Verify that the pairElem is valid.
       pairElemAST.check();
-
       if (pairElemAST.getType() != null) {
         // pairElem is of a valid type, sp get the type of the pairElem,
         // and set the type.
         type = pairElemAST.getType();
       }
-
     }
 
     if (pointerElemAST != null) {
-      // For when LHSAssign is a pairElem.
-
-      // Verify that the pairElem is valid.
+      // Verify that the pointerElem is valid.
       pointerElemAST.check();
-
       if (pointerElemAST.getType() != null) {
         // pairElem is of a valid type, sp get the type of the pairElem,
         // and set the type.
         type = pointerElemAST.getType();
       }
+      return;
+    }
 
+    if (objectFieldAST != null) {
+      objectFieldAST.check();
+      if (objectFieldAST.getType() != null) {
+        type = objectFieldAST.getType();
+      }
     }
 
   }
@@ -189,6 +190,10 @@ public class LHSAssignAST extends StatementAST {
 
   public PointerElemAST getPointerElemAST() {
     return pointerElemAST;
+  }
+
+  public ObjectFieldAST getObjectFieldAST() {
+    return objectFieldAST;
   }
 
   @Override

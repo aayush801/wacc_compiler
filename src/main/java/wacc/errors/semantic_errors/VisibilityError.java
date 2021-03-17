@@ -8,6 +8,10 @@ public class VisibilityError extends WaccSemanticError{
     super(ctx);
   }
 
+  public VisibilityError(ParserRuleContext ctx, String offendingSymbol) {
+    super(ctx, offendingSymbol);
+  }
+
   @Override
   public String getErrorMessage() {
     return "is not accessible from this scope";

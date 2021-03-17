@@ -63,6 +63,7 @@ import wacc.middleware.ast_nodes.class_ast.FieldAST;
 import wacc.middleware.ast_nodes.class_ast.MethodCallAST;
 import wacc.middleware.ast_nodes.class_ast.MethodDeclarationAST;
 import wacc.middleware.ast_nodes.class_ast.NewObjectAST;
+import wacc.middleware.ast_nodes.class_ast.ObjectFieldAST;
 import wacc.middleware.ast_nodes.expression_ast.BinOpExprAST;
 import wacc.middleware.ast_nodes.expression_ast.IdentifierAST;
 import wacc.middleware.ast_nodes.expression_ast.LiteralsAST;
@@ -1146,6 +1147,16 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       ret.add(new Store(reservedReg, new ZeroOffset(freeReg), type.getSize()));
     }
 
+    if(lhs.getObjectFieldAST() != null){
+      ObjectFieldAST objectFieldAST = lhs.getObjectFieldAST();
+
+      TYPE type = objectFieldAST.getType();
+      ret.addAll(visit(objectFieldAST));
+
+      // store by reference
+      ret.add(new Store(reservedReg, new ZeroOffset(freeReg), type.getSize()));
+    }
+
     program.registers.add(0, reservedReg);
 
     return ret;
@@ -1419,7 +1430,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     SymbolTable scopeST = methodCall.getScopeST();
 
-    VARIABLE stackObj = (VARIABLE) scopeST.lookupAll(methodCall.getObjectName());
+    VARIABLE stackObj = (VARIABLE) scopeST.lookupAll(methodCall.getObjectFieldAST().getObjectName());
     String className = stackObj.getType().getName();
 
     int originalStackPointer = program.SP.getStackPtr();
@@ -1459,6 +1470,32 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       ret.addAll(visit(fields.getVariableDeclarationAST()));
     }
     return ret;
+  }
+
+  @Override
+  public List<Instruction> visit(ObjectFieldAST objField) {
+    List<Instruction> instructions = new ArrayList<>();
+    Register dest = program.registers.get(0);
+
+    SymbolTable scopeST = objField.getScopeST();
+
+    VARIABLE stackObj = (VARIABLE) scopeST.lookupAll(objField.getObjectName());
+
+    // put object into dest
+    int offset = program.SP.calculateOffset(stackObj.getStackAddress());
+    instructions.add(new Load(dest, new ImmediateOffset(program.SP, new ImmediateNum(offset))));
+
+    FIELD field = (FIELD) objField.getClassObj().getScopeST().lookup(objField.getIdentifier());
+
+    // get field from offset
+    int fieldOffset = field.getOffset();
+    instructions.add(new Arithmetic(ArithmeticOpcode.ADD, dest, dest, new ImmediateNum(fieldOffset), false));
+
+    if(!objField.isLHS()) {
+      instructions.add(new Load(dest, new ZeroOffset(dest)));
+    }
+
+    return instructions;
   }
 
   @Override

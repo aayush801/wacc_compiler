@@ -1,7 +1,5 @@
 package wacc.middleware.ast_nodes.function_ast;
 
-import antlr.WaccParser.FuncCallContext;
-import antlr.WaccParser.ProgContext;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 import wacc.errors.WaccError;

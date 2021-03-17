@@ -115,7 +115,7 @@ public class SymbolTable {
   }
 
   public boolean inScope(SymbolTable encScope){
-    return this == encScope || getEncSymTable().inScope(encScope);
+    return this == encScope || getEncSymTable() != null && getEncSymTable().inScope(encScope);
   }
 
   public void restoreStackState(StackPointer SP) {

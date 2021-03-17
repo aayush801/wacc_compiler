@@ -27,6 +27,50 @@ public class SemanticTests {
   }
 
   @Test
+  public void testVisibilityMethod() throws IOException {
+    String instruction =
+        "begin\n"
+            +"int getX(int y) is\n"
+            +"return y\n"
+            +"end\n"
+            +"class Lol\n"
+            + "  private int y = 2;\n"
+            + "  public int z = 5;\n"
+            + "  public int x = 5\n"
+            + "  private int getY(int x, int l) is\n"
+            + "  return y + z \n"
+            + "  end\n"
+            + "done;\n"
+            +"class Lol ting = new Lol();\n"
+            +"int x = call ting.getY(3,6);\n"
+            +"println x\n"
+            +"end\n";
+    check(instruction, true);
+  }
+
+  @Test
+  public void testGetPublicField() throws IOException {
+    String instruction =
+        "begin\n"
+            +"int getX(int y) is\n"
+            +"return y\n"
+            +"end\n"
+            +"class Lol\n"
+            + "  private int y = 2;\n"
+            + "  public int z = 5;\n"
+            + "  public int x = 5\n"
+            + "  private int getY(int x, int l) is\n"
+            + "  return y + z \n"
+            + "  end\n"
+            + "done;\n"
+            +"class Lol ting = new Lol();\n"
+            +"int x = ting.x;\n"
+            +"println x\n"
+            +"end\n";
+    check(instruction, true);
+  }
+
+  @Test
   public void duplicateFunctionsThrowsSemanticError() throws IOException {
     String instruction =
         "begin\n" +

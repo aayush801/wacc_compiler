@@ -175,6 +175,46 @@ public class ExtensionTests {
   }
 
   @Test
+  public void testGetPublicField() throws IOException {
+    String instruction =
+        "begin\n"
+            +"int getX(int y) is\n"
+            +"return y\n"
+            +"end\n"
+            +"class Lol\n"
+            + "  public int y = 2;\n"
+            + "  public int z = 5;\n"
+            + "  public int x = 10\n"
+            + "  private int getY(int x, int l) is\n"
+            + "  return y + z \n"
+            + "  end\n"
+            + "done;\n"
+            +"class Lol ting = new Lol();\n"
+            +"int x = ting.x + ting.y;\n"
+            +"println x\n"
+            +"end\n";
+    runAndCheckProgram(instruction, "12", 0);
+  }
+
+  @Test
+  public void testSetPublicField() throws IOException {
+    String instruction =
+        "begin\n"
+            +"int getX(int y) is\n"
+            +"return y\n"
+            +"end\n"
+            +"class Lol\n"
+            + "  public int y = 2;\n"
+            + "  public int z = 5\n"
+            + "done;\n"
+            +"class Lol ting = new Lol();\n"
+            +"ting.z = 3;\n"
+            +"println ting.z + ting.y\n"
+            +"end\n";
+    runAndCheckProgram(instruction, "5", 0);
+  }
+
+  @Test
   public void testMalloc() throws IOException {
 
     String instructions =
