@@ -1148,6 +1148,17 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
         varStackObj = (STACK_OBJECT) scopeST.getEncSymTable().lookupAll(identifier);
       }
 
+      if (varStackObj instanceof FIELD) {
+        FIELD field = (FIELD) varStackObj;
+        // get field from offset
+        int fieldOffset = field.getOffset();
+        // store by reference
+        ret.add(
+            new Store(reservedReg, new ImmediateOffset(Register.R0, new ImmediateNum(fieldOffset)),
+                field.getType().getSize()));
+        return ret;
+      }
+
       int offset = program.SP.calculateOffset(varStackObj.getStackAddress());
 
       lhs.setOffset(offset);
@@ -1411,7 +1422,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     int size = scope.calculateScopeSize();
 
     // pushes constructor params to stack if constructor exists
-    if(classDef.getConstructor() != null) {
+    if (classDef.getConstructor() != null) {
       NodeASTList<ParamAST> paramASTList = classDef.getConstructor().getParamASTS();
 
       // pushes parameters to the stack
@@ -1452,7 +1463,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     constrInstr.add(new Store(Register.R0, new ZeroOffset(program.SP)));
 
     /* THIS SECTION WILL EXECUTE THE CONSTRUCTOR */
-    if(classDef.getConstructor() != null) {
+    if (classDef.getConstructor() != null) {
       constrInstr.addAll(visit(classDef.getConstructor()));
     }
     /* END */
@@ -1463,7 +1474,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     program.popPC(constrInstr);
 
     // pop all params off the stack
-    if(classDef.getConstructor() != null) {
+    if (classDef.getConstructor() != null) {
       NodeASTList<ParamAST> paramASTList = classDef.getConstructor().getParamASTS();
       paramASTList.forEach(p -> program.SP.pop(p.getParamObj()));
     }
@@ -1591,7 +1602,6 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     return instructions;
   }
-
 
 
   @Override
