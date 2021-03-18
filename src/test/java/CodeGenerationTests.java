@@ -639,7 +639,7 @@ public class CodeGenerationTests {
     String instruction = "begin\n" +
         "  println null\n" +
         "end";
-    checkSourceCode(instruction, "", 0);
+    checkSourceCode(instruction, "(nil)", 0);
   }
 
 

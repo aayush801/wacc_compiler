@@ -310,8 +310,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       try {
         n = Integer.parseInt(((LiteralsAST) rightExpr).getText());
         isIntLiteral = true;
-      } catch (Exception e) {
-        e.printStackTrace();
+      } catch (Exception ignored) {
       }
     }
 
