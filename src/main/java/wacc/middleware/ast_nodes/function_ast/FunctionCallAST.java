@@ -5,17 +5,20 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.InvalidArguments;
 import wacc.errors.semantic_errors.MismatchedTypes;
+import wacc.errors.semantic_errors.NotAFunction;
 import wacc.errors.semantic_errors.Undefined;
 import wacc.frontend.identifier_objects.FUNCTION;
 import wacc.frontend.identifier_objects.IDENTIFIER;
 import wacc.frontend.identifier_objects.TYPE;
+import wacc.frontend.identifier_objects.basic_types.VOID;
 import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeAST;
 import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.ast_nodes.NodeASTList;
+import wacc.middleware.ast_nodes.StatementAST;
 import wacc.middleware.symbol_table.SymbolTable;
 
-public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
+public class FunctionCallAST extends StatementAST implements FunctionCallInterface {
 
   private final String baseName;
   private String funcName;
@@ -34,7 +37,7 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
     return actuals;
   }
 
-  public String getBaseName(){
+  public String getBaseName() {
     return baseName;
   }
 
@@ -88,8 +91,9 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
         }
 
       } else {
+        if (((FUNCTION) function).getReturnType() instanceof VOID || isCompatible(lhsReturnType,
+            ((FUNCTION) function).getReturnType())) {
 
-        if (isCompatible(lhsReturnType, ((FUNCTION) function).getReturnType())) {
           // found matching function
           boolean foundMatch = true;
 
@@ -125,6 +129,7 @@ public class FunctionCallAST extends NodeAST implements FunctionCallInterface {
       }
     }
 
+    addError(new NotAFunction(ctx, baseName));
 
   }
 

@@ -26,8 +26,6 @@ paramList: param (COMMA param)*;
 //argument list
 argList: expr (COMMA expr)* ;
 
-assignment: '=' | INCREMENT ;
-
 //statements
 stat:
     SKIP_STATEMENT                        #skipStat
@@ -66,6 +64,8 @@ stat:
     DONE                                  #switchStat
   | CONTINUE                              #continueStat
   | BREAK                                 #breakStat
+  | funcCall                              #funcCaller
+  | methodCall                            #methodCaller
 ;
 
 
@@ -109,8 +109,8 @@ assignRHS:
   | array
   | newPair
   | pairElem
-  | funcCall
   | newObject
+  | funcCall
   | methodCall
 ;
 

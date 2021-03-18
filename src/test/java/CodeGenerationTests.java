@@ -636,10 +636,14 @@ public class CodeGenerationTests {
 
   @Test
   public void testPrintNull() throws IOException {
-    String instruction = "begin\n" +
-        "  println null\n" +
-        "end";
-    checkSourceCode(instruction, "(nil)", 0);
+    String instruction =
+        "begin\n"+
+        "void getX(int y) is\n" +
+            "  println y\n" +
+        "end\n"
+        +"call getX(11)"
+    +"end\n";
+    checkSourceCode(instruction, "11", 0);
   }
 
 
