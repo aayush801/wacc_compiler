@@ -203,7 +203,6 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   @Override
   public NodeAST visit(IdentifierAST identifier) {
-
     if (afterLoops) {
       return identifier;
     }
@@ -301,7 +300,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
     RHSAssignAST rhs = (RHSAssignAST) visit(assignment.getRHS());
     if (lhs.getIdentifier() != null) {
       if (insideScope > 0) {
-        values.add(lhs.getIdentifier(),
+        values.addAll(lhs.getIdentifier(),
             new IdentifierAST(assignment.getErrors(), assignment.getCtx(),
                 lhs.getIdentifier()));
       } else {
@@ -461,7 +460,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   @Override
   public NodeAST visit(WhileAST whileLoop) {
     afterLoops = true;
-    ExpressionAST condition = whileLoop.getConditionAST();
+    ExpressionAST condition = visit(whileLoop.getConditionAST());
     if (condition instanceof LiteralsAST &&
         ((LiteralsAST) condition).getText().equals("false")) {
       return new SkipAST(whileLoop.getErrors(), whileLoop.getCtx());
@@ -568,11 +567,6 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
       this(null);
     }
 
-    public ValueTable(ValueTable st, TYPE scopeReturnType) {
-      this(st);
-      this.scopeReturnType = scopeReturnType;
-    }
-
     public ValueTable(ValueTable st) {
       encValueTable = st;
       if (st != null) {
@@ -593,6 +587,14 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
     public void add(String name, NodeAST obj) {
       dict.put(name, obj);
+    }
+
+    public void addAll(String name, NodeAST obj) {
+      ValueTable curr = this;
+      while (curr != null && curr.lookup(name) == null) {
+        curr = curr.getEncValueTable();
+      }
+      curr.add(name, obj);
     }
 
     // lookup identifier in the local scope
