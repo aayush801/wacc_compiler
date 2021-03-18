@@ -7,6 +7,7 @@ import wacc.frontend.identifier_objects.TYPE;
 import wacc.frontend.identifier_objects.basic_types.BOOL;
 import wacc.frontend.identifier_objects.basic_types.CHAR;
 import wacc.frontend.identifier_objects.basic_types.INT;
+import wacc.frontend.identifier_objects.basic_types.STR;
 import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeAST;
 import wacc.middleware.NodeASTVisitor;
@@ -111,6 +112,10 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
       } else if (left.getType() instanceof BOOL) {
         a = ((LiteralsAST) left).getText().equals("true") ? 1 : 0;
         b = ((LiteralsAST) right).getText().equals("true") ? 1 : 0;
+      } else if (left.getType() instanceof STR) {
+        boolean stringsMatch = ((LiteralsAST) left).getText()
+            .equals(((LiteralsAST) right).getText());
+        a = b = stringsMatch ? 1 : 0;
       } else {
         return binOpExpr;
       }
