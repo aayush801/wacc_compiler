@@ -634,6 +634,20 @@ public class CodeGenerationTests {
     checkSourceCode(instruction, "1", 0);
   }
 
+  @Test
+  public void testRandom() throws IOException {
+    String instruction = "begin\n"
+        + "  int x = 2 ;\n"
+        + "  int y = 6 ;\n"
+        + "  int z = 4 ;\n"
+        + "  int a = 4 ;\n"
+        + "  println x >= y ;\n"
+        + "  println y >= z ;\n"
+        + "  println z >= z\n"
+        + "end";
+    checkSourceCode(instruction, "false\ntrue\ntrue\n", 0);
+  }
+
 
   @Test
   public void testPrintNull() throws IOException {
