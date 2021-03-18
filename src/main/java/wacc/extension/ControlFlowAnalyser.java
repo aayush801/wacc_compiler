@@ -235,7 +235,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
           return new LiteralsAST(unaryOpExpr.getErrors(), unaryOpExpr.getCtx(),
               value);
         case "ord":
-          int ascii = str.charAt(0);
+          int ascii = str.charAt(str.length() - 2);
           return new LiteralsAST(unaryOpExpr.getErrors(), unaryOpExpr.getCtx(),
               ascii);
         case "chr":

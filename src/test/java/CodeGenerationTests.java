@@ -637,45 +637,17 @@ public class CodeGenerationTests {
   @Test
   public void testRandom() throws IOException {
     String instruction = "begin\n"
-        + "  int x = 2 ;\n"
-        + "  int y = 6 ;\n"
-        + "  int z = 4 ;\n"
-        + "  int a = 4 ;\n"
-        + "  println x >= y ;\n"
-        + "  println y >= z ;\n"
-        + "  println z >= z\n"
-        + "end";
-    checkSourceCode(instruction, "false\ntrue\ntrue\n", 0);
-  }
-
-  @Test
-  public void multiStringAssign() throws IOException {
-    String instruction = "begin\n"
-        + "  string s1 = \"Hi\" ;\n"
-        + "  string s2 = \"Hello\" ;\n"
-        + "  print \"s1 is \" ;\n"
-        + "  println s1 ;\n"
-        + "  print \"s2 is \" ;\n"
-        + "  println s2 ;\n"
-        + "  if s1 == s2 then\n"
-        + "    println \"They are the same string.\" \n"
-        + "  else \n"
-        + "    println \"They are not the same string.\"\n"
-        + "  fi ;\n"
+        + "  char a = 'a' ;\n"
+        + "  int i = 99 ;\n"
         + "\n"
-        + "  println \"Now make s1 = s2\" ;\n"
-        + "  s1 = s2 ;\n"
+        + "  print a ;\n"
+        + "  print \" is \" ;\n"
+        + "  println ord a ;\n"
         + "\n"
-        + "  print \"s1 is \" ;\n"
-        + "  println s1 ;\n"
-        + "  print \"s2 is \" ;\n"
-        + "  println s2 ;\n"
-        + "  if s1 == s2 then\n"
-        + "    println \"They are the same string.\" \n"
-        + "  else \n"
-        + "    println \"They are not the same string.\"\n"
-        + "  fi\n"
-        + "end";
+        + "  print i ;\n"
+        + "  print \" is \" ;\n"
+        + "  println chr i\n"
+        + "end\n";
     checkSourceCode(instruction, "false\ntrue\ntrue\n", 0);
   }
 
