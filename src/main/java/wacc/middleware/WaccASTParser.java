@@ -132,13 +132,20 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
             .map(this::visitFuncDecl)
             .collect(Collectors.toList()));
 
+    // make a list of classDefinitions
+    NodeASTList<ClassDefinitionAST> classDefinitionASTS =
+        new NodeASTList<>(semanticErrors,
+            ctx, ctx.classDef().stream()
+            .map(this::visitClassDef)
+            .collect(Collectors.toList()));
+
     NodeASTList<ImportAST> importASTS = new NodeASTList<>(semanticErrors, ctx);
     if (ctx.imports() != null) {
       importASTS = visitImports(ctx.imports());
     }
 
     // Return a new progAST node.
-    return new ProgAST(semanticErrors, ctx, filename, importASTS, functionDeclASTS,
+    return new ProgAST(semanticErrors, ctx, filename, importASTS, classDefinitionASTS, functionDeclASTS,
         (StatementAST) visit(ctx.stat()));
   }
 
@@ -444,7 +451,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public ClassTypeAST visitClassType(ClassTypeContext ctx) {
-    return new ClassTypeAST(semanticErrors, ctx, ctx.IDENT().getText());
+    return new ClassTypeAST(semanticErrors, ctx, ctx.identifier().getText());
   }
 
   @Override
@@ -611,7 +618,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public NewObjectAST visitNewObject(NewObjectContext ctx) {
-    String className = ctx.IDENT().getText();
+    String className = ctx.identifier().getText();
     NodeASTList<ExpressionAST> actuals = visitArgList(ctx.argList());
     return new NewObjectAST(semanticErrors, ctx, className, actuals);
   }
@@ -774,7 +781,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // Return a new classDefASR node.
     return new ClassDefinitionAST(semanticErrors,
         ctx,
-        ctx.classType().IDENT().getText(), fields, constructor,
+        ctx.classType().identifier().getText(), fields, constructor,
         methodDeclASTS);
   }
 
@@ -795,7 +802,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public ConstructorAST visitConstructor(WaccParser.ConstructorContext ctx) {
-    return new ConstructorAST(semanticErrors, ctx, ctx.IDENT().getText(),
+    return new ConstructorAST(semanticErrors, ctx, ctx.identifier().getText(),
         visitParamList(ctx.paramList()),
         (StatementAST) visit(ctx.stat()));
   }

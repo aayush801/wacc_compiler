@@ -101,7 +101,7 @@ NEQ: '!=' ;
 AND: '&&' ;
 OR: '||' ;
 CONCATENATE: '++' ;
-POWER: '^' ;
+POWER: '^';
 
 //wacc.extension
 BITWISE_AND : '&' ;

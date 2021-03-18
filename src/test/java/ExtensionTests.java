@@ -208,9 +208,6 @@ public class ExtensionTests {
   public void testGetPublicField() throws IOException {
     String instruction =
         "begin\n"
-            +"int getX(int y) is\n"
-            +"return y\n"
-            +"end\n"
             +"class Lol\n"
             + "  public int y = 2;\n"
             + "  public int z = 5;\n"
@@ -218,7 +215,7 @@ public class ExtensionTests {
             + "  private int getY(int x, int l) is\n"
             + "  return y + z \n"
             + "  end\n"
-            + "done;\n"
+            + "done\n"
             +"class Lol ting = new Lol();\n"
             +"int x = ting.x + ting.y;\n"
             +"println x\n"
@@ -230,13 +227,10 @@ public class ExtensionTests {
   public void testSetPublicField() throws IOException {
     String instruction =
         "begin\n"
-            +"int getX(int y) is\n"
-            +"return y\n"
-            +"end\n"
             +"class Lol\n"
             + "  public int y = 2;\n"
             + "  public int z = 5\n"
-            + "done;\n"
+            + "done\n"
             +"class Lol ting = new Lol();\n"
             +"ting.z = 3;\n"
             +"println ting.z + ting.y\n"
@@ -357,7 +351,7 @@ public class ExtensionTests {
             + "  Cat(int y) is\n"
               + "  print y \n"
             + "  end\n"
-            + "done;\n"
+            + "done\n"
             +"class Cat mittens = new Cat(10)\n"
             +"end\n";
     runAndCheckProgram(instruction, "10", 0);
@@ -372,7 +366,7 @@ public class ExtensionTests {
             + "  Cat(int y) is\n"
             + "  x = y \n"
             + "  end\n"
-            + "done;\n"
+            + "done\n"
             +"class Cat mittens = new Cat(10);\n"
             +"print mittens.x\n"
             +"end\n";
@@ -385,7 +379,7 @@ public class ExtensionTests {
         "begin\n"
             +"class Cat\n"
             + "  public int x = 5\n"
-            + "done;\n"
+            + "done\n"
             +"class Cat mittens = new Cat();\n"
             +"print mittens.x;\n"
             +"free mittens;\n"

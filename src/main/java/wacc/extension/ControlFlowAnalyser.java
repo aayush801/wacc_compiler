@@ -71,6 +71,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   public ProgAST visit(ProgAST prog) {
     ProgAST newProg = new ProgAST(prog.getErrors(), prog.getCtx(),
         prog.getFilename(), new NodeASTList<>(prog.getErrors(), prog.getCtx()),
+        visit(prog.getClassDefinitionASTS()),
         visit(prog.getFunctionDeclarationASTS()),
         (StatementAST) visit(prog.getStatementAST()));
     return newProg;

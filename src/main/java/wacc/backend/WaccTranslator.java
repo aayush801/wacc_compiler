@@ -115,6 +115,10 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
   @Override
   public List<Instruction> visit(ProgAST prog) {
+    // translate class declarations
+    for(ClassDefinitionAST classDef : prog.getClassDefinitionASTS()){
+      visit(classDef);
+    }
 
     // translate function declarations
     for (FunctionDeclarationAST func : prog.getFunctionDeclarationASTS()) {

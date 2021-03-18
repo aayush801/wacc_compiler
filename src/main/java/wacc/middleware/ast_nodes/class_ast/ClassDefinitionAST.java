@@ -4,13 +4,14 @@ import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 import wacc.errors.WaccError;
 import wacc.frontend.identifier_objects.CLASS;
+import wacc.middleware.NodeAST;
 import wacc.middleware.NodeASTVisitor;
 import wacc.middleware.ast_nodes.NodeASTList;
 import wacc.middleware.ast_nodes.StatementAST;
 import wacc.middleware.symbol_table.ClassSymbolTable;
 import wacc.middleware.symbol_table.SymbolTable;
 
-public class ClassDefinitionAST extends StatementAST {
+public class ClassDefinitionAST extends NodeAST {
 
   private final String name;
   private final FieldAST fields;
@@ -18,7 +19,6 @@ public class ClassDefinitionAST extends StatementAST {
   private final ConstructorAST constructor;
 
   private CLASS classObj;
-  private SymbolTable scopeST;
 
   public ClassDefinitionAST(List<WaccError> errors, ParserRuleContext ctx,
       String name, FieldAST fields, ConstructorAST constructor,
@@ -50,7 +50,7 @@ public class ClassDefinitionAST extends StatementAST {
   public void check() {
 
     // Create new symbol table(scope) for the statement.
-    scopeST = ST = new ClassSymbolTable(ST, name);
+    SymbolTable scopeST = ST = new ClassSymbolTable(ST, name);
     if (fields != null) {
       fields.check();
     }
