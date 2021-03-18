@@ -15,6 +15,7 @@ import wacc.middleware.ast_nodes.StatementAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayElemAST;
 import wacc.middleware.ast_nodes.class_ast.ClassDefinitionAST;
+import wacc.middleware.ast_nodes.class_ast.ConstructorAST;
 import wacc.middleware.ast_nodes.class_ast.FieldAST;
 import wacc.middleware.ast_nodes.class_ast.MethodCallAST;
 import wacc.middleware.ast_nodes.class_ast.MethodDeclarationAST;
@@ -498,6 +499,11 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   @Override
   public NodeAST visit(ObjectFieldAST objField) {
     return objField;
+  }
+
+  @Override
+  public NodeAST visit(ConstructorAST constructor) {
+    return constructor;
   }
 
   @Override

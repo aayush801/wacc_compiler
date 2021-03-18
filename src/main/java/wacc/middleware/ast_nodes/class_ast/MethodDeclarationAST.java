@@ -3,6 +3,7 @@ package wacc.middleware.ast_nodes.class_ast;
 import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 import wacc.errors.WaccError;
+import wacc.errors.semantic_errors.NotAMethod;
 import wacc.errors.semantic_errors.WaccSemanticError;
 import wacc.frontend.identifier_objects.METHOD;
 import wacc.middleware.NodeASTVisitor;
@@ -38,6 +39,12 @@ public class MethodDeclarationAST extends FunctionDeclarationAST {
       return;
     }
 
+    // if method has same name as constructor
+    if(getBaseName().equals(((ClassSymbolTable) ST).getClassName())){
+      addError(new NotAMethod(ctx, getBaseName()));
+      return;
+    }
+
     super.check();
 
     methodObj = new METHOD(funcObj, visibility);
@@ -46,10 +53,6 @@ public class MethodDeclarationAST extends FunctionDeclarationAST {
 
   public Visibility getVisibility() {
     return visibility;
-  }
-
-  public METHOD getMethodObj() {
-    return methodObj;
   }
 
   @Override

@@ -71,6 +71,36 @@ public class SemanticTests {
   }
 
   @Test
+  public void checkConstructorTypesMatch() throws IOException {
+    String instruction =
+        "begin\n"
+            +"class Lol\n"
+            + "  private int x = 5\n"
+            + "  private int Lol(int x, int l) is\n"
+              + "  return y + z \n"
+            + "  end\n"
+            + "done;\n"
+            +"class Lol ting = new Lol(true)\n"
+            +"end\n";
+    check(instruction, true);
+  }
+
+  @Test
+  public void methodSameNameAsConstructor() throws IOException {
+    String instruction =
+        "begin\n"
+            +"class Lol\n"
+            + "  private int x = 5\n"
+            + "  Lol(int z) is\n"
+            + "    x = 4 \n"
+            + "  end\n"
+            + "done;\n"
+            +"class Lol ting = new Lol(true)\n"
+            +"end\n";
+    check(instruction, true);
+  }
+
+  @Test
   public void duplicateFunctionsThrowsSemanticError() throws IOException {
     String instruction =
         "begin\n" +

@@ -8,6 +8,11 @@ public class NotAMethod extends WaccSemanticError {
     super(ctx);
   }
 
+
+  public NotAMethod(ParserRuleContext ctx, String offendingSymbol) {
+    super(ctx, offendingSymbol);
+  }
+
   @Override
   public String getErrorMessage() {
     return " is not a method";

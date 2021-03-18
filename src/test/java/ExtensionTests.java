@@ -346,4 +346,23 @@ public class ExtensionTests {
                     "end\n";
     runAndCheckProgram(instruction, "c", 0);
   }
+
+
+  @Test
+  public void testConstructorIsExecuted() throws IOException {
+    String instruction =
+        "begin\n"
+            +"class Cat\n"
+            + "  public int x = 5;\n"
+            + "  public int z = 7\n"
+            + "  Cat(int y) is\n"
+              + "  print y \n"
+            + "  end\n"
+            + "done;\n"
+            +"class Cat mittens = new Cat(10);\n"
+            +"print mittens.x;\n"
+            +"print mittens.z\n"
+            +"end\n";
+    runAndCheckProgram(instruction, "1057", 0);
+  }
 }

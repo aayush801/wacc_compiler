@@ -16,10 +16,9 @@ public class StackPointer extends Register {
     super(13);
   }
 
-  public void push(STACK_OBJECT varObj) {
+  public void push(int size) {
     // decrement free pts by variable size
-    freePtr -= varObj.getType().getSize();
-    varObj.setStackAddress(freePtr);
+    freePtr -= size;
 
     // if the free ptr is below the stack ptr
     // then decrement stack ptr aswell
@@ -31,18 +30,29 @@ public class StackPointer extends Register {
 
   }
 
-  public void pop(STACK_OBJECT varObj) {
-    int popSize = varObj.getType().getSize();
+  public void pop(int size) {
 
     // if the fre ptr sits at the same level
     // as the stack ptr, then increment both pointers
     if (freePtr == stackPtr) {
 
-      stackPtr += popSize;
+      stackPtr += size;
 
     }
 
-    freePtr += popSize;
+    freePtr += size;
+  }
+
+
+  public void push(STACK_OBJECT varObj) {
+    int size = varObj.getType().getSize();
+    varObj.setStackAddress(freePtr - size);
+    push(size);
+  }
+
+  public void pop(STACK_OBJECT varObj) {
+    int size = varObj.getType().getSize();
+    pop(size);
   }
 
   public List<Instruction> decrement(int size) {

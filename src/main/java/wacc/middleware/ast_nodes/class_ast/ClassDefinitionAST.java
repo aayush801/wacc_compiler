@@ -4,11 +4,11 @@ import java.util.List;
 import org.antlr.v4.runtime.ParserRuleContext;
 import wacc.errors.WaccError;
 import wacc.frontend.identifier_objects.CLASS;
-import wacc.middleware.symbol_table.ClassSymbolTable;
 import wacc.middleware.NodeASTVisitor;
-import wacc.middleware.symbol_table.SymbolTable;
 import wacc.middleware.ast_nodes.NodeASTList;
 import wacc.middleware.ast_nodes.StatementAST;
+import wacc.middleware.symbol_table.ClassSymbolTable;
+import wacc.middleware.symbol_table.SymbolTable;
 
 public class ClassDefinitionAST extends StatementAST {
 
@@ -71,9 +71,20 @@ public class ClassDefinitionAST extends StatementAST {
 
     // Reset the symbol table (i.e. return to the old scope).
     ST = ST.getEncSymTable();
+
+    // set constructor func
     // add the class to the upper symbol table
     classObj = new CLASS(name, scopeST);
+
+    if (constructor != null) {
+      classObj.setConstructorObj(constructor.getFuncobj());
+    }
+
     ST.add(name, classObj);
+  }
+
+  public ConstructorAST getConstructor() {
+    return constructor;
   }
 
   @Override

@@ -59,6 +59,7 @@ import wacc.middleware.ast_nodes.TypeAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayElemAST;
 import wacc.middleware.ast_nodes.class_ast.ClassDefinitionAST;
+import wacc.middleware.ast_nodes.class_ast.ConstructorAST;
 import wacc.middleware.ast_nodes.class_ast.FieldAST;
 import wacc.middleware.ast_nodes.class_ast.MethodCallAST;
 import wacc.middleware.ast_nodes.class_ast.MethodDeclarationAST;
@@ -483,7 +484,6 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
         instructions.add(new Branch(ConditionCode.NE, bodyLabel.getName(),
             false));
 
-
         instructions.add(new Compare(Rm, new ImmediateShift(Rn, 31, false)));
 
         // check for overflow error
@@ -726,7 +726,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     // pop all params off the stack
     paramASTList.forEach(p -> program.SP.pop(p.getParamObj()));
-    return null;
+    return new ArrayList<>();
   }
 
   /* Helper method */
@@ -1192,7 +1192,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       ret.add(new Store(reservedReg, new ZeroOffset(freeReg), type.getSize()));
     }
 
-    if(lhs.getObjectFieldAST() != null){
+    if (lhs.getObjectFieldAST() != null) {
       ObjectFieldAST objectFieldAST = lhs.getObjectFieldAST();
 
       TYPE type = objectFieldAST.getType();
@@ -1306,7 +1306,6 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     // generate loop body and condition
     instructions.addAll(visit((WhileAST) forLoop));
 
-
     return instructions;
   }
 
@@ -1365,8 +1364,6 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     instructions.addAll(program.deallocateStackSpace(scopeST));
     scopeST.restoreStackState(program.SP);
 
-
-
     return instructions;
   }
 
@@ -1407,41 +1404,71 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
   public List<Instruction> visit(ClassDefinitionAST classDef) {
 
     // first translate all the fields onto the stack
-    List<Instruction> constructor = new ArrayList<>();
+    List<Instruction> constrInstr = new ArrayList<>();
     CLASS classObj = classDef.getClassObj();
+
     SymbolTable scope = classObj.getScopeST();
     int size = scope.calculateScopeSize();
 
-    program.pushLR(constructor);
+    // pushes constructor params to stack if constructor exists
+    if(classDef.getConstructor() != null) {
+      NodeASTList<ParamAST> paramASTList = classDef.getConstructor().getParamASTS();
 
-    constructor.addAll(program.allocateStackSpace(scope));
+      // pushes parameters to the stack
+      for (int i = paramASTList.size() - 1; i >= 0; i--) {
+        paramASTList.get(i).accept(this);
+      }
 
-    constructor.addAll(visit(classDef.getFields()));
+    }
+
+    program.pushLR(constrInstr);
+
+    /* THIS SECTION WILL EXECUTE CREATING FIELDS OF AN OBJECT*/
+    constrInstr.addAll(program.allocateStackSpace(scope));
+
+    constrInstr.addAll(visit(classDef.getFields()));
 
     // malloc the size of the object
-    constructor.add(new Load(Register.R0, new ImmediateAddress(size)));
-    constructor.add(new Branch("malloc", true));
+    constrInstr.add(new Load(Register.R0, new ImmediateAddress(size)));
+    constrInstr.add(new Branch("malloc", true));
 
     int increment = 0;
     //get each field off the stack and put it on the heap
     for (STACK_OBJECT stackObj : scope.getVariables()) {
       // put value from stack into R1
       int offset = program.SP.calculateOffset(stackObj.getStackAddress());
-      constructor
+      constrInstr
           .add(new Load(Register.R1, new ImmediateOffset(program.SP, new ImmediateNum(offset))));
 
       // store R1 value into adress of R0 with offset
-      constructor.add(new Store(Register.R1, new ImmediateOffset(Register.R0,
+      constrInstr.add(new Store(Register.R1, new ImmediateOffset(Register.R0,
           new ImmediateNum(increment))));
 
       //increment heap size by this amount
       increment += stackObj.getType().getSize();
     }
+    /* END */
 
-    constructor.addAll(program.deallocateStackSpace(scope));
-    program.popPC(constructor);
+    constrInstr.add(new Store(Register.R0, new ZeroOffset(program.SP)));
 
-    CodeLabel label = new CodeLabel("c_" + classObj.getName(), constructor);
+    /* THIS SECTION WILL EXECUTE THE CONSTRUCTOR */
+    if(classDef.getConstructor() != null) {
+      constrInstr.addAll(visit(classDef.getConstructor()));
+    }
+    /* END */
+
+    constrInstr.add(new Load(Register.R0, new ZeroOffset(program.SP)));
+
+    constrInstr.addAll(program.deallocateStackSpace(scope));
+    program.popPC(constrInstr);
+
+    // pop all params off the stack
+    if(classDef.getConstructor() != null) {
+      NodeASTList<ParamAST> paramASTList = classDef.getConstructor().getParamASTS();
+      paramASTList.forEach(p -> program.SP.pop(p.getParamObj()));
+    }
+
+    CodeLabel label = new CodeLabel("c_" + classObj.getName(), constrInstr);
     program.addCode(label);
 
     for (MethodDeclarationAST method : classDef.getMethods()) {
@@ -1452,6 +1479,22 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
   }
 
   @Override
+  public List<Instruction> visit(ConstructorAST constructor) {
+    // constructor is basically a static function
+    funcScope = constructor.getFuncobj().getST();
+
+    List<Instruction> instructions = new ArrayList<>();
+
+    // translate statement body in the context of the function scope
+    instructions.addAll(
+        program.allocateStackSpace(funcScope));
+    instructions.addAll(constructor.getConstructorBody().accept(this));
+    instructions.addAll(
+        program.deallocateStackSpace(funcScope));
+    return instructions;
+  }
+
+  @Override
   public List<Instruction> visit(NewObjectAST newObjectAST) {
     List<Instruction> ret = new ArrayList<>();
 
@@ -1459,8 +1502,14 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     CLASS classObj = newObjectAST.getClassObj();
 
+    int originalStackPointer = program.SP.getStackPtr();
+
+    ret.addAll(pushParams(newObjectAST.getActuals()));
+
     //branch to constructor
     ret.add(new Branch("c_" + classObj.getName(), true));
+
+    ret.addAll(popParams(originalStackPointer));
 
     //move returned heap address to destination
     ret.add(new Move(destination, Register.R0));
@@ -1533,14 +1582,17 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     // get field from offset
     int fieldOffset = field.getOffset();
-    instructions.add(new Arithmetic(ArithmeticOpcode.ADD, dest, dest, new ImmediateNum(fieldOffset), false));
+    instructions.add(
+        new Arithmetic(ArithmeticOpcode.ADD, dest, dest, new ImmediateNum(fieldOffset), false));
 
-    if(!objField.isLHS()) {
+    if (!objField.isLHS()) {
       instructions.add(new Load(dest, new ZeroOffset(dest)));
     }
 
     return instructions;
   }
+
+
 
   @Override
   public List<Instruction> visit(ContinueAST continueStat) {

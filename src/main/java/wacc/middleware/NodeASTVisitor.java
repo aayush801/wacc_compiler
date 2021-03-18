@@ -4,6 +4,7 @@ import org.w3c.dom.Node;
 import wacc.middleware.ast_nodes.NodeASTList;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayAST;
 import wacc.middleware.ast_nodes.arrays_ast.ArrayElemAST;
+import wacc.middleware.ast_nodes.class_ast.ConstructorAST;
 import wacc.middleware.ast_nodes.class_ast.FieldAST;
 import wacc.middleware.ast_nodes.class_ast.MethodCallAST;
 import wacc.middleware.ast_nodes.class_ast.MethodDeclarationAST;
@@ -136,4 +137,6 @@ public abstract class NodeASTVisitor<T> {
   public abstract T visit(FieldAST fields);
 
   public abstract T visit(ObjectFieldAST objField);
+
+  public abstract T visit(ConstructorAST constructor);
 }
