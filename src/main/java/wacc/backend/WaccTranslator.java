@@ -115,6 +115,10 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
   @Override
   public List<Instruction> visit(ProgAST prog) {
+    // translate class declarations
+    for(ClassDefinitionAST classDef : prog.getClassDefinitionASTS()){
+      visit(classDef);
+    }
 
     // translate function declarations
     for (FunctionDeclarationAST func : prog.getFunctionDeclarationASTS()) {
@@ -302,16 +306,15 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     ExpressionAST rightExpr = binOpExpr.getRightExprAST();
     boolean isIntLiteral = false;
     int n = 0;
-    if (rightExpr instanceof LiteralsAST) {
+    if (rightExpr instanceof LiteralsAST && !operator.equals("*")) {
       try {
         n = Integer.parseInt(((LiteralsAST) rightExpr).getText());
         isIntLiteral = true;
-      } catch (Exception e) {
-
+      } catch (Exception ignored) {
       }
     }
 
-    final int MAX_IMMEDIATE = 256;
+    final int MAX_IMMEDIATE = 1024;
     if (isIntLiteral && n < MAX_IMMEDIATE && !accumulator) {
       operand2 = new ImmediateNum(n);
     } else {

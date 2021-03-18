@@ -76,9 +76,7 @@ FOR_EACH: 'foreach' ;
 IN: 'in' ;
 
 //wacc.extension
-//loop breaks
-CONTINUE : 'continue' ;
-BREAK : 'break' ;
+
 
 //brackets
 OPEN_PARENTHESES: '(' ;
@@ -100,8 +98,7 @@ EQ: '==' ;
 NEQ: '!=' ;
 AND: '&&' ;
 OR: '||' ;
-CONCATENATE: '++' ;
-POWER: '^' ;
+POWER: '^';
 
 //wacc.extension
 BITWISE_AND : '&' ;
@@ -169,3 +166,7 @@ CHARACTER: '\'' CHAR? '\'' ;
 
 //identifier
 IDENT: [_a-zA-Z][_a-zA-Z0-9]* ;
+
+//loop breaks
+CONTINUE : 'continue' ;
+BREAK : 'break' ;

@@ -6,7 +6,6 @@ import wacc.frontend.identifier_objects.TYPE;
 import wacc.frontend.identifier_objects.VARIABLE;
 import wacc.frontend.identifier_objects.basic_types.BOOL;
 import wacc.frontend.identifier_objects.basic_types.CHAR;
-import wacc.frontend.identifier_objects.basic_types.FLOAT;
 import wacc.frontend.identifier_objects.basic_types.INT;
 import wacc.frontend.identifier_objects.basic_types.PAIR;
 import wacc.frontend.identifier_objects.basic_types.STR;
@@ -55,7 +54,6 @@ public class SymbolTable {
     PAIR pairType = new PAIR();
     BOOL boolType = new BOOL();
     VOID voidType = new VOID();
-    FLOAT floatType = new FLOAT();
 
     // add literals to symbol table
     st.add("int", intType);
@@ -64,7 +62,6 @@ public class SymbolTable {
     st.add("pair", pairType);
     st.add("bool", boolType);
     st.add("void", voidType);
-    st.add("float", floatType);
 
     return st;
   }

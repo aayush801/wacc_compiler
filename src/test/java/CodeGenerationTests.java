@@ -509,22 +509,19 @@ public class CodeGenerationTests {
   public void testClass() throws IOException {
     String instruction =
         "begin\n"
-            +"int getX(int y) is\n"
-            +"return y\n"
-            +"end\n"
             +"class Lol\n"
             + "  private int y = 2;\n"
             + "  public int z = 5;\n"
             + "  public int x = 5\n"
             + "  public int getY(int x, int l) is\n"
-              + "  return y + z \n"
+              + "  return y + z + x\n"
             + "  end\n"
-          + "done;\n"
+          + "done\n"
             +"class Lol ting = new Lol();\n"
             +"int x = call ting.getY(3,6);\n"
             +"println x\n"
         +"end\n";
-    checkSourceCode(instruction, "7", 0);
+    checkSourceCode(instruction, "10", 0);
   }
 
 
@@ -617,23 +614,38 @@ public class CodeGenerationTests {
   }
 
   @Test
-  public void testNull() throws IOException {
-    String instruction = "begin\n" +
-        "  pair(pair, pair) p = null ;\n" +
-        "  println p ;\n" +
-        "  p = null ;\n" +
-        "  println p\n" +
-        "end";
-    checkSourceCode(instruction, "", 0);
+  public void testIntNegate() throws IOException {
+    String instruction = "begin\n"
+        + "  int x = -2147483648;\n"
+        + "  println x ;\n"
+        + "  x = x*10; #err here?\n"
+        + "  println x \n"
+        + "end";
+    checkSourceCode(instruction, "OverflowError", 255);
+  }
+
+  @Test
+  public void testWhitespace() throws IOException {
+    String instruction = "begin\n"
+        + "\tint a=13;\t\n"
+        + "  if a==13then a=1else a=0fi;\n"
+        + "  println a\n"
+        + "end";
+    checkSourceCode(instruction, "1", 0);
   }
 
   @Test
   public void testPrintNull() throws IOException {
-    String instruction = "begin\n" +
-        "  println null\n" +
-        "end";
-    checkSourceCode(instruction, "", 0);
+    String instruction =
+        "begin\n"+
+        "void getX(int y) is\n" +
+            "  println y\n" +
+        "end\n"
+        +"call getX(11)"
+    +"end\n";
+    checkSourceCode(instruction, "11", 0);
   }
+
 
   @Test
   public void testPrintPairOfNulls() throws IOException {
@@ -648,119 +660,6 @@ public class CodeGenerationTests {
         "  print r ;\n" +
         "  println \")\"\n" +
         "  end";
-    checkSourceCode(instruction, "", 0);
-  }
-
-  @Test
-  public void testPrintAllTypes() throws IOException {
-    String instruction = "begin\n"
-        + "\n"
-        + "  string comma = \", \";\n"
-        + "  int x = 5;\n"
-        + "  begin\n"
-        + "    char x = 'x';    \n"
-        + "    begin\n"
-        + "      bool x = true;    \n"
-        + "      begin\n"
-        + "        string x = \"this is a string\";    \n"
-        + "        begin\n"
-        + "          int[] x = [1,2,3];    \n"
-        + "          begin\n"
-        + "            char[] x = ['x', 'y', 'z'];    \n"
-        + "            begin\n"
-        + "              bool[] x = [true, false, true];\n"
-        + "              begin\n"
-        + "                string[] x = [\"array\", \"of\", \"strings\"];\n"
-        + "                begin\n"
-        + "                  pair(int, int) x = newpair(1, 2);\n"
-        + "                  begin\n"
-        + "                    pair(char, bool) y = newpair('a', true);\n"
-        + "                    pair(char, bool) z = newpair('b', false);\n"
-        + "                    pair(char, bool)[] x = [y, z];\n"
-        + "                    begin\n"
-        + "                      int[] y = [1, 2, 3];\n"
-        + "                      char[] z = ['a', 'b', 'c'];\n"
-        + "                      pair(int[], char[]) x = newpair(y, z);\n"
-        + "                      begin\n"
-        + "                        skip\n"
-        + "                      end;\n"
-        + "                      int[] a = fst x;\n"
-        + "                      char[] b = snd x;\n"
-        + "                      print \"( [\";\n"
-        + "                      print a[0];\n"
-        + "                      print comma;\n"
-        + "                      print a[1];\n"
-        + "                      print comma;\n"
-        + "                      print a[2];\n"
-        + "                      print \"] , [\";\n"
-        + "                      print b[0];\n"
-        + "                      print comma;\n"
-        + "                      print b[1];\n"
-        + "                      print comma;\n"
-        + "                      print b[2];\n"
-        + "                      println \"] )\" # ( [fst x] , [snd x] )\n"
-        + "                    end;\n"
-        + "                    pair(char, bool) a = x[0];\n"
-        + "                    char aa = fst a;\n"
-        + "                    bool ab = snd a;\n"
-        + "                    pair(char, bool) b = x[1];\n"
-        + "                    char ba = fst b;\n"
-        + "                    bool bb = snd b;\n"
-        + "                    print \"[ \";\n"
-        + "                    print a;\n"
-        + "                    print \" = (\";\n"
-        + "                    print aa;\n"
-        + "                    print comma;\n"
-        + "                    print ab;\n"
-        + "                    print \"), \";\n"
-        + "                    print b;\n"
-        + "                    print \" = (\";\n"
-        + "                    print ba;\n"
-        + "                    print comma;\n"
-        + "                    print bb;\n"
-        + "                    println \") ]\" # [ x[0], x[1] ]\n"
-        + "                  end;\n"
-        + "                  int y = fst x;\n"
-        + "                  int z = snd x;\n"
-        + "                  print y; \n"
-        + "                  print comma;\n"
-        + "                  println z # fst x, snd x\n"
-        + "                end;\n"
-        + "                string a = x[0];\n"
-        + "                string b = x[1];\n"
-        + "                string c = x[2];\n"
-        + "                print a;\n"
-        + "                print comma;\n"
-        + "                print b;\n"
-        + "                print comma;\n"
-        + "                println c # string[]\n"
-        + "              end;\n"
-        + "              print x[0];\n"
-        + "              print comma;\n"
-        + "              print x[1];\n"
-        + "              print comma;\n"
-        + "              println x[2] # bool[]\n"
-        + "            end;\n"
-        + "            println x # char[]\n"
-        + "          end;\n"
-        + "          int a = x[0];\n"
-        + "          int b = x[1];\n"
-        + "          int c = x[2];\n"
-        + "          print a;\n"
-        + "          print comma;\n"
-        + "          print b;\n"
-        + "          print comma;\n"
-        + "          println c # int[]\n"
-        + "        end;\n"
-        + "        println x # string\n"
-        + "      end;\n"
-        + "      println x # bool\n"
-        + "    end;\n"
-        + "    println x # char\n"
-        + "  end;\n"
-        + "  println x # int\n"
-        + "\n"
-        + "end";
     checkSourceCode(instruction, "", 0);
   }
 

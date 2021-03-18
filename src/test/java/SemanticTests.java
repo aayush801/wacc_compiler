@@ -30,9 +30,6 @@ public class SemanticTests {
   public void testGetPrivateMethod() throws IOException {
     String instruction =
         "begin\n"
-            +"int getX(int y) is\n"
-            +"return y\n"
-            +"end\n"
             +"class Lol\n"
             + "  private int y = 2;\n"
             + "  public int z = 5;\n"
@@ -40,7 +37,7 @@ public class SemanticTests {
             + "  private int getY(int x, int l) is\n"
             + "  return y + z \n"
             + "  end\n"
-            + "done;\n"
+            + "done\n"
             +"class Lol ting = new Lol();\n"
             +"int x = call ting.getY(3,6);\n"
             +"println x\n"
@@ -52,9 +49,6 @@ public class SemanticTests {
   public void testGetPrivateField() throws IOException {
     String instruction =
         "begin\n"
-            +"int getX(int y) is\n"
-            +"return y\n"
-            +"end\n"
             +"class Lol\n"
             + "  private int y = 2;\n"
             + "  public int z = 5;\n"
@@ -62,7 +56,7 @@ public class SemanticTests {
             + "  private int getY(int x, int l) is\n"
             + "  return y + z \n"
             + "  end\n"
-            + "done;\n"
+            + "done\n"
             +"class Lol ting = new Lol();\n"
             +"int x = ting.x;\n"
             +"println x\n"
@@ -79,7 +73,7 @@ public class SemanticTests {
             + "  private int Lol(int x, int l) is\n"
               + "  return y + z \n"
             + "  end\n"
-            + "done;\n"
+            + "done\n"
             +"class Lol ting = new Lol(true)\n"
             +"end\n";
     check(instruction, true);
@@ -94,7 +88,7 @@ public class SemanticTests {
             + "  Lol(int z) is\n"
             + "    x = 4 \n"
             + "  end\n"
-            + "done;\n"
+            + "done\n"
             +"class Lol ting = new Lol(true)\n"
             +"end\n";
     check(instruction, true);

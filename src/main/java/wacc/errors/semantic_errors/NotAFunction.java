@@ -8,6 +8,10 @@ public class NotAFunction extends WaccSemanticError {
     super(ctx);
   }
 
+  public NotAFunction(ParserRuleContext ctx, String offendingSymbol) {
+    super(ctx, offendingSymbol);
+  }
+
   @Override
   public String getErrorMessage() {
     return " is not a function";

@@ -6,12 +6,13 @@ import wacc.errors.WaccError;
 import wacc.frontend.identifier_objects.IMPORT;
 import wacc.middleware.NodeAST;
 import wacc.middleware.NodeASTVisitor;
-import wacc.middleware.symbol_table.SymbolTable;
 import wacc.middleware.ast_nodes.NodeASTList;
 import wacc.middleware.ast_nodes.StatementAST;
+import wacc.middleware.ast_nodes.class_ast.ClassDefinitionAST;
 import wacc.middleware.ast_nodes.function_ast.FunctionDeclarationAST;
 import wacc.middleware.ast_nodes.import_ast.ImportAST;
 import wacc.middleware.ast_nodes.statement_ast.ChainedStatementAST;
+import wacc.middleware.symbol_table.SymbolTable;
 
 // AST Node for the entire program.
 
@@ -19,6 +20,7 @@ public class ProgAST extends NodeAST {
 
   private final NodeASTList<ImportAST> importASTS;
   private final NodeASTList<FunctionDeclarationAST> functionDeclarationASTS;
+  private final NodeASTList<ClassDefinitionAST> classDefinitionASTS;
   private StatementAST statementAST;
   private String filename;
   private SymbolTable scopeST;
@@ -26,10 +28,12 @@ public class ProgAST extends NodeAST {
 
   public ProgAST(List<WaccError> errors, ParserRuleContext ctx,
       String filename, NodeASTList<ImportAST> importASTS,
+      NodeASTList<ClassDefinitionAST> classDefinitionASTS,
       NodeASTList<FunctionDeclarationAST> functionDeclarationASTS,
       StatementAST statementAST) {
     super(errors, ctx);
     this.functionDeclarationASTS = functionDeclarationASTS;
+    this.classDefinitionASTS = classDefinitionASTS;
     this.statementAST = statementAST;
     this.importASTS = importASTS;
     this.filename = filename.replace(".wacc", "");
@@ -59,7 +63,11 @@ public class ProgAST extends NodeAST {
       ProgAST importedProg = importAST.getProgAST();
 
       if (importedProg != null) {
-        // add the import functions to beginning of the funcDeclrList
+        // add the imported classes to beginning of the classDefnList
+        classDefinitionASTS.addAll(0,
+            importedProg.getClassDefinitionASTS());
+
+        // add the imported functions to beginning of the funcDeclrList
         functionDeclarationASTS.addAll(0,
             importedProg.getFunctionDeclarationASTS());
 
@@ -67,6 +75,11 @@ public class ProgAST extends NodeAST {
         statementAST = new ChainedStatementAST(errors, statementAST.ctx,
             importedProg.getStatementAST(), statementAST);
       }
+    }
+
+    //go through all declared classes and record them in the top symbol table
+    for (ClassDefinitionAST classDefinitionAST : classDefinitionASTS) {
+      classDefinitionAST.check();
     }
 
     // Go through any functions declared, and record them in the top symbol table.
@@ -92,6 +105,11 @@ public class ProgAST extends NodeAST {
 
   public NodeASTList<FunctionDeclarationAST> getFunctionDeclarationASTS() {
     return functionDeclarationASTS;
+  }
+
+
+  public NodeASTList<ClassDefinitionAST> getClassDefinitionASTS() {
+    return classDefinitionASTS;
   }
 
   public StatementAST getStatementAST() {

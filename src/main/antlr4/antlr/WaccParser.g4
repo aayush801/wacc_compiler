@@ -6,12 +6,13 @@ options {
 
 // EOF indicates that the program must consume to the end of the input.
 prog:
-  imports? BEGIN (funcDecl)* stat END EOF ;
+  imports? BEGIN (classDef)* (funcDecl)* stat END EOF ;
 
 //wacc.extension
 //imported files
 imports:
   IMPORT identifier
+  | IMPORT LT identifier GT
   | imports SEPERATOR imports
 ;
 
@@ -26,8 +27,6 @@ paramList: param (COMMA param)*;
 //argument list
 argList: expr (COMMA expr)* ;
 
-
-assignment: '=' | INCREMENT ;
 //statements
 stat:
     SKIP_STATEMENT                        #skipStat
@@ -60,15 +59,14 @@ stat:
       stat END_FOR                        #forEachLoop
   | BEGIN stat END                        #beginStat
   | stat SEPERATOR stat                   #seperateStat
-  | classType
-      fields?
-      constructor?
-      methodDecl*
-    DONE                                  #classDef
   | SWITCH expr
       (CASE expr COLON stat)*
       (DEFAULT COLON stat)?
     DONE                                  #switchStat
+  | CONTINUE                              #continueStat
+  | BREAK                                 #breakStat
+  | funcCall                              #funcCaller
+  | methodCall                            #methodCaller
 ;
 
 
@@ -112,8 +110,8 @@ assignRHS:
   | array
   | newPair
   | pairElem
-  | funcCall
   | newObject
+  | funcCall
   | methodCall
 ;
 
@@ -141,13 +139,19 @@ expr:
 ;
 
 //classes
-newObject: NEW IDENT OPEN_PARENTHESES argList? CLOSE_PARENTHESES ;
+classDef: classType
+      fields?
+      constructor?
+      methodDecl*
+    DONE
+;
+newObject: NEW identifier OPEN_PARENTHESES argList? CLOSE_PARENTHESES;
 fields:
     VISIBILITY (type identifier EQUALS assignRHS)
   | fields SEPERATOR fields
 ;
-classType: CLASS IDENT ;
-constructor: IDENT OPEN_PARENTHESES paramList? CLOSE_PARENTHESES IS stat END;
+classType: CLASS identifier;
+constructor: identifier OPEN_PARENTHESES paramList? CLOSE_PARENTHESES IS stat END;
 
 objectField: identifier DOT identifier;
 methodDecl: VISIBILITY funcDecl;

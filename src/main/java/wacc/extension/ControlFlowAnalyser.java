@@ -7,6 +7,7 @@ import wacc.frontend.identifier_objects.TYPE;
 import wacc.frontend.identifier_objects.basic_types.BOOL;
 import wacc.frontend.identifier_objects.basic_types.CHAR;
 import wacc.frontend.identifier_objects.basic_types.INT;
+import wacc.frontend.identifier_objects.basic_types.STR;
 import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeAST;
 import wacc.middleware.NodeASTVisitor;
@@ -63,6 +64,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   private ValueTable values = new ValueTable();
   private boolean afterLoops = false;
+  private int insideScope = 0;
   private final int MAX_VALUE = 2147483647;
   private final int MIN_VALUE = -2147483648;
 
@@ -71,6 +73,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   public ProgAST visit(ProgAST prog) {
     ProgAST newProg = new ProgAST(prog.getErrors(), prog.getCtx(),
         prog.getFilename(), new NodeASTList<>(prog.getErrors(), prog.getCtx()),
+        visit(prog.getClassDefinitionASTS()),
         visit(prog.getFunctionDeclarationASTS()),
         (StatementAST) visit(prog.getStatementAST()));
     return newProg;
@@ -90,46 +93,54 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   @Override
   public NodeAST visit(BinOpExprAST binOpExpr) {
-    NodeAST left = visit(binOpExpr.getLeftExprAST());
-    NodeAST right = visit(binOpExpr.getRightExprAST());
+    ExpressionAST left = visit(binOpExpr.getLeftExprAST());
+    ExpressionAST right = visit(binOpExpr.getRightExprAST());
+
     if (left instanceof LiteralsAST && right instanceof LiteralsAST) {
       int a = 0, b = 0;
-      if (((LiteralsAST) left).getType() instanceof INT) {
+      if (left.getType() instanceof INT) {
         a = Integer.parseInt(((LiteralsAST) left).getText());
         b = Integer.parseInt(((LiteralsAST) right).getText());
+        // avoid div overflow error
         if (b == 0 && (binOpExpr.getOperator().equals("/")
             || binOpExpr.getOperator().equals("%"))) {
           return binOpExpr;
         }
-      } else if (((LiteralsAST) left).getType() instanceof CHAR) {
+      } else if (left.getType() instanceof CHAR) {
         a = ((LiteralsAST) left).getText()
             .charAt(((LiteralsAST) left).getText().length() - 2);
         b = ((LiteralsAST) right).getText()
             .charAt(((LiteralsAST) right).getText().length() - 2);
-      } else if (((LiteralsAST) left).getType() instanceof BOOL) {
+      } else if (left.getType() instanceof BOOL) {
         a = ((LiteralsAST) left).getText().equals("true") ? 1 : 0;
         b = ((LiteralsAST) right).getText().equals("true") ? 1 : 0;
+      } else if (left.getType() instanceof STR) {
+        boolean stringsMatch = ((LiteralsAST) left).getText()
+            .equals(((LiteralsAST) right).getText());
+        return new LiteralsAST(binOpExpr.getErrors(), binOpExpr.getCtx(), stringsMatch);
+      } else {
+        return binOpExpr;
       }
 
       long value = 0;
       switch (binOpExpr.getOperator()) {
         case "+":
           value = (long) a + b;
-          if (value > MAX_VALUE || value < MIN_VALUE) {
+          if (value >= MAX_VALUE || value <= MIN_VALUE) {
             // Overflow error detected, 'undo' optimization
             return binOpExpr;
           }
           break;
         case "-":
           value = (long) a - b;
-          if (value > MAX_VALUE || value < MIN_VALUE) {
+          if (value >= MAX_VALUE || value <= MIN_VALUE) {
             // Overflow error detected, 'undo' optimization
             return binOpExpr;
           }
           break;
         case "*":
           value = (long) a * b;
-          if (value > MAX_VALUE || value < MIN_VALUE) {
+          if (value >= MAX_VALUE || value <= MIN_VALUE) {
             // Overflow error detected, 'undo' optimization
             return binOpExpr;
           }
@@ -156,10 +167,10 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
           value = a <= b ? 1 : 0;
           break;
         case ">":
-          value = a < b ? 1 : 0;
+          value = a > b ? 1 : 0;
           break;
         case ">=":
-          value = a <= b ? 1 : 0;
+          value = a >= b ? 1 : 0;
           break;
         case "&&":
           value = (a == 1 && b == 1) ? 1 : 0;
@@ -196,10 +207,9 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
       return identifier;
     }
     NodeAST value = values.lookupAll(identifier.getIdentifier());
-    if (value == null) {
+    if (!(value instanceof LiteralsAST)) {
       return identifier;
     }
-
     return value;
   }
 
@@ -225,7 +235,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
           return new LiteralsAST(unaryOpExpr.getErrors(), unaryOpExpr.getCtx(),
               value);
         case "ord":
-          int ascii = str.charAt(0);
+          int ascii = str.charAt(str.length() - 2);
           return new LiteralsAST(unaryOpExpr.getErrors(), unaryOpExpr.getCtx(),
               ascii);
         case "chr":
@@ -289,17 +299,28 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
     LHSAssignAST lhs = assignment.getLHS();
     RHSAssignAST rhs = (RHSAssignAST) visit(assignment.getRHS());
     if (lhs.getIdentifier() != null) {
-      values.add(lhs.getIdentifier(), rhs.getExpressionAST());
+      if (insideScope > 0) {
+        values.addAll(lhs.getIdentifier(),
+            new IdentifierAST(assignment.getErrors(), assignment.getCtx(),
+                lhs.getIdentifier()));
+      } else {
+        values.add(lhs.getIdentifier(), rhs.getExpressionAST());
+      }
     }
+
     return new AssignmentAST(assignment.getErrors(), assignment.getCtx(),
         assignment.getLHS(), rhs);
   }
 
   @Override
   public NodeAST visit(BeginAST begin) {
+
+    insideScope++;
     values = new ValueTable(values);
     StatementAST stat = (StatementAST) visit(begin.getStatementAST());
     values = values.getEncValueTable();
+    insideScope--;
+
     return new BeginAST(begin.getErrors(), begin.getCtx(), stat);
   }
 
@@ -328,17 +349,24 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   @Override
   public NodeAST visit(IfElseAST ifElse) {
     ExpressionAST condition = visit(ifElse.getExpressionAST());
-    StatementAST first = (StatementAST) visit(ifElse.getFirstStatAST());
-    StatementAST second = (StatementAST) visit(ifElse.getSecondStatAST());
-
     if (condition instanceof LiteralsAST) {
       String bool = ((LiteralsAST) condition).getText();
       if (bool.equals("true")) {
-        return first;
+        return visit(ifElse.getFirstStatAST());
       } else if (bool.equals("false")) {
-        return second;
+        return visit(ifElse.getSecondStatAST());
       }
     }
+
+    values = new ValueTable(values);
+    insideScope++;
+    StatementAST first = (StatementAST) visit(ifElse.getFirstStatAST());
+    values = values.getEncValueTable();
+    values = new ValueTable(values);
+    StatementAST second = (StatementAST) visit(ifElse.getSecondStatAST());
+    insideScope--;
+    values = values.getEncValueTable();
+
     return new IfElseAST(ifElse.getErrors(), ifElse.getCtx(), condition,
         first, second);
   }
@@ -352,6 +380,8 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   @Override
   public NodeAST visit(ReadAST read) {
+    values.dict.put(read.getLHS().getIdentifier(),
+        new IdentifierAST(read.getErrors(), read.getCtx(), read.getLHS().getIdentifier()));
     return read;
   }
 
@@ -414,8 +444,13 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   @Override
   public NodeAST visit(VariableDeclarationAST variableDeclaration) {
     RHSAssignAST rhs = (RHSAssignAST) visit(variableDeclaration.getRhsAssignAST());
+
     if (rhs.getExpressionAST() != null) {
       values.add(variableDeclaration.getVarName(), rhs.getExpressionAST());
+    } else {
+      values.add(variableDeclaration.getVarName(),
+          new IdentifierAST(variableDeclaration.getErrors(), variableDeclaration.getCtx(),
+              variableDeclaration.getVarName()));
     }
 
     return new VariableDeclarationAST(variableDeclaration.getErrors(),
@@ -435,8 +470,19 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   @Override
   public NodeAST visit(WhileAST whileLoop) {
     afterLoops = true;
-    return new WhileAST(whileLoop.getErrors(), whileLoop.getCtx(),
-        whileLoop.getConditionAST(), whileLoop.getStatementAST());
+    ExpressionAST condition = visit(whileLoop.getConditionAST());
+    if (condition instanceof LiteralsAST &&
+        ((LiteralsAST) condition).getText().equals("false")) {
+      return new SkipAST(whileLoop.getErrors(), whileLoop.getCtx());
+    }
+    insideScope++;
+    values = new ValueTable(values);
+    StatementAST body = (StatementAST) visit(whileLoop.getStatementAST());
+    values = values.getEncValueTable();
+    insideScope--;
+
+    return new WhileAST(whileLoop.getErrors(), whileLoop.getCtx(), condition
+        , body);
   }
 
   @Override
@@ -531,18 +577,12 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
       this(null);
     }
 
-    public ValueTable(ValueTable st, TYPE scopeReturnType) {
-      this(st);
-      this.scopeReturnType = scopeReturnType;
-    }
-
     public ValueTable(ValueTable st) {
       encValueTable = st;
       if (st != null) {
         scopeReturnType = st.getScopeReturnType();
       }
       dict = new LinkedHashMap<>();
-
     }
 
     public ValueTable getEncValueTable() {
@@ -556,6 +596,14 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
     public void add(String name, NodeAST obj) {
       dict.put(name, obj);
+    }
+
+    public void addAll(String name, NodeAST obj) {
+      ValueTable curr = this;
+      while (curr.getEncValueTable() != null && curr.lookup(name) == null) {
+        curr = curr.getEncValueTable();
+      }
+      curr.add(name, obj);
     }
 
     // lookup identifier in the local scope

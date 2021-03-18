@@ -119,6 +119,44 @@ public class ExtensionTests {
   }
 
   @Test
+  public void testImportStandardLibrary() throws IOException {
+    // write file that imports lib
+    File importFile = new File("importLib.wacc");
+    FileWriter importWriter = new FileWriter(importFile);
+    String importProg =
+        "import <stdint>\n"
+            + "\n"
+            + "begin\n"
+            + "  int x = call max(3,4);\n"
+            + "  println x\n"
+            + "end";
+    importWriter.write(importProg);
+    importWriter.close();
+
+    runAndCheckProgram(importFile, "4", 0);
+    importFile.deleteOnExit();
+  }
+
+  @Test
+  public void testCheekyCat() throws IOException {
+    // write file that imports lib
+    File temp = new File("temp.wacc");
+    FileWriter importWriter = new FileWriter(temp);
+    String importProg =
+        "import <cat>\n"
+            + "\n"
+            + "begin\n"
+            + "  class Cat mittens = new Cat(\"mittens\");\n"
+            + "  call mittens.printName()\n"
+            + "end";
+    importWriter.write(importProg);
+    importWriter.close();
+
+    runAndCheckProgram(temp, "mittens\n", 0);
+    temp.deleteOnExit();
+  }
+
+  @Test
   public void switchStatement() throws IOException {
     String prog =
         "begin\n"
@@ -208,9 +246,6 @@ public class ExtensionTests {
   public void testGetPublicField() throws IOException {
     String instruction =
         "begin\n"
-            +"int getX(int y) is\n"
-            +"return y\n"
-            +"end\n"
             +"class Lol\n"
             + "  public int y = 2;\n"
             + "  public int z = 5;\n"
@@ -218,7 +253,7 @@ public class ExtensionTests {
             + "  private int getY(int x, int l) is\n"
             + "  return y + z \n"
             + "  end\n"
-            + "done;\n"
+            + "done\n"
             +"class Lol ting = new Lol();\n"
             +"int x = ting.x + ting.y;\n"
             +"println x\n"
@@ -230,13 +265,10 @@ public class ExtensionTests {
   public void testSetPublicField() throws IOException {
     String instruction =
         "begin\n"
-            +"int getX(int y) is\n"
-            +"return y\n"
-            +"end\n"
             +"class Lol\n"
             + "  public int y = 2;\n"
             + "  public int z = 5\n"
-            + "done;\n"
+            + "done\n"
             +"class Lol ting = new Lol();\n"
             +"ting.z = 3;\n"
             +"println ting.z + ting.y\n"
@@ -357,7 +389,7 @@ public class ExtensionTests {
             + "  Cat(int y) is\n"
               + "  print y \n"
             + "  end\n"
-            + "done;\n"
+            + "done\n"
             +"class Cat mittens = new Cat(10)\n"
             +"end\n";
     runAndCheckProgram(instruction, "10", 0);
@@ -372,7 +404,7 @@ public class ExtensionTests {
             + "  Cat(int y) is\n"
             + "  x = y \n"
             + "  end\n"
-            + "done;\n"
+            + "done\n"
             +"class Cat mittens = new Cat(10);\n"
             +"print mittens.x\n"
             +"end\n";
@@ -385,7 +417,7 @@ public class ExtensionTests {
         "begin\n"
             +"class Cat\n"
             + "  public int x = 5\n"
-            + "done;\n"
+            + "done\n"
             +"class Cat mittens = new Cat();\n"
             +"print mittens.x;\n"
             +"free mittens;\n"
