@@ -648,6 +648,37 @@ public class CodeGenerationTests {
     checkSourceCode(instruction, "false\ntrue\ntrue\n", 0);
   }
 
+  @Test
+  public void multiStringAssign() throws IOException {
+    String instruction = "begin\n"
+        + "  string s1 = \"Hi\" ;\n"
+        + "  string s2 = \"Hello\" ;\n"
+        + "  print \"s1 is \" ;\n"
+        + "  println s1 ;\n"
+        + "  print \"s2 is \" ;\n"
+        + "  println s2 ;\n"
+        + "  if s1 == s2 then\n"
+        + "    println \"They are the same string.\" \n"
+        + "  else \n"
+        + "    println \"They are not the same string.\"\n"
+        + "  fi ;\n"
+        + "\n"
+        + "  println \"Now make s1 = s2\" ;\n"
+        + "  s1 = s2 ;\n"
+        + "\n"
+        + "  print \"s1 is \" ;\n"
+        + "  println s1 ;\n"
+        + "  print \"s2 is \" ;\n"
+        + "  println s2 ;\n"
+        + "  if s1 == s2 then\n"
+        + "    println \"They are the same string.\" \n"
+        + "  else \n"
+        + "    println \"They are not the same string.\"\n"
+        + "  fi\n"
+        + "end";
+    checkSourceCode(instruction, "false\ntrue\ntrue\n", 0);
+  }
+
 
   @Test
   public void testPrintNull() throws IOException {

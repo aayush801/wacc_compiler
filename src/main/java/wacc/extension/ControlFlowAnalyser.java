@@ -117,7 +117,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
       } else if (left.getType() instanceof STR) {
         boolean stringsMatch = ((LiteralsAST) left).getText()
             .equals(((LiteralsAST) right).getText());
-        a = b = stringsMatch ? 1 : 0;
+        return new LiteralsAST(binOpExpr.getErrors(), binOpExpr.getCtx(), stringsMatch);
       } else {
         return binOpExpr;
       }
@@ -345,7 +345,6 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   @Override
   public NodeAST visit(IfElseAST ifElse) {
     ExpressionAST condition = visit(ifElse.getExpressionAST());
-
     if (condition instanceof LiteralsAST) {
       String bool = ((LiteralsAST) condition).getText();
       if (bool.equals("true")) {
@@ -465,7 +464,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
     ExpressionAST condition = whileLoop.getConditionAST();
     if (condition instanceof LiteralsAST &&
         ((LiteralsAST) condition).getText().equals("false")) {
-        return new SkipAST(whileLoop.getErrors(), whileLoop.getCtx());
+      return new SkipAST(whileLoop.getErrors(), whileLoop.getCtx());
     }
     insideScope++;
     values = new ValueTable(values);
