@@ -101,6 +101,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
       if (left.getType() instanceof INT) {
         a = Integer.parseInt(((LiteralsAST) left).getText());
         b = Integer.parseInt(((LiteralsAST) right).getText());
+        // avoid div overflow error
         if (b == 0 && (binOpExpr.getOperator().equals("/")
             || binOpExpr.getOperator().equals("%"))) {
           return binOpExpr;
@@ -166,10 +167,10 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
           value = a <= b ? 1 : 0;
           break;
         case ">":
-          value = a < b ? 1 : 0;
+          value = a > b ? 1 : 0;
           break;
         case ">=":
-          value = a <= b ? 1 : 0;
+          value = a >= b ? 1 : 0;
           break;
         case "&&":
           value = (a == 1 && b == 1) ? 1 : 0;
