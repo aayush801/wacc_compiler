@@ -934,18 +934,27 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
   @Override
   public List<Instruction> visit(FreeAST free) {
 
-    Register target = program.registers.get(0);
+    Register result = program.registers.get(0);
 
     // Translate expression.
     List<Instruction> ret = new ArrayList<>(free.getExpr().accept(this));
 
     // Load result into R0
-    ret.add(new Move(new Register(0), target));
+    ret.add(new Move(new Register(0), result));
+
+    PrimitiveLabel freeFunction = null;
+    TYPE exprType = free.getExpr().getType();
+
+    if(exprType instanceof PAIR){
+      freeFunction = FreeFunction.freePair(program);
+    }else if(exprType instanceof CLASS || exprType instanceof POINTER){
+      freeFunction = FreeFunction.freeReference(program);
+    }
 
     // Add branch to p_free_pair
-    ret.add(new Branch("p_free_pair", true));
-
-    program.addPrimitive(FreeFunction.printPairFree(program));
+    assert freeFunction != null;
+    ret.add(new Branch(freeFunction.getLabelName(), true));
+    program.addPrimitive(freeFunction);
 
     return ret;
   }

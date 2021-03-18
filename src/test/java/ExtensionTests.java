@@ -378,4 +378,19 @@ public class ExtensionTests {
             +"end\n";
     runAndCheckProgram(instruction, "10", 0);
   }
+
+  @Test
+  public void mallocAndDealloc() throws IOException {
+    String instruction =
+        "begin\n"
+            +"class Cat\n"
+            + "  public int x = 5\n"
+            + "done;\n"
+            +"class Cat mittens = new Cat();\n"
+            +"print mittens.x;\n"
+            +"free mittens;\n"
+            +"print mittens.x\n"
+            +"end\n";
+    runAndCheckProgram(instruction, "50", 0);
+  }
 }

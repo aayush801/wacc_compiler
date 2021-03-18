@@ -3,7 +3,9 @@ package wacc.middleware.ast_nodes.statement_ast;
 import java.util.List;
 import wacc.errors.WaccError;
 import wacc.errors.semantic_errors.MismatchedTypes;
+import wacc.frontend.identifier_objects.CLASS;
 import wacc.frontend.identifier_objects.IDENTIFIER;
+import wacc.frontend.identifier_objects.POINTER;
 import wacc.frontend.identifier_objects.basic_types.PAIR;
 import wacc.middleware.ExpressionAST;
 import wacc.middleware.NodeASTVisitor;
@@ -31,8 +33,8 @@ public class FreeAST extends StatementAST {
 
     if (type != null) {
 
-      if (!(type instanceof PAIR)) {
-        // expression is not a pair.
+      if (!(type instanceof PAIR || type instanceof POINTER || type instanceof CLASS)) {
+        // expression is not on the heap.
         addError(new MismatchedTypes(ctx, type, new PAIR()));
       }
 

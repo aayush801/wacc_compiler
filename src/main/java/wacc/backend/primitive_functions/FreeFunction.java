@@ -22,9 +22,37 @@ public class FreeFunction {
 
   private static final DataLabel nullLabel = new DataLabel(
       "\"NullReferenceError: dereference a null reference\\n\\0\"");
+  public static PrimitiveLabel freeReference(ProgramGenerator program) {
+    List<Instruction> ret = new ArrayList<>();
+
+    // CMP r0, #0 - null check
+    ret.add(new Compare(Register.R0, ImmediateNum.ZERO));
+
+    // add null message to data section of program
+    program.addData(nullLabel);
+
+    // LDREQ r0, =null
+    ret.add(
+        new Load(ConditionCode.EQ, Register.R0,
+            new Address(nullLabel.getLabelName())));
+
+    // include runtime error primitive function in code base
+    PrimitiveLabel runtimeErrorPrimitive
+        = RuntimeError.printRuntimeErrorCheck(program);
+    program.addPrimitive(RuntimeError.printRuntimeErrorCheck(program));
+
+    // BEQ p_throw_runtime_error
+    ret.add(new Branch(ConditionCode.EQ, runtimeErrorPrimitive.getLabelName(),
+        false));
+
+    // BL free
+    ret.add(new Branch("free", true));
+
+    return new PrimitiveLabel("free_reference", ret, program).wrap();
+  }
 
 
-  public static PrimitiveLabel printPairFree(ProgramGenerator program) {
+  public static PrimitiveLabel freePair(ProgramGenerator program) {
     List<Instruction> ret = new ArrayList<>();
 
     // CMP r0, #0 - null check
