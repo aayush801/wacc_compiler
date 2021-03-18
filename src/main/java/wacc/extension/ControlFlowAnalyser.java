@@ -594,7 +594,9 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
       while (curr != null && curr.lookup(name) == null) {
         curr = curr.getEncValueTable();
       }
-      curr.add(name, obj);
+      if(curr!=null) {
+        curr.add(name, obj);
+      }
     }
 
     // lookup identifier in the local scope

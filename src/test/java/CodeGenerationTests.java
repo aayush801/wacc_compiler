@@ -635,24 +635,6 @@ public class CodeGenerationTests {
   }
 
   @Test
-  public void testRandom() throws IOException {
-    String instruction = "begin\n"
-        + "  char a = 'a' ;\n"
-        + "  int i = 99 ;\n"
-        + "\n"
-        + "  print a ;\n"
-        + "  print \" is \" ;\n"
-        + "  println ord a ;\n"
-        + "\n"
-        + "  print i ;\n"
-        + "  print \" is \" ;\n"
-        + "  println chr i\n"
-        + "end\n";
-    checkSourceCode(instruction, "false\ntrue\ntrue\n", 0);
-  }
-
-
-  @Test
   public void testPrintNull() throws IOException {
     String instruction = "begin\n" +
         "  println null\n" +
