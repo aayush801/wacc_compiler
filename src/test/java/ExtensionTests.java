@@ -380,7 +380,7 @@ public class ExtensionTests {
   }
 
   @Test
-  public void mallocAndDealloc() throws IOException {
+  public void testFreeingAnObject() throws IOException {
     String instruction =
         "begin\n"
             +"class Cat\n"
