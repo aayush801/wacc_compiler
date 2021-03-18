@@ -64,6 +64,8 @@ stat:
       (CASE expr COLON stat)*
       (DEFAULT COLON stat)?
     DONE                                  #switchStat
+  | CONTINUE                              #continueStat
+  | BREAK                                 #breakStat
 ;
 
 
