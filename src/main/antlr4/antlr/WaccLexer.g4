@@ -98,7 +98,6 @@ EQ: '==' ;
 NEQ: '!=' ;
 AND: '&&' ;
 OR: '||' ;
-CONCATENATE: '++' ;
 POWER: '^';
 
 //wacc.extension

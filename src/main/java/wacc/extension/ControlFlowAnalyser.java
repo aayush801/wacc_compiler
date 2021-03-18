@@ -64,6 +64,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   private ValueTable values = new ValueTable();
   private boolean afterLoops = false;
+  private int insideScope = 0;
   private final int MAX_VALUE = 2147483647;
   private final int MIN_VALUE = -2147483648;
 
@@ -201,6 +202,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   @Override
   public NodeAST visit(IdentifierAST identifier) {
+
     if (afterLoops) {
       return identifier;
     }
@@ -297,7 +299,13 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
     LHSAssignAST lhs = assignment.getLHS();
     RHSAssignAST rhs = (RHSAssignAST) visit(assignment.getRHS());
     if (lhs.getIdentifier() != null) {
-      values.add(lhs.getIdentifier(), rhs.getExpressionAST());
+      if (insideScope > 0) {
+        values.add(lhs.getIdentifier(),
+            new IdentifierAST(assignment.getErrors(), assignment.getCtx(),
+                lhs.getIdentifier()));
+      } else {
+        values.add(lhs.getIdentifier(), rhs.getExpressionAST());
+      }
     }
     return new AssignmentAST(assignment.getErrors(), assignment.getCtx(),
         assignment.getLHS(), rhs);
@@ -346,8 +354,15 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
       }
     }
 
+    values = new ValueTable(values);
+    insideScope++;
     StatementAST first = (StatementAST) visit(ifElse.getFirstStatAST());
+    values = values.getEncValueTable();
+    values = new ValueTable(values);
     StatementAST second = (StatementAST) visit(ifElse.getSecondStatAST());
+    insideScope--;
+    values = values.getEncValueTable();
+
     return new IfElseAST(ifElse.getErrors(), ifElse.getCtx(), condition,
         first, second);
   }
@@ -446,8 +461,19 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   @Override
   public NodeAST visit(WhileAST whileLoop) {
     afterLoops = true;
-    return new WhileAST(whileLoop.getErrors(), whileLoop.getCtx(),
-        whileLoop.getConditionAST(), whileLoop.getStatementAST());
+    ExpressionAST condition = whileLoop.getConditionAST();
+    if (condition instanceof LiteralsAST &&
+        ((LiteralsAST) condition).getText().equals("false")) {
+        return new SkipAST(whileLoop.getErrors(), whileLoop.getCtx());
+    }
+    insideScope++;
+    values = new ValueTable(values);
+    StatementAST body = (StatementAST) visit(whileLoop.getStatementAST());
+    values = values.getEncValueTable();
+    insideScope--;
+
+    return new WhileAST(whileLoop.getErrors(), whileLoop.getCtx(), condition
+        , body);
   }
 
   @Override
