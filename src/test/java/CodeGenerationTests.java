@@ -642,6 +642,7 @@ public class CodeGenerationTests {
     checkSourceCode(instruction, "", 0);
   }
 
+
   @Test
   public void testPrintPairOfNulls() throws IOException {
     String instruction = "begin\n" +
