@@ -38,11 +38,14 @@ public class View extends JFrame implements ActionListener {
 
   private void display() {
 
+    //creates the frame
      frame = new JFrame("WACC IDE");
 
     //creating tabbedPanes for coding areas.
     jtp = new JTabbedPane();
     jtp.setSize(jtp.getPreferredSize());
+
+    //create a tab by default
     createTab();
     currentPane = tabs.get(0);
 
@@ -56,13 +59,14 @@ public class View extends JFrame implements ActionListener {
 
     JMenu menu = new JMenu("File");
 
-    JButton newTab = new JButton("new tab");
 
     // Add menu items.
     JMenuItem menuOpen = new JMenuItem("Open");
     JMenuItem menuReset = new JMenuItem("Reset");
     JMenuItem menuSave = new JMenuItem("Save");
     JMenuItem menuCompile = new JMenuItem("Compile");
+    JButton newTab = new JButton("new tab");
+
 
     // Add action listener for each menu options.
     menuOpen.addActionListener(this);
@@ -123,10 +127,8 @@ public class View extends JFrame implements ActionListener {
 
   }
 
+  //creating a new tab, adding a mouseListener and
   private void createTab() {
-
-
-
     JPanel newPage = new JPanel();
     JTextPane pane = new JTextPane(){
 
@@ -149,7 +151,6 @@ public class View extends JFrame implements ActionListener {
 
       @Override
       public void mousePressed(MouseEvent e) {
-
       }
 
       @Override
@@ -172,12 +173,10 @@ public class View extends JFrame implements ActionListener {
     pane.addKeyListener(new KeyListener() {
       @Override
       public void keyTyped(KeyEvent e) {
-
       }
 
       @Override
       public void keyPressed(KeyEvent e) {
-
       }
 
       // Check when any key is released
@@ -212,25 +211,25 @@ public class View extends JFrame implements ActionListener {
       }
     });
 
-    tabs.add(pane);
-
+    //set the pane size
     pane.setBounds(0,0,800,800);
     newPage.setLayout(null);
     newPage.setPreferredSize(new Dimension(800,800));
-
     newPage.add(pane);
 
-    ntabs++;
+    //add the pane to the tabs list
+    tabs.add(pane);
 
     String name = "New Tab         ";
 
     jtp.addTab(name, newPage);
 
-    JPanel pnlTab = getjPanel(name, pane);
-
-    jtp.setTabComponentAt(ntabs - 1, pnlTab);
+    //add the panel to the tabbed panes
+    ntabs++;
+    jtp.setTabComponentAt(ntabs - 1, getjPanel(name, pane));
   }
 
+  //created the jpanel with the close option
   private JPanel getjPanel(String name, JTextPane pane) {
     JPanel pnlTab = new JPanel(new GridBagLayout());
     pnlTab.setOpaque(false);
@@ -247,7 +246,6 @@ public class View extends JFrame implements ActionListener {
 
     // Handle actual closing of tab
     btnClose.addActionListener(e -> {
-
       closeTab(pane);
     });
 
@@ -257,6 +255,7 @@ public class View extends JFrame implements ActionListener {
     return pnlTab;
   }
 
+  //close the tab and update the tabs list as well as current pane and cur relative path.
   private void closeTab(JTextPane pane) {
 
     int index = tabs.indexOf(pane);
@@ -282,7 +281,7 @@ public class View extends JFrame implements ActionListener {
     }
   }
 
-
+  //actions to be performed for each file option.
   @Override
   public void actionPerformed(ActionEvent e) {
     StringBuilder ingest = new StringBuilder();
@@ -363,6 +362,7 @@ public class View extends JFrame implements ActionListener {
     }
   }
 
+  //use qemu-arm and arm-linux-gnueabi-gcc to compile the code and output into a pop-up box.
     private void compile_code() {
     WaccCompiler compiler = null;
     try {
@@ -374,7 +374,7 @@ public class View extends JFrame implements ActionListener {
     ErrorCode errorCode = compiler.compile();
 
     if (errorCode != ErrorCode.SUCCESS) {
-      JOptionPane.showMessageDialog(frame,"code contains errors, cant be compiled");
+      JOptionPane.showMessageDialog(frame,"code contains errors, can't be compiled");
       return ;
     }
 
