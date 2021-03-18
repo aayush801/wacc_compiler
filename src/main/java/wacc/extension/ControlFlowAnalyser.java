@@ -91,8 +91,9 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   @Override
   public NodeAST visit(BinOpExprAST binOpExpr) {
-    NodeAST left = visit(binOpExpr.getLeftExprAST());
-    NodeAST right = visit(binOpExpr.getRightExprAST());
+    ExpressionAST left = visit(binOpExpr.getLeftExprAST());
+    ExpressionAST right = visit(binOpExpr.getRightExprAST());
+
     if (left instanceof LiteralsAST && right instanceof LiteralsAST) {
       int a = 0, b = 0;
       if (((LiteralsAST) left).getType() instanceof INT) {
@@ -116,21 +117,21 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
       switch (binOpExpr.getOperator()) {
         case "+":
           value = (long) a + b;
-          if (value > MAX_VALUE || value < MIN_VALUE) {
+          if (value >= MAX_VALUE || value <= MIN_VALUE) {
             // Overflow error detected, 'undo' optimization
             return binOpExpr;
           }
           break;
         case "-":
           value = (long) a - b;
-          if (value > MAX_VALUE || value < MIN_VALUE) {
+          if (value >= MAX_VALUE || value <= MIN_VALUE) {
             // Overflow error detected, 'undo' optimization
             return binOpExpr;
           }
           break;
         case "*":
           value = (long) a * b;
-          if (value > MAX_VALUE || value < MIN_VALUE) {
+          if (value >= MAX_VALUE || value <= MIN_VALUE) {
             // Overflow error detected, 'undo' optimization
             return binOpExpr;
           }
@@ -197,10 +198,9 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
       return identifier;
     }
     NodeAST value = values.lookupAll(identifier.getIdentifier());
-    if (value == null) {
+    if (!(value instanceof LiteralsAST)) {
       return identifier;
     }
-
     return value;
   }
 

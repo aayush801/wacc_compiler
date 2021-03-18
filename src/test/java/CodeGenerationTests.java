@@ -614,14 +614,14 @@ public class CodeGenerationTests {
   }
 
   @Test
-  public void testNull() throws IOException {
-    String instruction = "begin\n" +
-        "  pair(pair, pair) p = null ;\n" +
-        "  println p ;\n" +
-        "  p = null ;\n" +
-        "  println p\n" +
-        "end";
-    checkSourceCode(instruction, "", 0);
+  public void testIntNegate() throws IOException {
+    String instruction = "begin\n"
+        + "  int x = -2147483648;\n"
+        + "  println x ;\n"
+        + "  x = x*10; #err here?\n"
+        + "  println x \n"
+        + "end";
+    checkSourceCode(instruction, "OverflowError", 255);
   }
 
   @Test
