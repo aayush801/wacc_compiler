@@ -51,6 +51,7 @@ import antlr.WaccParser.TypeContext;
 import antlr.WaccParser.WhileDoContext;
 import antlr.WaccParserBaseVisitor;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -154,12 +155,15 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   @Override
   public NodeASTList<ImportAST> visitImports(ImportsContext ctx) {
     NodeASTList<ImportAST> importASTS = new NodeASTList<>(semanticErrors, ctx);
-
-    if (ctx.identifier() != null) {
+    if(ctx.GT() != null){
+      importASTS.add(
+          new ImportAST(semanticErrors, ctx.identifier(),
+              ctx.identifier().getText(), Paths.get("lib")));
+    }else if (ctx.identifier() != null) {
       importASTS.add(
           new ImportAST(semanticErrors, ctx.identifier(),
               ctx.identifier().getText(), relativePath));
-    } else {
+    }else{
       importASTS.addAll(visitImports(ctx.imports(0)));
       importASTS.addAll(visitImports(ctx.imports(1)));
     }

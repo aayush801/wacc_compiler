@@ -54,9 +54,9 @@ public class ImportAST extends NodeAST {
       addError(new DuplicateIdentifier(ctx));
       return;
     }
-
     // check if the imported file is a wacc file
     String filepath = (relativePath == null ? "" : relativePath + "/") + filename + ".wacc";
+
     File importedFile = new File(filepath);
     if (!importedFile.isFile()) {
       addError(new InvalidImport(ctx, filepath));

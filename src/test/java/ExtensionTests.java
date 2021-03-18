@@ -119,6 +119,25 @@ public class ExtensionTests {
   }
 
   @Test
+  public void testImportStandardLibrary() throws IOException {
+    // write file that imports lib
+    File importFile = new File("importLib.wacc");
+    FileWriter importWriter = new FileWriter(importFile);
+    String importProg =
+        "import <stdint>\n"
+            + "\n"
+            + "begin\n"
+            + "  int x = call max(3,4);\n"
+            + "  println x\n"
+            + "end";
+    importWriter.write(importProg);
+    importWriter.close();
+
+    runAndCheckProgram(importFile, "4", 0);
+    importFile.deleteOnExit();
+  }
+
+  @Test
   public void switchStatement() throws IOException {
     String prog =
         "begin\n"

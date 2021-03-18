@@ -12,6 +12,7 @@ prog:
 //imported files
 imports:
   IMPORT identifier
+  | IMPORT LT identifier GT
   | imports SEPERATOR imports
 ;
 

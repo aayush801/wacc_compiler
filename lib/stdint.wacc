@@ -1,0 +1,10 @@
+begin
+  int max(int a, int b) is
+    if a > b then
+      return a
+    else
+      return b
+    fi
+  end
+  skip
+end
