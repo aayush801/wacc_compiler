@@ -353,6 +353,8 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   @Override
   public NodeAST visit(ReadAST read) {
+    values.dict.put(read.getLHS().getIdentifier(),
+        new IdentifierAST(read.getErrors(), read.getCtx(), read.getLHS().getIdentifier()));
     return read;
   }
 
