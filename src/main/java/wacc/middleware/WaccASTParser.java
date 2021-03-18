@@ -99,6 +99,8 @@ import wacc.middleware.ast_nodes.class_ast.FieldAST;
 import wacc.middleware.ast_nodes.class_ast.MethodCallAST;
 import wacc.middleware.ast_nodes.class_ast.MethodDeclarationAST;
 import wacc.middleware.ast_nodes.class_ast.NewObjectAST;
+import wacc.middleware.ast_nodes.statement_ast.loop_ast.BreakAST;
+import wacc.middleware.ast_nodes.statement_ast.loop_ast.ContinueAST;
 import wacc.middleware.ast_nodes.statement_ast.loop_ast.ForAST;
 import wacc.middleware.ast_nodes.statement_ast.loop_ast.WhileAST;
 import wacc.middleware.ast_nodes.types_ast.ArrayTypeAST;
@@ -841,5 +843,15 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
           statements.get(i), statementAST);
     }
     return (IfElseAST) statementAST;
+  }
+
+  @Override
+  public ContinueAST visitContinueStat(WaccParser.ContinueStatContext ctx) {
+    return new ContinueAST(semanticErrors, ctx);
+  }
+
+  @Override
+  public BreakAST visitBreakStat(WaccParser.BreakStatContext ctx) {
+    return new BreakAST(semanticErrors, ctx);
   }
 }
