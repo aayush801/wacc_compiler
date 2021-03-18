@@ -625,6 +625,17 @@ public class CodeGenerationTests {
   }
 
   @Test
+  public void testWhitespace() throws IOException {
+    String instruction = "begin\n"
+        + "\tint a=13;\t\n"
+        + "  if a==13then a=1else a=0fi;\n"
+        + "  println a\n"
+        + "end";
+    checkSourceCode(instruction, "1", 0);
+  }
+
+
+  @Test
   public void testPrintNull() throws IOException {
     String instruction = "begin\n" +
         "  println null\n" +

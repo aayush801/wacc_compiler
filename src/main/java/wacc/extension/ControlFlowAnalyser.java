@@ -96,21 +96,23 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
     if (left instanceof LiteralsAST && right instanceof LiteralsAST) {
       int a = 0, b = 0;
-      if (((LiteralsAST) left).getType() instanceof INT) {
+      if (left.getType() instanceof INT) {
         a = Integer.parseInt(((LiteralsAST) left).getText());
         b = Integer.parseInt(((LiteralsAST) right).getText());
         if (b == 0 && (binOpExpr.getOperator().equals("/")
             || binOpExpr.getOperator().equals("%"))) {
           return binOpExpr;
         }
-      } else if (((LiteralsAST) left).getType() instanceof CHAR) {
+      } else if (left.getType() instanceof CHAR) {
         a = ((LiteralsAST) left).getText()
             .charAt(((LiteralsAST) left).getText().length() - 2);
         b = ((LiteralsAST) right).getText()
             .charAt(((LiteralsAST) right).getText().length() - 2);
-      } else if (((LiteralsAST) left).getType() instanceof BOOL) {
+      } else if (left.getType() instanceof BOOL) {
         a = ((LiteralsAST) left).getText().equals("true") ? 1 : 0;
         b = ((LiteralsAST) right).getText().equals("true") ? 1 : 0;
+      } else {
+        return binOpExpr;
       }
 
       long value = 0;
@@ -329,17 +331,18 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   @Override
   public NodeAST visit(IfElseAST ifElse) {
     ExpressionAST condition = visit(ifElse.getExpressionAST());
-    StatementAST first = (StatementAST) visit(ifElse.getFirstStatAST());
-    StatementAST second = (StatementAST) visit(ifElse.getSecondStatAST());
 
     if (condition instanceof LiteralsAST) {
       String bool = ((LiteralsAST) condition).getText();
       if (bool.equals("true")) {
-        return first;
+        return visit(ifElse.getFirstStatAST());
       } else if (bool.equals("false")) {
-        return second;
+        return visit(ifElse.getSecondStatAST());
       }
     }
+
+    StatementAST first = (StatementAST) visit(ifElse.getFirstStatAST());
+    StatementAST second = (StatementAST) visit(ifElse.getSecondStatAST());
     return new IfElseAST(ifElse.getErrors(), ifElse.getCtx(), condition,
         first, second);
   }
