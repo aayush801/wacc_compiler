@@ -138,6 +138,25 @@ public class ExtensionTests {
   }
 
   @Test
+  public void testCheekyCat() throws IOException {
+    // write file that imports lib
+    File temp = new File("temp.wacc");
+    FileWriter importWriter = new FileWriter(temp);
+    String importProg =
+        "import <cat>\n"
+            + "\n"
+            + "begin\n"
+            + "  class Cat mittens = new Cat(\"mittens\");\n"
+            + "  call mittens.printName()\n"
+            + "end";
+    importWriter.write(importProg);
+    importWriter.close();
+
+    runAndCheckProgram(temp, "mittens\n", 0);
+    temp.deleteOnExit();
+  }
+
+  @Test
   public void switchStatement() throws IOException {
     String prog =
         "begin\n"

@@ -63,7 +63,11 @@ public class ProgAST extends NodeAST {
       ProgAST importedProg = importAST.getProgAST();
 
       if (importedProg != null) {
-        // add the import functions to beginning of the funcDeclrList
+        // add the imported classes to beginning of the classDefnList
+        classDefinitionASTS.addAll(0,
+            importedProg.getClassDefinitionASTS());
+
+        // add the imported functions to beginning of the funcDeclrList
         functionDeclarationASTS.addAll(0,
             importedProg.getFunctionDeclarationASTS());
 

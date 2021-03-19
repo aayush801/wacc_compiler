@@ -1,0 +1,23 @@
+begin
+	# declare class
+	class Cat
+
+		# declare class fields
+		private string name = "" ; #private so cannot be accessed outside of scope
+		public int age = 1
+
+		# declare constructor
+		Cat(string newName) is
+			name = newName
+    end
+
+    # declare method
+    public void printName() is
+      println name
+    end
+
+  done
+
+	skip
+
+end
