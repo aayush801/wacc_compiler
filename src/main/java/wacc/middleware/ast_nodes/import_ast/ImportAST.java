@@ -42,6 +42,7 @@ public class ImportAST extends NodeAST {
 
     if (obj != null) {
       // if trying to import current file
+
       if (obj instanceof IMPORT) {
         if (((IMPORT) obj).getFilename().equals("MAIN")) {
           addError(new ImportNotFound(ctx, filename));
@@ -59,6 +60,7 @@ public class ImportAST extends NodeAST {
     String filepath = (relativePath == null ? "" : relativePath + "/") + filename + ".wacc";
 
     File importedFile = new File(filepath);
+
     if (!importedFile.isFile()) {
       addError(new InvalidImport(ctx, filepath));
       return;
@@ -75,6 +77,7 @@ public class ImportAST extends NodeAST {
 
     // try to parse the syntax of the file
     ProgContext parseTree = compiler.parseSyntactics();
+
     if (compiler.hasErrors()) {
       //if the imported file is broken
       addError(new ImportBroken(ctx, compiler.getErrors()));
@@ -91,15 +94,9 @@ public class ImportAST extends NodeAST {
     ST.add(filename, importObj);
   }
 
-
-  public IMPORT getImportObj() {
-    return importObj;
-  }
-
   public ProgAST getProgAST() {
     return progAST;
   }
-
 
   @Override
   public <T> T accept(NodeASTVisitor<? extends T> visitor) {

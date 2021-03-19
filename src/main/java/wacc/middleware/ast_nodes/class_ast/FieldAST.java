@@ -67,6 +67,7 @@ public class FieldAST extends StatementAST {
       fieldObj = new FIELD(type, visibility, ((ClassSymbolTable) ST).calculateFieldSize());
 
       variableDeclarationAST.setVarObj(fieldObj);
+
       // override the varObj with a new fieldObj
       ST.add(variableDeclarationAST.getVarName(), fieldObj);
     }

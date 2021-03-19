@@ -18,7 +18,6 @@ import wacc.middleware.symbol_table.ClassSymbolTable;
 public class MethodDeclarationAST extends FunctionDeclarationAST {
 
   private final Visibility visibility;
-  private METHOD methodObj;
 
   public MethodDeclarationAST(List<WaccError> errors, ParserRuleContext ctx, Visibility visibility,
       TypeAST typeAST, String funcName, NodeASTList<ParamAST> paramASTList,
@@ -45,9 +44,10 @@ public class MethodDeclarationAST extends FunctionDeclarationAST {
       return;
     }
 
+    //calls functionDeclarationAST check
     super.check();
 
-    methodObj = new METHOD(funcObj, visibility);
+    METHOD methodObj = new METHOD(funcObj, visibility);
     ST.add(funcObj.getName(), methodObj);
   }
 

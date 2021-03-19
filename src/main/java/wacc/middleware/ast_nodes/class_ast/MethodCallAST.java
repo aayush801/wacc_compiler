@@ -24,8 +24,6 @@ public class MethodCallAST extends FunctionCallAST implements FunctionCallInterf
   private final String objectName;
   private SymbolTable scopeST;
 
-  private CLASS classObj;
-
   public MethodCallAST(List<WaccError> errors, ParserRuleContext ctx,
       String objectName, String funcName, NodeASTList<ExpressionAST> actuals) {
     super(errors, ctx, funcName, actuals);
@@ -35,6 +33,7 @@ public class MethodCallAST extends FunctionCallAST implements FunctionCallInterf
   @Override
   public void check() {
     scopeST = ST;
+
 
     IDENTIFIER obj = ST.lookup(objectName);
 
@@ -53,9 +52,9 @@ public class MethodCallAST extends FunctionCallAST implements FunctionCallInterf
       return;
     }
 
-    classObj = (CLASS) ((STACK_OBJECT) obj).getType();
+    CLASS classObj = (CLASS) ((STACK_OBJECT) obj).getType();
 
-
+    //get list of indexes for functions with the same basename
     List<Integer> lst = SymbolTable.funcIndices.get(getBaseName());
 
     if (lst == null) {
@@ -64,6 +63,8 @@ public class MethodCallAST extends FunctionCallAST implements FunctionCallInterf
     }
 
     SymbolTable classScope = classObj.getScopeST();
+
+    //extracting the first method with the basename called (method overloading not implemented)
     IDENTIFIER funcObj = classScope.lookup(getBaseName() + lst.get(0));
 
     if (!(funcObj instanceof METHOD)) {
@@ -81,6 +82,7 @@ public class MethodCallAST extends FunctionCallAST implements FunctionCallInterf
 
     ST = classScope;
 
+    //calling functionCallAST check
     super.check();
 
     ST = scopeST;

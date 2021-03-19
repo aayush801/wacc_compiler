@@ -44,27 +44,28 @@ public class ConstructorAST extends NodeAST {
       return;
     }
 
+    //creating new scope
     ST = new SymbolTable(ST);
 
     funcobj = new FUNCTION(null);
     funcobj.setST(ST);
 
+    //checking each parameter and adding to function's formal list
     for (ParamAST paramAST : paramASTS){
       paramAST.check();
       funcobj.formals.add(paramAST.getParamObj());
     }
 
+    //checking constructor body
     constructorBody.check();
+
+    //resetting scope
     ST = ST.getEncSymTable();
 
   }
 
   public FUNCTION getFuncobj() {
     return funcobj;
-  }
-
-  public String getClassName() {
-    return className;
   }
 
   public NodeASTList<ParamAST> getParamASTS() {

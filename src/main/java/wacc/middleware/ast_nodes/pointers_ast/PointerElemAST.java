@@ -39,11 +39,13 @@ public class PointerElemAST extends ExpressionAST {
       return;
     }
 
+    //check if obj is a stack object
     if (!(obj instanceof STACK_OBJECT)) {
       addError(new MismatchedTypes(ctx, obj, new POINTER(new TYPE())));
       return;
     }
 
+    //check if object has pointer type
     if (!(((STACK_OBJECT) obj).getType() instanceof POINTER)) {
       addError(new MismatchedTypes(ctx, obj, new POINTER(new TYPE())));
       return;
@@ -53,6 +55,7 @@ public class PointerElemAST extends ExpressionAST {
 
     TYPE type = pointer.getType();
 
+    //in case we have multiple levels of a pointer eg: **p, we need to extract the base type
     for (int i = 0; i < level - 1; i++) {
       if (type instanceof POINTER) {
         type = ((POINTER) type).getType();

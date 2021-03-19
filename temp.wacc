@@ -1,6 +1,0 @@
-import <cat>
-
-begin
-  class Cat mittens = new Cat("mittens");
-  call mittens.printName()
-end

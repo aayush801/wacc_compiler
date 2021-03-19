@@ -57,14 +57,16 @@ public class FunctionCallAST extends StatementAST implements FunctionCallInterfa
   @Override
   public void check() {
 
+    //get list of indexes for functions with the same basename
     List<Integer> indices = SymbolTable.funcIndices.get(baseName);
+
     if (indices == null) {
       addError(new Undefined(ctx, baseName));
       return;
     }
 
     Integer last = indices.get(indices.size() - 1);
-    IDENTIFIER function = null;
+    IDENTIFIER function;
 
     for (Integer index : indices) {
       String tempFuncName = baseName + index;
@@ -75,12 +77,14 @@ public class FunctionCallAST extends StatementAST implements FunctionCallInterfa
         // if the function is undefined within the current scope
         addError(new Undefined(ctx, baseName));
 
-      } else if (!(function instanceof FUNCTION)) {
+      }
+      else if (!(function instanceof FUNCTION)) {
 
         // if the funcName does NOT actually refer to a function
         addError(new MismatchedTypes(ctx, function, new FUNCTION(new TYPE())));
 
-      } else if (actuals.size() != ((FUNCTION) function).formals.size()) {
+      }
+      else if (actuals.size() != ((FUNCTION) function).formals.size()) {
 
         // if the parameter size does not match up with the number of parameters,
         // the actual function takes, then throw invalid argument exception
@@ -90,9 +94,12 @@ public class FunctionCallAST extends StatementAST implements FunctionCallInterfa
                   actuals.size()));
         }
 
-      } else {
-        if (((FUNCTION) function).getReturnType() instanceof VOID || isCompatible(lhsReturnType,
-            ((FUNCTION) function).getReturnType())) {
+      }
+      else {
+
+        //check if function is compatible with lhs type or void
+        if (((FUNCTION) function).getReturnType() instanceof VOID
+           || isCompatible(lhsReturnType, ((FUNCTION) function).getReturnType())) {
 
           // found matching function
           boolean foundMatch = true;
@@ -129,6 +136,7 @@ public class FunctionCallAST extends StatementAST implements FunctionCallInterfa
       }
     }
 
+    //if reached here, function has not been found therefore we throw an error
     addError(new NotAFunction(ctx, baseName));
 
   }
