@@ -64,6 +64,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   private ValueTable values = new ValueTable();
   private int insideScope = 0;
+  private int insideLoop = 0;
   private final int MAX_VALUE = 2147483647;
   private final int MIN_VALUE = -2147483648;
 
@@ -301,7 +302,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   @Override
   public NodeAST visit(IdentifierAST identifier) {
-    if (insideScope > 0)
+    if (insideLoop > 0)
       return identifier;
 
     NodeAST value = values.lookupAll(identifier.getIdentifier());
@@ -430,11 +431,15 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
     RHSAssignAST rhs = (RHSAssignAST) visit(assignment.getRHS());
 
     if (lhs.getIdentifier() != null) {
-        values.addAll(lhs.getIdentifier(),
-            new IdentifierAST(assignment.getErrors(), assignment.getCtx(),
-                lhs.getIdentifier()));
-        values.add(lhs.getIdentifier(), rhs.getExpressionAST());
 
+      if (insideLoop > 0) {
+        values.addAll(
+                lhs.getIdentifier(),
+                new IdentifierAST(assignment.getErrors(), assignment.getCtx(),
+                        lhs.getIdentifier()));
+      } else {
+        values.addAll(lhs.getIdentifier(), rhs.getExpressionAST());
+      }
     }
 
     return new AssignmentAST(assignment.getErrors(), assignment.getCtx(),
@@ -486,9 +491,9 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
       }
     }
 
-    insideScope++;
-    return ifElse;
-    /*
+//    insideScope++;
+//    return ifElse;
+
     values = new ValueTable(values);
     insideScope++;
     StatementAST first = (StatementAST) visit(ifElse.getFirstStatAST());
@@ -501,7 +506,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
     return new IfElseAST(ifElse.getErrors(), ifElse.getCtx(), condition,
         first, second);
 
-     */
+
   }
 
   @Override
@@ -598,49 +603,49 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   @Override
   public NodeAST visit(ForAST forLoop) {
-    insideScope++;
-    return forLoop;
-    /*
+
+    insideLoop++;
     values = new ValueTable(values);
+    StatementAST init = (StatementAST) visit(forLoop.getInitialisation());
+
     StatementAST body = (StatementAST) visit(forLoop.getStatementAST());
     values = values.getEncValueTable();
-    insideScope--;
+    insideLoop--;
+
+    if (body instanceof SkipAST) {
+      return body;
+    }
 
     return new ForAST(
-        forLoop.getErrors(),
-        forLoop.getCtx(),
-        forLoop.getInitialisation(),
-        forLoop.getConditionAST(),
-        body);
+            forLoop.getErrors(),
+            forLoop.getCtx(),
+            init,
+            forLoop.getConditionAST(),
+            body);
 
-     */
   }
 
   @Override
   public NodeAST visit(WhileAST whileLoop) {
-    insideScope++;
-    return whileLoop;
-    /*
+   //return whileLoop;
+
     ExpressionAST condition = visit(whileLoop.getConditionAST());
     if (condition instanceof LiteralsAST &&
         ((LiteralsAST) condition).getText().equals("false")) {
       return new SkipAST(whileLoop.getErrors(), whileLoop.getCtx());
     }
 
-    insideScope++;
+    insideLoop++;
     values = new ValueTable(values);
     StatementAST body = (StatementAST) visit(whileLoop.getStatementAST());
     values = values.getEncValueTable();
-    insideScope--;
-
+    insideLoop--;
 
     if (body instanceof SkipAST) {
       return body;
     }
-    return new WhileAST(whileLoop.getErrors(), whileLoop.getCtx(), condition,
-        body);
-
-     */
+    return new WhileAST(whileLoop.getErrors(), whileLoop.getCtx(), whileLoop.getConditionAST(),
+            body);
   }
 
   @Override

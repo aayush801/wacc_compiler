@@ -282,9 +282,17 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
 
   @Override
   public AssignmentAST visitBinOpAssign(WaccParser.BinOpAssignContext ctx) {
+
+    // Get operator
     String op = ctx.op.getText();
+
+    // Parse operator to determine which operator is being called.
     String operator = op.substring(0, op.length() - 1);
+
+    // Get variable the operator is being called on.
     String var = ctx.identifier().getText();
+
+    // Create assignmentAST with appropriate fields.
     AssignmentAST assignmentAST =
         new AssignmentAST(semanticErrors, ctx,
             new LHSAssignAST(semanticErrors, ctx, var),

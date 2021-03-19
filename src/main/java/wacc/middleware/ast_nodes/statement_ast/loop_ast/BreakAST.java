@@ -15,6 +15,8 @@ public class BreakAST extends NodeAST {
 
   @Override
   public void check() {
+
+    // Check if actually breaking inside a loop.
     if (insideLoops == 0) {
       addError(new OutsideLoop(ctx, "break"));
     }
@@ -22,6 +24,6 @@ public class BreakAST extends NodeAST {
 
   @Override
   public <T> T accept(NodeASTVisitor<? extends T> visitor) {
-    return null;
+    return visitor.visit(this);
   }
 }

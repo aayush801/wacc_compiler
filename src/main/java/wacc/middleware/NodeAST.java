@@ -41,4 +41,5 @@ public abstract class NodeAST implements NodeASTInterface {
   public List<WaccError> getErrors() {
     return errors;
   }
+
 }

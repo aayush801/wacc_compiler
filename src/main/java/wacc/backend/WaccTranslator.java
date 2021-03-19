@@ -444,13 +444,13 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
         instructions.add(new Move(ConditionCode.GT, Rn, FALSE, false));
         break;
 
-      // BOOLEAN Operators
       case "&":
-        // false removes the S, add if needed.
+        // Treat this as normal arithmetic with operator 'AND'.
         instructions.add(new Arithmetic(ArithmeticOpcode.AND, Rn, Rn, operand2,
             false, accumulator));
         break;
 
+      // Treat this as normal arithmetic with operator 'OR'.
       case "|":
         instructions.add(new Arithmetic(ArithmeticOpcode.OR, Rn, Rn, operand2,
             false, accumulator));
@@ -492,8 +492,6 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
         instructions.add(new Compare(Rm, ImmediateNum.ZERO));
         instructions.add(new Branch(ConditionCode.NE, bodyLabel.getName(),
             false));
-
-
 
         instructions.add(endLabel);
         // Move product into destination register

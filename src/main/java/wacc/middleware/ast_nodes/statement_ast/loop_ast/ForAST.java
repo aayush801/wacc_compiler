@@ -34,10 +34,11 @@ public class ForAST extends WhileAST {
   @Override
   public void check() {
     insideLoops++;
-    // check the expression
-    // expression valid, now check the statement inside the body.
-    // create a new scope(symbol table) for the statement.
+
+    // Create new scope for loop.
     scopeST = ST = new SymbolTable(ST);
+
+    // Check initialization.
     initialisation.check();
 
     conditionAST.check();
@@ -55,8 +56,10 @@ public class ForAST extends WhileAST {
       return;
     }
 
+    // Check body.
     bodyAST.check();
 
+    // Reset symbol table.
     ST = ST.getEncSymTable();
     insideLoops--;
   }

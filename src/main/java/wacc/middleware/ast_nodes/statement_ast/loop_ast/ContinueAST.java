@@ -15,6 +15,8 @@ public class ContinueAST extends NodeAST {
 
   @Override
   public void check() {
+
+    // Check if actually continuing inside a loop.
     if (insideLoops == 0) {
       addError(new OutsideLoop(ctx, "continue"));
     }
@@ -22,6 +24,6 @@ public class ContinueAST extends NodeAST {
 
   @Override
   public <T> T accept(NodeASTVisitor<? extends T> visitor) {
-    return null;
+    return visitor.visit(this);
   }
 }

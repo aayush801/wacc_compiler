@@ -16,6 +16,8 @@ public class WhileAST extends StatementAST {
   protected final ExpressionAST conditionAST;
   protected final StatementAST bodyAST;
   protected SymbolTable scopeST;
+
+  // Used to differentiate between while and dowhile.
   private final boolean isDoWhile;
 
   public WhileAST(List<WaccError> errors, ParserRuleContext ctx, ExpressionAST conditionAST,

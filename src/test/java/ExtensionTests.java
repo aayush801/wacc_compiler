@@ -227,7 +227,6 @@ public class ExtensionTests {
             + "int a = x + y + z\n"
             + "end";
 
-
     WaccCompiler compiler = new WaccCompiler(prog);
     compiler.setOptimisations(false);
     compiler.compile();
