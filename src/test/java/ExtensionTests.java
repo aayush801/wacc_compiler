@@ -204,6 +204,43 @@ public class ExtensionTests {
   }
 
   @Test
+  public void testBreak() throws IOException {
+    String prog =
+            "begin\n" +
+                    "    int i = 0;\n" +
+                    "    while i < 5 do\n" +
+                    "        if (i == 4)\n" +
+                    "            break\n" +
+                    "        fi;\n" +
+                    "        print i;\n" +
+                    "        i += 1\n" +
+                    "    done;\n" +
+                    "    print 5\n" +
+                    "end";
+
+    runAndCheckProgram(prog, "01235", 0);
+  }
+
+  @Test
+  public void testContinue() throws IOException {
+    String prog =
+            "begin\n" +
+                    "    int i = 0;\n" +
+                    "    while i < 5 do\n" +
+                    "    i += 1;\n" +
+                    "        if (i % 2 == 0)\n" +
+                    "        then\n" +
+                    "            continueloop\n" +
+                    "        else\n" +
+                    "            print i\n" +
+                    "        fi\n" +
+                    "    done\n" +
+                    "end";
+
+    runAndCheckProgram(prog, "13", 0);
+  }
+
+  @Test
   public void exponentiation() throws IOException {
     String prog =
         "begin\n"
@@ -213,6 +250,7 @@ public class ExtensionTests {
 
     runAndCheckProgram(prog, "8", 0);
   }
+
 
   @Test
   public void optimisations() throws  IOException {

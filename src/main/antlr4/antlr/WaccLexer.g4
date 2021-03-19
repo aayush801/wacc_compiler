@@ -164,9 +164,9 @@ fragment CHAR:  ~[\\'"] | ('\\' ESCAPED_CHAR);
 STRING: '"' CHAR* '"' ;
 CHARACTER: '\'' CHAR? '\'' ;
 
+//loop control
+BREAK : 'break' ;
+CONTINUE : 'continueloop' ;
+
 //identifier
 IDENT: [_a-zA-Z][_a-zA-Z0-9]* ;
-
-//loop breaks
-CONTINUE : 'continue' ;
-BREAK : 'break' ;

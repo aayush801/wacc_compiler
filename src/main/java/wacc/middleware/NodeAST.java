@@ -15,7 +15,7 @@ public abstract class NodeAST implements NodeASTInterface {
   protected static SymbolTable ST;
   protected List<WaccError> errors;
   public ParserRuleContext ctx;
-  protected int insideLoops = 0;
+  protected static int insideLoops = 0;
 
   public NodeAST(List<WaccError> errors, ParserRuleContext ctx) {
     this.ctx = ctx;
