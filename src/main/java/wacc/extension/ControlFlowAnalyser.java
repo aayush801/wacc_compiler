@@ -101,9 +101,9 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
     ExpressionAST left = visit(binOpExpr.getLeftExprAST());
     ExpressionAST right = visit(binOpExpr.getRightExprAST());
 
+    // If both operands are literal values then they can be simplfied at compile time
     if (left instanceof LiteralsAST && right instanceof LiteralsAST) {
       int a, b;
-
       if (left.getType() instanceof INT) {
         a = Integer.parseInt(((LiteralsAST) left).getText());
         b = Integer.parseInt(((LiteralsAST) right).getText());
@@ -119,16 +119,20 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
             .charAt(((LiteralsAST) left).getText().length() - 2);
         b = ((LiteralsAST) right).getText()
             .charAt(((LiteralsAST) right).getText().length() - 2);
+
       } else if (left.getType() instanceof BOOL) {
         a = ((LiteralsAST) left).getText().equals("true") ? 1 : 0;
         b = ((LiteralsAST) right).getText().equals("true") ? 1 : 0;
+
       } else if (left.getType() instanceof STR) {
         boolean stringsMatch =
             ((LiteralsAST) left).getText()
                 .equals(((LiteralsAST) right).getText());
         return new LiteralsAST(binOpExpr.getErrors(), binOpExpr.getCtx(),
             stringsMatch);
+
       } else {
+        // If the literal is not a primitive type it is returned unchanged
         return binOpExpr;
       }
 
@@ -208,22 +212,27 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
       }
     }
 
+    // If one of the operands has a literal value then the expression can be
+    // simplified for particular values
     if (left instanceof LiteralsAST || right instanceof LiteralsAST) {
       switch (binOpExpr.getOperator()) {
         case "|":
         case "+":
           if (left instanceof LiteralsAST && left.getType() instanceof INT) {
+            // Adding 0 or bitwise OR with 0 has no effect
             if (Integer.parseInt(((LiteralsAST) left).getText()) == 0) {
               return right;
             }
           } else if (right instanceof LiteralsAST &&
               right.getType() instanceof INT) {
+            // Adding 0 or bitwise OR with 0 has no effect
             if (Integer.parseInt(((LiteralsAST) right).getText()) == 0) {
               return left;
             }
           }
           break;
         case "-":
+          // Subtracting 0 has no effect
           if (right instanceof LiteralsAST && right.getType() instanceof INT) {
             if (Integer.parseInt(((LiteralsAST) right).getText()) == 0) {
               return left;
@@ -232,6 +241,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
           break;
         case "&":
         case "*":
+          // Multiplying by 0 will always result in 0
           if (left instanceof LiteralsAST && left.getType() instanceof INT) {
             if (Integer.parseInt(((LiteralsAST) left).getText()) == 0) {
               return new LiteralsAST(binOpExpr.getErrors(),
@@ -245,20 +255,6 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
             }
           }
           break;
-        case "/":
-          if (left instanceof LiteralsAST && left.getType() instanceof INT) {
-            if (Integer.parseInt(((LiteralsAST) left).getText()) == 0) {
-              return new LiteralsAST(binOpExpr.getErrors(),
-                  binOpExpr.getCtx(), 0);
-            }
-          }
-          break;
-        case "%":
-          if (right instanceof LiteralsAST && right.getType() instanceof INT) {
-            if (Integer.parseInt(((LiteralsAST) right).getText()) == 1) {
-              return left;
-            }
-          }
         case "^":
           if (left instanceof LiteralsAST && left.getType() instanceof INT) {
             if (Integer.parseInt(((LiteralsAST) left).getText()) == 1) {
@@ -272,6 +268,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
           }
           break;
         case "&&":
+          // Logical AND with false will always be false
           if (left instanceof LiteralsAST && left.getType() instanceof BOOL) {
             if (((LiteralsAST) left).getText().equals("false")) {
               return left;
@@ -284,6 +281,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
           }
           break;
         case "||":
+          // Logical OR with true will always be true
           if (left instanceof LiteralsAST && left.getType() instanceof BOOL) {
             if (((LiteralsAST) left).getText().equals("true")) {
               return left;
@@ -294,7 +292,6 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
               return right;
             }
           }
-
           break;
       }
     }
@@ -304,6 +301,9 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   @Override
   public NodeAST visit(IdentifierAST identifier) {
+    if (insideScope > 0)
+      return identifier;
+
     NodeAST value = values.lookupAll(identifier.getIdentifier());
     if (!(value instanceof LiteralsAST)) {
       return identifier;
@@ -320,11 +320,15 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   public NodeAST visit(UnaryOpExprAST unaryOpExpr) {
     ExpressionAST expr = visit(unaryOpExpr.getExpr());
     String operator = unaryOpExpr.getOperator();
+
+    // If the argument is a literal value the unary operators
+    // can be applied at compile time
     if (expr instanceof LiteralsAST) {
       String str = ((LiteralsAST) expr).getText();
 
       switch (operator) {
         case "!":
+          // Negate value
           boolean value = false;
           if (str.equals("true")) {
             value = false;
@@ -335,17 +339,20 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
               value);
 
         case "ord":
+          // ASCII code for character
           int ascii = str.charAt(str.length() - 2);
           return new LiteralsAST(unaryOpExpr.getErrors(), unaryOpExpr.getCtx(),
               ascii);
 
         case "chr":
+          // Character with given ASCII code
           char c = (char) Integer.parseInt(str);
           return new LiteralsAST(unaryOpExpr.getErrors(), unaryOpExpr.getCtx(),
               "'" + c + "'");
       }
     }
 
+    // The length of an array can be found
     if (expr instanceof ArrayAST && operator.equals("len")) {
       return new LiteralsAST(
           unaryOpExpr.getErrors(),
@@ -353,13 +360,15 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
           ((ArrayAST) expr).getExpressionASTList().size());
     }
 
-    return new UnaryOpExprAST(
-        unaryOpExpr.getErrors(), unaryOpExpr.getCtx(), expr, unaryOpExpr.getOperator());
+    return new UnaryOpExprAST(unaryOpExpr.getErrors(), unaryOpExpr.getCtx(),
+        expr, unaryOpExpr.getOperator());
   }
 
   @Override
   public FunctionDeclarationAST visit(FunctionDeclarationAST functionDeclaration) {
+    // Value table for new scope
     values = new ValueTable(values);
+    // The parameters are added to current scope just as identifiers
     for (ParamAST param : functionDeclaration.getParamASTList()) {
       values.add(
           param.getParamName(),
@@ -368,9 +377,14 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
               param.getParamName()));
     }
 
+    // The body of the function is optimised
     StatementAST stat = (StatementAST) visit(functionDeclaration.getStatementAST());
+    insideScope = 0;
+
+    // Original value table
     values = values.getEncValueTable();
 
+    // Function with optimised body
     return new FunctionDeclarationAST(
         functionDeclaration.getErrors(),
         functionDeclaration.getCtx(),
@@ -382,6 +396,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   @Override
   public NodeAST visit(FunctionCallAST functionCall) {
+    // The expressions passed to the function are simplified
     return new FunctionCallAST(
         functionCall.getErrors(),
         functionCall.getCtx(),
@@ -396,6 +411,7 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
   @Override
   public NewPairAST visit(NewPairAST newPair) {
+    // Each expression in pair is simplified
     return new NewPairAST(
         newPair.getErrors(),
         newPair.getCtx(),
@@ -414,15 +430,11 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
     RHSAssignAST rhs = (RHSAssignAST) visit(assignment.getRHS());
 
     if (lhs.getIdentifier() != null) {
-
-      if (insideScope > 0) {
-        values.addAll(
-            lhs.getIdentifier(),
+        values.addAll(lhs.getIdentifier(),
             new IdentifierAST(assignment.getErrors(), assignment.getCtx(),
                 lhs.getIdentifier()));
-      } else {
         values.add(lhs.getIdentifier(), rhs.getExpressionAST());
-      }
+
     }
 
     return new AssignmentAST(assignment.getErrors(), assignment.getCtx(),
@@ -474,6 +486,9 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
       }
     }
 
+    insideScope++;
+    return ifElse;
+    /*
     values = new ValueTable(values);
     insideScope++;
     StatementAST first = (StatementAST) visit(ifElse.getFirstStatAST());
@@ -485,6 +500,8 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
 
     return new IfElseAST(ifElse.getErrors(), ifElse.getCtx(), condition,
         first, second);
+
+     */
   }
 
   @Override
@@ -582,6 +599,8 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
   @Override
   public NodeAST visit(ForAST forLoop) {
     insideScope++;
+    return forLoop;
+    /*
     values = new ValueTable(values);
     StatementAST body = (StatementAST) visit(forLoop.getStatementAST());
     values = values.getEncValueTable();
@@ -593,10 +612,15 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
         forLoop.getInitialisation(),
         forLoop.getConditionAST(),
         body);
+
+     */
   }
 
   @Override
   public NodeAST visit(WhileAST whileLoop) {
+    insideScope++;
+    return whileLoop;
+    /*
     ExpressionAST condition = visit(whileLoop.getConditionAST());
     if (condition instanceof LiteralsAST &&
         ((LiteralsAST) condition).getText().equals("false")) {
@@ -615,6 +639,8 @@ public class ControlFlowAnalyser extends NodeASTVisitor<NodeAST> {
     }
     return new WhileAST(whileLoop.getErrors(), whileLoop.getCtx(), condition,
         body);
+
+     */
   }
 
   @Override
