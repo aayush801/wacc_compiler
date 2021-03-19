@@ -1,25 +1,18 @@
 package wacc.extension;
 
-import static wacc.backend.instructions.arithmetic.ArithmeticOpcode.ADD;
-import static wacc.backend.instructions.arithmetic.ArithmeticOpcode.SMULL;
-import static wacc.backend.instructions.arithmetic.ArithmeticOpcode.SUB;
-
-import java.util.Arrays;
-import wacc.backend.instructions.Branch;
+import java.util.ArrayList;
+import java.util.List;
 import wacc.backend.instructions.Instruction;
 import wacc.backend.instructions.Load;
 import wacc.backend.instructions.Move;
 import wacc.backend.instructions.Store;
-import wacc.backend.instructions.addr_modes.ImmediateAddress;
 import wacc.backend.instructions.arithmetic.Arithmetic;
 import wacc.backend.operands.ImmediateNum;
-import java.util.ArrayList;
-import java.util.List;
 
 public class WaccCodeOptimiser {
 
   public static List<Instruction> optimise(List<Instruction> instructions) {
-    //simplerAlternative
+    // simplerAlternative
     instructions = removeRedundantInstructions(instructions);
     instructions = removeLoadAfterStore(instructions);
     return instructions;
@@ -33,12 +26,13 @@ public class WaccCodeOptimiser {
     improved.add(instructions.get(0));
     for (int i = 1; i < instructions.size(); i++) {
       curr = instructions.get(i);
+
       if (curr instanceof Load) {
         prev = instructions.get(i - 1);
+
         if (prev instanceof Store) {
-            if (((Store) prev).getRs().equals(((Load) curr).getRn())
-                && ((Store) prev).getAddressingMode()
-            .equals(((Load) curr).getAddressingMode())){
+          if (((Store) prev).getRs().equals(((Load) curr).getRn())
+              && ((Store) prev).getAddressingMode().equals(((Load) curr).getAddressingMode())) {
             continue;
           }
         }
@@ -92,7 +86,7 @@ public class WaccCodeOptimiser {
           }
           break;
 
-        // Multiply by one has no effect
+          // Multiply by one has no effect
         case SMULL:
           if (instruction.getOperand() instanceof ImmediateNum) {
             if (((ImmediateNum) instruction.getOperand()).getValue() == 1) {

@@ -1,31 +1,57 @@
 package wacc.extension.wacc_ide;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextPane;
+import javax.swing.ToolTipManager;
+import javax.swing.filechooser.FileSystemView;
+import javax.swing.text.BadLocationException;
 import org.antlr.v4.runtime.misc.Pair;
 import org.apache.commons.io.IOUtils;
 import wacc.ErrorCode;
 import wacc.WaccCompiler;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import javax.swing.*;
-import javax.swing.filechooser.FileSystemView;
-import javax.swing.text.*;
-
 public class View extends JFrame implements ActionListener {
 
   private final List<JTextPane> tabs = new ArrayList<>();
-  JFrame frame;
+  private JFrame frame;
   private JTextPane currentPane;
   private final Model model;
   private static int returnValue = 0;
-  private static final JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+  private static final JFileChooser jfc =
+      new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
   private JTabbedPane jtp;
   private int ntabs = 0;
   private final Map<JTextPane, Pair<Boolean, String>> paneState = new HashMap<>();
@@ -38,9 +64,9 @@ public class View extends JFrame implements ActionListener {
 
   private void display() {
 
-     frame = new JFrame("WACC IDE");
+    frame = new JFrame("WACC IDE");
 
-    //creating tabbedPanes for coding areas.
+    // creating tabbedPanes for coding areas.
     jtp = new JTabbedPane();
     jtp.setSize(jtp.getPreferredSize());
     createTab();
@@ -84,139 +110,107 @@ public class View extends JFrame implements ActionListener {
 
     // Add scroll bars and add to frame.
     JScrollPane inputScroll =
-            new JScrollPane(
-                    jtp,
-                    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                    JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        new JScrollPane(
+            jtp,
+            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
     frame.add(inputScroll);
 
-    frame.addWindowListener(new java.awt.event.WindowAdapter() {
-      @Override
-      public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+    frame.addWindowListener(
+        new java.awt.event.WindowAdapter() {
+          @Override
+          public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 
-        while (tabs.size() != 0) {
-          closeTab(tabs.get(0));
-        }
+            while (tabs.size() != 0) {
+              closeTab(tabs.get(0));
+            }
+          }
+        });
 
-      }
-    });
-
-    //creating a new tab and adding an action listener onto its pane
+    // creating a new tab and adding an action listener onto its pane
     newTab.addActionListener(e -> createTab());
 
-    //changing currentPane to the pane in use when tabs are switched
-    jtp.addChangeListener(e -> {
-      try {
-        int x = jtp.getSelectedIndex();
-        currentPane = tabs.get(x);
-        model.check();
-        currRelativePath = paneState.get(currentPane).b;
-      } catch (IndexOutOfBoundsException | IOException | BadLocationException a) {
-        a.printStackTrace();
-      }
-    });
+    // changing currentPane to the pane in use when tabs are switched
+    jtp.addChangeListener(
+        e -> {
+          try {
+            int x = jtp.getSelectedIndex();
+            currentPane = tabs.get(x);
+            model.check();
+            currRelativePath = paneState.get(currentPane).b;
+          } catch (IndexOutOfBoundsException | IOException | BadLocationException a) {
+            a.printStackTrace();
+          }
+        });
 
     // Finally, set frame as visible.
     frame.setVisible(true);
-
-
   }
 
   private void createTab() {
 
-
-
     JPanel newPage = new JPanel();
-    JTextPane pane = new JTextPane(){
+    JTextPane pane =
+        new JTextPane() {
 
-      @Override
-      public String getToolTipText(MouseEvent event) {
-        return model.getErrorMsg(event.getY());
-      }
-    };
+          @Override
+          public String getToolTipText(MouseEvent event) {
+            return model.getErrorMsg(event.getY());
+          }
+        };
 
     // Initially, pane is not modified.
     paneState.put(pane, new Pair<>(false, null));
 
     ToolTipManager.sharedInstance().registerComponent(pane);
 
-    // Add Mouse Position Listener
-    pane.addMouseListener(new MouseListener() {
-      @Override
-      public void mouseClicked(MouseEvent e) {
-      }
+    //adding key listener to current pane
+    pane.addKeyListener(
+        new KeyListener() {
+          @Override
+          public void keyTyped(KeyEvent e) {}
 
-      @Override
-      public void mousePressed(MouseEvent e) {
+          @Override
+          public void keyPressed(KeyEvent e) {}
 
-      }
+          // Check when any key is released
+          @Override
+          public void keyReleased(KeyEvent e) {
+            int offset = currentPane.getCaretPosition();
+            try {
+              model.check();
+            } catch (IOException | BadLocationException ioException) {
+              ioException.printStackTrace();
+            }
 
-      @Override
-      public void mouseReleased(MouseEvent e) {
-        int pos = currentPane.getCaretPosition();
+            // Reset caret/cursor
+            currentPane.setCaretPosition(offset);
 
-      }
+            // Set current pane modified to true
+            Pair<Boolean, String> p = paneState.get(currentPane);
+            paneState.put(currentPane, new Pair<>(true, p.b));
 
-      @Override
-      public void mouseEntered(MouseEvent e) {
+            // keyboard shortcuts
+            if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S) {
+              saveFile(jfc);
+            }
 
-      }
-
-      @Override
-      public void mouseExited(MouseEvent e) {
-
-      }
-    });
-
-    pane.addKeyListener(new KeyListener() {
-      @Override
-      public void keyTyped(KeyEvent e) {
-
-      }
-
-      @Override
-      public void keyPressed(KeyEvent e) {
-
-      }
-
-      // Check when any key is released
-      @Override
-      public void keyReleased(KeyEvent e) {
-        int offset = currentPane.getCaretPosition();
-        try {
-          model.check();
-        } catch (IOException | BadLocationException ioException) {
-          ioException.printStackTrace();
-        }
-
-        // Reset caret/cursor
-        currentPane.setCaretPosition(offset);
-
-        // Set current pane modified to true
-        Pair<Boolean, String> p = paneState.get(currentPane);
-        paneState.put(currentPane, new Pair<>(true, p.b));
-
-        //keyboard shortcuts
-        if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S){
-            saveFile(jfc);
-        }
-
-        if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Q){
+            if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Q) {
               compile_code();
-          }
+            }
 
-        if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_W){
-          closeTab(currentPane);
-        }
-      }
-    });
+            if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_W) {
+              closeTab(currentPane);
+            }
+          }
+        });
 
     tabs.add(pane);
 
-    pane.setBounds(0,0,800,800);
+    pane.setBounds(0, 0, 800, 800);
     newPage.setLayout(null);
-    newPage.setPreferredSize(new Dimension(800,800));
+    newPage.setPreferredSize(new Dimension(800, 800));
 
     newPage.add(pane);
 
@@ -236,7 +230,7 @@ public class View extends JFrame implements ActionListener {
     pnlTab.setOpaque(false);
     JLabel lblTitle = new JLabel(name);
     JButton btnClose = new JButton("x");
-    btnClose.setMargin(new Insets(1, 1, 1,1));
+    btnClose.setMargin(new Insets(1, 1, 1, 1));
 
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.gridx = 0;
@@ -246,10 +240,10 @@ public class View extends JFrame implements ActionListener {
     pnlTab.add(lblTitle, gbc);
 
     // Handle actual closing of tab
-    btnClose.addActionListener(e -> {
-
-      closeTab(pane);
-    });
+    btnClose.addActionListener(
+        e -> {
+          closeTab(pane);
+        });
 
     gbc.gridx++;
     gbc.weightx = 0;
@@ -282,7 +276,6 @@ public class View extends JFrame implements ActionListener {
     }
   }
 
-
   @Override
   public void actionPerformed(ActionEvent e) {
     StringBuilder ingest = new StringBuilder();
@@ -293,7 +286,7 @@ public class View extends JFrame implements ActionListener {
 
     String ae = e.getActionCommand();
     switch (ae) {
-      // Open
+        // Open
       case "Open":
         // Determine if the user wants to save file.
         save = saveFirst();
@@ -334,13 +327,13 @@ public class View extends JFrame implements ActionListener {
         }
         break;
 
-      // Save
+        // Save
       case "Save":
-          jfc.setDialogTitle("Choose destination.");
-          saveFile(jfc);
-          break;
+        jfc.setDialogTitle("Choose destination.");
+        saveFile(jfc);
+        break;
 
-      // Reset
+        // Reset
       case "Reset":
 
         // Determine if the user wants to save file.
@@ -355,15 +348,13 @@ public class View extends JFrame implements ActionListener {
 
         break;
 
-      //compile
+        // compile
       case "Compile":
         compile_code();
-
-
     }
   }
 
-    private void compile_code() {
+  private void compile_code() {
     WaccCompiler compiler = null;
     try {
       compiler = new WaccCompiler(currentPane.getText());
@@ -374,8 +365,8 @@ public class View extends JFrame implements ActionListener {
     ErrorCode errorCode = compiler.compile();
 
     if (errorCode != ErrorCode.SUCCESS) {
-      JOptionPane.showMessageDialog(frame,"code contains errors, cant be compiled");
-      return ;
+      JOptionPane.showMessageDialog(frame, "code contains errors, cant be compiled");
+      return;
     }
 
     String sourceCode = compiler.getSourceCode();
@@ -386,7 +377,7 @@ public class View extends JFrame implements ActionListener {
     try {
       writer = new FileWriter(file);
 
-      if(sourceCode != null){
+      if (sourceCode != null) {
         writer.write(sourceCode);
         writer.close();
       }
@@ -395,17 +386,16 @@ public class View extends JFrame implements ActionListener {
       ioException.printStackTrace();
     }
 
-
     try {
       Runtime runtime = Runtime.getRuntime();
-      Process compileSourceProcess = runtime
-              .exec("arm-linux-gnueabi-gcc -o EXEName -mcpu=arm1176jzf-s "
-                      + "-mtune=arm1176jzf-s temp.s");
+      Process compileSourceProcess =
+          runtime.exec(
+              "arm-linux-gnueabi-gcc -o EXEName -mcpu=arm1176jzf-s "
+                  + "-mtune=arm1176jzf-s temp.s");
 
       compileSourceProcess.waitFor();
 
-      Process execWacc = runtime
-              .exec("qemu-arm -L /usr/arm-linux-gnueabi/ EXEName");
+      Process execWacc = runtime.exec("qemu-arm -L /usr/arm-linux-gnueabi/ EXEName");
       InputStream inputStream = execWacc.getInputStream();
 
       execWacc.waitFor();
@@ -415,7 +405,7 @@ public class View extends JFrame implements ActionListener {
       file.deleteOnExit();
 
       String text = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
-      JOptionPane.showMessageDialog(frame,"output: " + text);
+      JOptionPane.showMessageDialog(frame, "output: " + text);
 
     } catch (InterruptedException | IOException e2) {
       e2.printStackTrace();
@@ -424,20 +414,17 @@ public class View extends JFrame implements ActionListener {
 
   private boolean saveFirst() {
 
-    if(!paneState.get(currentPane).a) {
+    if (!paneState.get(currentPane).a) {
       return false;
     }
 
     JFrame parent = new JFrame();
 
-    int n = JOptionPane.showConfirmDialog(
-            parent,
-            "Do you want to save the current file?",
-            "",
-            JOptionPane.YES_NO_OPTION);
+    int n =
+        JOptionPane.showConfirmDialog(
+            parent, "Do you want to save the current file?", "", JOptionPane.YES_NO_OPTION);
 
     return n == 0;
-
   }
 
   private void saveFile(JFileChooser jfc) {

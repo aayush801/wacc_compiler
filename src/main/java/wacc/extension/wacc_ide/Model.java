@@ -1,14 +1,18 @@
 package wacc.extension.wacc_ide;
 
-import wacc.WaccCompiler;
-import wacc.errors.WaccError;
-
-import javax.swing.*;
-import javax.swing.text.*;
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JTextPane;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import wacc.WaccCompiler;
+import wacc.errors.WaccError;
 
 public class Model {
 
@@ -57,20 +61,21 @@ public class Model {
 
       Color color = errorLines.contains(line) ? Color.RED : Color.BLACK;
 
-      AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color);
+      AttributeSet aset =
+          sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color);
 
       aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
 
       // Only add newline if not last line.
-      document.insertString(offset, codeLine + ((line == lines.length) ? "" : "\n") , aset);
+      document.insertString(offset, codeLine + ((line == lines.length) ? "" : "\n"), aset);
 
-      offset += codeLine.length() + 1 ;
+      offset += codeLine.length() + 1;
     }
-    return null ;
+    return null;
   }
 
   public String getErrorMsg(int y) {
-    int errLine = y/16 + 1;
+    int errLine = y / 16 + 1;
 
     if (errorLines.contains(errLine)) {
       for (WaccError error : errors) {

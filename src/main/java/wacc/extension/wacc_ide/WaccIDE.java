@@ -1,8 +1,5 @@
 package wacc.extension.wacc_ide;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 public class WaccIDE {
 
   private final View view = new View();
@@ -15,6 +12,4 @@ public class WaccIDE {
   public static void main(String[] args) {
     new WaccIDE();
   }
-
-
 }
