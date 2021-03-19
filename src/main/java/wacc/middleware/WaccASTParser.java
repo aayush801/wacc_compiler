@@ -148,22 +148,23 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     }
 
     // Return a new progAST node.
-    return new ProgAST(semanticErrors, ctx, filename, importASTS, classDefinitionASTS, functionDeclASTS,
+    return new ProgAST(semanticErrors, ctx, filename, importASTS,
+        classDefinitionASTS, functionDeclASTS,
         (StatementAST) visit(ctx.stat()));
   }
 
   @Override
   public NodeASTList<ImportAST> visitImports(ImportsContext ctx) {
     NodeASTList<ImportAST> importASTS = new NodeASTList<>(semanticErrors, ctx);
-    if(ctx.GT() != null){
+    if (ctx.GT() != null) {
       importASTS.add(
           new ImportAST(semanticErrors, ctx.identifier(),
               ctx.identifier().getText(), Paths.get("lib")));
-    }else if (ctx.identifier() != null) {
+    } else if (ctx.identifier() != null) {
       importASTS.add(
           new ImportAST(semanticErrors, ctx.identifier(),
               ctx.identifier().getText(), relativePath));
-    }else{
+    } else {
       importASTS.addAll(visitImports(ctx.imports(0)));
       importASTS.addAll(visitImports(ctx.imports(1)));
     }
@@ -212,13 +213,15 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     }
 
     // return a new FunctionCallAST.
-    return new FunctionCallAST(semanticErrors, ctx, ctx.identifier().getText(), actuals);
+    return new FunctionCallAST(semanticErrors, ctx, ctx.identifier().getText(),
+        actuals);
   }
 
   @Override
   public ParamAST visitParam(ParamContext ctx) {
     // return a new ParamAST.
-    return new ParamAST(semanticErrors, ctx, visitType(ctx.type()), ctx.identifier().getText());
+    return new ParamAST(semanticErrors, ctx, visitType(ctx.type()),
+        ctx.identifier().getText());
   }
 
   @Override
@@ -226,7 +229,9 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // return a list of ParamAST, done by calling visitParam on all
     // parameters in ctx.
     return new NodeASTList<>(semanticErrors,
-        ctx, ctx.param().stream().map(this::visitParam).collect(Collectors.toList()));
+        ctx, ctx.param().stream()
+        .map(this::visitParam)
+        .collect(Collectors.toList()));
   }
 
   @Override
@@ -236,7 +241,9 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // in either case, return a new NodeASTList.
     if (ctx != null) {
       return new NodeASTList<>(semanticErrors,
-          ctx, ctx.expr().stream().map(this::visitExpr).collect(Collectors.toList()));
+          ctx, ctx.expr().stream()
+          .map(this::visitExpr)
+          .collect(Collectors.toList()));
     } else {
       return new NodeASTList<>(semanticErrors, ctx);
     }
@@ -315,7 +322,7 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
   }
 
   @Override
-  public ForAST visitForEachLoop(WaccParser.ForEachLoopContext ctx) {
+  public IfElseAST visitForEachLoop(WaccParser.ForEachLoopContext ctx) {
     // type
     TypeAST typeAST = visitType(ctx.type());
     // var
@@ -323,10 +330,10 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     // array
     String arrayName = ctx.identifier(1).getText();
     // Loop variable
-    String indexVariable = "i";
+    String indexVariable = "I";
     if (variableName.equals(indexVariable)) {
       // To avoid clash with variable
-      indexVariable = "j";
+      indexVariable = "J";
     }
     // int i = 0
     VariableDeclarationAST indexDeclaration =
@@ -373,14 +380,30 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
             new UnaryOpExprAST(semanticErrors, ctx,
                 new IdentifierAST(semanticErrors, ctx, arrayName), "len"));
 
+    BinOpExprAST emptyCheck =
+        new BinOpExprAST(semanticErrors, ctx,
+            new LiteralsAST(semanticErrors, ctx, 0),
+            "<",
+            new UnaryOpExprAST(semanticErrors, ctx,
+                new IdentifierAST(semanticErrors, ctx, arrayName), "len"));
+
     StatementAST body = new ChainedStatementAST(semanticErrors, ctx, variableUpdate,
         (StatementAST) visit(ctx.stat()));
 
     StatementAST initialisation = new ChainedStatementAST(semanticErrors, ctx,
         indexDeclaration, variableDeclaration);
     // Only enter loop if array is non-empty
-    return new ForAST(semanticErrors, ctx, initialisation, indexBoundCheck,
-        indexIncrement, body);
+
+    BinOpExprAST notEmptyCheck =
+        new BinOpExprAST(semanticErrors, ctx,
+            new LiteralsAST(semanticErrors, ctx, 0),
+            "<",
+            new UnaryOpExprAST(semanticErrors, ctx,
+                new IdentifierAST(semanticErrors, ctx, arrayName), "len"));
+
+    return new IfElseAST(semanticErrors, ctx, notEmptyCheck,
+        new ForAST(semanticErrors, ctx, initialisation, indexBoundCheck,
+            indexIncrement, body), new SkipAST(semanticErrors, ctx));
   }
 
   @Override
@@ -675,11 +698,13 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
     }
 
     if (ctx.arrayType() != null) {
-      return new PairElemTypeAST(semanticErrors, ctx, visitArrayType(ctx.arrayType()));
+      return new PairElemTypeAST(semanticErrors, ctx,
+          visitArrayType(ctx.arrayType()));
     }
 
     if (ctx.PAIR_TYPE() != null) {
-      return new PairElemTypeAST(semanticErrors, ctx, ctx.PAIR_TYPE().getText());
+      return new PairElemTypeAST(semanticErrors, ctx,
+          ctx.PAIR_TYPE().getText());
     }
 
     return null;
@@ -797,8 +822,9 @@ public class WaccASTParser extends WaccParserBaseVisitor<NodeAST> {
       return new FieldAST(semanticErrors, ctx, visitFields(ctx.fields(0)),
           visitFields(ctx.fields(1)));
     } else {
-      Visibility visibility = (ctx.VISIBILITY().getText().equals("private") ? Visibility.PRIVATE
-          : Visibility.PUBLIC);
+      Visibility visibility = ctx.VISIBILITY().getText().equals("private") ?
+          Visibility.PRIVATE : Visibility.PUBLIC;
+
       return new FieldAST(semanticErrors, ctx, visibility,
           new VariableDeclarationAST(semanticErrors,
               ctx, visitType(ctx.type()), ctx.identifier().getText(),

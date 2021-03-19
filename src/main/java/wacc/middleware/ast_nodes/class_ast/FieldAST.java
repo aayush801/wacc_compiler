@@ -13,6 +13,7 @@ import wacc.middleware.ast_nodes.statement_ast.VariableDeclarationAST;
 import wacc.middleware.symbol_table.ClassSymbolTable;
 
 public class FieldAST extends StatementAST {
+
   private final boolean isChained;
   Visibility visibility;
   VariableDeclarationAST variableDeclarationAST;
@@ -43,7 +44,7 @@ public class FieldAST extends StatementAST {
   @Override
   public void check() {
 
-    if(!(ST instanceof ClassSymbolTable)){
+    if (!(ST instanceof ClassSymbolTable)) {
       addError(new WaccSemanticError(ctx) {
         @Override
         public String getErrorMessage() {

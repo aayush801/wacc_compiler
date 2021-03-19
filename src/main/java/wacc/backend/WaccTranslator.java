@@ -116,7 +116,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
   @Override
   public List<Instruction> visit(ProgAST prog) {
     // translate class declarations
-    for(ClassDefinitionAST classDef : prog.getClassDefinitionASTS()){
+    for (ClassDefinitionAST classDef : prog.getClassDefinitionASTS()) {
       visit(classDef);
     }
 
@@ -477,6 +477,12 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
         instructions.add(
             new Arithmetic(ArithmeticOpcode.SMULL, Register.R0, Register.R1,
                 Register.R0, Rn, accumulator));
+        instructions.add(new Compare(Rm, new ImmediateShift(Rn, 31, false)));
+
+        // check for overflow error
+        primitiveLabel = BinOpChecks.printOverflowCheck(program);
+        instructions.add(new Branch(ConditionCode.NE,
+            primitiveLabel.getLabelName(), true));
 
         instructions.add(new Arithmetic(ArithmeticOpcode.SUB, Rm, Rm,
             ImmediateNum.ONE, true));
@@ -487,12 +493,7 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
         instructions.add(new Branch(ConditionCode.NE, bodyLabel.getName(),
             false));
 
-        instructions.add(new Compare(Rm, new ImmediateShift(Rn, 31, false)));
 
-        // check for overflow error
-        primitiveLabel = BinOpChecks.printOverflowCheck(program);
-        instructions.add(new Branch(ConditionCode.NE,
-            primitiveLabel.getLabelName(), true));
 
         instructions.add(endLabel);
         // Move product into destination register
@@ -524,7 +525,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
       // get the offset from the start of the class object
       int offset = ((FIELD) varObj).getOffset();
       // load the chosen field into the target register
-      ret.add(new Load(target, new ImmediateOffset(Register.R0, new ImmediateNum(offset)),
+      ret.add(new Load(target,
+          new ImmediateOffset(Register.R0, new ImmediateNum(offset)),
           ((FIELD) varObj).getType().getSize()));
 
     } else if (varObj instanceof STACK_OBJECT) {
@@ -638,8 +640,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
           instructions.add(new Move(exprReg, program.SP));
 
           instructions.add(
-              new Arithmetic(ArithmeticOpcode.ADD, exprReg, exprReg, new ImmediateNum(offset),
-                  false));
+              new Arithmetic(ArithmeticOpcode.ADD, exprReg, exprReg,
+                  new ImmediateNum(offset), false));
         }
         break;
       // LENGTH Operator
@@ -682,7 +684,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
         instructions.add(new Move(exprReg, Register.R0));
         break;
       default:
-        System.out.println("unary operation " + unaryOpExpr.getOperator() + "not handled");
+        System.out.println("unary operation " + unaryOpExpr.getOperator()
+            + "not handled");
     }
     return instructions;
 
@@ -718,7 +721,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
 
     //if in scope of a class then append classname as prefix
     if (funcScope.getEncSymTable() instanceof ClassSymbolTable) {
-      String prefix = ((ClassSymbolTable) funcScope.getEncSymTable()).getClassName() + "_";
+      String prefix = ((ClassSymbolTable) funcScope.getEncSymTable())
+          .getClassName() + "_";
       funcName = prefix + funcName;
     }
 
@@ -808,7 +812,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     List<Instruction> instructions = new ArrayList<>();
 
     // Allocate memory for two address, one for each element of the pair
-    instructions.add(new Load(Register.R0, new ImmediateAddress(TYPES.WORD_SIZE * 2)));
+    instructions.add(new Load(Register.R0,
+        new ImmediateAddress(TYPES.WORD_SIZE * 2)));
     instructions.add(new Branch("malloc", true));
 
     Register pairAddress = program.registers.remove(0);
@@ -840,7 +845,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     // Storing address to value of second element in the second word of pair
     instructions.add(
         new Store(Register.R0,
-            new ImmediateOffset(pairAddress, new ImmediateNum(TYPES.WORD_SIZE))));
+            new ImmediateOffset(pairAddress,
+                new ImmediateNum(TYPES.WORD_SIZE))));
 
     program.registers.add(0, pairAddress);
 
@@ -856,7 +862,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     instructions.add(new Branch("malloc", true));
 
     // Store the value of the pair element at the given address
-    instructions.add(new Store(destination, new ZeroOffset(Register.R0), typeSize));
+    instructions.add(new Store(destination, new ZeroOffset(Register.R0),
+        typeSize));
   }
 
   @Override
@@ -870,7 +877,8 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     ret.add(new Move(Register.R0, target));
 
     // Branch to null check
-    PrimitiveLabel checkNullPrimitive = PairElemNullAccessCheck.pairElemCheckProgram(program);
+    PrimitiveLabel checkNullPrimitive
+        = PairElemNullAccessCheck.pairElemCheckProgram(program);
     ret.add(new Branch(checkNullPrimitive.getLabelName(), true));
     program.addPrimitive(checkNullPrimitive);
 
@@ -948,9 +956,9 @@ public class WaccTranslator extends NodeASTVisitor<List<Instruction>> {
     PrimitiveLabel freeFunction = null;
     TYPE exprType = free.getExpr().getType();
 
-    if(exprType instanceof PAIR){
+    if (exprType instanceof PAIR) {
       freeFunction = FreeFunction.freePair(program);
-    }else if(exprType instanceof CLASS || exprType instanceof POINTER){
+    } else if (exprType instanceof CLASS || exprType instanceof POINTER) {
       freeFunction = FreeFunction.freeReference(program);
     }
 

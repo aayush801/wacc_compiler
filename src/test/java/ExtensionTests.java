@@ -184,11 +184,7 @@ public class ExtensionTests {
             "rof;\n" +
             "print sum\n" +
             "end";
-    /*
-    WaccCompiler compiler = new WaccCompiler(prog);
-    compiler.compile();
-    System.out.println(compiler.getSourceCode());
-    /*/
+
     runAndCheckProgram(prog, "3", 0);
   }
 
@@ -203,11 +199,7 @@ public class ExtensionTests {
             + "rof;\n"
             + "print sum\n"
             + "end";
-    /*
-    WaccCompiler compiler = new WaccCompiler(prog);
-    compiler.compile();
-    System.out.println(compiler.getSourceCode());
-    */
+
     runAndCheckProgram(prog, "6", 0);
   }
 
@@ -218,15 +210,39 @@ public class ExtensionTests {
             + "int x = 2 ^ 3;\n"
             + "print x\n"
             + "end";
-    /*
-    WaccCompiler compiler = new WaccCompiler(prog);
-    compiler.compile();
-    System.out.println(compiler.getSourceCode());
 
-     */
     runAndCheckProgram(prog, "8", 0);
   }
 
+  @Test
+  public void optimisations() throws  IOException {
+    String prog =
+        "begin\n"
+            + "int x = 0;\n"
+            + "int y = 45 * x;\n"
+            + "int z = 5 ^ y;\n"
+            + "while (z < 4) do\n"
+            + "    skip\n"
+            + "done;\n"
+            + "int a = x + y + z\n"
+            + "end";
+
+
+    WaccCompiler compiler = new WaccCompiler(prog);
+    compiler.setOptimisations(false);
+    compiler.compile();
+    //System.out.println(compiler.getSourceCode());
+    double length1 = compiler.getSourceCode().length();
+
+    compiler = new WaccCompiler(prog);
+    compiler.setOptimisations(true);
+    compiler.compile();
+    //System.out.println(compiler.getSourceCode());
+    double length2 = compiler.getSourceCode().length();
+
+    //System.out.println(((length1 - length2) / length1) * 100 + "% reduction");
+    assertThat(length2 < length1, is(true));
+  }
 
   @Test
   public void binOpAssign() throws IOException {

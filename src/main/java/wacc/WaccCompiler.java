@@ -35,6 +35,7 @@ public class WaccCompiler {
   private String sourceCode;
   private String filename = "default";
   private Path relativePath;
+  private boolean optimisations = true;
 
   public WaccCompiler(String instructions) throws IOException {
     this(new ByteArrayInputStream(instructions.getBytes(StandardCharsets.UTF_8)));
@@ -110,28 +111,26 @@ public class WaccCompiler {
       return null;
     }
 
-    WaccASTParser semanticParser = new WaccASTParser(filename, relativePath, errors);
+    WaccASTParser semanticParser = new WaccASTParser(filename, relativePath,
+        errors);
 
     NodeAST tree = semanticParser.visit(parseTree);
 
     tree.check();
 
-    //*
-    if (!hasErrors()) {
+    if (!hasErrors() && optimisations) {
       // Control flow analysis of AST nodes
       NodeAST prog = tree.accept(new ControlFlowAnalyser());
       prog.check();
       return prog;
     }
 
-     //*/
-
     return tree;
   }
 
   public String translateCode(NodeAST ASTtree) {
     WaccTranslator codeGenerator = new WaccTranslator();
-    codeGenerator.visit(ASTtree);
+    ASTtree.accept(codeGenerator);
 
     return codeGenerator.toString();
   }
@@ -155,5 +154,9 @@ public class WaccCompiler {
     } else {
       relativePath = Paths.get(path).getParent();
     }
+  }
+
+  public void setOptimisations(boolean optimisations) {
+    this.optimisations = optimisations;
   }
 }
