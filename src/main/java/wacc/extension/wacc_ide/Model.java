@@ -74,6 +74,7 @@ public class Model {
     return null;
   }
 
+  //takes in the y-coordinate of the mouse cursor and finds the error message generated from check()
   public String getErrorMsg(int y) {
     int errLine = y / 16 + 1;
 
